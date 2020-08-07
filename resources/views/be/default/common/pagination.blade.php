@@ -1,0 +1,15 @@
+<Pagination
+        data-first-item="{{$paginator->firstItem()}}"
+        data-count="{{$paginator->count()}}"
+        data-current-page="{{$paginator->currentPage()}}"
+        data-has-more-pages="{{$paginator->hasMorePages()}}"
+        data-last-item="{{$paginator->lastItem()}}"
+        data-last-page="{{$paginator->lastItem()}}"
+        data-per-page="{{$paginator->perPage()}}"
+        data-next-page-url="{{$paginator->nextPageUrl()}}"
+        data-previous-page-url="{{$paginator->previousPageUrl()}}"
+        data-total="{{$paginator->total()}}"
+        data-controller-name="{{request()->module_info->controller_name}}"
+>
+    <slot>{{$paginator->links()}}</slot>
+</Pagination>

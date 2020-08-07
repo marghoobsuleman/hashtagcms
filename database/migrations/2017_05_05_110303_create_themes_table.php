@@ -1,0 +1,42 @@
+<?php
+
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
+
+class CreateThemesTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('themes', function(Blueprint $table){
+            $table->id();
+            $table->bigInteger('site_id', false, true);
+            $table->string('name', 60);
+            $table->string('alias', 60);
+            $table->string('directory', 60);
+            $table->string('body_class', 255)->nullable();
+            $table->string('img_preview')->nullable();
+            $table->text('skeleton');
+            $table->text('header_content')->nullable();
+            $table->text('footer_content')->nullable();
+            $table->timestamps();
+            $table->softDeletes();
+
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('themes');
+    }
+}
