@@ -7,7 +7,7 @@
 
 Headless CMS, Use it as Headless CMS or Bundled, API enabled, 
 Admin Panel, Multisite, Multitenant, Multilingual, and oAuth 2.0.
-The Most powerful, fast, user-friendly and secured platform.
+The Most powerful, fast, user-friendly and secured platform. Made with PHP Laravel Framework.
 
 ## Installation
 

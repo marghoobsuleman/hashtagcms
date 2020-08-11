@@ -43,6 +43,5 @@
             data-all-sites="{{json_encode($allSites)}}"
     >
     </admin-homepage>
-    allSites:(typeof this.dataAllSites == "undefined" || this.dataAllSites == "") ? [] : JSON.parse(this.dataAllSites),
 @endsection
 

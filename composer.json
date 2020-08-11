@@ -1,6 +1,6 @@
 {
     "name": "marghoobsuleman/hashtagcms",
-    "description": "Headless CMS, Use it as Headless CMS or Bundled, API enabled, \nAdmin Panel, Multisite, Multitenant, Multilingual, and oAuth 2.0.\nThe Most powerful, fast and user-friendly platform.",
+    "description": "Headless CMS, Use it as Headless CMS or Bundled, API enabled, Admin Panel, Multisite, Multitenant, Multilingual, and oAuth 2.0.\nThe Most powerful, fast and user-friendly platform. Made with PHP Laravel Framework.",
     "license": "MIT",
     "authors": [
         {
