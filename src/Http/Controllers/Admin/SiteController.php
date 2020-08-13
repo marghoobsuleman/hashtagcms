@@ -71,7 +71,7 @@ class SiteController extends BaseAdminController
             "under_maintenance" => "nullable|integer",
             "domain" => "required|max:255|string",
             "context" => "required|max:40|string",
-            "favicon" => "nullable|max:255|string",
+            "favicon" => "nullable|max:255|file",
             "lang_count" => "nullable|numeric",
             "lang_title" => "required|max:255|string"
         ];

@@ -300,6 +300,12 @@ class DataLoader
 
         $header["link"] = array(array("rel"=>"canonical", "href"=>$metaCanonical));
 
+        //fav icon
+        if(isset($site['favicon']) && !empty(trim($site['favicon']))) {
+            array_push($header["link"],array("rel"=>"shortcut icon", "href"=>htcms_get_media($site['favicon'])));
+        }
+
+
         //Check if login is required
         $isLoginRequired = ($category["required_login"] == 1 || $moduleLoader->isLoginRequired()) ? true : false;
 
