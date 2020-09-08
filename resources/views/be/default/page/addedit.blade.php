@@ -18,6 +18,7 @@
         $site_id = old('site_id', htcms_get_siteId_for_admin());
         $category_id = old("category_id", $defaultCategory ?? "");
         $tenant_id = old("tenant_id");
+        $parent_id = old("parent_id");
         $link_navigation = old("link_navigation");
         $link_rewrite = old("link_rewrite");
         $target = old("target");
@@ -102,6 +103,17 @@
 
                         <div class="col-sm-10">
                             {!! FormHelper::select('category_id', $contentCategories, array(), $category_id,  array("value"=>"id", "label"=>"lang.name"), "Select") !!}
+                        </div>
+                    </div>
+
+                    <div id="parent_div" class="form-group" style="display: none">
+
+                        <div class="col-sm-2">
+                            {!!  FormHelper::label('parent_id', 'Parent Category') !!}
+                        </div>
+
+                        <div class="col-sm-10">
+                            {!! FormHelper::select('parent_id', $contentCategories, array(), $parent_id,  array("value"=>"id", "label"=>"lang.name"), "Select") !!}
                         </div>
                     </div>
 
@@ -429,43 +441,89 @@
                 alert("My Button clicked!");
             }
         });*/
-
-        function isBlank(elem) {
-            return (document.getElementById(elem).value.replace(/\s/g, "") === "");
-        }
-
-        function autoUpdateFields() {
-            let value = this.value;
-            if(isBlank("lang_title")) {
-                document.getElementById("lang_title").value = value[0].toUpperCase() + value.slice(1);
-                document.getElementById("alias").value = value.toUpperCase().replace(/\s/g, "_");
-                let active_key = value.toLowerCase().replace(/\s/g, "-");
-                document.getElementById("lang_active_key").value = active_key;
-                document.getElementById("link_rewrite").value = active_key;
-            }
-        }
-
-        function autoUpdateUrls() {
-            let value = this.value;
-            if(document.getElementById("link_rewrite").edited != true) {
-                document.getElementById("alias").value = value.toUpperCase().replace(/\s/g, "_");
-                let active_key = value.toLowerCase().replace(/\s/g, "-");
-                document.getElementById("lang_active_key").value = active_key;
-                document.getElementById("link_rewrite").value = active_key;
-            }
-
-        }
-
-        function linkRewriteUpdated() {
-            document.getElementById("link_rewrite").edited = true;
-        }
-
         var action = "<?php echo $actionPerformed; ?>";
-        if(action == "add") {
-            document.getElementById("lang_name").addEventListener("change",autoUpdateFields);
-            document.getElementById("lang_title").addEventListener("change",autoUpdateUrls);
-            document.getElementById("link_rewrite").addEventListener("keyup",linkRewriteUpdated);
+        var PageManager = {
+            content_type:"<?php echo $content_type ?>",
+            id:"<?php echo $id ?>",
+            init: function () {
+                if(action == "add") {
+                    document.getElementById("lang_name").addEventListener("change",PageManager.autoUpdateFields);
+                    document.getElementById("lang_title").addEventListener("change",PageManager.autoUpdateUrls);
+                    document.getElementById("link_rewrite").addEventListener("keyup",PageManager.linkRewriteUpdated);
+                    document.getElementById("category_id").addEventListener("change", PageManager.getParentCategory);
+                } else {
+                    this.getParentCategory();
+                }
+            },
+            isBlank: function(elem) {
+                return (document.getElementById(elem).value.replace(/\s/g, "") === "");
+            },
+            autoUpdateFields: function() {
+                let value = this.value;
+                if(PageManager.isBlank("lang_title")) {
+                    document.getElementById("lang_title").value = value[0].toUpperCase() + value.slice(1);
+                    document.getElementById("alias").value = value.toUpperCase().replace(/\s/g, "_");
+                    let active_key = value.toLowerCase().replace(/\s/g, "-");
+                    document.getElementById("lang_active_key").value = active_key;
+                    document.getElementById("link_rewrite").value = active_key;
+                }
+            },
+            autoUpdateUrls: function() {
+                let value = this.value;
+                if(document.getElementById("link_rewrite").edited != true) {
+                    document.getElementById("alias").value = value.toUpperCase().replace(/\s/g, "_");
+                    let active_key = value.toLowerCase().replace(/\s/g, "-");
+                    document.getElementById("lang_active_key").value = active_key;
+                    document.getElementById("link_rewrite").value = active_key;
+                }
+
+            },
+            linkRewriteUpdated: function() {
+                document.getElementById("link_rewrite").edited = true;
+            },
+            getParentCategory() {
+                let parentcombo = document.getElementById("parent_id");
+                let category_id = document.getElementById("category_id").value;
+                document.getElementById("parent_id").value = "";
+
+                parentcombo.length = 0;
+                parentcombo.options[0] = new Option("Select", "");
+
+                if(category_id > 0 ) {
+                    showHideBlock(true);
+                    let path = AdminConfig.admin_path("page/getParentCategory", {content_type:PageManager.content_type, category_id:category_id});
+                    axios.get(path).then(function (res) {
+                        //console.log(res);
+                        updateCombo(res.data);
+                    }).catch(function (res) {
+                        //console.log(res);
+                        showHideBlock(false);
+                    });
+                } else {
+                    showHideBlock(false);
+                }
+
+                function updateCombo(res) {
+                    if(res.length > 0) {
+                        let index = 1;
+                        for(let i=0;i<res.length;i++) {
+                            let current = res[i];
+                            if(current.id != PageManager.id) {
+                                parentcombo.options[index] = new Option(current.lang.name, current.id);
+                                index++;
+                            }
+                        }
+                    } else {
+                        showHideBlock(false);
+                    }
+                }
+                function showHideBlock(show) {
+                    document.getElementById("parent_div").style.display = (show == true) ? "" : "none";
+                }
+            }
         }
+        PageManager.init();
+
 
 
     </script>

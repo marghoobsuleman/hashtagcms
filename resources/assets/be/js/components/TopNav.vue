@@ -8,7 +8,7 @@
                     <left-menu-toggle data-icon-css="fa fa-bars hand" data-icon-css-off="fa fa-bars hand"></left-menu-toggle>
                     <span class="sr-only">Toggle navigation</span>
                 </button>
-                <a class="navbar-brand" href="/" target="_blank">{{siteName}}</a>
+                <a class="navbar-brand" href="/" target="_blank"><img align :src="logo" height="50" /> {{siteName}}</a>
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
@@ -43,14 +43,20 @@ export default {
   props:[
     'dataUsername',
     'dataSitename',
-      'dataCurrentSite',
-      'dataSiteCombo'
+    'dataCurrentSite',
+    'dataSiteCombo',
+    'dataLogo'
   ],
+    computed: {
+      logo() {
+          return (typeof this.dataLogo !== "undefined" && this.dataLogo !== "") ? this.dataLogo : AdminConfig.admin_asset("img/logo-transparent.png");
+      }
+    },
   data() {
     return {
         siteName:(this.dataSitename || "MonsterIndia.com"),
         userName:(this.dataUsername),
-        isLoggedIn:((this.dataUsername && this.dataUsername!="") ? true : false),
+        isLoggedIn:(this.dataUsername && this.dataUsername!="") ? true : false,
         siteCombo:(typeof this.dataSiteCombo == "undefined" || this.dataSiteCombo == "false") ? false : true
 
     }

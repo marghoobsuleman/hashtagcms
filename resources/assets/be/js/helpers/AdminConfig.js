@@ -20,6 +20,10 @@ export default class AdminConfig {
         }
         return this.get("base_path")+"/"+path+qParamStr;
     }
+
+    admin_asset(path) {
+        return this.get("app_url")+"/"+this.get("assets_path")+"/"+path;
+    }
 };
 
 

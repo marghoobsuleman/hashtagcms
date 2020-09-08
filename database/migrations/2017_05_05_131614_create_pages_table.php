@@ -15,6 +15,7 @@ class CreatePagesTable extends Migration
         Schema::create('pages', function (Blueprint $table) {
 
             $table->id();
+            $table->bigInteger('parent_id', false, true)->nullable();
             $table->bigInteger('site_id', false, true);
             $table->bigInteger('microsite_id')->nullable()->default(0);
             $table->bigInteger('tenant_id', false, true)->nullable();

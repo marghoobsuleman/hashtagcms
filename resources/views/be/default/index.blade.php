@@ -4,7 +4,8 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE; chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-<script>
+    <link rel='shortcut icon' href='{{htcms_admin_asset("img/favicon.png")}}'>
+    <script>
     function isIE() {
         var ua = window.navigator.userAgent;
 

@@ -50,6 +50,7 @@ class PageController extends BaseAdminController
 
         $rules = [
             "category_id" => "nullable|numeric",
+            "parent_id" => "nullable|numeric",
             "site_id" => "required|numeric",
             "tenant_id" => "nullable|numeric",
             "alias" => "nullable|max:60|string",
@@ -89,6 +90,7 @@ class PageController extends BaseAdminController
 
         $saveData["alias"] = $data["alias"];
         $saveData["category_id"] = $data["category_id"];
+        $saveData["parent_id"] = $data["parent_id"] ?? null;
 
         $saveData["site_id"] =  $data["site_id"] ?? htcms_get_siteId_for_admin();
         $saveData["tenant_id"] = $data["tenant_id"];
@@ -159,5 +161,23 @@ class PageController extends BaseAdminController
         $viewData["isSaved"] = $savedData["isSaved"];
 
         return htcms_admin_view("common.saveinfo", $viewData);
+    }
+
+    /**
+     * @param Request $request
+     * @return mixed
+     */
+    public function getParentCategory(Request $request) {
+
+        $data = $request->all();
+        $content_type = $data['content_type'];
+        $category_id = $data['category_id'];
+
+        $where = array(array("content_type", "=", $content_type),
+            array("category_id", "=", $category_id),
+            array("site_id", "=", htcms_get_siteId_for_admin())
+        );
+        return Page::where($where)->with('lang')->get();
+
     }
 }

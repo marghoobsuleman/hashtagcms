@@ -3003,6 +3003,14 @@
   background: #f8f8f8;
 }
 
+.navbar-brand {
+  padding: 0 10px 0 0px !important;
+}
+
+.navbar-brand img {
+  display: inline !important;
+}
+
 .navbar {
   margin-bottom: 0 !important;
 }

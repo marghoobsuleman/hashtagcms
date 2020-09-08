@@ -33,7 +33,7 @@ class DashboardController extends BaseAdminController
                 "label"=>"Subscribers ".$subscriberToday,
                 "total"=>Subscriber::count(),
                 "icon"=>"fa fa-handshake-o",
-                "link"=>"contact"
+                "link"=>"subscriber"
             ),
             array(
                 "label"=>"Comments ".$commentsToday,

@@ -7165,7 +7165,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
   mounted: function mounted() {//console.log('dataCurrentSite '+this.dataCurrentSite);
   },
-  props: ['dataUsername', 'dataSitename', 'dataCurrentSite', 'dataSiteCombo'],
+  props: ['dataUsername', 'dataSitename', 'dataCurrentSite', 'dataSiteCombo', 'dataLogo'],
+  computed: {
+    logo: function logo() {
+      return typeof this.dataLogo !== "undefined" && this.dataLogo !== "" ? this.dataLogo : AdminConfig.admin_asset("img/logo-transparent.png");
+    }
+  },
   data: function data() {
     return {
       siteName: this.dataSitename || "MonsterIndia.com",
@@ -45761,7 +45766,10 @@ var render = function() {
               staticClass: "navbar-brand",
               attrs: { href: "/", target: "_blank" }
             },
-            [_vm._v(_vm._s(_vm.siteName))]
+            [
+              _c("img", { attrs: { align: "", src: _vm.logo, height: "50" } }),
+              _vm._v(" " + _vm._s(_vm.siteName))
+            ]
           )
         ]),
         _vm._v(" "),
@@ -61780,6 +61788,11 @@ var AdminConfig = /*#__PURE__*/function () {
 
       return this.get("base_path") + "/" + path + qParamStr;
     }
+  }, {
+    key: "admin_asset",
+    value: function admin_asset(path) {
+      return this.get("app_url") + "/" + this.get("assets_path") + "/" + path;
+    }
   }]);
 
   return AdminConfig;
@@ -64977,8 +64990,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /Users/marghoobsuleman/www/hashtagcms-package/packages/MarghoobSuleman/HashtagCms/resources/assets/be/js/app.js */"./resources/assets/be/js/app.js");
-module.exports = __webpack_require__(/*! /Users/marghoobsuleman/www/hashtagcms-package/packages/MarghoobSuleman/HashtagCms/resources/assets/be/sass/app.scss */"./resources/assets/be/sass/app.scss");
+__webpack_require__(/*! /Users/marghoobsuleman/www/hashtagcms-git/resources/assets/be/js/app.js */"./resources/assets/be/js/app.js");
+module.exports = __webpack_require__(/*! /Users/marghoobsuleman/www/hashtagcms-git/resources/assets/be/sass/app.scss */"./resources/assets/be/sass/app.scss");
 
 
 /***/ })

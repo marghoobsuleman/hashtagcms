@@ -1,6 +1,4 @@
 <?php
-
-
 namespace MarghoobSuleman\HashtagCms\Core;
 
 
@@ -14,8 +12,8 @@ class Common
     private $themeFolder = "";
 
     private $jsFolder = "js";
-    private $imageFolder = "img";
     private $cssFolder = "css";
+    private $imageFolder = "img";
 
     private $themPath = "";
     private $cssPath = "";
@@ -32,6 +30,9 @@ class Common
     {
         $this->themeFolder = config("hashtagcms.info.theme_folder");
         $this->resourceDir = config("hashtagcms.info.resource_dir");
+        $this->jsFolder = config("hashtagcms.info.js");
+        $this->cssFolder = config("hashtagcms.info.css");
+        $this->imageFolder = config("hashtagcms.info.image");
 
         info("========== init common ===============");
     }
@@ -406,8 +407,8 @@ class Common
 
         $title = $data['title'];
 
-        //$link_rewrite = ($data["link_rewrite"] == "/") ? "/" : "/".$data["link_rewrite"];
-        $link_rewrite = htcms_get_path($data["link_rewrite"]);
+        $link_rewrite = (isset($data["link_navigation"]) && !empty($data["link_navigation"]) && $data["link_navigation"] != null) ? $data["link_navigation"] : $data["link_rewrite"];
+        $link_rewrite = htcms_get_path($link_rewrite);
 
         $text = $data['name'];
 

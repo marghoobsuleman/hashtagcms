@@ -9,6 +9,7 @@ return [
         'version' => env('BE_RESOURCE_VERSION', '2020050741'),
         'theme' => 'hashtagcms::be.default',
         'assets_path' => 'assets/hashtagcms/be',
+        'app_url' => env("APP_URL"),
         'resource_dir' => 'be/default',
         'media_path' => '/storage/media', //media path
         'show_delete_popup' => false,

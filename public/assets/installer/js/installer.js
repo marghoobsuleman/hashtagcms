@@ -15522,7 +15522,7 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! /Users/marghoobsuleman/www/hashtagcms-package/packages/MarghoobSuleman/HashtagCms/resources/assets/js/installer.js */"./resources/assets/js/installer.js");
+module.exports = __webpack_require__(/*! /Users/marghoobsuleman/www/hashtagcms-git/resources/assets/js/installer.js */"./resources/assets/js/installer.js");
 
 
 /***/ })

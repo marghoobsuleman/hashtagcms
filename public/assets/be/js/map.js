@@ -222,7 +222,7 @@ window.MapApi = new _helpers_Map__WEBPACK_IMPORTED_MODULE_0__["default"]();
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! /Users/marghoobsuleman/www/hashtagcms-package/packages/MarghoobSuleman/HashtagCms/resources/assets/be/js/map.js */"./resources/assets/be/js/map.js");
+module.exports = __webpack_require__(/*! /Users/marghoobsuleman/www/hashtagcms-git/resources/assets/be/js/map.js */"./resources/assets/be/js/map.js");
 
 
 /***/ })

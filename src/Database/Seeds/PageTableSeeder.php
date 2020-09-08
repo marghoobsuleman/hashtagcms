@@ -21,8 +21,7 @@ class PageTableSeeder extends Seeder
         $pages = array(
             array('id' => '1','site_id' => '1','microsite_id' => '0','tenant_id' => '1','category_id' => '9','alias' => 'TEST','exclude_in_listing' => '0','content_type' => 'page','position' => '3','link_rewrite' => 'tnc','link_navigation' => NULL,'menu_placement' => 'bottom','header_content' => NULL,'footer_content' => NULL,'insert_by' => '1','update_by' => '1','required_login' => '0','publish_status' => '1','created_at' => NULL,'enable_comments' => '0','updated_at' => '2020-07-02 13:37:37','deleted_at' => NULL),
             array('id' => '2','site_id' => '1','microsite_id' => '0','tenant_id' => NULL,'category_id' => '9','alias' => 'PRIVACY_POLICY','exclude_in_listing' => '0','content_type' => 'page','position' => '4','link_rewrite' => 'privacy-policy','link_navigation' => NULL,'menu_placement' => 'bottom','header_content' => NULL,'footer_content' => NULL,'insert_by' => '1','update_by' => '1','required_login' => '0','publish_status' => '1','created_at' => NULL,'enable_comments' => '0','updated_at' => '2020-07-05 09:12:13','deleted_at' => NULL),
-            array('id' => '3','site_id' => '1','microsite_id' => '0','tenant_id' => NULL,'category_id' => '2','alias' => 'PAUSE_A_LOOP','exclude_in_listing' => '0','content_type' => 'blog','position' => '4','link_rewrite' => 'pause-a-loop','link_navigation' => NULL,'menu_placement' => NULL,'header_content' => NULL,'footer_content' => NULL,'insert_by' => '1','update_by' => '1','required_login' => '0','publish_status' => '1','created_at' => '2020-07-11 10:50:06','enable_comments' => '1','updated_at' => '2020-07-11 10:50:06','deleted_at' => NULL),
-            array('id' => '4','site_id' => '1','microsite_id' => '0','tenant_id' => NULL,'category_id' => '2','alias' => 'TEST_BLOG','exclude_in_listing' => '0','content_type' => 'blog','position' => '4','link_rewrite' => 'test-blog','link_navigation' => NULL,'menu_placement' => NULL,'header_content' => NULL,'footer_content' => NULL,'insert_by' => '1','update_by' => '1','required_login' => '0','publish_status' => '1','created_at' => '2020-07-11 05:50:06','enable_comments' => '1','updated_at' => NULL,'deleted_at' => NULL)
+            array('id' => '3','site_id' => '1','microsite_id' => '0','tenant_id' => NULL,'category_id' => '2','alias' => 'TEST_BLOG','exclude_in_listing' => '0','content_type' => 'blog','position' => '4','link_rewrite' => 'test-blog','link_navigation' => NULL,'menu_placement' => NULL,'header_content' => NULL,'footer_content' => NULL,'insert_by' => '1','update_by' => '1','required_login' => '0','publish_status' => '1','created_at' => '2020-07-11 05:50:06','enable_comments' => '1','updated_at' => NULL,'deleted_at' => NULL)
         );
 
 
@@ -113,68 +112,7 @@ class PageTableSeeder extends Seeder
 <p>You are free to refuse our request for your personal information, with the understanding that we may be unable to provide you with some of your desired services.</p>
 <p>Your continued use of our website will be regarded as acceptance of our practices around privacy and personal information. If you have any questions about how we handle user data and personal information, feel free to contact us.</p>
 <p>This policy is effective as of 2 July 2020.</p>','link_relation' => NULL,'target' => NULL,'active_key' => 'privacy-policy','meta_title' => NULL,'meta_keywords' => NULL,'meta_description' => NULL,'meta_robots' => NULL,'meta_canonical' => NULL,'created_at' => '2020-07-02 10:37:07','updated_at' => '2020-07-05 09:25:25','deleted_at' => NULL),
-            array('page_id' => '3','lang_id' => '1','name' => 'Pause a Loop','title' => 'Pause a Loop','description' => 'Well I was thinking same as you. Is it possible to pause a loop in javascript? I\'ve searched Google but could not find anything useful. But i thought that again is it really possible to pause a loop. The answer is No! But.. wait... it does not mean that we could not achieve what we want. We can\'t give up easily. There is a work around. See below.','page_content' => '<p>
-Well I was thinking same as you. Is it possible to pause a loop in javascript? I\'ve searched Google but could not find anything useful. But i thought that again is it really possible to pause a loop. The answer is No! But.. wait... it does not mean that we could not achieve what we want. We can\'t give up easily. There is a work around. See below. 
-</p>
-
-<h1>How can i pause in for loop. (Work around)</h1>
-<p>
-As i mention its not possible but we can achieve this. Let see how we can.  
-</p>
-<code>
-<pre>
-&lt;script type="text/javascript"&gt;
-var cnt = 0;
-function myTask(i, j) {
-	//alert("My Task "+ (m++));
-	var p = "&lt;p> " +i + j+" my task "+(++cnt)+"&lt;/p>"
-	document.getElementById(\'logDiv\').innerHTML = document.getElementById(\'logDiv\').innerHTML + p;
-}
-
-function myLoop(start, end, fn, delay) {
-	for(var i=start;i&lt;end;i++) (function(i) {
-		setTimeout(function() {
-			fn.call(this, arguments);
-		}, i*delay);
-	})(i);
-}
-myLoop(0, 10, function() {
-	myTask("This ", "is ");
-}, 2000);
-&lt;/script&gt;
-</pre>
-</code>
-
-<script type="application/javascript">
-var cnt = 0;
-function myTask(i, j) {
-	//alert("My Task "+ (m++));
-	var p = "<p> " +i + j+" my task "+(++cnt)+"</p>"
-	document.getElementById(\'logDiv\').innerHTML = document.getElementById(\'logDiv\').innerHTML + p;
-}
-
-function myLoop(start, end, fn, delay) {
-	for(var i=start;i<end;i++) (function(i) {
-		setTimeout(function() {
-			fn.call(this, arguments);
-		}, i*delay);
-	})(i);
-}
-
-
-function startMyLoop(){
-myLoop(0, 10, function() {
-	myTask("This ", "is ");
-}, 2000);
-
-}
-</script>
-<input type="button" value="Run my loop" onclick="startMyLoop()" />
-<div id="logDiv" style="border:1px solid #111; padding:10px; margin-top:10px">
-<p>I am log div</p>
-</div>
-<p>&nbsp;</p>','link_relation' => NULL,'target' => NULL,'active_key' => 'pause-a-loop','meta_title' => 'How can I pause a loop?','meta_keywords' => 'how, can, pause, loop, javascript','meta_description' => 'How can i pause a loop? There is a work around.','meta_robots' => NULL,'meta_canonical' => NULL,'created_at' => '2020-07-03 08:01:08','updated_at' => '2020-07-10 03:56:25','deleted_at' => NULL),
-            array('page_id' => '4','lang_id' => '1','name' => 'Test Blog','title' => 'Test Blog','description' => 'How to override a native method of JavaScript?','page_content' => 'How to override a native method of JavaScript?
+            array('page_id' => '3','lang_id' => '1','name' => 'Test Blog','title' => 'Test Blog','description' => 'This is a test blog.','page_content' => 'How to override a native method of JavaScript?
 Content goes here','link_relation' => NULL,'target' => NULL,'active_key' => 'test-blog','meta_title' => NULL,'meta_keywords' => NULL,'meta_description' => NULL,'meta_robots' => NULL,'meta_canonical' => NULL,'created_at' => '2020-07-11 10:47:26','updated_at' => '2020-07-11 10:47:26','deleted_at' => NULL)
         );
 

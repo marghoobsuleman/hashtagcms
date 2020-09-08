@@ -6,7 +6,7 @@ if (! function_exists('htcms_get_resource')) {
      *
      * Get resource
      * @param string $resource
-     * @return int
+     * @return string
      */
     function htcms_get_resource($resource='') {
         $common = app()->Common;
@@ -42,7 +42,7 @@ if (! function_exists('htcms_get_header_menu_html')) {
      * Get Header Menu
      * @param int $maxLimit
      * @param null $css
-     * @return int
+     * @return string
      */
     function htcms_get_header_menu_html($maxLimit=-1, $css=null) {
         $common = app()->Common;
@@ -140,7 +140,7 @@ if (! function_exists('htcms_get_path')) {
 
     /**
      * Get path
-     * @return int
+     * @return string
      */
     function htcms_get_path($path) {
         $common = app()->Common;

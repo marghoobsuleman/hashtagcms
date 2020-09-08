@@ -287,7 +287,7 @@ class DataLoader
             //add seo module header/footer content
             $category["header_content"] = $category["header_content"].$this->common->parseStringForPath($seoContent["headerContent"] ?? "");
             $category["footer_content"] = $category["footer_content"].$this->common->parseStringForPath($seoContent["footerContent"] ?? "");
-            $category["active_key"] =  ($seoContent["activeKey"] == null) ? $category["active_key"] : $seoContent["activeKey"];
+            $category["page_active_key"] =  ($seoContent["activeKey"] == null) ? "" : $seoContent["activeKey"];
         }
 
         $header["title"] = (empty($categoryTitle)) ? $site["title"] : $categoryTitle;

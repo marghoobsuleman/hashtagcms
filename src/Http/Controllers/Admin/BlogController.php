@@ -59,6 +59,7 @@ class BlogController extends BaseAdminController
 
         $rules = [
             "category_id" => "nullable|numeric",
+            "parent_id" => "nullable|numeric",
             "site_id" => "required|numeric",
             "tenant_id" => "nullable|numeric",
             "alias" => "nullable|max:60|string",
@@ -98,6 +99,7 @@ class BlogController extends BaseAdminController
 
         $saveData["alias"] = $data["alias"];
         $saveData["category_id"] = $data["category_id"];
+        $saveData["parent_id"] = $data["parent_id"] ?? null;
         $saveData["content_type"] = $data["content_type"];
 
         $saveData["site_id"] =  $data["site_id"] ?? htcms_get_siteId_for_admin();

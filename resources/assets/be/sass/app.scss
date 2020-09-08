@@ -22,7 +22,14 @@
 
 .noLRpadding{padding-left: 0 !important; padding-right: 0 !important}
 .sidebar{background: #f8f8f8}
-.navbar{margin-bottom: 0!important}
+
+.navbar-brand {
+    padding: 0 10px 0 0px !important;
+    img {
+        display: inline !important;
+    }
+}
+.navbar{margin-bottom: 0!important;}
 
 // Bootstrap
 @import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap";

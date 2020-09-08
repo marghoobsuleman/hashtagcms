@@ -9,6 +9,7 @@ mix.js('resources/assets/be/js/error-handler.js', 'public/assets/be/js');
 mix.js('resources/assets/be/js/map.js', 'public/assets/be/js');
 mix.js('resources/assets/be/js/ie-polyfills.js', 'public/assets/be/js');
 mix.copyDirectory('resources/assets/be/js/vendors/tinymce', 'public/assets/be/js/vendors/tinymce');
+mix.copyDirectory('resources/assets/be/img', 'public/assets/be/img');
 
 //Installer
 mix.js('resources/assets/js/installer.js', 'public/assets/installer/js');
