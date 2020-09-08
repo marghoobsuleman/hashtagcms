@@ -3,14 +3,21 @@
 .basic-theme {
   margin-top: 0px;
 }
-.hero {
-    padding: 100px 0;
-    color: #fff;
-    background-color: #24163c;
-    background-image: url('../img/hill.jpg');
-    background-size: cover;
-    background-position: center;
+.hero-bg-1 {
+    background-image: url('../img/hasshtagcms-product-1.jpg') !important;
+}
+.hero-bg-2 {
+    background-image: url('../img/hasshtagcms-product-2.jpg') !important;
+}
 
+.hero {
+    .hero-inner {
+        padding: 100px 0;
+        background-size: cover;
+        background-position: center;
+    }
+    color: #fff;
+    background-image: linear-gradient(#5b595c, #ffffff);
     .hero-text {
         text-align: center;
         background-color: rgba(0, 0, 0, 0.5);
@@ -235,4 +242,101 @@ nav li {
     color: #155724;
   }
 
+}
+.v-space {
+    margin-top: 50px;
+}
+ul.hashlist {
+    list-style-type: none;
+    margin:10px;
+    padding: 0;
+    li {
+        a, a:hover {
+            text-decoration: none;
+        }
+        a:before {
+            content: "# ";
+            color: #ff2d20;
+        }
+    }
+}
+.hash {
+    &:before {
+        content: "# ";
+        color: #ff2d20;
+    }
+}
+blockquote, q {
+    &:before {
+        content: "“";
+        font-size:200%
+    }
+    &:after {
+        content: "“";
+        font-size:200%
+    }
+}
+pre {
+    background: #fbfbfd;
+    box-shadow: 0 1px 1px rgba(0,0,0,.075);
+    color:#ca473f;
+    padding: 10px;
+    border-left:2px solid #055472;
+}
+pre.command {
+    &:before {
+        content: "$";
+        color:#055472;
+        padding-right: 10px;
+    }
+}
+.token.atrule, .token.attr-value, .token.keyword {
+    color: #055472;
+}
+.token.class-name, .token.function {
+    color: #ca473f;
+}
+
+.left-column {
+    padding-top: 50px;
+}
+.left-menu {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+
+    li {
+        display: block;
+        a {
+            cursor: pointer;
+            padding: 5px 10px;
+            text-decoration: none;
+            display: block;
+            &:hover {
+                background-color: #f3f3f3;
+            }
+        }
+        &.active {
+
+            a {
+                background-color: #666;
+                color:#fff;
+            }
+        }
+
+    }
+}
+
+.dfd-img {
+    text-align:center;
+    padding: 50px 10px;
+    margin: 20px 0;
+    img {
+        border-radius: 10px;
+    }
+}
+.info-icon {
+    font-size: 150%;
+    color: #e0a800;
+    padding-right: 5px;
 }

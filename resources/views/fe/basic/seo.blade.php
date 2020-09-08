@@ -13,20 +13,21 @@
 
                 <h4 class="faq-title">If there is any bug?</h4>
                 <p class="faq-text">
-                    Sure, Dont' panic. It's natural. Please post on github forum. We will fix as soon as possible.
+                    Sure, Dont' panic. It's natural. Please post on <a href="https://github.com/marghoobsuleman/hashtagcms/issues">github forum</a>. We will fix as soon as possible.
                 </p>
-            </div>
-
-            <div class="col-md-6">
                 <h4 class="faq-title">Professional Help?</h4>
                 <p class="faq-text">
                     Of course, we provide professional consultant. <a href="{{htcms_get_path('contact')}}">Ask for price</a>.
                 </p>
+            </div>
 
+            <div class="col-md-6">
                 <h4 class="faq-title">I want to support this #CMS.</h4>
                 <p class="faq-text">
-                    Thank you! You are so kind. You can pay me at <span class="text-success">marghoobsuleman@okhdfcbank</span>
-                    <br/>Please mention in comment "Support for HashtagCMS"
+                    Thank you! You are so kind. You can <a href="https://www.patreon.com/hashtagcms">support here on Patreon</a> or by scanning below QR code.
+                    Please mention in comment "Support for HashtagCMS".
+                    <br />
+                    <img height="270" src="{{htcms_get_image_resource('qr-code.jpg')}}">
                 </p>
             </div>
 
