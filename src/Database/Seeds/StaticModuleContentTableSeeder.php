@@ -22,7 +22,7 @@ class StaticModuleContentTableSeeder extends Seeder
         );
 
         $static_module_content_langs = array(
-            array('static_module_content_id' => '3','lang_id' => '1','title' => 'test','content' => ' <section class="sample-module"><div class="container"><div><h2 class="alert-success alert">Custom Module</h2> <p>
+            array('static_module_content_id' => '3','lang_id' => '1','title' => 'test','content' => ' <section class="sample-module"><div class="container"><div><h2 class="alert-success alert">Static Module</h2> <p>
 This is static module
             </p></div></div>
 </section>','created_at' => $date,'updated_at' => $date,'deleted_at' => NULL)
