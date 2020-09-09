@@ -303,6 +303,9 @@ class DataLoader
         //fav icon
         if(isset($site['favicon']) && !empty(trim($site['favicon']))) {
             array_push($header["link"],array("rel"=>"shortcut icon", "href"=>htcms_get_media($site['favicon'])));
+        } else {
+            //add default icon
+            array_push($header["link"],array("rel"=>"shortcut icon", "href"=>htcms_get_image_resource("favicon.png")));
         }
 
 
