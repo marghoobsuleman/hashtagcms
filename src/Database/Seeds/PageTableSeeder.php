@@ -112,8 +112,7 @@ class PageTableSeeder extends Seeder
 <p>You are free to refuse our request for your personal information, with the understanding that we may be unable to provide you with some of your desired services.</p>
 <p>Your continued use of our website will be regarded as acceptance of our practices around privacy and personal information. If you have any questions about how we handle user data and personal information, feel free to contact us.</p>
 <p>This policy is effective as of 2 July 2020.</p>','link_relation' => NULL,'target' => NULL,'active_key' => 'privacy-policy','meta_title' => NULL,'meta_keywords' => NULL,'meta_description' => NULL,'meta_robots' => NULL,'meta_canonical' => NULL,'created_at' => '2020-07-02 10:37:07','updated_at' => '2020-07-05 09:25:25','deleted_at' => NULL),
-            array('page_id' => '3','lang_id' => '1','name' => 'Test Blog','title' => 'Test Blog','description' => 'This is a test blog.','page_content' => 'How to override a native method of JavaScript?
-Content goes here','link_relation' => NULL,'target' => NULL,'active_key' => 'test-blog','meta_title' => NULL,'meta_keywords' => NULL,'meta_description' => NULL,'meta_robots' => NULL,'meta_canonical' => NULL,'created_at' => '2020-07-11 10:47:26','updated_at' => '2020-07-11 10:47:26','deleted_at' => NULL)
+            array('page_id' => '3','lang_id' => '1','name' => 'Test Blog','title' => 'Test Blog','description' => 'This is a test blog.','page_content' => 'This is test blog content.','link_relation' => NULL,'target' => NULL,'active_key' => 'test-blog','meta_title' => NULL,'meta_keywords' => NULL,'meta_description' => NULL,'meta_robots' => NULL,'meta_canonical' => NULL,'created_at' => '2020-07-11 10:47:26','updated_at' => '2020-07-11 10:47:26','deleted_at' => NULL)
         );
 
 
