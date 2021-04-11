@@ -129,6 +129,11 @@ class HashtagCmsServiceProvider extends ServiceProvider
         ], $this->groupName.'.assets');
 
         $this->publishes([
+            __DIR__.'/../resources/assets/be' => resource_path('assets/hashtagcms/be')
+        ], $this->groupName.'.assets.admin');
+
+
+        $this->publishes([
             __DIR__.'/../resources/lang' => resource_path('lang/vendor/hashtagcms'),
         ], $this->groupName.'.lang');
 

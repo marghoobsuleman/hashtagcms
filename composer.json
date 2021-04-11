@@ -12,6 +12,7 @@
     "homepage": "https://github.com/marghoobsuleman/hashtagcms",
     "keywords": ["Laravel", "HashtagCms", "Marghoob Suleman", "Headless CMS", "CMS", "Mobile Api Supported CMS", "Hashtag Cms"],
     "require": {
+        "laravel/ui": "^3.0",
         "laravel/passport": "^10.0",
         "laravel/socialite": "^5.0",
         "usmanhalalit/laracsv": "^2.1"

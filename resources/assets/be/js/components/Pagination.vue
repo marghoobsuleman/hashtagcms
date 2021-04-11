@@ -1,11 +1,15 @@
 <template>
   <div class="row admin-pagination">
-    <div class="pageRow">
-      <slot></slot>
-      <span class="counters" v-if="totalCount > 0">
-        {{dataFirstItem}} - {{lastItem}} of {{totalCount}}
-      </span>
-        <span class="pull-right" style="margin-right:16px">
+      <nav aria-label="navigation">
+          <ul class="pagination" v-if="showPagination">
+              <li v-for="page in allPages" :class="getCss(page)"><a class="page-link" :href="getLink(page)" v-html="page.label"></a></li>
+          </ul>
+          <span class="counters" v-if="totalCount > 0">
+                 {{dataFirstItem}} - {{lastItem}} of {{totalCount}}
+          </span>
+      </nav>
+      <div class="pageRow">
+        <span class="pull-right" v-if="totalCount > 0" style="margin-right:16px">
             <download-button :data-controller-name="controllerName"></download-button>
         </span>
     </div>
@@ -29,15 +33,9 @@
 
       },
       props:[
-          'dataCount',
-          'dataCurrentPage',
+          'dataPaginator',
           'dataFirstItem',
-          'dataHasMorePages',
           'dataLastItem',
-          'dataLastPage',
-          'dataNextPageUrl',
-          'dataPerPage',
-          'dataPreviousPageUrl',
           'dataTotal',
           'dataControllerName'
       ],
@@ -45,13 +43,34 @@
         return {
             totalCount: parseInt(this.dataTotal),
             lastItem:parseInt(this.dataLastItem),
-            controllerName:this.dataControllerName
+            controllerName:this.dataControllerName,
+            paginator:JSON.parse(this.dataPaginator)
+        }
+      },
+      computed: {
+        hasPreviousPage() {
+            return this.paginator.prev_page_url != null;
+        },
+        allPages() {
+            return this.paginator.links;
+        },
+        showPagination() {
+            return this.allPages.length > 3; //["Previous", "1", "Next"]
         }
       },
       methods: {
           decreaseCounter() {
               this.totalCount = this.totalCount - 1;
               this.lastItem = this.lastItem - 1;
+          },
+          getLink(page) {
+              return page.url == null ? "javascript:void(0)" : page.url;
+          },
+          getCss(page) {
+              if(page.url == null) {
+                  return "page-item disabled";
+              }
+              return page.active === true ? "page-item active" : "page-item";
           },
           updatePageParams() {
             var params = window.location.search.substring(1);

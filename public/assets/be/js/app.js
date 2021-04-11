@@ -5760,6 +5760,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -5773,18 +5777,40 @@ __webpack_require__.r(__webpack_exports__);
       $this.decreaseCounter();
     });
   },
-  props: ['dataCount', 'dataCurrentPage', 'dataFirstItem', 'dataHasMorePages', 'dataLastItem', 'dataLastPage', 'dataNextPageUrl', 'dataPerPage', 'dataPreviousPageUrl', 'dataTotal', 'dataControllerName'],
+  props: ['dataPaginator', 'dataFirstItem', 'dataLastItem', 'dataTotal', 'dataControllerName'],
   data: function data() {
     return {
       totalCount: parseInt(this.dataTotal),
       lastItem: parseInt(this.dataLastItem),
-      controllerName: this.dataControllerName
+      controllerName: this.dataControllerName,
+      paginator: JSON.parse(this.dataPaginator)
     };
+  },
+  computed: {
+    hasPreviousPage: function hasPreviousPage() {
+      return this.paginator.prev_page_url != null;
+    },
+    allPages: function allPages() {
+      return this.paginator.links;
+    },
+    showPagination: function showPagination() {
+      return this.allPages.length > 3; //["Previous", "1", "Next"]
+    }
   },
   methods: {
     decreaseCounter: function decreaseCounter() {
       this.totalCount = this.totalCount - 1;
       this.lastItem = this.lastItem - 1;
+    },
+    getLink: function getLink(page) {
+      return page.url == null ? "javascript:void(0)" : page.url;
+    },
+    getCss: function getCss(page) {
+      if (page.url == null) {
+        return "page-item disabled";
+      }
+
+      return page.active === true ? "page-item active" : "page-item";
     },
     updatePageParams: function updatePageParams() {
       var params = window.location.search.substring(1); // console.log("params "+params);
@@ -44629,42 +44655,56 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "row admin-pagination" }, [
-    _c(
-      "div",
-      { staticClass: "pageRow" },
-      [
-        _vm._t("default"),
-        _vm._v(" "),
-        _vm.totalCount > 0
-          ? _c("span", { staticClass: "counters" }, [
-              _vm._v(
-                "\n      " +
-                  _vm._s(_vm.dataFirstItem) +
-                  " - " +
-                  _vm._s(_vm.lastItem) +
-                  " of " +
-                  _vm._s(_vm.totalCount) +
-                  "\n    "
-              )
-            ])
-          : _vm._e(),
-        _vm._v(" "),
-        _c(
-          "span",
-          {
-            staticClass: "pull-right",
-            staticStyle: { "margin-right": "16px" }
-          },
-          [
-            _c("download-button", {
-              attrs: { "data-controller-name": _vm.controllerName }
-            })
-          ],
-          1
-        )
-      ],
-      2
-    )
+    _c("nav", { attrs: { "aria-label": "navigation" } }, [
+      _vm.showPagination
+        ? _c(
+            "ul",
+            { staticClass: "pagination" },
+            _vm._l(_vm.allPages, function(page) {
+              return _c("li", { class: _vm.getCss(page) }, [
+                _c("a", {
+                  staticClass: "page-link",
+                  attrs: { href: _vm.getLink(page) },
+                  domProps: { innerHTML: _vm._s(page.label) }
+                })
+              ])
+            }),
+            0
+          )
+        : _vm._e(),
+      _vm._v(" "),
+      _vm.totalCount > 0
+        ? _c("span", { staticClass: "counters" }, [
+            _vm._v(
+              "\n               " +
+                _vm._s(_vm.dataFirstItem) +
+                " - " +
+                _vm._s(_vm.lastItem) +
+                " of " +
+                _vm._s(_vm.totalCount) +
+                "\n        "
+            )
+          ])
+        : _vm._e()
+    ]),
+    _vm._v(" "),
+    _c("div", { staticClass: "pageRow" }, [
+      _vm.totalCount > 0
+        ? _c(
+            "span",
+            {
+              staticClass: "pull-right",
+              staticStyle: { "margin-right": "16px" }
+            },
+            [
+              _c("download-button", {
+                attrs: { "data-controller-name": _vm.controllerName }
+              })
+            ],
+            1
+          )
+        : _vm._e()
+    ])
   ])
 }
 var staticRenderFns = []

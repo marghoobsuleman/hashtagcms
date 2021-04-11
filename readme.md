@@ -13,6 +13,11 @@ The Most powerful, fast, user-friendly and secured platform. Made with PHP Larav
 
 Via Composer
 
+
+``` bash
+$ composer require laravel/ui
+```
+
 ``` bash
 $ composer require marghoobsuleman/hashtagcms
 ```
@@ -43,7 +48,7 @@ $ php artisan cms:install
 use Illuminate\Foundation\Auth\User as Authenticatable
 ```
 
-- Add below line in the same file (`app/User.php`)
+- Add below line in the same file (`app/Models/User.php` or `app/User.php`)
 ``` bash
 use MarghoobSuleman\HashtagCms\User as Authenticatable;
 ```

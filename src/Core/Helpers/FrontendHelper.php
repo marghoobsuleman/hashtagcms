@@ -221,7 +221,7 @@ if (! function_exists('htcms_get_site_info')) {
      *
      * Get site info from the request
      * @param string|null $key
-     * @return int|array
+     * @return string|array
      */
     function htcms_get_site_info(string $key=null) {
 
@@ -251,7 +251,7 @@ if (! function_exists('htcms_get_lang_info')) {
      *
      * Get lang info from the request
      * @param string|null $key
-     * @return int
+     * @return string|array
      */
     function htcms_get_lang_info(string $key=null) {
 
@@ -281,7 +281,7 @@ if (! function_exists('htcms_get_tenant_info')) {
      *
      * Get tenant info from the request
      * @param string|null $key
-     * @return int
+     * @return string|array
      */
     function htcms_get_tenant_info(string $key=null) {
 
@@ -299,7 +299,7 @@ if (! function_exists('htcms_get_category_info')) {
      *
      * Get category info from the request
      * @param string $key
-     * @return int
+     * @return string|array
      */
     function htcms_get_category_info(string $key=null) {
         $common = app()->Common;
@@ -314,7 +314,7 @@ if (! function_exists('htcms_get_theme_info')) {
      *
      * Get category info from the request
      * @param string $key
-     * @return int
+     * @return string|array
      */
     function htcms_get_theme_info(string $key=null) {
         $common = app()->Common;

@@ -13,13 +13,13 @@ use MarghoobSuleman\HashtagCms\Core\Helpers\Message;
 
 class AuthorController extends BaseAdminController
 {
-    protected $dataFields = ['id','name','last_name','email','updated_at'];
+    protected $dataFields = ['id','name','user_type', 'email','updated_at'];
 
     protected $dataSource = User::class;
 
     protected $dataWith = '';
 
-    protected $dataWhere = array(array("field"=>"user_type", "operator"=>"=", "value"=>"Staff"));
+    //protected $dataWhere = array(array("field"=>"user_type", "operator"=>"=", "value"=>"Staff"));
 
     protected $actionFields = array("edit", "delete"); //This is last column of the row
 
