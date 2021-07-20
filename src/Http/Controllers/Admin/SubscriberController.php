@@ -9,7 +9,7 @@ use MarghoobSuleman\HashtagCms\Models\Subscriber;
 use MarghoobSuleman\HashtagCms\Core\Helpers\Message;
 
 
-class Subscribercontroller extends BaseAdminController
+class SubscriberController extends BaseAdminController
 {
     protected $dataFields = ['id','email','name','subscribed_for','created_at'];
 
