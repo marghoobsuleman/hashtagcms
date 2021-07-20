@@ -245,7 +245,7 @@ class CategoryController extends BaseAdminController
         $microsite_id = $request["microsite_id"] ?? 0;
 
         $sites = Site::with(['microsite:site_id,id,name',
-                            'tenant:site_id,id,name',
+                            'tenant:id,name',
                             'theme:site_id,id,name',
                             'category:site_id,category_id,name'])->find($site_id)->toArray();
 
