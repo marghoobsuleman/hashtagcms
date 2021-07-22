@@ -189,7 +189,7 @@ if(count($tenant_wise) == 0) {
                         </div>
 
                         <div class="col-sm-10">
-                            {!! FormHelper::textarea('lang_excerpt', $lang["excerpt"] , array('class'=>'form-control')) !!}
+                            {!! FormHelper::textarea('lang_excerpt', htmlentities($lang["excerpt"]), array('class'=>'form-control')) !!}
                         </div>
 
                     </div>
@@ -200,7 +200,7 @@ if(count($tenant_wise) == 0) {
                             {!!  FormHelper::label('lang_content', 'Content') !!}
                         </div>
                         <div class="col-sm-10">
-                            {!! FormHelper::textarea('lang_content', $lang["content"] , array('class'=>'form-control', 'rows'=>20)) !!}
+                            {!! FormHelper::textarea('lang_content', htmlentities($lang["content"]), array('class'=>'form-control', 'rows'=>20)) !!}
                         </div>
 
                     </div>

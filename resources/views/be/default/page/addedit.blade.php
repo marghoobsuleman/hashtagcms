@@ -217,7 +217,7 @@
                         </div>
 
                         <div class="col-sm-10">
-                            <textarea class="form-control" required rows="5" cols="80" name="lang_description" id="lang_description">{{ $lang["description"] }}</textarea>
+                            {!! FormHelper::textarea('lang_description', htmlentities($lang["description"]), array('class'=>'form-control', 'rows'=>10, 'required'=>'required')) !!}
                         </div>
                     </div>
 
@@ -228,7 +228,7 @@
                         </div>
 
                         <div class="col-sm-10">
-                            <textarea class="form-control" required rows="10" cols="80" name="lang_page_content" id="lang_page_content">{{ $lang["page_content"] }}</textarea>
+                            {!! FormHelper::textarea('lang_page_content', htmlentities($lang["page_content"]), array('class'=>'form-control', 'rows'=>20, 'required'=>'required')) !!}
                         </div>
 
                     </div>
