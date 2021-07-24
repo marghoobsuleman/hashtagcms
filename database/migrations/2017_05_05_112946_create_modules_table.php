@@ -45,6 +45,7 @@ class CreateModulesTable extends Migration
             $table->tinyInteger('is_seo_module')->nullable()->default(0)->comment("Use this module for SEO. Needs to meta fields");
 
             $table->tinyInteger('live_edit')->nullable()->default(0);
+            $table->tinyInteger('shared')->nullable()->default(0);
 
             $table->timestamps();
             $table->softDeletes();

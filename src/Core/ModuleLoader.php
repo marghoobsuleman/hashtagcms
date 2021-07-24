@@ -44,7 +44,7 @@ class ModuleLoader
         $withHook = ($hook_id != null) ? " AND ms.hook_id=$hook_id" : "";
 
         return $this->common->dbSelect("select ms.module_id, ms.hook_id, ms.position,
-        m.name, m.alias, m.is_seo_module, m.linked_module, m.view_name, m.data_type, m.query_statement,
+        m.name, m.alias, m.is_seo_module, m.linked_module, m.view_name, m.data_type, m.query_statement, m.shared,
         m.query_as, m.data_handler, m.data_key_map, m.is_mandatory,
         m.method_type, m.service_params, m.individual_cache, m.cache_group
         from module_site ms
@@ -101,6 +101,7 @@ where cs.category_id=$category_id AND cs.tenant_id=$tenant_id and cs.site_id=$si
 
         //Get all modules from this category
         $categoryModules = $this->getCategoryModules($category_id, $site_id, $tenant_id, $microsite_id);
+        //dd($categoryModules);
 
         info("total modules: ".sizeof($categoryModules));
 
@@ -278,12 +279,12 @@ where cs.category_id=$category_id AND cs.tenant_id=$tenant_id and cs.site_id=$si
      * @return string|array
      */
     public function getModuleData($module_obj) {
-
         $dataType = $module_obj->data_type;
         $dataHandler = ($module_obj->data_handler == "" || $module_obj->data_handler==null) ? "" : $module_obj->data_handler;
         $methodType = $module_obj->method_type;
         $is_seo_module = $module_obj->is_seo_module;
         $is_mandatory = $module_obj->is_mandatory;
+        $is_shared = $module_obj->shared;
         $data = null;
         $data2 = null;
 
@@ -372,7 +373,7 @@ where cs.category_id=$category_id AND cs.tenant_id=$tenant_id and cs.site_id=$si
         }
 
         // Is there any module is required in a category?
-        // let check it
+        // lets check it
         if(($is_mandatory == 1 && sizeof($data)==0) && self::getMandatoryCheck()) {
             //dd("Mandatory content is missing");
             $this->contentFound = false;
@@ -381,6 +382,10 @@ where cs.category_id=$category_id AND cs.tenant_id=$tenant_id and cs.site_id=$si
         //increase module count
         $this->totalModules++;
 
+        //Check if this is sharable
+        if($is_shared == 1) {
+            $this->common->setSharedModuleData($module_obj->alias, $data);
+        }
         return $data;
     }
 

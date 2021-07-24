@@ -8,7 +8,10 @@
                 $categoryId = $data->category_id;
                 $contentId = $data->id;
 
+                $storyObj = htcms_get_shared_data('MODULE_STORY');
+                $title = isset($storyObj) ? $storyObj[0]->title : htcms_get_category_info('name');
             @endphp
+            <h1>{{$title}}</h1>
             {!! $data->page_content !!}
         @else
             @php

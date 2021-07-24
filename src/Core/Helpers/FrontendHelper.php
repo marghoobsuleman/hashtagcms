@@ -437,3 +437,17 @@ if (! function_exists('htcms_get_all_link_tags')) {
         return join("", $mh);
     }
 }
+
+if (! function_exists('htcms_get_shared_data')) {
+
+    /**
+     *
+     * Get shared module data
+     * @param string $module_alias
+     * @return string
+     */
+    function htcms_get_shared_data($module_alias='') {
+        $common = app()->Common;
+        return $common->getSharedModuleData($module_alias);
+    }
+}

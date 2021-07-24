@@ -91,6 +91,7 @@ trait FeEssential {
     public function index(Request $request) {
 
         $infoKeeper = $request->infoKeeper;
+
         $mergeData = [];
 
         $category = $infoKeeper["categoryName"];
@@ -99,7 +100,6 @@ trait FeEssential {
         $lang = $infoKeeper["langInfo"]["iso_code"];
         $microsite = 0;
         $parsedData = $this->getCategoryContent($category, $context, $tenant, $lang, $microsite, $mergeData);
-
 
         if($parsedData['status'] >= 400) {
             $category = $parsedData["data"]["category"]["link_rewrite"];

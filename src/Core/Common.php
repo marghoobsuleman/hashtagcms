@@ -24,6 +24,7 @@ class Common
 
     private $infoData = array();
     private $htmlData = array(); //This will be final output
+    private $sharedModuleData = array();
 
 
     function __construct()
@@ -511,5 +512,23 @@ class Common
      */
     public function getFinalData($key=null) {
         return isset($this->htmlData[$key]) ? $this->htmlData[$key] : null;
+    }
+
+    /**
+     * Set shared module data
+     * @param $alias
+     * @param $data
+     */
+    public function setSharedModuleData($alias, $data) {
+        $this->sharedModuleData[$alias] = $data;
+    }
+
+    /**
+     * Get shared module data
+     * @param $alias
+     * @return mixed
+     */
+    public function getSharedModuleData($alias) {
+        return (isset($this->sharedModuleData[$alias]) && !empty($this->sharedModuleData[$alias])) ? $this->sharedModuleData[$alias] : null;
     }
 }
