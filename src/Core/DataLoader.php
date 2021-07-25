@@ -406,7 +406,7 @@ class DataLoader
         cs.site_id, cs.tenant_id, cs.theme_id, cs.icon_css, cs.header_content, cs.footer_content, cs.cache_category,
         cl.name, cl.title, cl.excerpt, cl.content, cl.active_key,
         cl.third_party_mapping_key, cl.b2b_mapping, cl.is_external, cl.link_relation, cl.target,
-        cl.meta_title, cl.meta_keywords, cl.meta_description, cl.meta_robots, cl.meta_canonical
+        cl.meta_title, cl.meta_keywords, cl.meta_description, cl.meta_robots, cl.meta_canonical, c.created_at, c.updated_at
         from categories c
         left join category_site cs on(cs.category_id = c.id)
         left join category_langs cl on(c.id = cl.category_id)
