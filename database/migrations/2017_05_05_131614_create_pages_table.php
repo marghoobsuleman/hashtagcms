@@ -43,6 +43,7 @@ class CreatePagesTable extends Migration
             $table->tinyInteger('enable_comments')->nullable()->default(0);
             $table->tinyInteger('required_login')->nullable()->default(0);
             $table->tinyInteger('publish_status')->nullable()->default(0);
+            $table->bigInteger('read_count')->nullable()->default(0);
 
             $table->timestamps();
             $table->softDeletes();

@@ -42,6 +42,7 @@ class CreateCategoriesTable extends Migration
             $table->bigInteger('update_by', false, true)->nullable();
 
             $table->tinyInteger('publish_status')->nullable()->default(0);
+            $table->bigInteger('read_count')->nullable()->default(0);
 
             $table->timestamps();
             $table->softDeletes();

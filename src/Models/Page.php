@@ -54,7 +54,7 @@ class Page extends AdminBaseModel
 
 
     public static function getLatestBlog($siteId, $langId) {
-        return DB::select("select c.link_rewrite as category_link_rewrite, u.name as user_name, 
+        return DB::select("select c.link_rewrite as category_link_rewrite, u.name as user_name, p.read_count,
 p.id, p.site_id, p.microsite_id, p.tenant_id, p.category_id, p.alias, p.exclude_in_listing, p.content_type, p.position, p.link_rewrite, p.menu_placement,
 p.enable_comments, p.created_at, p.updated_at, pl.name, pl.title, pl.description, pl.page_content, pl.link_relation, pl.target, pl.active_key, cmn.*
 from pages p 

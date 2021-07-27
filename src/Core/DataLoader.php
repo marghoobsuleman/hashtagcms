@@ -8,6 +8,12 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
+/**
+ * Class DataLoader
+ * @package MarghoobSuleman\HashtagCms\Core
+ * @version 1.2
+ */
+
 class DataLoader
 {
 
@@ -102,11 +108,11 @@ class DataLoader
 
         //Get Category
         $category = $this->getCategoryByLinkrewrite($categoryName, $site_id, $tenant_id, $lang_id, $realLinkName);
-        $foundCategory = true;
+
+        $totalCategoryCount = ($category == null || sizeof($category) == 0) ? 0 : sizeof($category); //since null check is required
 
         //if category not found
-        if($category == null || sizeof($category) == 0) {
-            $foundCategory = false;
+        if($totalCategoryCount == 0) {
             info(array("error"=>404, "message"=>"DataLoader:: Category [$categoryName] not found"));
             return $this->sendError("DataLoader:: Category [$categoryName] not found");
         } else {
@@ -116,15 +122,16 @@ class DataLoader
         //if category has more than one with same link, such as content/{link_rewrite} or content/about-us
         //find if one has an absolute url else use dynamic one
         $foundInFullUrl = false;
-        if(sizeof($category)>1) {
+        $category = $this->getOneCategory($category, $realLinkName);
 
-            $category = $this->getOneCategory($category, $realLinkName);
-            $foundInFullUrl = true;
+        if($totalCategoryCount > 1 || isset($category["link_rewrite"])) {
+
+            $foundInFullUrl = true; //it will not check controller and method strictly
 
         } else {
-            $category = $category[0];
+            //Check if this is a plain object array or array of an array
+            $category = isset($category["link_rewrite"]) ? $category : $category[0];
         }
-
 
         //Safe side when default site category is changed
         $linkRewrites[0] = $category["link_rewrite"];
@@ -195,7 +202,7 @@ class DataLoader
                         $foundController = $foundMethod = true;
                     }
                 }
-                info("DataLoader:: foundController: $foundController, foundMethod: $foundMethod, foundInFullUrl: $foundInFullUrl, foundCategory: $foundCategory");
+                info("DataLoader:: foundController: $foundController, foundMethod: $foundMethod, foundInFullUrl: $foundInFullUrl");
                 $exist = ((($foundController && $foundMethod) || $foundInFullUrl));
 
                 if(!$exist) {
@@ -332,10 +339,13 @@ class DataLoader
         $data["html"] = $html;
         $data["isLoginRequired"] = $isLoginRequired;
 
-        if($contentFound) {
-            $data["status"] = 200;
-        } else {
-            return $this->sendError("DataLoader:: Content not found!", 404, $data);
+
+        if($dynamicUrlCheck) {
+            if($contentFound) {
+                $data["status"] = 200;
+            } else {
+                return $this->sendError("DataLoader:: Content not found!", 404, $data);
+            }
         }
 
         return $data;
@@ -402,7 +412,7 @@ class DataLoader
     private function getCategoryByLinkrewrite(string $category, int $site_id, int $tenant_id, int $lang_id=1, $fullUrl=null) {
 
         $query = "select c.id, c.required_login, c.parent_id, c.site_id, c.is_site_default, c.is_root_category, c.is_new, c.has_wap,
-        c.wap_url, c.link_rewrite, c.link_navigation, c.link_rewrite_pattern, c.has_some_special_module,
+        c.wap_url, c.link_rewrite, c.link_navigation, c.link_rewrite_pattern, c.has_some_special_module,c.read_count,
         cs.site_id, cs.tenant_id, cs.theme_id, cs.icon_css, cs.header_content, cs.footer_content, cs.cache_category,
         cl.name, cl.title, cl.excerpt, cl.content, cl.active_key,
         cl.third_party_mapping_key, cl.b2b_mapping, cl.is_external, cl.link_relation, cl.target,

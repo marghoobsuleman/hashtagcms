@@ -22,26 +22,13 @@
     Page rendered in  - {{ (microtime(true) - LARAVEL_START) }}
 <a title="#CMS" href="http://www.hashtagcms.org/">Powered by HashtagCms.org</a>
 </div>
-@if(env('FIREBASE_API_KEY') != '')
-<script src="https://www.gstatic.com/firebasejs/7.14.4/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/7.14.4/firebase-analytics.js"></script>
-<script>
-    // Your web app's Firebase configuration
-    var firebaseConfig = {
-        apiKey: "<?php echo env('FIREBASE_API_KEY') ?>",
-        authDomain: "<?php echo env('FIREBASE_AUTH_DOMAIN') ?>",
-        databaseURL: "<?php echo env('FIREBASE_DATABASE_URL') ?>",
-        projectId: "<?php echo env('FIREBASE_PROJECT_ID') ?>",
-        storageBucket:"<?php echo env('FIREBASE_STORAGE_BUCKET') ?>",
-        messagingSenderId: "<?php echo env('FIREBASE_MESSAGING_SENDER_ID') ?>",
-        appId: "<?php echo env('FIREBASE_APP_ID') ?>",
-        measurementId: "<?php echo env('FIREBASE_MEASUREMENT_ID') ?>"
-    };
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-    firebase.analytics();
-</script>
+@if(env('GOOGLE_TAG_MANAGER_KEY') != '')
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+                new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+            j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+            'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer',"<?php echo env('GOOGLE_TAG_MANAGER_KEY'); ?>");
+    </script>
 @endif
-
 </body>
 </html>
