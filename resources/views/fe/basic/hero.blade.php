@@ -8,7 +8,7 @@
             <div>
                 <div class="hero-text">
                     <h1><span>Finally</span>,
-                        A CMS <span>Desinged</span> For
+                        A CMS <span>Designed</span> For
                         <br><span class="bigger">CORPORATES</span>
                     </h1>
                 </div>

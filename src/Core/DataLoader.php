@@ -11,7 +11,7 @@ use Illuminate\Support\Str;
 /**
  * Class DataLoader
  * @package MarghoobSuleman\HashtagCms\Core
- * @version 1.2
+ * @version 1.3
  */
 
 class DataLoader
@@ -295,6 +295,10 @@ class DataLoader
             $category["header_content"] = $category["header_content"].$this->common->parseStringForPath($seoContent["headerContent"] ?? "");
             $category["footer_content"] = $category["footer_content"].$this->common->parseStringForPath($seoContent["footerContent"] ?? "");
             $category["page_active_key"] =  ($seoContent["activeKey"] == null) ? "" : $seoContent["activeKey"];
+
+            $category["page_link_rewrite"] =  ($seoContent["link_rewrite"] == null) ? "" : $seoContent["link_rewrite"];
+            $category["page_id"] =  ($seoContent["page_id"] == null) ? "" : $seoContent["page_id"];
+            $category["page_name"] =  ($seoContent["page_name"] == null) ? "" : $seoContent["page_name"];
         }
 
         $header["title"] = (empty($categoryTitle)) ? $site["title"] : $categoryTitle;

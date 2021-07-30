@@ -10,6 +10,7 @@ Vue.config.devtools = true;
 window.axios = require('axios');
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
+import Analytics from "../../../js/helpers/Analytics";
 
 
 import Subscribe from "./components/Subscribe";
@@ -33,3 +34,6 @@ const appVm = new Vue({
 new Vue({
     el: '#__hashtagcms__'
 });
+
+window.HashtagCms = {};
+window.HashtagCms.Analytics = new Analytics();

@@ -451,3 +451,27 @@ if (! function_exists('htcms_get_shared_data')) {
         return $common->getSharedModuleData($module_alias);
     }
 }
+
+if (! function_exists('htcms_get_site_props')) {
+
+    /**
+     *
+     * Get site props for frontend use
+     * @return json|array
+     */
+    function htcms_get_site_props($asJson=false) {
+        $categoryInfo = htcms_get_category_info();
+        $siteProps = array(
+            "siteId"=>$categoryInfo['site_id'],
+            "categoryId"=>$categoryInfo['id'],
+            "categoryName"=>$categoryInfo['name'],
+            "categoryLinkRewrite"=>$categoryInfo['link_rewrite'],
+            "tenantId"=>htcms_get_tenant_info('id'),
+            "tenantName"=>htcms_get_tenant_info('name'),
+            "pageId"=>isset($categoryInfo['page_id']) ? $categoryInfo['page_id'] : -1,
+            "pageLinkRewrite"=>isset($categoryInfo['page_link_rewrite']) ? $categoryInfo['page_link_rewrite'] : "",
+            "pageName"=>isset($categoryInfo['page_name']) ? $categoryInfo['page_name'] : ""
+        );
+        return ($asJson == true) ? json_encode($siteProps) : $siteProps;
+    }
+}

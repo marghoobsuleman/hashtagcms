@@ -9,6 +9,11 @@ use MarghoobSuleman\HashtagCms\Models\Hook;
 use MarghoobSuleman\HashtagCms\Models\Module;
 use Illuminate\Support\Facades\Http;
 
+/**
+ * Class ModuleLoader
+ * @package MarghoobSuleman\HashtagCms\Core
+ * @version 1.3
+ */
 class ModuleLoader
 {
 
@@ -341,7 +346,8 @@ where cs.category_id=$category_id AND cs.tenant_id=$tenant_id and cs.site_id=$si
                 info("=== Set this data for seo module === ");
                 //info(json_encode($forSeo));
                 $this->foundSeoModule = true;
-                $active_key = (isset($forSeo["active_key"]) && !empty($forSeo["active_key"])) ? $forSeo["active_key"] : null;;
+                $active_key = (isset($forSeo["active_key"]) && !empty($forSeo["active_key"])) ? $forSeo["active_key"] : null;
+                $page_link_rewrite = (isset($forSeo["link_rewrite"]) && !empty($forSeo["link_rewrite"])) ? $forSeo["link_rewrite"] : null;
                 $meta_title = (isset($forSeo["meta_title"]) && !empty($forSeo["meta_title"])) ? $forSeo["meta_title"] : null;
                 $meta_keywords = (isset($forSeo["meta_keywords"]) && !empty($forSeo["meta_keywords"])) ? $forSeo["meta_keywords"] : null;
                 $meta_description = (isset($forSeo["meta_description"]) && !empty($forSeo["meta_description"])) ? $forSeo["meta_description"] : null;
@@ -355,7 +361,9 @@ where cs.category_id=$category_id AND cs.tenant_id=$tenant_id and cs.site_id=$si
                     "metaRobots"=>$meta_robots,
                     "metaCanonical"=>$meta_canonical,
                     "activeKey"=>$active_key,
-
+                    "link_rewrite"=>$page_link_rewrite,
+                    "page_id"=>$forSeo["id"],
+                    "page_name"=>$forSeo["name"]
                 );
 
                 if(isset($forSeo["header_content"])) {

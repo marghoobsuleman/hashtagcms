@@ -10,6 +10,9 @@
     {!! htcms_get_all_link_tags() !!}
     {!! htcms_get_header_content() !!}
     <title>{!! htcms_get_header_title() !!}</title>
+    <script>
+        let _siteProps_ = <?php echo htcms_get_site_props(true) ?>
+    </script>
 </head>
 <body>
 {!! htcms_get_body_content() !!}
@@ -30,5 +33,11 @@
         })(window,document,'script','dataLayer',"<?php echo env('GOOGLE_TAG_MANAGER_KEY'); ?>");
     </script>
 @endif
+<script>
+    (function () {
+        HashtagCms.Analytics.init(_siteProps_);
+        //HashtagCms.Analytics.trackPageView(_siteProps_.categoryName + ""+_siteProps_.pageName)
+    })()
+</script>
 </body>
 </html>
