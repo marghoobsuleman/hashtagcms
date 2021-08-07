@@ -1,8 +1,10 @@
 {
     "/public/assets/be/js/app.js": "/public/assets/be/js/app.js",
     "/public/assets/be/css/app.css": "/public/assets/be/css/app.css",
+    "/public/assets/fe/basic/css/app.css": "/public/assets/fe/basic/css/app.css",
     "/public/assets/be/js/error-handler.js": "/public/assets/be/js/error-handler.js",
     "/public/assets/be/js/ie-polyfills.js": "/public/assets/be/js/ie-polyfills.js",
     "/public/assets/be/js/map.js": "/public/assets/be/js/map.js",
+    "/public/assets/fe/basic/js/app.js": "/public/assets/fe/basic/js/app.js",
     "/public/assets/installer/js/installer.js": "/public/assets/installer/js/installer.js"
 }

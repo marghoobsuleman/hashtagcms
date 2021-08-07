@@ -103,7 +103,7 @@ class HashtagCmsServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/../resources/views/fe' => resource_path('views/vendor/hashtagcms/fe'),
             __DIR__.'/../resources/lang' => resource_path('lang/vendor/hashtagcms'),
-        ], $this->groupName.'.views');
+        ], $this->groupName.'.views.frontend');
 
 
         $this->publishes([
@@ -125,18 +125,9 @@ class HashtagCmsServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/../public/assets' => public_path('assets/hashtagcms'),
             __DIR__.'/../resources/assets/fe' => resource_path('assets/hashtagcms/fe'),
-            __DIR__.'/../resources/views/be' => resource_path('views/vendor/hashtagcms/be'),
+            __DIR__.'/../resources/assets/be' => resource_path('views/vendor/hashtagcms/be'),
             __DIR__.'/../resources/assets/js' => resource_path('assets/hashtagcms/js'),
         ], $this->groupName.'.assets');
-
-        $this->publishes([
-            __DIR__.'/../resources/assets/be' => resource_path('assets/hashtagcms/be')
-        ], $this->groupName.'.assets.admin');
-
-
-        $this->publishes([
-            __DIR__.'/../resources/lang' => resource_path('lang/vendor/hashtagcms'),
-        ], $this->groupName.'.lang');
 
         // Registering package commands.
         $this->commands([

@@ -70,7 +70,7 @@ class CmsInstall extends Command
                     ]);
 
                     Artisan::call("vendor:publish", [
-                        '--tag'=>'hashtagcms.views'
+                        '--tag'=>'hashtagcms.views.frontend'
                     ]);
 
                     $this->showInstallationInfo();

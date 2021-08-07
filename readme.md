@@ -2,8 +2,7 @@
 
 [![Latest Version on Packagist][ico-version]][link-packagist]
 [![Total Downloads][ico-downloads]][link-downloads]
-[![Build Status][ico-travis]][link-travis]
-[![StyleCI][ico-styleci]][link-styleci]
+
 
 Headless CMS, Use it as Headless CMS or Bundled, API enabled, 
 Admin Panel, Multisite, Multitenant, Multilingual, and oAuth 2.0.
@@ -12,11 +11,6 @@ The Most powerful, fast, user-friendly and secured platform. Made with PHP Larav
 ## Installation
 
 Via Composer
-
-
-``` bash
-$ composer require laravel/ui
-```
 
 ``` bash
 $ composer require marghoobsuleman/hashtagcms

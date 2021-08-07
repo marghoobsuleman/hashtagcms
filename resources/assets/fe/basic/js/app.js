@@ -1,6 +1,3 @@
-require('./jquery.min');
-require('./bootstrap.min');
-
 let vue = require('vue');
 
 window.Vue = vue;
@@ -37,3 +34,4 @@ new Vue({
 
 window.HashtagCms = {};
 window.HashtagCms.Analytics = new Analytics();
+

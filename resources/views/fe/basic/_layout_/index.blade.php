@@ -11,7 +11,7 @@
     {!! htcms_get_header_content() !!}
     <title>{!! htcms_get_header_title() !!}</title>
     <script>
-        let _siteProps_ = <?php echo htcms_get_site_props(true) ?>
+        let _siteProps_ = <?php echo htcms_get_site_props(true); ?>;
     </script>
 </head>
 <body>
@@ -36,6 +36,7 @@
 <script>
     (function () {
         HashtagCms.Analytics.init(_siteProps_);
+
         //HashtagCms.Analytics.trackPageView(_siteProps_.categoryName + ""+_siteProps_.pageName)
     })()
 </script>

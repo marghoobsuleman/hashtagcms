@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 1.1.6
+- Fixed Analytic log error
+- Font load error fixed 
+
+## Version 1.1.5
+- Added Analytical support - read count for each story
 
 ## Version 1.0
 

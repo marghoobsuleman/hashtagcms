@@ -15,47 +15,46 @@ mix.copyDirectory('resources/assets/be/img', 'public/assets/be/img');
 mix.js('resources/assets/js/installer.js', 'public/assets/installer/js');
 
 
-//Theme config
-let themes = [
-            {
-                theme:{source:'basic', type:'theme'}, //folder
-                assets: [
-                    {source:'js/app.js', target:'js', type:'js'},
-                    {source:'js/vendors', target:'js/vendors', type:'copy'},
-                    {source:'sass/app.scss', target:'css', type:'css'},
-                    {source:'img', target:'img', type:'copy'}
-                ]
-            }
 
-            ];
+let themes = [
+    {
+        theme:{source:'basic', type:'theme'}, //folder
+        assets: [
+            {source:'js/app.js', target:'js', type:'js'},
+            {source:'js/vendors', target:'js/vendors', type:'copy'},
+            {source:'sass/app.scss', target:'css', type:'css'},
+            {source:'img', target:'img', type:'copy'},
+            {source:'fonts', target:'fonts', type:'copy'}
+        ]
+    }
+
+];
+
+let resourceDir = "resources/assets/fe";
+let targetDir = "public/assets/fe";
 
 for(let i=0; i<themes.length; i++) {
 
     let current = themes[i];
+    console.log(current);
     let theme = current.theme.source;
-    let assets = current.theme.assets
-    console.log(theme);
-    for(var k in assets) {
+    let assets = current.assets;
+    for(let k in assets) {
         let type = assets[k]["type"];
         let currentKeyNode = assets[k];
         switch (type) {
             case "js":
-                mix.js(`resources/assets/fe/${theme}/${currentKeyNode.source}`, `public/assets/fe/${theme}/${currentKeyNode.target}`);
+                mix.js(`${resourceDir}/${theme}/${currentKeyNode.source}`, `${targetDir}/${theme}/${currentKeyNode.target}`);
                 break;
             case "css":
-                mix.sass(`resources/assets/fe/${theme}/${currentKeyNode.source}`, `public/assets/fe/${theme}/${currentKeyNode.target}`).options({processCssUrls: false});
+                mix.sass(`${resourceDir}/${theme}/${currentKeyNode.source}`, `${targetDir}/${theme}/${currentKeyNode.target}`).options({processCssUrls: false});
                 break;
             case "copy":
-                mix.copyDirectory(`resources/assets/fe/${theme}/${currentKeyNode.source}`, `public/assets/fe/${theme}/${currentKeyNode.target}`);
+                mix.copyDirectory(`${resourceDir}/${theme}/${currentKeyNode.source}`, `${targetDir}/${theme}/${currentKeyNode.target}`);
                 break;
 
         }
     }
 
-}
-
-if(process.env.NODE_ENV == "development") {
-    //only for dev
-    mix.copyDirectory('public/assets', '../../../public/assets/hashtagcms');
 }
 
