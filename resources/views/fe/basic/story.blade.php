@@ -31,7 +31,11 @@
         $name = "";
         $email = "";
     }
-
+    $name = old("name", $name);
+    $email = old("email", $email);
+    $comment = old("comment");
+    $sessionResults = session('results');
+    $successMessage = $sessionResults['message'] ?? "";
 @endphp
 
 
@@ -40,24 +44,59 @@
         <section class="section-comments">
             <div class="container">
                 <h2>Post Comments</h2>
-                <comment-box
-                    data-name="{{$name}}"
-                    data-email="{{$email}}"
-                    data-category-id="{{$categoryId}}"
-                    data-content-id="{{$contentId}}">
-                </comment-box>
+                <form class="comment-form relative" action="/comment/saveComment" method="post">
+                    @csrf
+                    <input type="hidden" name="category_id" value="{{$categoryId}}" />
+                    <input type="hidden" name="page_id" value="{{$contentId}}" />
+                    <div class="row mb-3">
+                        <div class="col-sm-2">
+                            <label for="_htcms_form_comment_name_">Name</label>
+                        </div>
+                        <div class="col-sm-10">
+                            <input id="_htcms_form_comment_name_" name="name" type="text" class="form-control" required placeholder="Please enter your name" value="{{$name}}" />
+                        </div>
+                        <div class="text text-danger"></div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-2">
+                            <label for="_htcms_form_comment_email_">Email</label>
+                        </div>
+                        <div class="col-sm-10">
+                            <input id="_htcms_form_comment_email_" type="email" name="email" class="form-control" required placeholder="Please enter your email  " value="{{$email}}" />
+                        </div>
+                        <div class="text text-danger"></div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-2">
+                            <label for="_htcms_form_comment_comment_">Comment</label>
+                        </div>
+                        <div class="col-sm-10">
+                            <textarea id="_htcms_form_comment_comment_" name="comment" class="form-control" rows="7">{{$comment}}</textarea>
+                            <div class="text text-danger"></div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-2">
 
-                <comments-list
-                    data-comments-count="{{$data->comments_count}}"
-                    data-category-id="{{$categoryId}}"
-                    data-content-id="{{$contentId}}"
-                    data-image-size="70"
-                    data-no-comment-available-message="Be the first to write a comment."
-                    data-default-image="{{htcms_get_image_resource('user-default.jpg')}}"
-                    data-auto-load="true"
-                    data-display-order="desc"
-                >
-                </comments-list>
+                        </div>
+                        <div class="col-sm-10 text-center">
+                            <button class="btn btn-lg btn-info mb-1" type="submit">Submit</button>
+                            <div class="alert text-success">
+                                {{$successMessage}}
+                            </div>
+
+                            @if ($errors->any())
+                                <div class="alert alert-danger">
+                                    <ul>
+                                        @foreach ($errors->all() as $error)
+                                            <li>{{ $error }}</li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                </form>
             </div>
         </section>
     @endif

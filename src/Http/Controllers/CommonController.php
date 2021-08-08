@@ -124,8 +124,12 @@ class CommonController extends FrontendBaseController
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
     public function test() {
+        $isError = request()->get("isError");
         //return redirect("/")->with('__hashtagcms_message__', array('message'=>'This is coming from common/test', 'type'=>'success'));
+        if($isError) {
+            return redirect("/")->with('__hashtagcms_message_error__', 'This is coming from common/test');
+        }
         return redirect("/")->with('__hashtagcms_message__', 'This is coming from common/test');
-        //return redirect("/")->with('__hashtagcms_message_error__', 'This is coming from common/test');
+        //
     }
 }

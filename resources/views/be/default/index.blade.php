@@ -104,27 +104,5 @@
     <script src="{{htcms_admin_asset('js/app.js')}}"></script>
 
 @stack('scripts')
-
-<script src="https://www.gstatic.com/firebasejs/7.14.4/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/7.14.4/firebase-analytics.js"></script>
-<script>
-// Your web app's Firebase configuration
-var firebaseConfig = {
-    apiKey: "<?php echo env('FIREBASE_API_KEY') ?>",
-    authDomain: "<?php echo env('FIREBASE_AUTH_DOMAIN') ?>",
-    databaseURL: "<?php echo env('FIREBASE_DATABASE_URL') ?>",
-    projectId: "<?php echo env('FIREBASE_PROJECT_ID') ?>",
-    storageBucket:"<?php echo env('FIREBASE_STORAGE_BUCKET') ?>",
-    messagingSenderId: "<?php echo env('FIREBASE_MESSAGING_SENDER_ID') ?>",
-    appId: "<?php echo env('FIREBASE_APP_ID') ?>",
-    measurementId: "<?php echo env('FIREBASE_MEASUREMENT_ID') ?>"
-};
-if(firebaseConfig.apiKey !== "") {
-// Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-    firebase.analytics();
-}
-
-</script>
 </body>
 </html>

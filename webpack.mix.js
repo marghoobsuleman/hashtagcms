@@ -1,14 +1,15 @@
 const mix = require('laravel-mix');
 require('dotenv').config();
-mix.disableNotifications();
+//mix.disableNotifications();
 
 //backend
+
 mix.js('resources/assets/be/js/app.js', 'public/assets/be/js')
-    .sass('resources/assets/be/sass/app.scss', 'public/assets/be/css');
-mix.js('resources/assets/be/js/error-handler.js', 'public/assets/be/js');
-mix.js('resources/assets/be/js/map.js', 'public/assets/be/js');
-mix.js('resources/assets/be/js/ie-polyfills.js', 'public/assets/be/js');
-mix.copyDirectory('resources/assets/be/js/vendors/tinymce', 'public/assets/be/js/vendors/tinymce');
+    .sass('resources/assets/be/sass/app.scss', 'public/assets/be/css').vue({ version: 2 });
+mix.js('resources/assets/be/js/error-handler.js', 'public/assets/be/js').vue({ version: 2 });
+mix.js('resources/assets/be/js/map.js', 'public/assets/be/js').vue({ version: 2 });
+mix.js('resources/assets/be/js/ie-polyfills.js', 'public/assets/be/js').vue({ version: 2 });
+mix.copyDirectory('resources/assets/be/js/vendors/tinymce', 'public/assets/be/js/vendors/tinymce').vue({ version: 2 });
 mix.copyDirectory('resources/assets/be/img', 'public/assets/be/img');
 
 //Installer
@@ -21,7 +22,6 @@ let themes = [
         theme:{source:'basic', type:'theme'}, //folder
         assets: [
             {source:'js/app.js', target:'js', type:'js'},
-            {source:'js/vendors', target:'js/vendors', type:'copy'},
             {source:'sass/app.scss', target:'css', type:'css'},
             {source:'img', target:'img', type:'copy'},
             {source:'fonts', target:'fonts', type:'copy'}
@@ -44,7 +44,7 @@ for(let i=0; i<themes.length; i++) {
         let currentKeyNode = assets[k];
         switch (type) {
             case "js":
-                mix.js(`${resourceDir}/${theme}/${currentKeyNode.source}`, `${targetDir}/${theme}/${currentKeyNode.target}`);
+                mix.js(`${resourceDir}/${theme}/${currentKeyNode.source}`, `${targetDir}/${theme}/${currentKeyNode.target}`).vue({ version: 2 });
                 break;
             case "css":
                 mix.sass(`${resourceDir}/${theme}/${currentKeyNode.source}`, `${targetDir}/${theme}/${currentKeyNode.target}`).options({processCssUrls: false});

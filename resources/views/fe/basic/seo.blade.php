@@ -24,7 +24,7 @@
             <div class="col-md-6">
                 <h4 class="faq-title">I want to support this #CMS.</h4>
                 <p class="faq-text">
-                    Thank you! You are so kind. You can <a href="https://www.patreon.com/hashtagcms">support here on Patreon</a> or by scanning below QR code.
+                    Thank you! You are so kind. You can; by scanning below QR code.
                     Please mention in comment "Support for HashtagCMS".
                     <br />
                     <img height="270" src="{{htcms_get_image_resource('qr-code.jpg')}}">

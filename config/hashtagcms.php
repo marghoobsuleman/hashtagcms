@@ -23,6 +23,12 @@ return [
         "themeNotDefined"=>"<div style='margin: 100px; text-align: center; font-size: 70px; color:#ffffff'>Theme is no theme defined for this category</div>",
         "zeroModuleSelected"=>"<div style='margin: 100px; text-align: center; font-size: 70px; color:mediumvioletred'>There is no module assigned for this category</div>"
     ],
+    "redirect_with_message_design"=> [
+        'css_success'=>'alert-success alert mb-0 appear',
+        'css_error'=>'alert-danger alert mb-0 appear',
+        'css_error_close_button'=>'fa fa-times',
+        'error_close_text'=>''
+    ],
     "default"=>array("lang"=>"en", "tenant"=>"web", "when_default_category_not_found"=>"home"),
     "domains" => array(
         "htcms.monsterindia.com"=>env('CONTEXT', 'hashtagcms')

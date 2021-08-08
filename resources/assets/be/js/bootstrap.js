@@ -1,6 +1,6 @@
 
 try {
-    require('bootstrap-sass');
+    //require('bootstrap-sass');
 } catch (e) {}
 
 import AdminConfig from './helpers/AdminConfig';

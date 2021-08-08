@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Redirect;
 
 use MarghoobSuleman\HashtagCms\Core\DataLoader;
 use MarghoobSuleman\HashtagCms\Core\ModuleLoader;
-use MarghoobSuleman\HashtagCms\HashtagCms;
 
 trait FeEssential {
 
@@ -22,7 +21,6 @@ trait FeEssential {
 
     public function __construct(Request $request)
     {
-
         $this->initThemeFolder();
         $this->common = app()->Common;
     }
@@ -43,6 +41,18 @@ trait FeEssential {
         $viewName = str_replace("/", ".", $viewName);
         $this->viewData[$viewName] = $data;
     }
+
+    /**
+     * Get Data for a view
+     * @param $viewName
+     * @return array|mixed
+     */
+    protected function getDataForView(string $viewName) {
+        $viewName = str_replace("/", ".", $viewName);
+        //info("ViewName: ".$viewName);
+        return isset($this->viewData[$viewName]) ? $this->viewData[$viewName] : array();
+    }
+
 
     /**
      * Bind Data for a view
@@ -70,18 +80,6 @@ trait FeEssential {
     }
 
     /**
-     * Get Data for a view
-     * @param $viewName
-     * @return array|mixed
-     */
-    protected function getDataForView(string $viewName) {
-        $viewName = str_replace("/", ".", $viewName);
-        //info("ViewName: ".$viewName);
-        return isset($this->viewData[$viewName]) ? $this->viewData[$viewName] : array();
-    }
-
-
-    /**
      * Load data
      * InfoKeeper already has site, category, tenant, and category info (Interceptor Middleware)
      * @param Request $request
@@ -89,7 +87,6 @@ trait FeEssential {
      * @return array
      */
     public function index(Request $request) {
-
         $infoKeeper = $request->infoKeeper;
 
         $mergeData = [];
@@ -220,14 +217,25 @@ trait FeEssential {
 
         $message = ($messageError == false) ? $message : $messageError;
 
-        $css = ($messageError == false) ? 'success' : 'error';
+        $css = ($messageError == false) ? config("hashtagcms.redirect_with_message_design.css_success") : config("hashtagcms.redirect_with_message_design.css_error");
 
         if(is_array($message)) {
             $css = $message['type'];
             $message = $message['message'];
         }
+        $css_close = config("hashtagcms.redirect_with_message_design.css_error_close_button");
+        $error_close_text = config("hashtagcms.redirect_with_message_design.error_close_text");
 
-        $ele = "<div id='__hashtagcms__'><alert-message data-message='$message' data-type='$css'></alert-message></div>";
+        $finalMsg = "";
+        if(!empty($message)) {
+            $finalMsg = "<div class='$css'>
+            $message <span style='float:right; cursor: pointer' onClick=\"document.getElementById('__hashtagcms__').style.display='none'\" ><i class='$css_close'>$error_close_text</i></span>
+                    </div>";
+        }
+
+        $ele = "<div id='__hashtagcms__'>
+                   $finalMsg
+                    </div>";
         return $ele;
     }
 

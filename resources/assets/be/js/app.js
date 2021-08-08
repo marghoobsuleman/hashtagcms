@@ -5,7 +5,7 @@
  */
 
 require('./bootstrap');
-let vue = require('vue');
+let vue = require('vue').default;
 
 window.Vue = vue;
 

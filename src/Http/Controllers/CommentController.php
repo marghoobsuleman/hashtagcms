@@ -5,8 +5,8 @@ namespace MarghoobSuleman\HashtagCms\Http\Controllers;
 use MarghoobSuleman\HashtagCms\Core\ModuleLoader;
 use MarghoobSuleman\HashtagCms\Models\Comment;
 use MarghoobSuleman\HashtagCms\Models\Page;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
+use \Illuminate\Http\Request;
+use \Illuminate\Support\Facades\Validator;
 
 class CommentController extends FrontendBaseController
 {
@@ -18,7 +18,6 @@ class CommentController extends FrontendBaseController
      * @return array|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function index(Request $request) {
-
        return  redirect()->intended("/");
 
     }
@@ -33,9 +32,9 @@ class CommentController extends FrontendBaseController
         $rules = ["name" => "required|max:255|string",
             "email" => "required|max:255|email",
             "comment" => "required|string"];
-
+        //dd($rules);
         $validator = Validator::make($request->all(), $rules);
-
+        //dd($validator);
         //If error
         if ($validator->fails()) {
 
@@ -43,6 +42,7 @@ class CommentController extends FrontendBaseController
                 $msg = array("success"=>false, "errors"=>$validator->getMessageBag()->toArray());
                 return response()->json($msg, 400);
             } else {
+
                 return redirect()->back()
                     ->withErrors($validator)
                     ->withInput();
@@ -51,6 +51,8 @@ class CommentController extends FrontendBaseController
         }
 
         $data = $request->all();
+        unset($data['_token']);
+
         $data['site_id'] = $data['site_id'] ?? htcms_get_site_id();
 
         $user = auth()->user();
@@ -75,7 +77,7 @@ class CommentController extends FrontendBaseController
             return response()->json($rData, 200);
         }
 
-        return redirect()->back()->with("success", $rData);
+        return redirect()->back()->with("results", $rData);
     }
 
     /**

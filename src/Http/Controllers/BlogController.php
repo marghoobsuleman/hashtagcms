@@ -19,10 +19,13 @@ class BlogController extends FrontendBaseController
 
         //check it's blog home
         if(empty($request->infoKeeper['callableValue'][0])) {
+
             ModuleLoader::setMandatoryCheck(false);
             $data = Page::getLatestBlog(htcms_get_site_id(), htcms_get_language_id());
-
             $this->replaceViewWith("story", "stories", $data);
+
+            $forComments = array("isBlogHome"=>true);
+            $this->bindDataForView("story-comments", $forComments);
             return parent::index($request);
         }
 
