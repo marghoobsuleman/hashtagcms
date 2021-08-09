@@ -141,10 +141,10 @@ class Site extends AdminBaseModel
                         'category:category_id,site_id,lang_id,name,title',
                         'staticmodule:id,alias',
                         'theme:id,site_id,name,directory',
-                        'tenant:id,site_id,name',
-                        'language:id,site_id,name,iso_code',
+                        'tenant:id,name',
+                        'language:id,name,iso_code',
                         'microsite:id,site_id,name',
-                        'country:id,country_id',
+                        'country:id',
                         'zone',
                         'hook'
                         ])->withoutGlobalScopes()->find($site_id);
