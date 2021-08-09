@@ -1,5 +1,12 @@
 # Changelog
 
+## Version 1.1.8
+- Fixed Site settings issue
+
+## Version 1.1.7
+- Remove VueJs dependency from frontend 
+- Update security bugs
+
 ## Version 1.1.6
 - Fixed Analytic log error
 - Font load error fixed 
