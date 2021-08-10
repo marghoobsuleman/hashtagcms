@@ -76,11 +76,17 @@ if (! function_exists('htcms_admin_config')) {
      * Get Admin Config
      *
      * @param null $key
+     * @param null $notCmsInfoObj
      * @return mixed|string
-     *
      */
-    function htcms_admin_config($key=null) {
-        return ($key==null) ? json_encode(config('hashtagcmsadmin.cmsInfo')) : config('hashtagcmsadmin.cmsInfo.'.$key);
+    function htcms_admin_config($key=null, $notCmsInfoObj=null) {
+
+        if($notCmsInfoObj == null) {
+            return ($key==null) ? json_encode(config('hashtagcmsadmin.cmsInfo')) : config('hashtagcmsadmin.cmsInfo.'.$key);
+        }
+
+        return ($key==null) ? json_encode(config('hashtagcmsadmin')) : config('hashtagcmsadmin.'.$key);
+
     }
 
 }

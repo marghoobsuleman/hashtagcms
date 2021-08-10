@@ -70,7 +70,7 @@ If you discover any security related issues, please email author email instead o
 
 ## Credits
 
-- [Marghoob Suleman][https://www.linkedin.com/in/marghoobsuleman]
+- [Marghoob Suleman][https://www.marghoobsuleman.com]
 
 
 ## License

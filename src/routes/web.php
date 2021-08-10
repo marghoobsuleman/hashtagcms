@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -83,7 +84,12 @@ if (HashtagCms::isRoutesEnabled()) {
             if($callable!="") {
                 return app()->call($callable, $values);
             } else {
-                info("RouteError: I don't know what to process...");
+                info("I don't know what to process...");
+                try {
+                    DB::connection()->getPdo();
+                } catch (\Exception $e) {
+                    die("Could not connect to the database.  Please check your configuration. Error: ".$e->getMessage());
+                }
                 return "RouteError: I don't know what to process...";
             }
 
@@ -105,4 +111,5 @@ if (HashtagCms::isRoutesEnabled()) {
     //Keep some original routes
     Auth::routes();
 }
+
 

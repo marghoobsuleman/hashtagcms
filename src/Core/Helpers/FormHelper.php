@@ -95,21 +95,36 @@ class FormHelper {
     public static function file($name='', $value="", $attributes=array(), $showPreview=FALSE, $maxHeight=NULL, $maxWidth=NULL, $innerClass="") {
 
         $html[] = self::input("file", $name, "", $attributes);
+        $originalFileName = $value;
 
         if($showPreview && trim($value) !== "") {
+
+            $value = (filter_var($value, FILTER_VALIDATE_URL)) ? $value : htcms_get_media($value);
+
+            $imageSupportedByBrowsers = htcms_admin_config('imageSupportedByBrowsers', true);
+            $fileInfo = pathinfo($value);
+            $extension = $fileInfo["extension"];
+            $isImage = (in_array($extension, $imageSupportedByBrowsers));
+
             $imgWidth = ($maxWidth != NULL) ? " width='$maxWidth' " : '';
             $imgHeight = ($maxHeight != NULL) ? " height='$maxHeight' " : '';
 
-            $maxHeight = ($maxHeight==NULL) ? "max-height:100px;" : "max-height:".$maxHeight."px;";
-            $maxWidth = ($maxWidth==NULL) ? "" : "max-width:".$maxWidth."px;";
+            $maxHeight = ($maxHeight==NULL) ? "max-height:100px;" : "max-height:{$maxHeight}px;";
+            $maxWidth = ($maxWidth==NULL) ? "" : "max-width:{$maxWidth}px;";
 
-            $html[] = '<div style="'.$maxHeight.$maxWidth.'margin-top:10px; overflow: hidden;">
-                                        <div class="col-sm-9 card;'.$innerClass.'">
-                                            <a target="_blank" href="'.htcms_get_media($value).'"><img '.$imgHeight.$imgWidth.' class="card-img-top" src="'.htcms_get_media($value).'" /></a>
+            if($isImage) {
+                $tag = "<a target='_blank' href='{$value}'><img $imgHeight $imgWidth class='card-img-top' src='$value' /></a>";
+            } else {
+                $tag = "<i class='fa fa-paperclip text-danger'></i>&nbsp;<a target='_blank' href='{$value}'>{$fileInfo['filename']}.{$extension}</a>";
+            }
+
+            $html[] = "<div id='__hashtagcms_{$name}__' style='{$maxHeight}{$maxWidth};margin-top:10px; overflow: hidden;'>
+                                        <div class='col-sm-9 card;{$innerClass}'>
+                                            $tag &nbsp;&nbsp;&nbsp;<i style='float:left; margin-right: 10px;' title='Delete' class='fa fa-trash-o hand' onclick='document.getElementById(\"__hashtagcms_{$name}__\").style.display=\"none\";document.getElementById(\"{$name}_deleted\").value=\"{$originalFileName}\"'></i>                                            
                                         </div>
-                                    </div>';
+                                    </div>";
         }
-
+        $html[] = "<input type='hidden' name='{$name}_deleted' id='{$name}_deleted' value='0' />";
         return join("", $html);
 
     }

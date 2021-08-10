@@ -15,4 +15,6 @@ class SubscriberController extends BaseAdminController
 
     protected $dataSource = Subscriber::class;
 
+    protected $actionFields = array("delete"); //This is last column of the row
+
 }

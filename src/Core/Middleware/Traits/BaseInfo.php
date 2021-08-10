@@ -23,6 +23,7 @@ use MarghoobSuleman\HashtagCms\Models\Site;
  */
 use Illuminate\Support\Str;
 
+
 trait BaseInfo {
 
     protected $defaultController = "frontend";
@@ -44,6 +45,7 @@ trait BaseInfo {
      * @return string
      */
     public function setBaseInfo($request) {
+
         info("BaseInfo: Start Processing...");
         $this->common = app()->Common;
 

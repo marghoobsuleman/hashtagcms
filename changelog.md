@@ -1,5 +1,8 @@
 # Changelog
 
+## Version 1.1.9
+- Added image upload feature in content/blog module
+
 ## Version 1.1.8
 - Fixed Site settings issue
 

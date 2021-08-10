@@ -45,6 +45,10 @@ class CreatePagesTable extends Migration
             $table->tinyInteger('publish_status')->nullable()->default(0);
             $table->bigInteger('read_count')->nullable()->default(0);
 
+            $table->string('attachment', 255)->nullable();
+            $table->string('img', 500)->nullable();
+            $table->string('author', 255)->nullable();
+
             $table->timestamps();
             $table->softDeletes();
 
