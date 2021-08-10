@@ -1,7 +1,9 @@
 # Changelog
 
 ## Version 1.1.9
-- Added image upload feature in content/blog module
+- Added image upload feature in Content/Blog module
+- Code refactor in Content/Blog modules
+- Added message if unable to connect mysql
 
 ## Version 1.1.8
 - Fixed Site settings issue
