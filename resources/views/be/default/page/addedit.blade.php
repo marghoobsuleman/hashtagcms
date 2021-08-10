@@ -34,6 +34,7 @@
         $attachment = old("attachment");
         $img = old("img");
         $author = old("author", auth()->user()->name);
+        $content_source = old("content_source");
 
 
         $lang = array();
@@ -395,6 +396,16 @@
 
                             <div class="col-sm-10">
                                 {!! FormHelper::input('text', 'author', $author, array('class'=>'form-control')) !!}
+                            </div>
+                        </div>
+                        <div class="form-group">
+
+                            <div class="col-sm-2">
+                                {!!  FormHelper::label('content_source', 'Content Source') !!}
+                            </div>
+
+                            <div class="col-sm-10">
+                                {!! FormHelper::input('text', 'content_source', $content_source, array('class'=>'form-control')) !!}
                             </div>
                         </div>
                         <div class="form-group">

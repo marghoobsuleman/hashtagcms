@@ -1,5 +1,8 @@
 # Changelog
 
+## Version 1.2.0
+- Added content_source field in page table
+
 ## Version 1.1.9
 - Added image upload feature in Content/Blog module
 - Code refactor in Content/Blog modules

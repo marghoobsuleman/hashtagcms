@@ -35,7 +35,8 @@ trait BlogPageCommon {
             "lang_meta_canonical" => "nullable|max:255|string",
             "img" => "nullable|max:500",
             "attachment" => "nullable|max:255",
-            "author" => "nullable|max:255|string"
+            "author" => "nullable|max:255|string",
+            "content_source" => "nullable|max:255|string"
         ];
     }
 
@@ -70,6 +71,7 @@ trait BlogPageCommon {
         $saveData["publish_status"] = $data["publish_status"] ?? 0;
         $saveData["required_login"] = $data["required_login"] ?? 0;
         $saveData["author"] = $data["author"];
+        $saveData["content_source"] = $data["content_source"];
 
         $langData["name"] = $data["lang_name"];
         $langData["title"] = $data["lang_title"];

@@ -48,6 +48,7 @@ class CreatePagesTable extends Migration
             $table->string('attachment', 255)->nullable();
             $table->string('img', 500)->nullable();
             $table->string('author', 255)->nullable();
+            $table->string('content_source', 255)->nullable();
 
             $table->timestamps();
             $table->softDeletes();
