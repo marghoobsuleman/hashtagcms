@@ -41,7 +41,7 @@
                 </div>
             </div>
 
-            <div class="form-group hide">
+            <div class="form-group">
                 <label class="col-sm-3" for="individual_cache">Is Individual Cache ?.</label>
                 <label class="col-sm-7">
                    <input type="checkbox" id="individual_cache" name="individual_cache" v-model="form.individual_cache"/>
@@ -103,9 +103,9 @@
 
 
             <div class="form-group ">
-                <label class="col-sm-3" for="is_user_cache">Is User Cache?</label>
-                  <label class="col-sm-7">
-                   <input type="checkbox" id="is_user_cache" name="is_user_cache" v-model="form.is_user_cache"/>
+                <label class="col-sm-3" for="is_shared">Is Shared?</label>
+                <label class="col-sm-7">
+                    <input type="checkbox" id="is_shared" name="is_shared" v-model="form.shared"/>
                 </label>
             </div>
 
@@ -259,8 +259,9 @@
                     query_as:"",
 
                     is_seo_module:0,
-                    is_user_cache:0,
+
                     individual_cache:0,
+                    shared:0,
                     update_inAllSites:0,
                     is_mandatory:0,
                     service_params:"",
@@ -328,11 +329,11 @@
                 function preCheck() {
 
                     $this.form.is_seo_module = ($this.form.is_seo_module) ? $this.form.is_seo_module : 0;
-                    $this.form.is_user_cache = ($this.form.is_user_cache) ? $this.form.is_user_cache : 0;
                     $this.form.individual_cache = ($this.form.individual_cache) ? $this.form.individual_cache : 0;
                     $this.form.update_inAllSites = ($this.form.update_inAllSites) ? $this.form.update_inAllSites : 0;
                     $this.form.is_mandatory = ($this.form.is_mandatory) ? $this.form.is_mandatory : 0;
                     $this.form.service_params = ($this.form.service_params) ? $this.form.service_params : "";
+                    $this.form.shared = ($this.form.shared) ? $this.form.shared : 0;
                 }
             },
             showError(res) {

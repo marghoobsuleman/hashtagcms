@@ -4,5 +4,7 @@
         data-last-item="{{$paginator->lastItem()}}"
         data-total="{{$paginator->total()}}"
         data-controller-name="{{request()->module_info->controller_name}}"
+        data-next-label="Next"
+        data-previous-label="Previous"
 >
 </Pagination>

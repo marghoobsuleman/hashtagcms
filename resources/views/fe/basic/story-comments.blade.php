@@ -34,7 +34,7 @@
                                 <span class="date"><span class="fa fa-calendar-o"></span> {{getFormattedDate($comment->created_at)}}</span>
                             </div>
                             <div class="col-lg-6">
-                                <div style="" class="popover fade show bs-popover-right" role="tooltip" x-placement="right">
+                                <div style="" class="" role="tooltip" x-placement="right">
                                     <div class="arrow" style="top: 16px;"></div>
                                     <h3 class="popover-header"></h3>
                                     <div class="popover-body">{{$comment->comment}}

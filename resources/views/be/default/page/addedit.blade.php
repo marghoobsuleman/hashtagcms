@@ -524,8 +524,12 @@
             autoUpdateUrls: function () {
                 let value = this.value;
                 if (document.getElementById("link_rewrite").edited != true) {
-                    document.getElementById("alias").value = value.toUpperCase().replace(/\s/g, "_");
+                    value = value.toUpperCase().replace(/\s/g, "_");
+                    value = value.substr(0, 60); //it's limit
+                    document.getElementById("alias").value = value;
+
                     let active_key = value.toLowerCase().replace(/\s/g, "-");
+                    active_key = value.substr(0, 128); //it's limit
                     document.getElementById("lang_active_key").value = active_key;
                     document.getElementById("link_rewrite").value = active_key;
                 }

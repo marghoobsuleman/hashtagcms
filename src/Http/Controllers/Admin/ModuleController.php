@@ -94,14 +94,13 @@ class ModuleController extends BaseAdminController
         $saveData['method_type'] =  $data["method_type"];
         $saveData['is_mandatory'] = $data["is_mandatory"];
 
-        //$saveData['is_user_cache'] = $data["is_user_cache"];
-
         $saveData['data_handler'] =  $data["data_handler"];
         $saveData['data_key_map'] =  $data["data_key_map"];
         $saveData['description'] = $data["description"];
 
         $saveData['cache_group'] = $data["cache_group"];
         $saveData['individual_cache'] = $data["individual_cache"];
+        $saveData['shared'] = $data["shared"];
         $saveData['is_seo_module'] = $data["is_seo_module"];
 
         $saveData['query_statement'] = $data["query_statement"];

@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 1.2.1
+- Backend: Add "shared" field in module add/edit
+- Blog::getLatestBlog is now generic. Blog can read multiple categories now. look into config/hashtagcms.php 
+- page addedit.blade limit fix
+
 ## Version 1.2.0
 - Added content_source field in page table
 

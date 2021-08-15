@@ -2,7 +2,7 @@
   <div class="row admin-pagination">
       <nav aria-label="navigation">
           <ul class="pagination" v-if="showPagination">
-              <li v-for="page in allPages" :class="getCss(page)"><a class="page-link" :href="getLink(page)" v-html="page.label"></a></li>
+              <li v-for="page in allPages" :class="getCss(page)"><a class="page-link" :href="getLink(page)" v-html="getLabel(page.label)"></a></li>
           </ul>
           <span class="counters" v-if="totalCount > 0">
                  {{dataFirstItem}} - {{lastItem}} of {{totalCount}}
@@ -37,14 +37,20 @@
           'dataFirstItem',
           'dataLastItem',
           'dataTotal',
-          'dataControllerName'
+          'dataControllerName',
+          'dataNextLabel',
+          'dataPreviousLabel'
       ],
       data() {
         return {
             totalCount: parseInt(this.dataTotal),
             lastItem:parseInt(this.dataLastItem),
             controllerName:this.dataControllerName,
-            paginator:JSON.parse(this.dataPaginator)
+            paginator:JSON.parse(this.dataPaginator),
+            pageLabel:{
+                "pagination.next": (this.dataNextLabel),
+                "pagination.previous": (this.dataPreviousLabel)
+            }
         }
       },
       computed: {
@@ -65,6 +71,14 @@
           },
           getLink(page) {
               return page.url == null ? "javascript:void(0)" : page.url;
+          },
+          getLabel(label) {
+
+              if(this.pageLabel[label]) {
+                  return this.pageLabel[label];
+              }
+
+              return label;
           },
           getCss(page) {
               if(page.url == null) {

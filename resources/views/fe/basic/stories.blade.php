@@ -1,36 +1,41 @@
+@php
+    $results = $data['results'];
+    $hasData = count($results) > 0;
+@endphp
+
 <section class="section-blogs">
     <div class="container">
         <div class="row">
             <div class="col-lg-9 col-6">
-                @if(count($data)>0)
-                    @foreach($data as $story)
-                    <div class="card shadow blog">
-                        <div class="card-body">
-                            <div>
-                                <div class="pull-right">
+                @if($hasData)
+                    @foreach($results as $index=>$story)
+                        <div class="card shadow blog">
+                            <div class="card-body">
+                                <div>
+                                    <div class="pull-right">
                                     <span class="blog-date shadow-common">
                                             <span class="fa fa-calendar-o icon"></span>
                                             <span class="text">{{getFormattedDate($story->created_at)}}
                                             </span>
                                     </span>
+                                    </div>
+                                    <h2><a href="{{htcms_get_path($story->category_link_rewrite.'/'.$story->link_rewrite)}}">{{$story->title}}</a></h2>
                                 </div>
-                                <h2><a href="{{htcms_get_path($story->category_link_rewrite.'/'.$story->link_rewrite)}}">{{$story->title}}</a></h2>
-                            </div>
-                            {!!  $story->description !!}
+                                {!!  $story->description !!}
 
-                            <p class="more">
-                                <a href="{{htcms_get_path($story->category_link_rewrite.'/'.$story->link_rewrite)}}">Read More</a>
-                            </p>
-                        </div>
-                        <div class="card-footer">
-                            <div class="pull-left author">
-                                Author: {{$story->user_name}}
+                                <p class="more">
+                                    <a href="{{htcms_get_path($story->category_link_rewrite.'/'.$story->link_rewrite)}}">Read More</a>
+                                </p>
                             </div>
-                            <div class="pull-right">
-                                <span class="fa fa-comment-o"></span> {{$story->comments_count ?? 0}} Comments
+                            <div class="card-footer">
+                                <div class="pull-left author">
+                                    Author: {{$story->author}}
+                                </div>
+                                <div class="pull-right">
+                                    <span class="fa fa-comment-o"></span> {{$story->comments_count ?? 0}} Comments
+                                </div>
                             </div>
                         </div>
-                    </div>
                     @endforeach
                 @else
                     <div class="card shadow blog">

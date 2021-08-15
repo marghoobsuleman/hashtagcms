@@ -20,8 +20,19 @@ class BlogController extends FrontendBaseController
         //check it's blog home
         if(empty($request->infoKeeper['callableValue'][0])) {
 
+            $perPage = config("hashtagcms.blog_per_page");
+
+            $blog_categories = config("hashtagcms.blog_categories");
+            if(sizeof($blog_categories) == 0) {
+                $pathInfo = parse_url(url()->current());
+                $url = ltrim($pathInfo['path'], "/");
+            } else {
+                $url = $blog_categories;
+            }
+
             ModuleLoader::setMandatoryCheck(false);
-            $data = Page::getLatestBlog(htcms_get_site_id(), htcms_get_language_id());
+            $results = Page::getLatestBlog(htcms_get_site_id(), htcms_get_language_id(), $url, $perPage);
+            $data['results'] = $results;
             $this->replaceViewWith("story", "stories", $data);
 
             $forComments = array("isBlogHome"=>true);

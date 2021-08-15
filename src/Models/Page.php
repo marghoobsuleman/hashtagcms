@@ -57,19 +57,55 @@ class Page extends AdminBaseModel
      * Get latest blog
      * @param $siteId
      * @param $langId
-     * @return array
+     * @param null $link_rewrite
+     * @param int $limit
+     * @return void
      */
-    public static function getLatestBlog($siteId, $langId) {
-        return DB::select("select c.link_rewrite as category_link_rewrite, u.name as user_name, p.read_count,
-p.id, p.site_id, p.microsite_id, p.tenant_id, p.category_id, p.alias, p.exclude_in_listing, p.content_type, p.position, p.link_rewrite, p.menu_placement,
-p.enable_comments, p.created_at, p.updated_at, pl.name, pl.title, pl.description, pl.page_content, pl.link_relation, pl.target, pl.active_key, cmn.*
-from pages p 
-left join page_langs pl on (p.id = pl.page_id) 
-left join categories c on(c.id=p.category_id)
-left join users u on(u.id=p.insert_by)
-left join (SELECT page_id as comment_page_id, COUNT(*) as comments_count FROM comments GROUP BY page_id) cmn ON cmn.comment_page_id = p.id
-where p.site_id=:site_id and pl.lang_id=:lang_id and p.publish_status=1 and p.content_type='blog' and p.deleted_at is null 
-order by p.created_at DESC limit 10;", array("site_id"=>$siteId, "lang_id"=>$langId));
+    public static function getLatestBlog($siteId, $langId, $link_rewrite=null, $limit=10) {
+
+        $where = array(
+            array("pages.site_id", "=", $siteId),
+            array("page_langs.lang_id", "=", $langId),
+            array("pages.publish_status", "=", 1),
+            array("pages.deleted_at", "=", null)
+        );
+
+        if($link_rewrite!=null) {
+            if(is_array($link_rewrite)) {
+
+            } else {
+                array_push($where,  array("categories.link_rewrite", "=", "$link_rewrite"));
+            }
+
+        }
+        $query = DB::table('pages')
+            ->join('page_langs', 'pages.id', '=', 'page_langs.page_id')
+            ->join('categories', 'categories.id', '=', 'pages.category_id')
+            ->join('users', 'users.id', '=', 'pages.insert_by')
+            ->select('categories.link_rewrite as category_link_rewrite', 'users.name as user_name', 'pages.read_count',
+                'pages.id', 'pages.site_id', 'pages.microsite_id', 'pages.tenant_id', 'pages.category_id', 'pages.alias',
+                'pages.exclude_in_listing', 'pages.content_type', 'pages.position', 'pages.link_rewrite', 'pages.menu_placement',
+                'pages.enable_comments', 'pages.attachment', 'pages.img', 'pages.author', 'pages.created_at', 'pages.updated_at',
+                'page_langs.name', 'page_langs.title', 'page_langs.description', 'page_langs.page_content',
+                'page_langs.link_relation', 'page_langs.target', 'page_langs.active_key');
+        if(is_array($link_rewrite)) {
+            $query = $query->whereIn("categories.link_rewrite", $link_rewrite);
+        }
+
+        $results = $query->where($where)->orderBy("pages.created_at", "DESC")->paginate($limit);
+
+        if(count($results) > 0) {
+            foreach ($results as $result) {
+                //dd($result);
+                $whereComment = array(
+                    array("category_id", "=", $result->category_id),
+                    array("page_id", "=", $result->id)
+                );
+                $result->comments_count  = Comment::where($whereComment)->count();
+            }
+        }
+
+        return $results;
     }
 
     /**
