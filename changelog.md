@@ -1,5 +1,14 @@
 # Changelog
 
+## Version 1.2.2
+- Backend: Added graph for Top categories and Top content in dashboard
+- Change TEXT to LONGTEXT of page_content table 
+  - (ALTER TABLE `page_langs` MODIFY `page_content` LONGTEXT)
+- Change TEXT to LONGTEXT of category_langs table 
+  - (ALTER TABLE `category_langs` MODIFY `content` LONGTEXT)
+- Showing read count in category and page listing module.  
+
+
 ## Version 1.2.1
 - Backend: Add "shared" field in module add/edit
 - Blog::getLatestBlog is now generic. Blog can read multiple categories now. look into config/hashtagcms.php 

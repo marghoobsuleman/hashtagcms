@@ -2,6 +2,7 @@
 
 namespace MarghoobSuleman\HashtagCms\Http\Controllers\Admin;
 
+use MarghoobSuleman\HashtagCms\Models\Category;
 use MarghoobSuleman\HashtagCms\Models\Comment;
 use MarghoobSuleman\HashtagCms\Models\Contact;
 use MarghoobSuleman\HashtagCms\Models\Subscriber;
@@ -21,6 +22,10 @@ class DashboardController extends BaseAdminController
         $commentsCount = Comment::today()->count();
         $commentsToday = ($commentsCount > 0 ) ? " ( $commentsCount <span class='new'>new</span> )" : "";
 
+        $topPageLimit = htcms_admin_config("chartPages", true);
+
+        $graphData['categories'] = Category::getReadCounts($topPageLimit);
+        $graphData['pages'] = Category::getContentReadCounts($topPageLimit);
 
         $dashboardData = array(
             array(
@@ -44,6 +49,7 @@ class DashboardController extends BaseAdminController
 
         );
         $data['data'] = $dashboardData;
+        $data['graphData'] = json_encode($graphData);
         return htcms_admin_view("dashboard.index", $data);
     }
 

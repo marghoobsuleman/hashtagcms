@@ -58,9 +58,9 @@ class CreateCategoriesTable extends Migration
 
             $table->string('name', 128);
             $table->string('title', 128);
-            $table->string('excerpt', 255)->nullable();
+            $table->text('excerpt')->nullable();
 
-            $table->text('content')->nullable();
+            $table->longText('content')->nullable();
 
             $table->string('active_key', 128)->nullable();
             $table->string('third_party_mapping_key', 128)->nullable();

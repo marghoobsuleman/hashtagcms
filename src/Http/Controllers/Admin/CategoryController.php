@@ -18,7 +18,7 @@ use MarghoobSuleman\HashtagCms\Core\Helpers\Message;
 
 class CategoryController extends BaseAdminController
 {
-  protected $dataFields = array("id", "lang.name as name", "link_rewrite", "update_at", "publish_status");
+  protected $dataFields = array("id", "lang.name as name", "link_rewrite", "publish_status","read_count","updated_at");
 
 
     protected $dataSource = Category::class;
@@ -184,16 +184,20 @@ class CategoryController extends BaseAdminController
         $siteData["footer_content"] =  $data["footer_content"];
         $siteData["exclude_in_listing"]=  $data["exclude_in_listing"] ?? 0;
 
-        //date
+        //update date
         $saveData["updated_at"] = htcms_get_current_date();
         $langData["updated_at"] = htcms_get_current_date();
+        $siteData["updated_at"] = htcms_get_current_date();
+
         if($data["actionPerformed"] !== "edit") {
+            //created at
             $saveData["created_at"] = htcms_get_current_date();
             $langData["created_at"] = htcms_get_current_date();
+            $siteData["created_at"] = htcms_get_current_date();
         }
 
 
-        //udpate position only if created
+        //update position only if created
         if($data["actionPerformed"] !== "edit") {
             $siteData["position"] = $this->dataSource::count()+1;
         }
@@ -212,6 +216,7 @@ class CategoryController extends BaseAdminController
             $where = $data["id"];
             $saveData["update_by"] = Auth::user()->id;
 
+            //dd($arrSaveData, $arrLangData, $arrSiteData);
             //This is in base controller
             $savedData = $this->saveDataWithLangAndTenant($arrSaveData, $arrLangData, $arrSiteData, $where);
 

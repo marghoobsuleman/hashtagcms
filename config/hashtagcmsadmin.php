@@ -31,6 +31,7 @@ return [
     "media" => [
         "upload_path"=>"public/media", //-- /storage/app/public/media - run - php artisan storage:link
     ],
-    "imageSupportedByBrowsers" => array("apng", "avif", "gif", "jpg","jpeg", "jfif", "pjpeg", "pjp", "png", "svg", "webp", "bmp", "ico", "cur", "tif", "tiff")
+    "imageSupportedByBrowsers" => array("apng", "avif", "gif", "jpg","jpeg", "jfif", "pjpeg", "pjp", "png", "svg", "webp", "bmp", "ico", "cur", "tif", "tiff"),
+    "chartPages"=>10
 
 ];

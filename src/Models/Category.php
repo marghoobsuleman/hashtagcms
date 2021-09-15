@@ -120,6 +120,7 @@ class Category extends AdminBaseModel
      *
      * @param int $id
      * @param string $with
+     * @param int $tenant_id
      * @return array
      */
     public static function getById($id=0, $with='', $tenant_id=1) {
@@ -228,5 +229,21 @@ class Category extends AdminBaseModel
             return NULL;
         }
         return $data[0];
+    }
+
+    /**
+     * @param int $limit
+     * @return mixed
+     */
+    public static function getReadCounts($limit=10) {
+        return self::orderBy("read_count", "DESC")->take($limit)->get(["read_count", "link_rewrite"]);
+    }
+
+    /**
+     * @param int $limit
+     * @return mixed
+     */
+    public static function getContentReadCounts($limit=10) {
+        return Page::orderBy("read_count", "DESC")->take($limit)->get(["read_count", "link_rewrite"]);
     }
 }

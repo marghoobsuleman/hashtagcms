@@ -65,7 +65,7 @@ class CreatePagesTable extends Migration
             $table->string('title', 128);
 
             $table->text('description')->nullable();
-            $table->text('page_content');
+            $table->longText('page_content');
 
             $table->enum('link_relation', ['alternate','author','bookmark','help','license','next','nofollow','noreferrer','prefetch','prev','search','tag'])->nullable();
             $table->enum('target', ['_blank','_parent','_self','_top'])->nullable();
