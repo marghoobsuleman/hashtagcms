@@ -33,8 +33,8 @@ trait BlogPageCommon {
             "lang_meta_description" => "nullable|max:255|string",
             "lang_meta_robots" => "nullable|max:255|string",
             "lang_meta_canonical" => "nullable|max:255|string",
-            "img" => "nullable|max:500",
-            "attachment" => "nullable|max:255",
+            "img" => "nullable",
+            "attachment" => "nullable",
             "author" => "nullable|max:255|string",
             "content_source" => "nullable|max:255|string"
         ];

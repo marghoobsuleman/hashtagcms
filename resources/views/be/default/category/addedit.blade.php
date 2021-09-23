@@ -545,3 +545,13 @@ if(count($tenant_wise) == 0) {
         </div>
 @include(htcms_admin_get_view_path('common.validationerror-js'))
 @endsection
+
+@push('scripts')
+    <script src="{{htcms_admin_asset('js/vendors/tinymce/tinymce.min.js')}}"></script>
+    <script src="{{htcms_admin_asset('js/editor.js')}}"></script>
+    <script>
+        EditorHelper.makeRichEditor("#lang_content");
+        EditorHelper.makeRichEditor("#lang_excerpt", {height:300});
+    </script>
+
+@endpush

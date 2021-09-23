@@ -12,6 +12,10 @@ mix.js('resources/assets/be/js/ie-polyfills.js', 'public/assets/be/js').vue({ ve
 mix.copyDirectory('resources/assets/be/js/vendors/tinymce', 'public/assets/be/js/vendors/tinymce').vue({ version: 2 });
 mix.copyDirectory('resources/assets/be/img', 'public/assets/be/img');
 
+//Editor
+mix.js('resources/assets/be/js/editor.js', 'public/assets/be/js')
+
+
 //Installer
 mix.js('resources/assets/js/installer.js', 'public/assets/installer/js');
 

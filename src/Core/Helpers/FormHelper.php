@@ -81,7 +81,6 @@ class FormHelper {
 
 
     public static function checkbox($name='', $value=0, $attributes=array()) {
-
         return self::input("checkbox", $name, $value, $attributes);
 
     }
