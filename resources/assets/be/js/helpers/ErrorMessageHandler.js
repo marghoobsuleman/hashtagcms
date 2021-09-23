@@ -10,7 +10,7 @@ export class ErrorMessage  {
         document.addEventListener("DOMContentLoaded", function () {
             for(let i in $this.errors) {
                 $this.highlightField(i, $this.errors[i][0]);
-            };
+            }
             $this.focusFirst();
         });
     }
@@ -18,6 +18,7 @@ export class ErrorMessage  {
 
         let f = field;
         field = document.getElementById(f);
+
         if(!field) {
             console.error("Could not find "+f);
             return false;
@@ -39,10 +40,15 @@ export class ErrorMessage  {
 
         for(let i in this.errors) {
             let element = document.getElementById(i);
-            if(element) {
-                element.focus();
-                break;
+            try {
+                if(element) {
+                    element.focus();
+                    break;
+                }
+            } catch (e) {
+                console.log(e.message);
             }
+
 
         }
 

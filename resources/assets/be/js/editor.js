@@ -12,6 +12,10 @@ let EditorHelper =(function() {
             template_popup_width: 320,
             valid_elements : '*[*]',
             valid_children:'*[*]',
+            allow_script_urls: true,
+            convert_urls: false,
+            relative_urls: false,
+            remove_script_host: false,
             content_css: [
                 '//fonts.googleapis.com/css?family=Lato:300,300i,400,400i'
             ],

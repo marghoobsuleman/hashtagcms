@@ -223,7 +223,7 @@
                     </div>
 
                     <div class="col-sm-10">
-                        {!! FormHelper::textarea('lang_description', htmlentities($lang["description"]), array('class'=>'form-control', 'rows'=>10, 'required'=>'required')) !!}
+                        {!! FormHelper::textarea('lang_description', htmlentities($lang["description"]), array('class'=>'form-control', 'rows'=>10)) !!}
                     </div>
                 </div>
 
@@ -234,7 +234,7 @@
                     </div>
 
                     <div class="col-sm-10">
-                        {!! FormHelper::textarea('lang_page_content', htmlentities($lang["page_content"]), array('class'=>'form-control', 'rows'=>20, 'required'=>'required')) !!}
+                        {!! FormHelper::textarea('lang_page_content', htmlentities($lang["page_content"]), array('class'=>'form-control', 'rows'=>20)) !!}
                     </div>
 
                 </div>
@@ -307,7 +307,7 @@
                             </div>
 
                             <div class="col-sm-10">
-                                {!! FormHelper::input('text', 'lang_meta_title', $lang["meta_title"] , array('class'=>'form-control')) !!}
+                                {!! FormHelper::input('text', 'lang_meta_title', $lang["meta_title"], array('class'=>'form-control')) !!}
                             </div>
                         </div>
 
@@ -318,7 +318,7 @@
                             </div>
 
                             <div class="col-sm-10">
-                                {!! FormHelper::input('text', 'lang_meta_keywords', $lang["meta_keywords"] , array('class'=>'form-control')) !!}
+                                {!! FormHelper::input('text', 'lang_meta_keywords', $lang["meta_keywords"], array('class'=>'form-control')) !!}
                             </div>
 
                         </div>
@@ -330,7 +330,7 @@
                             </div>
 
                             <div class="col-sm-10">
-                                {!! FormHelper::textarea('lang_meta_description', $lang["meta_description"] , array('class'=>'form-control')) !!}
+                                {!! FormHelper::textarea('lang_meta_description', $lang["meta_description"], array('class'=>'form-control')) !!}
                             </div>
                         </div>
 
@@ -341,7 +341,7 @@
                             </div>
 
                             <div class="col-sm-10">
-                                {!! FormHelper::input('text', 'lang_meta_robots', $lang["meta_robots"] , array('class'=>'form-control')) !!}
+                                {!! FormHelper::input('text', 'lang_meta_robots', $lang["meta_robots"], array('class'=>'form-control')) !!}
                             </div>
                         </div>
 
@@ -352,7 +352,7 @@
                             </div>
 
                             <div class="col-sm-10">
-                                {!! FormHelper::input('text', 'lang_meta_canonical', $lang["meta_canonical"] , array('class'=>'form-control')) !!}
+                                {!! FormHelper::input('text', 'lang_meta_canonical', $lang["meta_canonical"], array('class'=>'form-control')) !!}
                             </div>
                         </div>
                     </fieldset>
