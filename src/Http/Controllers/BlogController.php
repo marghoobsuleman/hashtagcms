@@ -16,9 +16,9 @@ class BlogController extends FrontendBaseController
      * @return array|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function index(Request $request) {
-
+        $infoKeeper = app()->HashtagCms->getInfoKeeper();
         //check it's blog home
-        if(empty($request->infoKeeper['callableValue'][0])) {
+        if(empty($infoKeeper['callableValue'][0])) {
 
             $perPage = config("hashtagcms.blog_per_page");
 

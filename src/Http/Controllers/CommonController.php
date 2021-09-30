@@ -25,7 +25,7 @@ class CommonController extends FrontendBaseController
      * @return array|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function index(Request $request) {
-        //return $request->infoKeeper;
+        //return app()->HashtagCms->getInfoKeeper();
         abort(404);
 
     }

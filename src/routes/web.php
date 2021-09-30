@@ -74,10 +74,10 @@ Route::prefix('admin')->group(function () {
 
 if (HashtagCms::isRoutesEnabled()) {
     Route::match(['get', 'post', 'delete'], '{all?}', function(Request $request, $all="/") {
-
+        $infoKeeper = app()->HashtagCms->getInfoKeeper();
         //These are coming from FeMiddleware-> Core/BaseInfo Trait
-        $callable =  isset($request->infoKeeper["callable"]) ? $request->infoKeeper["callable"] : "";
-        $values =  isset($request->infoKeeper["callableValue"]) ? $request->infoKeeper["callableValue"] : array();
+        $callable =  isset($infoKeeper["callable"]) ? $infoKeeper["callable"] : "";
+        $values =  isset($infoKeeper["callableValue"]) ? $infoKeeper["callableValue"] : array();
 
         try {
 

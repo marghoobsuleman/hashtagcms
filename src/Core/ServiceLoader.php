@@ -20,7 +20,7 @@ class ServiceLoader
 
     public function __construct()
     {
-        $this->common = app()->Common;
+        $this->common = app()->HashtagCms;
 
         if($this->dataLoader == null) {
             $this->dataLoader = new DataLoader();

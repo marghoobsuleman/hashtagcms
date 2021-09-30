@@ -22,7 +22,7 @@ trait FeEssential {
     public function __construct(Request $request)
     {
         $this->initThemeFolder();
-        $this->common = app()->Common;
+        $this->common = app()->HashtagCms;
     }
 
     /**
@@ -60,7 +60,9 @@ trait FeEssential {
      * @param string $targetViewName
      * @param array $data
      */
-    protected function replaceViewWith(string $sourceViewName='', string $targetViewName='', $data=null) {
+    protected function replaceViewWith(string $sourceViewName=null, string $targetViewName=null, $data=null) {
+        $sourceViewName = ($sourceViewName === null) ? "" : $sourceViewName;
+        $targetViewName = ($targetViewName === null) ? "" : $targetViewName;
         $sourceViewName = str_replace("/", ".", $sourceViewName);
         if($data != null) {
             $this->bindDataForView($sourceViewName, $data);
@@ -74,7 +76,8 @@ trait FeEssential {
      * @param string $viewName
      * @return bool|null
      */
-    private function hasInAlias(string $viewName='') {
+    private function hasInAlias(string $viewName=null) {
+        $viewName = ($viewName === null) ? "" : $viewName;
         $viewName = str_replace("/", ".", $viewName);
         return isset($this->viewAlias[$viewName]) ? $this->viewAlias[$viewName]["name"] : null;
     }
@@ -83,11 +86,11 @@ trait FeEssential {
      * Load data
      * InfoKeeper already has site, category, tenant, and category info (Interceptor Middleware)
      * @param Request $request
-     * @param array $infoKeeper
      * @return array
      */
     public function index(Request $request) {
-        $infoKeeper = $request->infoKeeper;
+
+        $infoKeeper = app()->HashtagCms->getInfoKeeper();
 
         $mergeData = [];
 
@@ -185,7 +188,7 @@ trait FeEssential {
             $rData["status"] = $data["status"];
             $rData["theme"] = $theme;
 
-            $this->common = app()->Common;
+            $this->common = app()->HashtagCms;
 
             $this->common->setFinalData("bodyContent", $data["bodyContent"]);
             $this->common->setFinalData("profiling", $data['profiling']);
@@ -294,7 +297,7 @@ trait FeEssential {
         }
 
         //replace images etc
-        $common = app()->Common;
+        $common = app()->HashtagCms;
 
         $skeleton = $common->parseStringForPath($skeleton);
 
@@ -340,8 +343,8 @@ trait FeEssential {
      * @param string $name
      * @return mixed
      */
-    private function getViewName(string $name='') {
-
+    private function getViewName(string $name=null) {
+        $name = ($name === null) ? "" : $name;
         $theme = $this->getTheme();
         $directory = $theme["directory"];
         //check if has an alias - means it will load module instead of specified in backend
@@ -360,7 +363,8 @@ trait FeEssential {
      * @param array $mergeData
      * @return mixed
      */
-    private function viewMaster(array $themeObj, string $viewName='', array $data=array(), array $mergeData=[]) {
+    private function viewMaster(array $themeObj, string $viewName=null, array $data=array(), array $mergeData=[]) {
+        $viewName = ($viewName === null) ? "" : $viewName;
         $directory = $themeObj["directory"];
         $baseFolder = $this->themeFolder;
         $viewName = $baseFolder.".".$directory.".".$viewName;

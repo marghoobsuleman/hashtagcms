@@ -32,6 +32,7 @@ class CreateCategoriesTable extends Migration
             $table->string('link_rewrite', 255);
             $table->string('link_navigation', 255)->nullable()->comment('If you want to display on href. you must have apache rule for this if this is different from link_rewrite');
             $table->string('link_rewrite_pattern', 255)->nullable();
+            $table->string('controller_name', 255)->nullable();
 
             $table->tinyInteger('has_some_special_module')->nullable()->default(0);
             $table->string('special_module_alias', 255)->nullable();

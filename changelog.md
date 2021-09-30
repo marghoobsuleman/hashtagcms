@@ -1,5 +1,19 @@
 # Changelog
 
+## Version 1.2.5
+- Blog read_count is now displayed
+- You can define a controller name for a category
+- Code refactoring. InfoKeeper is now accessible from app()->HashtagCms->getInfoKeeper();
+
+
+## Version 1.2.4
+- User Model for controller fill-able is now `protected $guarded = array()`;
+- Backend: Code refactoring in editor.js
+
+
+## Version 1.2.3
+- Added Rich text editor (tinyMCE)
+
 ## Version 1.2.2
 - Backend: Added graph for Top categories and Top content in dashboard
 - Change TEXT to LONGTEXT of page_content table 

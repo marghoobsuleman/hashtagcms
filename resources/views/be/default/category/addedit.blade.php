@@ -36,6 +36,7 @@
         $has_some_special_module = old('has_some_special_module');
         $special_module_alias = old('special_module_alias');
         $required_login = old('required_login');
+        $controller_name = old('controller_name');
 
         $header_content = old('header_content');
         $footer_content = old('footer_content');
@@ -402,11 +403,21 @@ if(count($tenant_wise) == 0) {
 
                             <div class="form-group">
                                 <div class="col-sm-2">
+                                    {!!  FormHelper::label('controller_name', 'Controller Name') !!}
+                                </div>
+
+                                <div class="col-sm-10">
+                                    {!! FormHelper::input('text', 'controller_name', $controller_name, array('class'=>'form-control')) !!}
+                                </div>
+
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-2">
                                     {!!  FormHelper::label('lang_b2b_mapping', 'B2B Mapping') !!}
                                 </div>
 
                                 <div class="col-sm-10">
-                                    {!! FormHelper::input('text', 'lang_b2b_mapping', $lang["b2b_mapping"] , array('class'=>'form-control')) !!}
+                                    {!! FormHelper::input('text', 'lang_b2b_mapping', $lang["b2b_mapping"], array('class'=>'form-control')) !!}
                                 </div>
 
                             </div>

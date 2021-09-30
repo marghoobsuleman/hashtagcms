@@ -23,7 +23,7 @@ class DataLoader
 
     public function __construct()
     {
-        $this->common = app()->Common;
+        $this->common = app()->HashtagCms;
 
     }
 
@@ -38,8 +38,12 @@ class DataLoader
      * @param bool $dynamicUrlCheck
      * @return array
      */
-    public function loadData(string $category = null, string $language = 'en', string $tenant_link_rewrite = 'web',
-                             string $site_context = null, int $microsite_id = 0, $dynamicUrlCheck = true) {
+    public function loadData(string $category = null, string $language = null, string $tenant_link_rewrite = null,
+                             string $site_context = null, int $microsite_id = null, $dynamicUrlCheck = true) {
+
+        $language = ($language===null) ? 'en' : $language;
+        $tenant_link_rewrite = ($tenant_link_rewrite===null) ? 'web' : $tenant_link_rewrite;
+        $microsite_id = ($microsite_id === null) ? 0 : $microsite_id;
 
         $linkRewrites = [];
         $categoryName = $realLinkName = $category;
@@ -137,19 +141,25 @@ class DataLoader
         $linkRewrites[0] = $category["link_rewrite"];
 
         $category_id = $category["id"];
-
+        //dd($category);
+        //if you have defined controller name in the table
+        if(isset($category['controller_name']) && !empty($category['controller_name'])) {
+            $linkRewrites[0] = $category['controller_name'];
+        }
 
         //Check category dynamic url
+        //This is specially for checking dynamic url pattern - it is not being used when you call from api
         if($dynamicUrlCheck) {
             $realLinkNameArr = explode("/", $realLinkName);
-
-            //This is specially for checking dynamic url pattern - it is not being used when you call from api
             if(isset($category["link_rewrite_pattern"])) {
 
                 array_shift($realLinkNameArr);
+
                 $link_rewrite_pattern = $category["link_rewrite_pattern"];
 
-                if($link_rewrite_pattern != "" && $link_rewrite_pattern != null) {
+                if($link_rewrite_pattern !== "" && $link_rewrite_pattern !== null) {
+
+                    //dd("dynamicUrlCheck ", $dynamicUrlCheck);
 
                     //Calculate required link count
                     $totalCount = preg_match_all("/\{*+\}/", $link_rewrite_pattern, $matches);
@@ -163,7 +173,7 @@ class DataLoader
                         return $this->sendError("DataLoader:: Dynamic url is mismatched");
 
                     } else {
-
+                        //setting key vars - ie: link_rewrite=value
                         $link_rewrite_patterns = explode("/", $link_rewrite_pattern);
                         foreach ($realLinkNameArr as $index=>$lr) {
                             $key = preg_replace("/\{|\}|\?/", "", $link_rewrite_patterns[$index]);
@@ -173,13 +183,14 @@ class DataLoader
                     }
 
                 }
+
             } else {
 
                 //check if has a controller and method
                 //if yes - let it process
                 //else - throw an error
-                $controllerName = ($realLinkNameArr[0] == "/" || $realLinkNameArr[0]=="") ? $this->defaultController : $realLinkNameArr[0];
-                $methodName = ($realLinkNameArr[1] == "") ? $this->defaultMethod : $realLinkNameArr[1];
+                $controllerName = ($realLinkNameArr[0] === "/" || $realLinkNameArr[0] === "") ? $this->defaultController : $realLinkNameArr[0];
+                $methodName = ($realLinkNameArr[1] === "") ? $this->defaultMethod : $realLinkNameArr[1];
 
                 //reality check for controller and method
                 $namespace = config("hashtagcms.namespace");
@@ -415,7 +426,7 @@ class DataLoader
      */
     private function getCategoryByLinkrewrite(string $category, int $site_id, int $tenant_id, int $lang_id=1, $fullUrl=null) {
 
-        $query = "select c.id, c.required_login, c.parent_id, c.site_id, c.is_site_default, c.is_root_category, c.is_new, c.has_wap,
+        $query = "select c.id, c.controller_name, c.required_login, c.parent_id, c.site_id, c.is_site_default, c.is_root_category, c.is_new, c.has_wap,
         c.wap_url, c.link_rewrite, c.link_navigation, c.link_rewrite_pattern, c.has_some_special_module,c.read_count,
         cs.site_id, cs.tenant_id, cs.theme_id, cs.icon_css, cs.header_content, cs.footer_content, cs.cache_category,
         cl.name, cl.title, cl.excerpt, cl.content, cl.active_key,

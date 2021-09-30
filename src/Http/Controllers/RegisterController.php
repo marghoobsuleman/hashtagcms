@@ -43,8 +43,7 @@ class RegisterController extends FrontendBaseController
     }
 
     /**
-     * @param Request $request
-     * @param array $infoKeeper
+     * @param Request $request     
      * @return array
      */
     public function index(Request $request) {

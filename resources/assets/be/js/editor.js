@@ -1,6 +1,7 @@
 let EditorHelper =(function() {
 
     let makeRichEditor = (selector, settings)=> {
+
         let defaultSettings = {
             selector: selector,
             height: 500,
@@ -12,6 +13,7 @@ let EditorHelper =(function() {
             template_popup_width: 320,
             valid_elements : '*[*]',
             valid_children:'*[*]',
+            document_base_url: AdminConfig.get("app_url")+"/",
             allow_script_urls: true,
             convert_urls: false,
             relative_urls: false,
@@ -33,7 +35,7 @@ let EditorHelper =(function() {
             }
         };
         defaultSettings = {...defaultSettings, ...settings};
-        let editor = tinymce.init(defaultSettings);
+        selector.editor = tinymce.init(defaultSettings);
     };
 
     return {makeRichEditor:makeRichEditor};
@@ -53,7 +55,7 @@ var PageManager = {
         this.content_type = content_type;
         this.id = id;
 
-        if (PageManager.action == "add") {
+        if (PageManager.action === "add") {
             document.getElementById("lang_name").addEventListener("change", PageManager.autoUpdateFields);
             document.getElementById("lang_title").addEventListener("change", PageManager.autoUpdateUrls);
             document.getElementById("link_rewrite").addEventListener("keyup", PageManager.linkRewriteUpdated);
@@ -65,24 +67,27 @@ var PageManager = {
     isBlank: function (elem) {
         return (document.getElementById(elem).value.replace(/\s/g, "") === "");
     },
+    cleanForUrl: function(str, replaceWith="-") {
+        return str.replace(/\s|'/g, "_");
+    },
     autoUpdateFields: function () {
         let value = this.value;
         if (PageManager.isBlank("lang_title")) {
             document.getElementById("lang_title").value = value[0].toUpperCase() + value.slice(1);
-            document.getElementById("alias").value = value.toUpperCase().replace(/\s/g, "_");
-            let active_key = value.toLowerCase().replace(/\s/g, "-");
+            document.getElementById("alias").value = this.cleanForUrl(value.toUpperCase(), "_");
+            let active_key = this.cleanForUrl(value.toLowerCase(), "-");
             document.getElementById("lang_active_key").value = active_key;
             document.getElementById("link_rewrite").value = active_key;
         }
     },
     autoUpdateUrls: function () {
         let value = this.value;
-        if (document.getElementById("link_rewrite").edited != true) {
-            value = value.toUpperCase().replace(/\s/g, "_");
+        if (document.getElementById("link_rewrite").edited !== true) {
+            value = this.cleanForUrl(value.toUpperCase(), "_");
             value = value.substr(0, 60); //it's limit
             document.getElementById("alias").value = value;
 
-            let active_key = value.toLowerCase().replace(/\s/g, "-");
+            let active_key = this.cleanForUrl(value.toLowerCase(), "-");
             active_key = value.substr(0, 128); //it's limit
             document.getElementById("lang_active_key").value = active_key;
             document.getElementById("link_rewrite").value = active_key;
@@ -122,7 +127,7 @@ var PageManager = {
                 let index = 1;
                 for (let i = 0; i < res.length; i++) {
                     let current = res[i];
-                    if (current.id != PageManager.id) {
+                    if (current.id !== PageManager.id) {
                         parentcombo.options[index] = new Option(current.lang.name, current.id);
                         index++;
                     }
@@ -133,7 +138,7 @@ var PageManager = {
         }
 
         function showHideBlock(show) {
-            document.getElementById("parent_div").style.display = (show == true) ? "" : "none";
+            document.getElementById("parent_div").style.display = (show === true) ? "" : "none";
         }
     }
 };

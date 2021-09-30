@@ -42,7 +42,6 @@ class LogoutController extends FrontendBaseController
 
     /**
      * @param Request $request
-     * @param array $infoKeeper
      * @return array|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
     public function index(Request $request) {

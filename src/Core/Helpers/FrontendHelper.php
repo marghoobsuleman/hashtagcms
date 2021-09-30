@@ -9,7 +9,7 @@ if (! function_exists('htcms_get_resource')) {
      * @return string
      */
     function htcms_get_resource($resource='') {
-        $common = app()->Common;
+        $common = app()->HashtagCms;
         $path = $common->getResourcePath();
         $domain = env("MEIDA_URL");
 
@@ -30,7 +30,7 @@ if (! function_exists('htcms_get_header_menu')) {
      * @return array
      */
     function htcms_get_header_menu($active='') {
-        $common = app()->Common;
+        $common = app()->HashtagCms;
         return $common->getHeaderMenu($active);
     }
 }
@@ -45,7 +45,7 @@ if (! function_exists('htcms_get_header_menu_html')) {
      * @return string
      */
     function htcms_get_header_menu_html($maxLimit=-1, $css=null) {
-        $common = app()->Common;
+        $common = app()->HashtagCms;
         return $common->getHeaderMenuHtml($maxLimit, $css);
     }
 }
@@ -58,7 +58,7 @@ if (! function_exists('htcms_parse_string_for_view')) {
      * @return string
      */
     function htcms_parse_string_for_view($string='') {
-        $common = app()->Common;
+        $common = app()->HashtagCms;
         return $common->parseStringForView($string);
     }
 }
@@ -143,7 +143,7 @@ if (! function_exists('htcms_get_path')) {
      * @return string
      */
     function htcms_get_path($path) {
-        $common = app()->Common;
+        $common = app()->HashtagCms;
 
         if($common->fullPathStyle()) {
             $lang = htcms_get_lang_info("iso_code");
@@ -166,7 +166,7 @@ if (! function_exists('htcms_get_js_resource')) {
      * @return string
      */
     function htcms_get_js_resource(string $path) {
-        $common = app()->Common;
+        $common = app()->HashtagCms;
         $path = "%{js_path}%/$path";
 
         return $common->parseStringForPath($path);
@@ -183,7 +183,7 @@ if (! function_exists('htcms_get_css_resource')) {
      * @return string
      */
     function htcms_get_css_resource(string $path) {
-        $common = app()->Common;
+        $common = app()->HashtagCms;
         $path = "%{css_path}%/$path";
         return $common->parseStringForPath($path);
     }
@@ -199,7 +199,7 @@ if (! function_exists('htcms_get_image_resource')) {
      * @return string
      */
     function htcms_get_image_resource(string $path) {
-        $common = app()->Common;
+        $common = app()->HashtagCms;
         $path = "%{image_path}%/$path";
         return $common->parseStringForPath($path);
     }
@@ -225,7 +225,7 @@ if (! function_exists('htcms_get_site_info')) {
      */
     function htcms_get_site_info(string $key=null) {
 
-        $common = app()->Common;
+        $common = app()->HashtagCms;
         return $common->getInfo('site', $key);
 
     }
@@ -255,7 +255,7 @@ if (! function_exists('htcms_get_lang_info')) {
      */
     function htcms_get_lang_info(string $key=null) {
 
-        $common = app()->Common;
+        $common = app()->HashtagCms;
         return $common->getInfo('language', $key);
 
     }
@@ -285,7 +285,7 @@ if (! function_exists('htcms_get_tenant_info')) {
      */
     function htcms_get_tenant_info(string $key=null) {
 
-        $common = app()->Common;
+        $common = app()->HashtagCms;
         return $common->getInfo('tenant', $key);
     }
 
@@ -302,7 +302,7 @@ if (! function_exists('htcms_get_category_info')) {
      * @return string|array
      */
     function htcms_get_category_info(string $key=null) {
-        $common = app()->Common;
+        $common = app()->HashtagCms;
         return $common->getInfo('category', $key);
     }
 }
@@ -317,7 +317,7 @@ if (! function_exists('htcms_get_theme_info')) {
      * @return string|array
      */
     function htcms_get_theme_info(string $key=null) {
-        $common = app()->Common;
+        $common = app()->HashtagCms;
         return $common->getInfo('theme', $key);
     }
 }
@@ -330,7 +330,7 @@ if (! function_exists('htcms_get_body_content')) {
      * @return string
      */
     function htcms_get_body_content() {
-        $common = app()->Common;
+        $common = app()->HashtagCms;
         return $common->getFinalData("bodyContent");
     }
 }
@@ -344,7 +344,7 @@ if (! function_exists('htcms_get_header_content')) {
      * @return string
      */
     function htcms_get_header_content($reverse=false) {
-        $common = app()->Common;
+        $common = app()->HashtagCms;
         $category = $common->getFinalData("category");
         $html = $common->getFinalData("html");
         return ($reverse == true) ? $category["header_content"].$html["theme"]["header_content"] : $html["theme"]["header_content"].$category["header_content"];
@@ -360,7 +360,7 @@ if (! function_exists('htcms_get_header_content')) {
      * @return string
      */
     function htcms_get_header_content($reverse=false) {
-        $common = app()->Common;
+        $common = app()->HashtagCms;
         $category = $common->getFinalData("category");
         $html = $common->getFinalData("html");
         return ($reverse == true) ? $category["header_content"].$html["theme"]["header_content"] : $html["theme"]["header_content"].$category["header_content"];
@@ -376,7 +376,7 @@ if (! function_exists('htcms_get_footer_content')) {
      * @return string
      */
     function htcms_get_footer_content($reverse=false) {
-        $common = app()->Common;
+        $common = app()->HashtagCms;
         $category = $common->getFinalData("category");
         $html = $common->getFinalData("html");
         return ($reverse == true) ? $html["theme"]["footer_content"].$category["footer_content"]: $category["footer_content"].$html["theme"]["footer_content"];
@@ -392,7 +392,7 @@ if (! function_exists('htcms_get_header_title')) {
      * @return string
      */
     function htcms_get_header_title() {
-        $common = app()->Common;
+        $common = app()->HashtagCms;
         $html = $common->getFinalData("html");
         return $html["header"]["title"];
     }
@@ -407,7 +407,7 @@ if (! function_exists('htcms_get_all_meta_tags')) {
      * @return string
      */
     function htcms_get_all_meta_tags() {
-        $common = app()->Common;
+        $common = app()->HashtagCms;
         $html = $common->getFinalData("html");
         $meta = $html["header"]["meta"];
         $mh = array();
@@ -426,7 +426,7 @@ if (! function_exists('htcms_get_all_link_tags')) {
      * @return string
      */
     function htcms_get_all_link_tags() {
-        $common = app()->Common;
+        $common = app()->HashtagCms;
         $html = $common->getFinalData("html");
         $mh = array();
         foreach ($html["header"]["link"] as $link=>$linkValue) {
@@ -447,7 +447,7 @@ if (! function_exists('htcms_get_shared_data')) {
      * @return string
      */
     function htcms_get_shared_data($module_alias='') {
-        $common = app()->Common;
+        $common = app()->HashtagCms;
         return $common->getSharedModuleData($module_alias);
     }
 }

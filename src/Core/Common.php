@@ -26,6 +26,8 @@ class Common
     private $htmlData = array(); //This will be final output
     private $sharedModuleData = array();
 
+    private $infoKeeper = array();
+
 
     function __construct()
     {
@@ -530,5 +532,33 @@ class Common
      */
     public function getSharedModuleData($alias) {
         return (isset($this->sharedModuleData[$alias]) && !empty($this->sharedModuleData[$alias])) ? $this->sharedModuleData[$alias] : null;
+    }
+
+
+    /**
+     * Set Info Keeper
+     * @param $key
+     * @param $value
+     */
+    public function setInfoKeeper($key, $value) {
+        $this->infoKeeper[$key] = $value;
+    }
+
+    /**
+     * Get Info Keeper
+     * @param null $key
+     * @return array|mixed
+     */
+    public function getInfoKeeper($key=null) {
+        return ($key === null) ? $this->infoKeeper :  $this->infoKeeper[$key];
+    }
+
+    /**
+     * Has in infoKeeper
+     * @param $key
+     * @return mixed|null
+     */
+    public function hasInInfoKeeper($key) {
+        return isset($this->infoKeeper[$key]) ? $this->infoKeeper[$key] : null;
     }
 }

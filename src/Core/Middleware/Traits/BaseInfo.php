@@ -2,13 +2,14 @@
 
 namespace MarghoobSuleman\HashtagCms\Core\Middleware\Traits;
 
+use MarghoobSuleman\HashtagCms\Models\Category;
 use MarghoobSuleman\HashtagCms\Models\Site;
 
 /**
  * Trait BaseInfo
  * @package MarghoobSuleman\HashtagCms\Http\Middleware\Core
  *
- * Following properties will be there inside request()->infoKeeper
+ * Following properties will be there inside app()->HashtagCms->getInfoKeeper()
  * siteInfo =  {"id":1,"name":"CMS","context":"hashtagcms","favicon":"","title":"Welcome to #CMS"}
  *
  * tenantInfo: {"id":1, "name":"India","link_rewrite":"in","created_at":"2018-09-21 04:00:07","updated_at":"2018-09-21 04:00:07","deleted_at":null,"pivot":{"site_id":1,"tenant_id":1}}
@@ -47,7 +48,7 @@ trait BaseInfo {
     public function setBaseInfo($request) {
 
         info("BaseInfo: Start Processing...");
-        $this->common = app()->Common;
+        $this->common = app()->HashtagCms;
 
         $path = $request->path();
 
@@ -285,9 +286,8 @@ trait BaseInfo {
         $controllerName = ($controllerName == "/") ? $this->defaultController : $controllerName;
 
         //reality check for controller and method
-        //	* if class exist controllername is blog else it’s frontend
-        //	* if method exist method name is story else it’s index Str::ucfirst('foo bar');
-        //$callable = $namespace."Http\Controllers\\".str_replace("-", "", Str::ucfirst($controllerName))."Controller";
+        //	* if class exist controllername (we have BlogController for blog category) else it’s frontend
+        //	* if method exist (method name is story for BlogController) else it’s index;
         $callable = $this->getControllerName($controllerName);
 
         $foundController = false;
@@ -343,7 +343,8 @@ trait BaseInfo {
             $methodName = $this->defaultMethod;
         }
 
-        $categoryName = ($path_arr[$controllerIndex] == $this->defaultController) ? "/" : join("/",array_splice($path_arr, $controllerIndex, sizeof($path_arr)-1));
+        $categoryName = ($path_arr[$controllerIndex] === $this->defaultController) ? "/" : join("/",array_splice($path_arr, $controllerIndex, sizeof($path_arr)-1));
+
 
         $this->pushToRequest("controllerName", $controllerName);
         $this->pushToRequest("methodName", $methodName);
@@ -397,14 +398,11 @@ trait BaseInfo {
      * @param $value
      */
     public function pushToRequest($key, $value) {
-        if(!isset($this->request->infoKeeper)) {
-            $this->request->infoKeeper = array();
-        }
-        $this->request->infoKeeper[$key] = $value;
+        $this->common->setInfoKeeper($key, $value);
     }
 
     private function getFromRequest($key = NULL) {
-        return ($key == NULL) ? $this->request->infoKeeper :  $this->request->infoKeeper[$key];
+        return $this->common->getInfoKeeper($key);
     }
 
     /**
@@ -414,8 +412,7 @@ trait BaseInfo {
      * @return bool
      */
     private function hasInRequest($key) {
-
-        return isset($this->request->infoKeeper[$key]) ? $this->request->infoKeeper[$key] : NULL;
+        return $this->common->hasInInfoKeeper($key);
     }
 
     /**
@@ -425,10 +422,25 @@ trait BaseInfo {
      */
     private function getControllerName($controller_name='') {
 
+        $categoryData = Category::withoutGlobalScopes()->where(array(
+            array('link_rewrite', '=', $controller_name),
+            array('controller_name', '!=', null),
+            array('controller_name', '!=', '')
+        ))->first();
+
+        if($categoryData!==null || !empty($categoryData)) {
+            $this->common->setInfoKeeper("category", $categoryData);
+            $controller_name = isset($categoryData->controller_name) ? $categoryData->controller_name : str_replace("-", "", Str::title($controller_name));
+            info("----- Found category controller: ".$controller_name." ------");
+        } else {
+            $controller_name = str_replace("-", "", Str::title($controller_name));
+            info("----- Default controller: ".$controller_name." ------");
+        }
+
         $namespace = config("hashtagcms.namespace");
         $appNamespace = app()->getNamespace();
-        $callable = $namespace."Http\Controllers\\".str_replace("-", "", Str::title($controller_name))."Controller";
-        $callableApp = $appNamespace."Http\Controllers\\".str_replace("-", "", Str::title($controller_name))."Controller";
+        $callable = $namespace."Http\Controllers\\".$controller_name."Controller";
+        $callableApp = $appNamespace."Http\Controllers\\".$controller_name."Controller";
 
         return class_exists($callableApp) ? $callableApp : $callable;
     }

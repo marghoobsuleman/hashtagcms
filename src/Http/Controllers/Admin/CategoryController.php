@@ -92,6 +92,7 @@ class CategoryController extends BaseAdminController
             "cache_category" => "nullable|max:100|string",
             "has_some_special_module" => "nullable|integer",
             "special_module_alias" => "nullable|max:255|string",
+            "controller_name" => "nullable|max:255|string",
             "insert_by" => "required|numeric",
             "update_by" => "required|numeric",
             "publish_status" => "nullable|numeric",
@@ -107,6 +108,7 @@ class CategoryController extends BaseAdminController
             "lang_meta_description" => "nullable|max:255|string",
             "lang_meta_robots" => "nullable|max:255|string",
             "lang_meta_canonical" => "nullable|max:255|string"
+
         ];
 
         $validator = Validator::make($request->all(), $rules);
@@ -145,6 +147,8 @@ class CategoryController extends BaseAdminController
         $saveData["update_by"] = Auth::user()->id;
         $saveData["required_login"] = $data["required_login"] ?? 0;
         $saveData["publish_status"] = $data["publish_status"] ?? 0;
+        $saveData["controller_name"] = $data["controller_name"] ?? null;
+
 
         //Language
         $langData["lang_id"] = $data["lang_id"] ?? htcms_get_language_id_for_admin();

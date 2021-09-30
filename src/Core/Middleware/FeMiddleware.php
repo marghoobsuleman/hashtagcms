@@ -35,9 +35,7 @@ class FeMiddleware
         info("================== FeMiddleware: [".$request->path()."] ====================");
         $this->process($this->request);
         info("================== End============================================");
-
-        //dd("1. feMiddleware",$this->request->infoKeeper);
-
+        
         return $next($this->request);
     }
 

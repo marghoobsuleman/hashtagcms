@@ -32,7 +32,7 @@ class ModuleLoader
 
     public function __construct()
     {
-        $this->common = app()->Common;
+        $this->common = app()->HashtagCms;
     }
 
 

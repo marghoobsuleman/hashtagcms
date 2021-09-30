@@ -17,7 +17,7 @@ class FeServiceProvider extends ServiceProvider
     {
 
         //This will have useful things
-        $this->app->singleton("Common", function() {
+        $this->app->singleton("HashtagCms", function() {
             return new Common();
         });
 
