@@ -1,4 +1,6 @@
 # Changelog
+## Version 1.2.7
+- ModifyCategory Migration table issue fixed
 
 ## Version 1.2.6
 - moduleInfo is now passed with each view template.
