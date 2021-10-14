@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 1.2.6
+- moduleInfo is now passed with each view template.
+- hooks table has now 'direction' column. It can be useful for mobile layout handling.  
+
 ## Version 1.2.5
 - Blog read_count is now displayed
 - You can define a controller name for a category

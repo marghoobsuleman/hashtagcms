@@ -31,7 +31,7 @@ return [
     ],
     "default"=>array("lang"=>"en", "tenant"=>"web", "when_default_category_not_found"=>"home"),
     "domains" => array(
-        "htcms.monsterindia.com"=>env('CONTEXT', 'hashtagcms')
+        "dev.hashtagcms.com"=>env('CONTEXT', 'hashtagcms')
     ),
     "blog_per_page"=>10,
     "blog_categories"=>array()

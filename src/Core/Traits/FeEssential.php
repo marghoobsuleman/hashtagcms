@@ -325,7 +325,7 @@ trait FeEssential {
             if (View::exists($viewName)) {
                 try {
                     //$viewData = $this->view_make($viewName, array("data"=>$module["data"]));
-                    $viewData = $this->view_make($viewName, array("data"=>$obj["data"], "infoKeeper"=>$infoKeeper), $mergeData);
+                    $viewData = $this->view_make($viewName, array("data"=>$obj["data"], "infoKeeper"=>$infoKeeper, "moduleInfo"=>$obj), $mergeData);
 
                 } catch (Exception $error) {
                     info("View Loading error: ".$error->getMessage());

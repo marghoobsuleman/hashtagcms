@@ -19,6 +19,7 @@
         $description= old("description");
         $site_id = old("site_id", 1);
         $name = old("name");
+        $direction = old("direction", "Horizontal");
 
         if(isset($results)) {
             extract($results);
@@ -74,6 +75,19 @@
                         </div>
 
                     </div>
+
+                    <div class="form-group">
+
+                        <div class="col-sm-2">
+                            {!!  FormHelper::label('direction', 'Direction') !!}
+                        </div>
+
+                        <div class="col-sm-10">
+                            {!! FormHelper::select('direction', $directions, array(), $direction, "plain_array","Select") !!}
+                        </div>
+
+                    </div>
+
 
                     <div class="row">
                         <div class="form-group center-align">

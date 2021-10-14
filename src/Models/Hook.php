@@ -13,5 +13,11 @@ class Hook extends AdminBaseModel
         return $this->belongsToMany(Site::class);
     }
 
-
+    /**
+     * Get content type
+     * @return array
+     */
+    public static function getDirections() {
+        return static::getEnumValues('hooks', 'direction');
+    }
 }

@@ -11,7 +11,7 @@ use MarghoobSuleman\HashtagCms\Core\Helpers\Message;
 
 class HookController extends BaseAdminController
 {
-    protected $dataFields = ['id','site.name as site_name','name','alias','description','created_at','updated_at'];
+    protected $dataFields = ['id','site.name as site_name','name','alias','description','direction','created_at','updated_at'];
 
     protected $dataSource = Hook::class;
 
@@ -19,8 +19,8 @@ class HookController extends BaseAdminController
 
     protected $actionFields = array("edit", "delete"); //This is last column of the row
 
-    protected $bindDataWithAddEdit = array("sites"=>array("dataSource"=>Site::class, "method"=>"all", "params"=>["id", "name"]));
-
+    protected $bindDataWithAddEdit = array("sites"=>array("dataSource"=>Site::class, "method"=>"all", "params"=>["id", "name"]),
+                                            "directions"=>array("dataSource"=>Hook::class, "method"=>"getDirections"));
 
     /**
      * @param Request $request
@@ -52,6 +52,7 @@ class HookController extends BaseAdminController
         $saveData["name"] = $data["name"];
         $saveData["alias"] = $data["alias"];
         $saveData["description"] = $data["description"];
+        $saveData["direction"] = $data["direction"];
        // $saveData["site_id"] = $data["site_id"];
 
         //date

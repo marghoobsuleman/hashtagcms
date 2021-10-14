@@ -13,10 +13,10 @@ class ModifyHooksTable extends Migration
      */
     public function up()
     {
-        Schema::table('categories', function (Blueprint $table) {
+        Schema::table('hooks', function (Blueprint $table) {
 
-            if (!Schema::hasColumn('categories', 'controller_name')) {
-                $table->string('controller_name', 255)->nullable();
+            if (!Schema::hasColumn('direction', 'controller_name')) {
+                $table->enum('direction', ['horizontal', 'vertical'])->default('horizontal');
             }
 
         });
