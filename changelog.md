@@ -1,4 +1,7 @@
 # Changelog
+## Version 1.2.8
+- ModifyHooks Migration table issue fixed
+
 ## Version 1.2.7
 - ModifyCategory Migration table issue fixed
 
