@@ -68,14 +68,14 @@ var PageManager = {
         return (document.getElementById(elem).value.replace(/\s/g, "") === "");
     },
     cleanForUrl: function(str, replaceWith="-") {
-        return str.replace(/\s|'/g, "_");
+        return str.replace(/\s|'/g, replaceWith);
     },
     autoUpdateFields: function () {
         let value = this.value;
         if (PageManager.isBlank("lang_title")) {
             document.getElementById("lang_title").value = value[0].toUpperCase() + value.slice(1);
-            document.getElementById("alias").value = this.cleanForUrl(value.toUpperCase(), "_");
-            let active_key = this.cleanForUrl(value.toLowerCase(), "-");
+            document.getElementById("alias").value = PageManager.cleanForUrl(value.toUpperCase(), "_");
+            let active_key = PageManager.cleanForUrl(value.toLowerCase(), "-");
             document.getElementById("lang_active_key").value = active_key;
             document.getElementById("link_rewrite").value = active_key;
         }
@@ -83,11 +83,11 @@ var PageManager = {
     autoUpdateUrls: function () {
         let value = this.value;
         if (document.getElementById("link_rewrite").edited !== true) {
-            value = this.cleanForUrl(value.toUpperCase(), "_");
+            value = PageManager.cleanForUrl(value.toUpperCase(), "_");
             value = value.substr(0, 60); //it's limit
             document.getElementById("alias").value = value;
 
-            let active_key = this.cleanForUrl(value.toLowerCase(), "-");
+            let active_key = PageManager.cleanForUrl(value.toLowerCase(), "-");
             active_key = value.substr(0, 128); //it's limit
             document.getElementById("lang_active_key").value = active_key;
             document.getElementById("link_rewrite").value = active_key;
