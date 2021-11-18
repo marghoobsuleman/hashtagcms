@@ -153,7 +153,7 @@
                     </div>
 
                     <div class="col-sm-10">
-                        {!! FormHelper::input('text', 'alias', $alias , array('class'=>'form-control', 'required'=>'required')) !!}
+                        {!! FormHelper::input('text', 'alias', $alias , array('class'=>'form-control')) !!}
                     </div>
                 </div>
 
@@ -164,7 +164,7 @@
                     </div>
 
                     <div class="col-sm-10">
-                        {!! FormHelper::input('text', 'lang_active_key', $lang["active_key"] , array('class'=>'form-control', 'required'=>'required')) !!}
+                        {!! FormHelper::input('text', 'lang_active_key', $lang["active_key"] , array('class'=>'form-control')) !!}
                     </div>
                 </div>
 
