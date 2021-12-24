@@ -18,7 +18,7 @@ class CategoryLang extends AdminBaseModel
     }
 
     public function site() {
-        return $this->hasOne(SITE::class, "id", "site_id");
+        return $this->hasOne(Site::class, "id", "site_id");
     }
 
     public function prefered() {

@@ -39,7 +39,8 @@ class ServiceLoader
      * @param array $withData
      * @return array
      */
-    private function getError($message='', $status=404, $withData=[]) {
+    private function getError(string $message='', int $status=404, array $withData=[]): array
+    {
         $error = array("message"=>$message, "status"=>$status);
         return array_merge($error, $withData);
     }
@@ -184,7 +185,8 @@ class ServiceLoader
      * @return array|string
      */
     public function loadModulesByHookAlias(string $name=null, bool $asJson=true, string $category=null, string $language='en', string $tenant_link_rewrite='web',
-                                           string $site_context=null, int $microsite_id=0) {
+                                           string $site_context=null, int $microsite_id=0): array|string
+    {
 
 
         $info = $this->setInitBaseInfo($category, $language, $tenant_link_rewrite, $site_context, $microsite_id);

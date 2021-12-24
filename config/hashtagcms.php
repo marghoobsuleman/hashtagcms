@@ -8,10 +8,8 @@ return [
         'site_name'=>'Hashtag CMS',
         'base_path' => '',
         'theme' => 'fe.default',
-        'resource_dir' => 'assets/hashtagcms/fe',
-        'js' => 'js',
-        'css' => 'css',
-        'image' => 'img',
+        'assets_path'=>array('base'=>'/assets/hashtagcms/fe',
+                            'js'=>'js', 'css'=>'css', 'image'=>'img'),
         'media_path' => '/storage/media',
         'records_per_page' => 20
     ],
@@ -34,5 +32,11 @@ return [
         "dev.hashtagcms.com"=>env('CONTEXT', 'hashtagcms')
     ),
     "blog_per_page"=>10,
-    "blog_categories"=>array()
+    "more_categories_on_blog_listing"=>array(), //"support"
+    "api_secrets"=>array(
+        /**
+         * This is a combination of context and random key. will be used in /api/hashtagcms/public/mobiles/configs/v1/site-configs?site=htcmsctx&api_secret=61c58507bbac1
+         */
+        "htcmsctx"=>"61c58507bbac1"
+    )
 ];

@@ -21,7 +21,7 @@
 
     <div class="panel-footer">
 
-        <a class="btn btn-primary" href="{{htcms_admin_path(request()->module_info->controller_name.'/add')}}">Add New</a>
+        <a class="btn btn-primary" href="{{htcms_admin_path(request()->module_info->controller_name.'/create')}}">Add New</a>
         <a class="btn btn-secondary" href="{{$backURL}}">Back</a>
 
 

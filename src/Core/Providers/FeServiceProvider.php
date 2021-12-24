@@ -4,6 +4,11 @@ namespace MarghoobSuleman\HashtagCms\Core\Providers;
 
 use MarghoobSuleman\HashtagCms\Core\Common;
 use Illuminate\Support\ServiceProvider;
+use MarghoobSuleman\HashtagCms\Core\Main\DataLoader;
+use MarghoobSuleman\HashtagCms\Core\Main\InfoLoader;
+use MarghoobSuleman\HashtagCms\Core\Main\CacheManager;
+use MarghoobSuleman\HashtagCms\Core\Main\LayoutManager;
+use MarghoobSuleman\HashtagCms\Core\Main\ModuleLoader;
 
 
 class FeServiceProvider extends ServiceProvider
@@ -19,6 +24,27 @@ class FeServiceProvider extends ServiceProvider
         //This will have useful things
         $this->app->singleton("HashtagCms", function() {
             return new Common();
+        });
+
+        $this->app->singleton("HashtagCmsInfoLoader", function() {
+            return new InfoLoader();
+        });
+
+
+        $this->app->singleton("HashtagCmsModuleLoader", function() {
+            return new ModuleLoader();
+        });
+
+        $this->app->singleton("HashtagCmsLayoutManager", function() {
+            return new LayoutManager();
+        });
+
+        $this->app->singleton("HashtagCmsCache", function() {
+            return new CacheManager();
+        });
+
+        $this->app->singleton("HashtagCmsDataLoader", function() {
+            return new DataLoader();
         });
 
     }

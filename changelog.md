@@ -1,4 +1,20 @@
 # Changelog
+## Version 1.3.0
+- Optimization
+- Major Code Refactoring for frontend
+- Get site info
+  - Get lang info
+  - Get tenant info
+  - Get category info
+- load data
+
+- will work on following
+- Admin branding can be changed. Logo height and icon can be pass through module.
+
+
+## Version 1.2.9
+- Fixed content auto update url issue
+
 ## Version 1.2.8
 - ModifyHooks Migration table issue fixed
 

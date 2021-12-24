@@ -28,8 +28,8 @@ class ProfileController extends FrontendBaseController
     public function index(Request $request) {
 
         if(Auth::id() == null) {
-
-            return redirect()->intended("/login?redirect=/profile");
+            $reqParams = $request->all();
+            return redirect()->intended("/login?redirect=/profile?".http_build_query($reqParams,'', '&'));
         }
 
         $user = Auth::user();

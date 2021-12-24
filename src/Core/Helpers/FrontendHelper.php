@@ -8,9 +8,10 @@ if (! function_exists('htcms_get_resource')) {
      * @param string $resource
      * @return string
      */
-    function htcms_get_resource($resource='') {
-        $common = app()->HashtagCms;
-        $path = $common->getResourcePath();
+    function htcms_get_resource(string $resource=''): string
+    {
+        $layoutManager = app()->HashtagCms->layoutManager();
+        $path = $layoutManager->getResourcePath();
         $domain = env("MEIDA_URL");
 
         if($resource !== '') {
@@ -29,7 +30,8 @@ if (! function_exists('htcms_get_header_menu')) {
      * @param string $active
      * @return array
      */
-    function htcms_get_header_menu($active='') {
+    function htcms_get_header_menu(string $active=''): array
+    {
         $common = app()->HashtagCms;
         return $common->getHeaderMenu($active);
     }
@@ -41,10 +43,16 @@ if (! function_exists('htcms_get_header_menu_html')) {
      *
      * Get Header Menu
      * @param int $maxLimit
-     * @param null $css
+     * @param array|null $css
+     * #[ArrayShape(["item"=>array("li"=>"nav-item", "a"=>"nav-link"),
+        "childItem"=>array("li"=>"", "a"=>"dropdown-item"),
+        "itemWithChild"=>array("li"=>"nav-item dropdown", "a"=>"nav-link dropdown-toggle", "group"=>"dropdown-menu"),
+        "active"=>"active"
+    ])]
      * @return string
      */
-    function htcms_get_header_menu_html($maxLimit=-1, $css=null) {
+    function htcms_get_header_menu_html(int $maxLimit=-1, array $css=null): string
+    {
         $common = app()->HashtagCms;
         return $common->getHeaderMenuHtml($maxLimit, $css);
     }
@@ -57,9 +65,9 @@ if (! function_exists('htcms_parse_string_for_view')) {
      * Get Header Menu
      * @return string
      */
-    function htcms_parse_string_for_view($string='') {
-        $common = app()->HashtagCms;
-        return $common->parseStringForView($string);
+    function htcms_parse_string_for_view($string=''):string
+    {
+        return app()->HashtagCms->layoutManager()->parseStringForView($string);
     }
 }
 
@@ -74,7 +82,8 @@ if (! function_exists('findIndexInAssocArray')) {
      * @param string $needle
      * @return int
      */
-    function findIndexInAssocArray($array=array(), $needleKey='', $needle='') {
+    function findIndexInAssocArray(array $array=array(), string $needleKey='', string $needle=''): int
+    {
 
         foreach ($array as $index=>$item) {
             if(isset($item[$needleKey]) && $item[$needleKey] == $needle) {
@@ -94,7 +103,8 @@ if (! function_exists('getFormattedDate')) {
      * @param string $date
      * @return string
      */
-    function getFormattedDate($date='') {
+    function getFormattedDate(string $date=''):string
+    {
         return \Carbon\Carbon::createFromTimestamp(strtotime($date))->fromNow();
     }
 
@@ -104,9 +114,9 @@ if (! function_exists('sanitize')) {
     /**
      * Sanitize string
      * @param string $str
-     * @return string|string[]|null
+     * @return string|mixed
      */
-    function sanitize($str = '')
+    function sanitize(string $str = ''):?string
     {
         $pattern = '/(script.*?(?:\/|&#47;|&#x0002F;)script)/ius';
         return (preg_replace($pattern, '', $str) ?? $str);
@@ -123,7 +133,8 @@ if (! function_exists('htcms_get_domain_path')) {
      * @param string $path
      * @return string
      */
-    function htcms_get_domain_path($path='') {
+    function htcms_get_domain_path(string $path=''):string
+    {
         $domain = request()->getSchemeAndHttpHost();
         if($path == '') {
             return $domain;
@@ -142,10 +153,11 @@ if (! function_exists('htcms_get_path')) {
      * Get path
      * @return string
      */
-    function htcms_get_path($path) {
-        $common = app()->HashtagCms;
+    function htcms_get_path(string $path):string
+    {
+        $layoutManager = app()->HashtagCms->layoutManager();
 
-        if($common->fullPathStyle()) {
+        if($layoutManager->fullPathStyle()) {
             $lang = htcms_get_lang_info("iso_code");
             $tenant = htcms_get_tenant_info("link_rewrite");
             return htcms_get_domain_path($lang."/".$tenant."/".$path);
@@ -165,11 +177,10 @@ if (! function_exists('htcms_get_js_resource')) {
      * @param string $path
      * @return string
      */
-    function htcms_get_js_resource(string $path) {
-        $common = app()->HashtagCms;
+    function htcms_get_js_resource(string $path):string
+    {
         $path = "%{js_path}%/$path";
-
-        return $common->parseStringForPath($path);
+        return app()->HashtagCms->layoutManager()->parseStringForPath($path);
     }
 
 }
@@ -182,10 +193,10 @@ if (! function_exists('htcms_get_css_resource')) {
      * @param string $path
      * @return string
      */
-    function htcms_get_css_resource(string $path) {
-        $common = app()->HashtagCms;
+    function htcms_get_css_resource(string $path):string
+    {
         $path = "%{css_path}%/$path";
-        return $common->parseStringForPath($path);
+        return app()->HashtagCms->layoutManager()->parseStringForPath($path);
     }
 
 }
@@ -198,10 +209,10 @@ if (! function_exists('htcms_get_image_resource')) {
      * @param string $path
      * @return string
      */
-    function htcms_get_image_resource(string $path) {
-        $common = app()->HashtagCms;
+    function htcms_get_image_resource(string $path):string
+    {
         $path = "%{image_path}%/$path";
-        return $common->parseStringForPath($path);
+        return app()->HashtagCms->layoutManager()->parseStringForPath($path);
     }
 
 }
@@ -212,9 +223,6 @@ if (! function_exists('htcms_get_image_resource')) {
  *
  */
 
-
-
-
 if (! function_exists('htcms_get_site_info')) {
 
     /**
@@ -223,11 +231,9 @@ if (! function_exists('htcms_get_site_info')) {
      * @param string|null $key
      * @return string|array
      */
-    function htcms_get_site_info(string $key=null) {
-
-        $common = app()->HashtagCms;
-        return $common->getInfo('site', $key);
-
+    function htcms_get_site_info(string $key=null): string|array|null
+    {
+        return app()->HashtagCms->infoLoader()->getObjInfo('site', $key);
     }
 
 }
@@ -239,8 +245,9 @@ if (! function_exists('htcms_get_site_id')) {
      * Get site id from the request
      * @return int
      */
-    function htcms_get_site_id() {
-        return htcms_get_site_info("id");
+    function htcms_get_site_id():int
+    {
+        return app()->HashtagCms->infoLoader()->getInfoKeeper("site_id");
     }
 
 }
@@ -251,12 +258,11 @@ if (! function_exists('htcms_get_lang_info')) {
      *
      * Get lang info from the request
      * @param string|null $key
-     * @return string|array
+     * @return string|array|null
      */
-    function htcms_get_lang_info(string $key=null) {
-
-        $common = app()->HashtagCms;
-        return $common->getInfo('language', $key);
+    function htcms_get_lang_info(string $key=null): string|array|null
+    {
+        return app()->HashtagCms->infoLoader()->getObjInfo('language', $key);
 
     }
 
@@ -269,8 +275,9 @@ if (! function_exists('htcms_get_language_id')) {
      * Get Language Id from the request
      * @return int
      */
-    function htcms_get_language_id() {
-        return htcms_get_lang_info("id");
+    function htcms_get_language_id():int
+    {
+        return app()->HashtagCms->infoLoader()->getInfoKeeper("lang_id");
     }
 }
 
@@ -281,12 +288,11 @@ if (! function_exists('htcms_get_tenant_info')) {
      *
      * Get tenant info from the request
      * @param string|null $key
-     * @return string|array
+     * @return string|array|null
      */
-    function htcms_get_tenant_info(string $key=null) {
-
-        $common = app()->HashtagCms;
-        return $common->getInfo('tenant', $key);
+    function htcms_get_tenant_info(string $key=null): string|array|null
+    {
+        return app()->HashtagCms->infoLoader()->getObjInfo('tenant', $key);
     }
 
 }
@@ -298,12 +304,13 @@ if (! function_exists('htcms_get_category_info')) {
     /**
      *
      * Get category info from the request
-     * @param string $key
-     * @return string|array
+     * @param string|null $key
+     * @return string|array|null
      */
-    function htcms_get_category_info(string $key=null) {
-        $common = app()->HashtagCms;
-        return $common->getInfo('category', $key);
+    function htcms_get_category_info(string $key=null): string|array|null
+    {
+        $info = app()->HashtagCms->layoutManager()->getMetaObject("category");
+        return $key == null ? $info : $info[$key];
     }
 }
 
@@ -313,12 +320,12 @@ if (! function_exists('htcms_get_theme_info')) {
     /**
      *
      * Get category info from the request
-     * @param string $key
-     * @return string|array
+     * @param string|null $key
+     * @return string|array|null
      */
-    function htcms_get_theme_info(string $key=null) {
-        $common = app()->HashtagCms;
-        return $common->getInfo('theme', $key);
+    function htcms_get_theme_info(string $key=null): string|array|null
+    {
+        return app()->HashtagCms->infoLoader()->getObjInfo('theme', $key);
     }
 }
 
@@ -329,9 +336,9 @@ if (! function_exists('htcms_get_body_content')) {
      * Get body content
      * @return string
      */
-    function htcms_get_body_content() {
-        $common = app()->HashtagCms;
-        return $common->getFinalData("bodyContent");
+    function htcms_get_body_content():string
+    {
+        return app()->HashtagCms->layoutManager()->getBodyContent();
     }
 }
 
@@ -343,27 +350,12 @@ if (! function_exists('htcms_get_header_content')) {
      * @param bool $reverse
      * @return string
      */
-    function htcms_get_header_content($reverse=false) {
-        $common = app()->HashtagCms;
-        $category = $common->getFinalData("category");
-        $html = $common->getFinalData("html");
-        return ($reverse == true) ? $category["header_content"].$html["theme"]["header_content"] : $html["theme"]["header_content"].$category["header_content"];
-    }
-}
-
-if (! function_exists('htcms_get_header_content')) {
-
-    /**
-     *
-     * Get header content
-     * @param bool $reverse
-     * @return string
-     */
-    function htcms_get_header_content($reverse=false) {
-        $common = app()->HashtagCms;
-        $category = $common->getFinalData("category");
-        $html = $common->getFinalData("html");
-        return ($reverse == true) ? $category["header_content"].$html["theme"]["header_content"] : $html["theme"]["header_content"].$category["header_content"];
+    function htcms_get_header_content(bool $reverse=false):string
+    {
+        $layoutManager = app()->HashtagCms->layoutManager();
+        $category = $layoutManager->getMetaObject("category");
+        $theme = $layoutManager->getMetaObject("theme");
+        return ($reverse == true) ? $category["header_content"].$theme["header_content"] : $theme["header_content"].$category["header_content"];
     }
 }
 
@@ -375,11 +367,12 @@ if (! function_exists('htcms_get_footer_content')) {
      * @param bool $reverse
      * @return string
      */
-    function htcms_get_footer_content($reverse=false) {
-        $common = app()->HashtagCms;
-        $category = $common->getFinalData("category");
-        $html = $common->getFinalData("html");
-        return ($reverse == true) ? $html["theme"]["footer_content"].$category["footer_content"]: $category["footer_content"].$html["theme"]["footer_content"];
+    function htcms_get_footer_content(bool $reverse=false):string
+    {
+        $layoutManager = app()->HashtagCms->layoutManager();
+        $category = $layoutManager->getMetaObject("category");
+        $theme = $layoutManager->getMetaObject("theme");
+        return ($reverse == true) ? $theme["footer_content"].$category["footer_content"] : $category["footer_content"].$theme["footer_content"];
     }
 }
 
@@ -388,13 +381,11 @@ if (! function_exists('htcms_get_header_title')) {
     /**
      *
      * Get header title
-     * @param bool $reverse
      * @return string
      */
-    function htcms_get_header_title() {
-        $common = app()->HashtagCms;
-        $html = $common->getFinalData("html");
-        return $html["header"]["title"];
+    function htcms_get_header_title():string
+    {
+        return app()->HashtagCms->layoutManager()->getTitle();
     }
 }
 
@@ -403,38 +394,11 @@ if (! function_exists('htcms_get_all_meta_tags')) {
     /**
      *
      * Get all meta as tags
-     * @param bool $reverse
      * @return string
      */
-    function htcms_get_all_meta_tags() {
-        $common = app()->HashtagCms;
-        $html = $common->getFinalData("html");
-        $meta = $html["header"]["meta"];
-        $mh = array();
-        foreach ($meta as $metaName=>$metaValue) {
-            $mh[] = "<meta name='$metaName' content='$metaValue'>";
-        }
-        return join("", $mh);
-    }
-}
-if (! function_exists('htcms_get_all_link_tags')) {
-
-    /**
-     *
-     * Get all link as tags
-     * @param bool $reverse
-     * @return string
-     */
-    function htcms_get_all_link_tags() {
-        $common = app()->HashtagCms;
-        $html = $common->getFinalData("html");
-        $mh = array();
-        foreach ($html["header"]["link"] as $link=>$linkValue) {
-            if(isset($linkValue["href"]) && $linkValue["href"] != null) {
-                $mh[] =  "<link rel='$linkValue[rel]' href='$linkValue[href]'>";
-            }
-        }
-        return join("", $mh);
+    function htcms_get_all_meta_tags():string
+    {
+        return app()->HashtagCms->layoutManager()->getMetaContent();
     }
 }
 
@@ -444,11 +408,11 @@ if (! function_exists('htcms_get_shared_data')) {
      *
      * Get shared module data
      * @param string $module_alias
-     * @return string
+     * @return mixed
      */
-    function htcms_get_shared_data($module_alias='') {
-        $common = app()->HashtagCms;
-        return $common->getSharedModuleData($module_alias);
+    function htcms_get_shared_data(string $module_alias=''):mixed
+    {
+        return app()->HashtagCms->getSharedModuleData($module_alias);
     }
 }
 
@@ -457,20 +421,22 @@ if (! function_exists('htcms_get_site_props')) {
     /**
      *
      * Get site props for frontend use
-     * @return json|array
+     * @param bool $asJson
+     * @return string|array
      */
-    function htcms_get_site_props($asJson=false) {
+    function htcms_get_site_props(bool $asJson=false):string|array
+    {
         $categoryInfo = htcms_get_category_info();
         $siteProps = array(
-            "siteId"=>$categoryInfo['site_id'],
+            "siteId"=>htcms_get_site_id(),
             "categoryId"=>$categoryInfo['id'],
             "categoryName"=>$categoryInfo['name'],
             "categoryLinkRewrite"=>$categoryInfo['link_rewrite'],
             "tenantId"=>htcms_get_tenant_info('id'),
             "tenantName"=>htcms_get_tenant_info('name'),
-            "pageId"=>isset($categoryInfo['page_id']) ? $categoryInfo['page_id'] : -1,
-            "pageLinkRewrite"=>isset($categoryInfo['page_link_rewrite']) ? $categoryInfo['page_link_rewrite'] : "",
-            "pageName"=>isset($categoryInfo['page_name']) ? $categoryInfo['page_name'] : ""
+            "pageId"=> $categoryInfo['page_id'] ?? -1,
+            "pageLinkRewrite"=> $categoryInfo['page_link_rewrite'] ?? "",
+            "pageName"=> $categoryInfo['page_name'] ?? ""
         );
         return ($asJson == true) ? json_encode($siteProps) : $siteProps;
     }

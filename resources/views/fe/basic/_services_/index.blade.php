@@ -1,5 +1,7 @@
-{!! $html !!}
-<!--
-Load js etc if you want
--->
+@if(isset($withCss))
 
+@endif
+@if(isset($withJs))
+
+@endif
+{!! $data !!}

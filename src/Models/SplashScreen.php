@@ -6,6 +6,7 @@ namespace MarghoobSuleman\HashtagCms\Models;
  * For Mobile use only
  * Class SplashScreen
  * Desc: Get Splash Screen Data
+ * Not in use - will remove this
  *
  */
 

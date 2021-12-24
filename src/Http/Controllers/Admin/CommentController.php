@@ -24,7 +24,6 @@ class CommentController extends BaseAdminController
 
 
     /**
-     * @todo: working on it
      * @param Request $request
      * @return \Illuminate\Http\RedirectResponse|mixed
      */

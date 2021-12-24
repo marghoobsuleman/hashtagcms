@@ -3,30 +3,40 @@
 namespace MarghoobSuleman\HashtagCms\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Redirect;
-use MarghoobSuleman\HashtagCms\Core\DataLoader;
-use MarghoobSuleman\HashtagCms\Core\ServiceLoader;
-use MarghoobSuleman\HashtagCms\Models\SplashScreen;
-
+use MarghoobSuleman\HashtagCms\Core\Main\ServiceLoader;
 use MarghoobSuleman\HashtagCms\Core\Traits\FeEssential;
 
 class ServiceController extends ApiBaseController
 {
     use FeEssential;
 
-    protected $viewIndex = "_services_/index";
-
     /**
      * Get data for mobile splash screen
-     * @queryParam $context Site context
-     * @queryParam $tenant Tenant link rewrite
      * @param Request $request
-     * @return array
+     * @return array|string
      */
-    public function splashScreen(Request $request) {
-        $context = $request->get("context");
-        $tenant = $request->get("tenant") ?? null;
-        return SplashScreen::loadData($context, $tenant);
+    public function siteConfigs(Request $request):array|string {
+        $query = $request->all();
+        $context = $query['site'];
+        $lang = $query['lang'] ?? null;
+        $tenant = $query['tenant'] ?? null;
+
+        $api_secret = $query['api_secret'];
+        $secrets = config("hashtagcms.api_secrets");
+        $foundSecret = false;
+        foreach ($secrets as $key=>$secret) {
+            if($context === $key && $api_secret === $secret) {
+                $foundSecret = true;
+                break;
+            }
+        }
+        if(!$foundSecret) {
+            return response()->json(array("message"=>"Unauthorized access", "status"=>401), 401);
+        }
+
+        $loader = new ServiceLoader();
+        return $loader->allConfigs($context, $lang, $tenant);
+
     }
 
     /**
@@ -35,20 +45,19 @@ class ServiceController extends ApiBaseController
      * @queryParam $tenant Tenant link rewrite
      * @queryParam $category Category link rewrite or id
      * @param Request $request
-     * @return array
+     * @return array|string
      */
-    public function loadData(Request $request) {
+    public function loadData(Request $request):array|string {
 
-        $query = $request->query();
+        $query = $request->all();
+        $loader = new ServiceLoader();
 
-        $lang = $query["lang"];
-        $tenant = $query["tenant"];
-        $site = $query["site"];
-        $category = $query["category"];
-        $microsite = $query["microsite"] ?? 0;
+        $data = $loader->loadData($query);
+        if($data["status"] != 200) {
+            return response()->json($data, $data["status"]);
+        }
 
-        $loader = new DataLoader();
-        return $loader->loadData($category, $lang, $tenant, $site, $microsite, false);
+        return $data;
     }
 
 
@@ -64,38 +73,27 @@ class ServiceController extends ApiBaseController
      * @param Request $request
      * @return array|string
      */
-    public function loadModule(Request $request) {
-
-        $query = $request->query();
-
-        $name = $query["name"];
-        $asJson = (isset($query["json"]) && $query["json"] == "true") ? true : false;
-
-        $lang = $query["lang"] ?? "en";
-        $tenant = $query["tenant"] ?? "web";
-        $site = $query["site"] ?? config("hashtagcms.context");
-        $category = $query["category"] ?? "/";
-        $microsite = $query["microsite"] ?? 0;
-
+    public function loadModule(Request $request): array|string
+    {
+        $query = $request->all();
         $loader = new ServiceLoader();
-        $baseInfo = $loader->getInitBaseInfo($category, $lang, $tenant, $site, $microsite);
+        $data = $loader->loadModule($query);
 
-        if($baseInfo["status"] == 404) {
-            return response()->json($baseInfo, 404);
+
+        if($data["status"] != 200) {
+            return response()->json($data, $data["status"]);
+        }
+        if(!empty($query['json']) && (string)$query['json'] === "true") {
+            return $data;
         }
 
-        $resData = $loader->loadModuleByAlias($name, $asJson, $category, $lang, $tenant, $site, $microsite);
+        $layoutManager = app()->HashtagCms->layoutManager();
+        $infoKeeper = app()->HashtagCmsInfoLoader->getInfoKeeper();
+        $parsedData = $layoutManager->getParsedViewData((array)$data['module'], $infoKeeper);
+        $withJs = $query['withJs'] ?? false;
+        $withCss = $query['withCss'] ?? false;
+        return view($layoutManager->getBaseServiceIndex(), array("data"=>$parsedData, "withCss"=>$withCss, "withJs"=>$withJs));
 
-
-        if($asJson == true) {
-            return $resData;
-        } else {
-            $data['html'] = $resData;
-            $data['baseInfo'] = $baseInfo;
-
-            $theme = $baseInfo["theme"]->toArray();
-            return $this->viewMaster($theme, $this->viewIndex, $data);
-        }
     }
 
     /**
@@ -109,33 +107,27 @@ class ServiceController extends ApiBaseController
      * @param Request $request
      * @return array|mixed|string
      */
-    public function loadHook(Request $request) {
+    public function loadHook(Request $request): array|string
+    {
 
-        $query = $request->query();
-
-        $name = $query["name"];
-        $asJson = (isset($query["json"]) && $query["json"] == "true") ? true : false;
-
-        $lang = $query["lang"] ?? "en";
-        $tenant = $query["tenant"] ?? "web";
-        $site = $query["site"] ?? config("hashtagcms.context");
-        $category = $query["category"] ?? "/";
-        $microsite = $query["microsite"] ?? 0;
-
+        $query = $request->all();
         $loader = new ServiceLoader();
-        $baseInfo = $loader->getInitBaseInfo($category, $lang, $tenant, $site, $microsite);
-        $resData = $loader->loadModulesByHookAlias($name, $asJson, $category, $lang, $tenant, $site, $microsite);
+        $data = $loader->loadHook($query);
 
-        if($asJson == true) {
-            return $resData;
-        } else {
-            $data['html'] = $resData;
-            $data['baseInfo'] = $baseInfo;
-
-            $theme = $baseInfo["theme"]->toArray();
-
-            return $this->viewMaster($theme, $this->viewIndex, $data);
+        if($data["status"] != 200) {
+            return response()->json($data, $data["status"]);
         }
+        if(!empty($query['json']) && (string)$query['json'] === "true") {
+            return $data;
+        }
+        $layoutManager = app()->HashtagCms->layoutManager();
+        $infoKeeper = app()->HashtagCmsInfoLoader->getInfoKeeper();
+
+        $parsedData = $layoutManager->getParsedViewDataFromMultipleModules($data['hook']['modules'], $infoKeeper);
+        $withJs = $query['withJs'] ?? false;
+        $withCss = $query['withCss'] ?? false;
+        return view($layoutManager->getBaseServiceIndex(), array("data"=>$parsedData, "withCss"=>$withCss, "withJs"=>$withJs));
+
     }
 
 }

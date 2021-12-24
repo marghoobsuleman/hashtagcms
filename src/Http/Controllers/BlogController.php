@@ -2,7 +2,6 @@
 
 namespace MarghoobSuleman\HashtagCms\Http\Controllers;
 
-use MarghoobSuleman\HashtagCms\Core\ModuleLoader;
 use MarghoobSuleman\HashtagCms\Models\Page;
 use Illuminate\Http\Request;
 
@@ -16,27 +15,31 @@ class BlogController extends FrontendBaseController
      * @return array|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function index(Request $request) {
-        $infoKeeper = app()->HashtagCms->getInfoKeeper();
+        $infoKeeper = app()->HashtagCmsInfoLoader->getInfoKeeper();
+
         //check it's blog home
         if(empty($infoKeeper['callableValue'][0])) {
+            $this->setModuleMandatoryCheck(false);
 
             $perPage = config("hashtagcms.blog_per_page");
+            $category_link_rewrite = $infoKeeper['category_link_rewrite'];
 
-            $blog_categories = config("hashtagcms.blog_categories");
-            if(sizeof($blog_categories) == 0) {
-                $pathInfo = parse_url(url()->current());
-                $url = ltrim($pathInfo['path'], "/");
+            $moreCategories = config("hashtagcms.more_categories_on_blog_listing");
+            if(sizeof($moreCategories) > 0) {
+                $moreCategories[] = $category_link_rewrite;
+                $results = Page::getLatestBlog($infoKeeper['siteId'], $infoKeeper['langId'], $moreCategories, $perPage);
             } else {
-                $url = $blog_categories;
+                $results = Page::getLatestBlog($infoKeeper['siteId'], $infoKeeper['langId'], $category_link_rewrite, $perPage);
             }
 
-            ModuleLoader::setMandatoryCheck(false);
-            $results = Page::getLatestBlog(htcms_get_site_id(), htcms_get_language_id(), $url, $perPage);
             $data['results'] = $results;
+
+            //replace mandatory module with new module.
             $this->replaceViewWith("story", "stories", $data);
 
             $forComments = array("isBlogHome"=>true);
             $this->bindDataForView("story-comments", $forComments);
+
             return parent::index($request);
         }
 

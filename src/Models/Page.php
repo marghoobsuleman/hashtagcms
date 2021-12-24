@@ -59,9 +59,9 @@ class Page extends AdminBaseModel
      * @param $langId
      * @param null $link_rewrite
      * @param int $limit
-     * @return void
+     * @return mixed
      */
-    public static function getLatestBlog($siteId, $langId, $link_rewrite=null, $limit=10) {
+    public static function getLatestBlog($siteId, $langId, $link_rewrite=null, int $limit=10) {
 
         $where = array(
             array("pages.site_id", "=", $siteId),
@@ -74,7 +74,7 @@ class Page extends AdminBaseModel
             if(is_array($link_rewrite)) {
 
             } else {
-                array_push($where,  array("categories.link_rewrite", "=", "$link_rewrite"));
+                $where[] = array("categories.link_rewrite", "=", "$link_rewrite");
             }
 
         }
