@@ -453,11 +453,10 @@ class LayoutManager extends Results
     public function getParsedViewData(array $module, array $infoKeeper=array()): mixed
     {
         $viewData = "";
-        $viewName = "";
-        //info("view_name: ".$module["view_name"]);
         if($module["data_type"] == "Static") {
             //View name is not needed for "Static" module
             $viewData = (isset($module["data"]) && isset($module["data"]["content"])) ?  $module["data"]["content"] : "";
+
         } else {
 
             $viewName = $this->getViewName($module["view_name"]);
@@ -465,8 +464,10 @@ class LayoutManager extends Results
 
             if (View::exists($viewName)) {
                 try {
-                    //$viewData = $this->view_make($viewName, array("data"=>$module["data"]));
-                    $viewData = $this->view_make($viewName, array("data"=>$module["data"], "infoKeeper"=>$infoKeeper, "moduleInfo"=>$module), $mergeData);
+                    $moduleInfo = $module;
+                    unset($moduleInfo['data']);
+                    unset($moduleInfo['placeholder']);
+                    $viewData = $this->view_make($viewName, array("data"=>$module["data"], "infoKeeper"=>$infoKeeper, "moduleInfo"=>$moduleInfo), $mergeData);
 
                 } catch (Exception $error) {
                     info("View Loading error: ".$error->getMessage());

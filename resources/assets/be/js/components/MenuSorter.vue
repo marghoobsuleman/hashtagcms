@@ -49,6 +49,7 @@
 
         props: [
             'dataAllData',
+            'dataFields',
             'dataControllerName',
             'dataControllerChildName',
             'dataGroups',
@@ -59,14 +60,22 @@
         data() {
 
             return {
-                allData: ((this.dataAllData && this.dataAllData != "null") ? JSON.parse(this.dataAllData) : []),
-                groups: ((this.dataGroups && this.dataGroups != "") ? JSON.parse(this.dataGroups) : []),
-                groupName: ((this.dataGroupName && this.dataGroupName != "") ? this.dataGroupName : ""),
-                showGroups:(this.dataShowGroups && this.dataShowGroups == "true") ? true : false
+                allData: ((this.dataAllData && this.dataAllData !== "null") ? JSON.parse(this.dataAllData) : []),
+                groups: ((this.dataGroups && this.dataGroups !== "") ? JSON.parse(this.dataGroups) : []),
+                groupName: ((this.dataGroupName && this.dataGroupName !== "") ? this.dataGroupName : ""),
+                showGroups:!!(this.dataShowGroups && this.dataShowGroups === "true")
             }
         },
         computed: {
-
+            fields() {
+              let fields = ((this.dataFields && this.dataFields !== "null") ? JSON.parse(this.dataFields) : null);
+              if(fields === null) {
+                fields = {};
+                fields.id = "id";
+                fields.label = "name";
+              }
+              return fields;
+            },
             controllerName() {
                 let cName = (typeof this.dataControllerName == "undefined") ? "" : this.dataControllerName.toLowerCase();
                 return cName.replace(/\s/g, "");
@@ -79,36 +88,33 @@
             selectedIndex() {
                 let index = 0;
                 for(let i=0;i<this.groups.length;i++) {
-                    if(this.groups[i] == this.groupName) {
+                    if(this.groups[i] === this.groupName) {
                         index = i;
                         break;
                     }
-                };
+                }
                 return index;
 
             }
         },
         methods: {
             isParent(data) {
-                if(data.parent_id == 0 || !data.parent_id) {
-                    return true;
-                }
-                return false;
+                return data.parent_id === 0 || !data.parent_id;
+
             },
             arrangeAgain(data) {
-                let path = AdminConfig.admin_path(this.controllerName+"/sort/"+data.value);
-                window.location.href = path;
+                window.location.href = AdminConfig.admin_path(this.controllerName+"/sort/"+data.value);
             },
             hasChild(data) {
-                return (data.child && data.child.length > 0) ? true : false;
+                return (data.child && data.child.length > 0);
             },
             getName(data) {
 
-                return (data.name) ? data.name : (data.lang.name);
+                return (data[this.fields.label]) ? data[this.fields.label] : (data.lang[this.fields.label]);
 
             },
             getId(data) {
-                return (data.id) ? data.id : data.menu_manager_id;
+                return data[this.fields.id];
             },
             enableSorting() {
                 let $this = this;
@@ -120,7 +126,7 @@
                             onUpdate: function (/**Event*/evt) {
                                 //console.log("onUpdate ", evt.item);
                                 let item = evt.item;
-                                let isParent = (item.getAttribute("data-is-parent") == "true") ? true : false;
+                                let isParent = (item.getAttribute("data-is-parent") === "true");
                                 $this.updateIndex(isParent);
                             }
                         })
@@ -152,7 +158,7 @@
                     saveAll = false;
                 }
 
-                controllerName = (isParent == true) ? this.controllerName : (this.controlerChildName !== "") ? this.controlerChildName : this.controllerName;
+                controllerName = (isParent === true) ? this.controllerName : (this.controlerChildName !== "") ? this.controlerChildName : this.controllerName;
 
                 let counter = 1;
 
@@ -160,7 +166,7 @@
 
                 items.forEach(function (current, index) {
 
-                    if(saveAll == true) {
+                    if(saveAll === true) {
                         let id = current.getAttribute("data-id");
                         let position = counter;
                         datas.push({position:position, where:{id:parseInt(id)}});
@@ -170,7 +176,7 @@
                         let isParentElement = current.getAttribute("data-is-parent");
                         let id = current.getAttribute("data-id");
 
-                        if(isParent.toString() == isParentElement.toString()) {
+                        if(isParent.toString() === isParentElement.toString()) {
                             let id = current.getAttribute("data-id");
                             let position = counter;
                             datas.push({position:position, where:{id:parseInt(id)}});

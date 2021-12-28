@@ -1,6 +1,6 @@
 <section class="sample-module">
     <div class="container">
-            <h2>Service Module</h2>
+            <h2>{{$moduleInfo['data_type']}} Module</h2>
         <p>
             This is a service module. It returns data from a service.
         </p>

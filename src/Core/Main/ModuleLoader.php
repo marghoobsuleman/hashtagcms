@@ -99,7 +99,7 @@ class ModuleLoader
      * @return array|null
      */
     public function getStaticModule(mixed $module):?array {
-        return $this->getStaticModuleByAlias($module->alias);
+        return $this->getStaticModuleByAlias($module->data_handler);
     }
 
     /**

@@ -110,8 +110,9 @@ class CmsmoduleController extends BaseAdminController
         $allModules = CmsModule::getAdminModules();
 
         $viewData["backURL"] = $this->getBackURL();
-        $viewData["allModules"] = $allModules;
-        return htcms_admin_view("cmsmodule.sorting", $viewData);
+        $viewData["data"] = $allModules;
+        $viewData["fields"] = array("id"=>"id", "label"=>"name");
+        return htcms_admin_view("common.sorting", $viewData);
         //return $allModules;
     }
 

@@ -1,6 +1,6 @@
 <section class="sample-module">
     <div class="container">
-            <h2>QueryService Module</h2>
+        <h2 class="alert-success alert">{{$moduleInfo['data_type']}} Module</h2>
         <p>
             This is a combination of service and query module. Sometime we need data from service and query both. <br />
             In this case data has two properties. ie. serviceData, queryData

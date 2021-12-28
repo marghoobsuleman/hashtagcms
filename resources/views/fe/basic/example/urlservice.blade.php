@@ -1,6 +1,6 @@
 <section class="sample-module">
     <div class="container">
-            <h2>UrlService Module</h2>
+        <h2 class="alert-success alert">{{$moduleInfo['data_type']}} Module</h2>
         <p>
             This is a UrlSerivce module. Sometime you need to call a service based on query parameter. Below URL will be called with your limit param.
         </p>
@@ -21,3 +21,11 @@
                 </div>
     </div>
 </section>
+
+let menuData = [
+{label:'Menu', action:'showMenu', icon:'', isCheckout:false},
+{label:'Pizza @ 99', action:'goToEdv', icon:'', isCheckout:false},
+{label:'Checkout', action:'goToCheckout', icon:'', isCheckout:true, data:{items:12, price: 320}}
+]
+
+<bottom-bar :data-menus="menuData"></bottom-bar>

@@ -1,7 +1,7 @@
 <section class="sample-module">
     <div class="container">
         <div>
-            <h2>Query Module</h2>
+            <h2 class="alert-success alert">{{$moduleInfo['data_type']}} Module</h2>
             <p>
                 {{__('hashtagcms::messages.desc_query_module')}}
             </p>
