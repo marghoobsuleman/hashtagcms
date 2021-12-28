@@ -32,8 +32,7 @@ if (! function_exists('htcms_get_header_menu')) {
      */
     function htcms_get_header_menu(string $active=''): array
     {
-        $common = app()->HashtagCms;
-        return $common->getHeaderMenu($active);
+        return app()->HashtagCms->getHeaderMenu($active);
     }
 }
 
@@ -53,8 +52,7 @@ if (! function_exists('htcms_get_header_menu_html')) {
      */
     function htcms_get_header_menu_html(int $maxLimit=-1, array $css=null): string
     {
-        $common = app()->HashtagCms;
-        return $common->getHeaderMenuHtml($maxLimit, $css);
+        return app()->HashtagCms->getHeaderMenuHtml($maxLimit, $css);
     }
 }
 
@@ -179,8 +177,7 @@ if (! function_exists('htcms_get_js_resource')) {
      */
     function htcms_get_js_resource(string $path):string
     {
-        $path = "%{js_path}%/$path";
-        return app()->HashtagCms->layoutManager()->parseStringForPath($path);
+        return app()->HashtagCms->layoutManager()->parseStringForPath("%{js_path}%/$path");
     }
 
 }
@@ -195,8 +192,7 @@ if (! function_exists('htcms_get_css_resource')) {
      */
     function htcms_get_css_resource(string $path):string
     {
-        $path = "%{css_path}%/$path";
-        return app()->HashtagCms->layoutManager()->parseStringForPath($path);
+        return app()->HashtagCms->layoutManager()->parseStringForPath("%{css_path}%/$path");
     }
 
 }
@@ -211,8 +207,7 @@ if (! function_exists('htcms_get_image_resource')) {
      */
     function htcms_get_image_resource(string $path):string
     {
-        $path = "%{image_path}%/$path";
-        return app()->HashtagCms->layoutManager()->parseStringForPath($path);
+        return app()->HashtagCms->layoutManager()->parseStringForPath("%{image_path}%/$path");
     }
 
 }
@@ -355,7 +350,8 @@ if (! function_exists('htcms_get_header_content')) {
         $layoutManager = app()->HashtagCms->layoutManager();
         $category = $layoutManager->getMetaObject("category");
         $theme = $layoutManager->getMetaObject("theme");
-        return ($reverse == true) ? $category["header_content"].$theme["header_content"] : $theme["header_content"].$category["header_content"];
+        $content = ($reverse == true) ? $category["header_content"].$theme["header_content"] : $theme["header_content"].$category["header_content"];
+        return app()->HashtagCms->layoutManager()->parseStringForPath($content);
     }
 }
 
@@ -372,7 +368,8 @@ if (! function_exists('htcms_get_footer_content')) {
         $layoutManager = app()->HashtagCms->layoutManager();
         $category = $layoutManager->getMetaObject("category");
         $theme = $layoutManager->getMetaObject("theme");
-        return ($reverse == true) ? $theme["footer_content"].$category["footer_content"] : $category["footer_content"].$theme["footer_content"];
+        $content = ($reverse == true) ? $theme["footer_content"].$category["footer_content"] : $category["footer_content"].$theme["footer_content"];
+        return app()->HashtagCms->layoutManager()->parseStringForPath($content);
     }
 }
 

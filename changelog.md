@@ -1,29 +1,25 @@
 # Changelog
 ## Version 1.3.0
 - Optimization
-- Major Code Refactoring for frontend
-- Get site info
-  - Get lang info
-  - Get tenant info
-  - Get category info
-- load data
-
-- will work on following
-- Admin branding can be changed. Logo height and icon can be pass through module.
+- Frontend: Major Code Refactoring
+- Frontend: Api Code refactor
+- Frontend: ModuleParser Hook. If you are adding a new module type. You need to add parser for that. Create a class Parser\ModuleParser in app folder and need to create a method to parse module. Say module type is "MenuService"; you need to create a method called "getMenuServiceModule(mixed $module):?array"
+- Backend: Frontend Module type can be pass through config
+- Backend: Menu Sorter changes, change id and name field
 
 
 ## Version 1.2.9
-- Fixed content auto update url issue
+- Backend: Fixed content auto update url issue
 
 ## Version 1.2.8
-- ModifyHooks Migration table issue fixed
+- Backend: ModifyHooks Migration table issue fixed
 
 ## Version 1.2.7
-- ModifyCategory Migration table issue fixed
+- Backend: ModifyCategory Migration table issue fixed
 
 ## Version 1.2.6
-- moduleInfo is now passed with each view template.
-- hooks table has now 'direction' column. It can be useful for mobile layout handling.  
+- Frontend: moduleInfo is now passed with each view template.
+- Frontend: hooks table has now 'direction' column. It can be useful for mobile layout handling.  
 
 ## Version 1.2.5
 - Blog read_count is now displayed

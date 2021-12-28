@@ -93,7 +93,7 @@ class Results
         foreach ($matches as $key=>$val) {
             $queryKey = $val;
             $gKey = $infoLoader->getContextVars($queryKey);
-            info("gKey: queryKey: $queryKey");
+            //info("gKey: queryKey: $queryKey");
             if(isset($gKey) && $gKey != null) {
                 $arr[$gKey["key"]] = $gKey["value"];
             }

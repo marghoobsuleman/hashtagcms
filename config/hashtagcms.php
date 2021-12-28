@@ -8,7 +8,8 @@ return [
         'site_name'=>'Hashtag CMS',
         'base_path' => '',
         'theme' => 'fe.default',
-        'assets_path'=>array('base'=>'/assets/hashtagcms/fe',
+        'assets_path'=>array('base_url'=>env('ASSET_URL', ''),
+                            'base_path'=>'/assets/hashtagcms/fe',
                             'js'=>'js', 'css'=>'css', 'image'=>'img'),
         'media_path' => '/storage/media',
         'records_per_page' => 20

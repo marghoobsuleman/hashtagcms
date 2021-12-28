@@ -40,7 +40,7 @@
                         <h3>Super Fast Loading</h3>
                         <p class="">
                             Create theme with Webpack to optimize your JS/CSS. And render time is awesome.
-                            For example this page has rendered in <span class="text-success">{{ (microtime(true) - LARAVEL_START) }}</span>  second.
+
                         </p>
                     </div>
                 </div>

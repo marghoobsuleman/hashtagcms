@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Redirect;
 use JetBrains\PhpStorm\ArrayShape;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Auth;
+use Mockery\Exception;
 
 
 class LayoutManager extends Results
@@ -23,6 +24,7 @@ class LayoutManager extends Results
     private string $imgPath;
     private string $resourcePath;
     private string $resourceDir;
+    private string $resourceUrl;
 
     private string $jsFolder;
     private string $cssFolder;
@@ -35,8 +37,8 @@ class LayoutManager extends Results
 
         $this->infoLoader = app()->HashtagCmsInfoLoader;
         $this->themeFolder = config("hashtagcms.info.theme_folder");
-
-        $this->resourceDir = config("hashtagcms.info.assets_path.base");
+        $this->resourceUrl = config("hashtagcms.info.assets_path.base_url");
+        $this->resourceDir = $this->resourceUrl.config("hashtagcms.info.assets_path.base_path");
         $this->jsFolder = config("hashtagcms.info.assets_path.js");
         $this->cssFolder = config("hashtagcms.info.assets_path.css");
         $this->imageFolder = config("hashtagcms.info.assets_path.image");
@@ -353,13 +355,14 @@ class LayoutManager extends Results
      */
     public function parseBodyContent(array $theme, array $mergeData=[]):string
     {
-
-        $skeleton = $theme['skeleton'];
+        $bodyContent = $theme['skeleton'];
         $hooks = $theme['hooks'];
         $modulesInTheme = $theme['modules'];
 
         $allData = array();
         $infoKeeper = app()->HashtagCmsInfoLoader->getInfoKeeper();
+        //info("parseBodyContent: 1");
+        //info(json_encode($infoKeeper));
         foreach ($hooks as $key=>$hook) {
             $placeholder = $hook["placeholder"];
             $modules = $hook["modules"];
@@ -372,23 +375,27 @@ class LayoutManager extends Results
                 $viewData = $this->getParsedViewData((array)$module, $infoKeeper);
                 $allData[$placeholder][] = $viewData;
             }
+            //info("placeholder: ".$placeholder);
         }
 
-        foreach ($modulesInTheme as $index=>$module) {
-            $placeholder = $module->placeholder;
-            $viewData = $this->getParsedViewData((array)$module, $infoKeeper);
+       // info("parseBodyContent: 2");
+
+        foreach ($modulesInTheme as $index=>$moduleT) {
+            $placeholder = $moduleT->placeholder;
+            $viewData = $this->getParsedViewData((array)$moduleT, $infoKeeper);
             $allData[$placeholder][] = $viewData;
         }
+       // info("parseBodyContent: 3");
         //make string
         foreach ($allData as $placeholder=>$data) {
-            $skeleton = str_replace($placeholder, join("", $data), $skeleton);
+            $bodyContent = str_replace($placeholder, join("", $data), $bodyContent);
         }
-
+        //info("parseBodyContent: 4");
         //set in layout
-        $skeleton = $this->getEssentialsElements().$skeleton;
-        $this->setData("bodyContent", $skeleton);
-
-        return $skeleton;
+        $bodyContent = $this->getEssentialsElements().$bodyContent;
+        $this->setData("bodyContent", $bodyContent);
+        //info("Setting body content done...");
+        return $bodyContent;
     }
 
     /**
@@ -516,7 +523,7 @@ class LayoutManager extends Results
      */
     public function getHTMLData(array $mergeData=null):array
     {
-
+        info("============== layoutManager: Start. ==============");
         $infoKeeper = $this->infoLoader->getInfoKeeper();
 
         $mergeData = ($mergeData === null) ? array() : $mergeData;
@@ -536,26 +543,50 @@ class LayoutManager extends Results
 
         $data = $dataLoader->loadData($requestParams);
 
+        info("layoutManager: loading data completed, status: ".$data["status"]);
 
         if($data["status"] == 200) {
+
             //Set data in layout manager to access later
+            info("layoutManager: setFinalObject");
             $this->setFinalObject($data);
 
-            $this->setThemePath($data['meta']['theme']["directory"]);
-            $bodyContent = $this->parseBodyContent($data['meta']['theme']);
+            info("layoutManager: setThemePath");
 
+            $this->setThemePath($data['meta']['theme']["directory"]);
+
+            $bodyContent = $this->parseBodyContent($data['meta']['theme']);
+            info("layoutManager: after setThemePath");
             $data['html']['parsed'] = array("body"=>$bodyContent,
                 "header"=>$data['html']['head']['headerContent'],
                 "footer"=>$data['html']['body']['footer']['footerContent']);
 
             //update again
             $this->setFinalObject($data);
+            info("layoutManager: setFinalObject again");
 
         } else {
             info("Error loading in page: status: $data[status] message: $data[message]");
-            abort($data["status"], $data["message"]);
+            //abort($data["status"], $data["message"]);
+            return  $data;
         }
+        info("============ layoutManager: End. ===========");
         return $data;
+    }
+
+    /**
+     * @param string $view_name
+     * @param mixed $data
+     * @param mixed $merge_data
+     * @param int|null $status
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     */
+    public function view_master(string $view_name, mixed $data, mixed $merge_data, int $status=null)
+    {
+        $data = array("data"=>$data);
+        return response()->view($view_name, $data, 200);
+            //->header('Content-Type', 'text/html; charset=UTF-8');
+        //return view($view_name, $data, $merge_data);
     }
 
 

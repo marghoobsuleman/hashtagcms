@@ -20,6 +20,7 @@ trait FeEssential {
 
         $layoutManager =  app()->HashtagCms->layoutManager();
         try {
+            info("============ Start loading data from request ============= ");
             $data = $layoutManager->getHTMLData();
 
             if($data["isLoginRequired"] && Auth::id() == null) {
@@ -30,10 +31,12 @@ trait FeEssential {
             }
 
         } catch (NotFoundExceptionInterface|ContainerExceptionInterface $e) {
+            info("Error Loading in page.");
+            info($e->getMessage());
             exit($e->getMessage());
         }
-
-        return view($layoutManager->getBaseIndex(), array("data"=>$data), array());
+        info("============ End loading data from request ============= ");
+        return $layoutManager->view_master($layoutManager->getBaseIndex(), $data, array());
     }
 
     /**

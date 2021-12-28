@@ -159,7 +159,6 @@ class DataLoader
         $category_params = array();
         $categoryCacheKey = ($context.'_'.$tenant.'_'.$lang).'_'.(str_replace("/", "_",$category));
         if(!$this->cacheManager->exists($categoryCacheKey) || $clearCache) {
-            info("loadData: Fetching category info category: $category, context: $context, tenant: $tenant lang: $lang");
 
             $fullUrl = null;
 
@@ -170,6 +169,8 @@ class DataLoader
                 $category = (empty($category)) ? "/" : $category;
                 // index 0 is category, rest can be link_rewrite for content based on link_rewrite_pattern field
             }
+
+            info("loadData: Fetching category info category: $category, context: $context, tenant: $tenant lang: $lang");
 
             //noinspection ConstantConditions
             $categorySiteInfo = $this->infoLoader->getCategorySiteInfo($category, $site_id, $tenant_id, $lang_id, $fullUrl);
@@ -364,7 +365,7 @@ class DataLoader
         );
         $data['isLoginRequired'] = $isLoginRequired;
         $data['status'] = 200;
-
+        info("loadData: Fetching completed for category: $category, context: $context, tenant: $tenant lang: $lang");
         return $data;
 
     }

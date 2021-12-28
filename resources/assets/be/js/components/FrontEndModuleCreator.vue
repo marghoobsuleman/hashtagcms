@@ -174,7 +174,7 @@
 
             </div>
             <div class="form-group" v-show="this.showAllUpdateSection">
-                <label class="col-sm-3" for="update_inAllSites">Update in all sites ?</label>
+                <label class="col-sm-3" for="update_inAllSites">Update in all sites?</label>
                 <label class="col-sm-7">
                     <input type="checkbox" id="update_inAllSites" name="update_inAllSites" v-model="form.update_inAllSites"/>
                     <div class="alert alert-info">
@@ -255,17 +255,12 @@
                     query_as:"",
                     description:"",
                     site_id:1,
-                    query_statement:"",
-                    query_as:"",
-
                     is_seo_module:0,
-
                     individual_cache:0,
                     shared:0,
                     update_inAllSites:0,
                     is_mandatory:0,
                     service_params:"",
-
                     actionPerformed:this.dataActionPerformed,
                     backURL:this.dataBackUrl
             }),
@@ -280,7 +275,7 @@
         },
         computed:{
           showQueryForm: function () {
-            if(this.form.data_type.indexOf('Service') > -1){
+            if(this.form.data_type.indexOf('QueryService') > -1){
               return true;
             }else{
               return false;
@@ -303,13 +298,13 @@
                 }
             },
             setFormData(data){
-              var data_length = Object.keys(data).length;
-              for(var a in data){
+              let data_length = Object.keys(data).length;
+              for(let a in data){
                     this.form[a] = data[a];
               }
             },
             checkForService(dataType){
-              var self = this
+              let self = this
               if(dataType!="" && (dataType.indexOf('Service') >-1 || dataType.indexOf('service') >-1)){
                 this.$set(this.showExtraData,'show',true);
                 //console.log(this.showExtraData);
@@ -318,7 +313,7 @@
               }
             },
             createModule() {
-                var $this = this;
+                let $this = this;
 
                 preCheck(this);
 
@@ -353,7 +348,7 @@
                 let name = event.target.getAttribute("name");
                 this.$set(this.errors, name, "")
 
-                if(this.errorMessage != '') {
+                if(this.errorMessage !== '') {
                     this.errorMessage = ''
                 }
             },
@@ -361,7 +356,7 @@
 
                 //console.log(response);
                 //console.log("response.isSaved ",response.isSaved);
-                if(response.isSaved == 0) {
+                if(response.isSaved.toString() === "0") {
                     this.errorMessage = {};
                     Toast.show(this, "There is some error...");
                     this.errorMessage = response.message;

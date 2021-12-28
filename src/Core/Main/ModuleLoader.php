@@ -31,39 +31,43 @@ class ModuleLoader
 
     /**
      * Get query module
-     * @param string $query
+     * @param Module $module
      * @return array
      */
-    public function getQueryModule(string $query): array
+    public function getQueryModule(mixed $module): array
     {
+        $query = $module->data_handler;
         $ml = new QueryModuleLoader($query);
         return $ml->getResult();
     }
 
     /**
      * Get service module
-     * @param string $service_url
-     * @param string $method_type
+     * @param mixed $module
      * @param array $withData
-     * @return mixed|null
+     * @return mixed
      */
-    public function getServiceModule(string $service_url, string $method_type, array $withData=array()): mixed
+    public function getServiceModule(mixed $module, array $withData=array()): mixed
     {
-
-        $ml = new ServiceModuleLoader($service_url, $method_type, $withData);
+        $serviceUrl = ($module->data_handler == "" || $module->data_handler==null) ? "" : $module->data_handler;
+        $methodType = $module->method_type;
+        $ml = new ServiceModuleLoader($serviceUrl, $methodType, $withData);
         return $ml->getResult();
     }
-    //'Static','Query','Service','Custom','QueryService','UrlService'
+
     /**
      * Get module from a service URL. It also parse all query params and send it the service url
-     * @param string $service_url
-     * @param string $method_type
-     * @param string $data_key_map (this will be comma separated)
+     * @param mixed $module
      * @return array|null
      */
-    public function getUrlServiceModule(string $service_url, string $method_type, string $data_key_map): ?array
+    public function getUrlServiceModule(mixed $module): ?array
     {
-        $ml = new UrlServiceModuleLoader($service_url, $method_type, $data_key_map);
+
+        $serviceUrl = ($module->data_handler == "" || $module->data_handler==null) ? "" : $module->data_handler;
+        $methodType = $module->method_type;
+        $dataKeyMap = $module->data_key_map;
+
+        $ml = new UrlServiceModuleLoader($serviceUrl, $methodType, $dataKeyMap);
         return $ml->getResult();
     }
 
@@ -71,16 +75,31 @@ class ModuleLoader
      * Get query service module
      * if query as data: call service, execute query and return datas
      * else if query is as param: execute query, replace query with servie url param/value and call service and return data
-     * @param string $query
-     * @param string $serviceUrl
-     * @param string $query_as
-     * @param string $method_type
+     * @param mixed $module
      * @return array|null
      */
-    public function getQueryServiceModule(string $query, string $serviceUrl, string $query_as, string $method_type): ?array
+    public function getQueryServiceModule(mixed $module): ?array
     {
-        $ml = new QueryServiceModuleLoader($query, $serviceUrl, $query_as, $method_type);
+        $query = $module->query_statement;
+        $serviceUrl = ($module->data_handler == "" || $module->data_handler==null) ? "" : $module->data_handler;
+        $methodType = $module->method_type;
+        $dataKeyMap = $module->data_key_map;
+
+        $dataHandler = $module->data_handler;
+        $queryAs = $module->query_as;
+
+        $ml = new QueryServiceModuleLoader($query, $serviceUrl, $queryAs, $methodType);
         return $ml->getResult();
+    }
+
+    /**
+     * Get Static Module
+     * Fetch data from a content table
+     * @param mixed $module
+     * @return array|null
+     */
+    public function getStaticModule(mixed $module):?array {
+        return $this->getStaticModuleByAlias($module->alias);
     }
 
     /**
@@ -89,10 +108,40 @@ class ModuleLoader
      * @param string $alias
      * @return array|null
      */
-    public function getStaticModule(string $alias):?array {
+    public function getStaticModuleByAlias(string $alias):?array {
         $ml = new StaticModuleLoader($alias);
         return $ml->getResult();
     }
+
+    /**
+     * get custom module
+     * @param mixed $module
+     * @return array|null
+     */
+    public function getCustomModule(mixed $module):?array {
+        return [];
+    }
+
+    /**
+     * Handle unknown module
+     * Need a class under app\Parser\ModuleParser
+     * Need a method whatever module type is. for example if module type is MenuService,
+     * you need to create a method called getMenuServiceModule(mixed $module) in ModuleParser Class
+     * @param mixed $module
+     * @return array|null
+     */
+    public function getUnknownModule(mixed $module):?array {
+        $dataType = $module->data_type;
+        $moduleType =  "get{$dataType}Module";
+        $appNamespace = app()->getNamespace();
+        $callableApp = $appNamespace."Parser\ModuleParser";
+        if(class_exists($callableApp) && method_exists($callableApp, $moduleType)) {
+            $moduleParser = new $callableApp;
+            return $moduleParser->{$moduleType}($module);
+        }
+        return [];
+    }
+
 
     /**
      * Get Module Data
@@ -108,51 +157,13 @@ class ModuleLoader
         $is_seo_module = $module_obj->is_seo_module;
         $is_mandatory = $module_obj->is_mandatory;
         $is_shared = $module_obj->shared;
-        $data = null;
-        $data2 = null;
 
-        info("dataHandler: ".$dataHandler);
-        switch (strtolower($dataType)) {
-
-            case "query":
-
-                $data = $this->getQueryModule($dataHandler);
-
-                break;
-
-            case "service":
-
-                $data = $this->getServiceModule($dataHandler, $methodType);
-
-                break;
-
-            case "urlservice":
-
-                $data = $this->getUrlServiceModule($dataHandler, $methodType, $module_obj->data_key_map);
-
-                break;
-
-            case "queryservice":
-
-                $data = $this->getQueryServiceModule($module_obj->query_statement, $dataHandler, $module_obj->query_as, $methodType);
-
-                break;
-
-            case "static":
-
-                $data = $this->getStaticModule($dataHandler);
-
-                break;
-
-            case "custom":
-                //will do something
-                $data = array();
-                break;
-
-            default:
-
-                break;
-        }
+        $moduleType =  "get{$dataType}Module";
+        //info("dataHandler: ".$dataHandler);
+        $data = match (strtolower($dataType)) {
+            "query", "service", "urlservice", "queryservice", "static", "custom" => $this->{$moduleType}($module_obj),
+            default => $this->getUnknownModule($module_obj),
+        };
 
         //Save seo info
         if($is_seo_module == 1 && $this->foundSeoModule == false) {
@@ -322,7 +333,7 @@ class ModuleLoader
     /**
      * Load module by alias
      * @param string $alias
-     * @return array|string
+     * @return array|string|null
      */
     public function loadModuleByModuleAlias(string $alias=''): array|string|null
     {

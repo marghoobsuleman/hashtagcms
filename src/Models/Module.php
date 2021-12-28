@@ -37,10 +37,8 @@ class Module extends AdminBaseModel
      * @return array
      */
     public static function getDataTypes() {
-
-        $data_type = self::getEnumValues("modules", "data_type");
-
-        return $data_type;
+        $data_type = htcms_admin_config('module_types');
+        return (empty($data_type)) ? self::getEnumValues("modules", "data_type") : $data_type;
     }
 
     /**

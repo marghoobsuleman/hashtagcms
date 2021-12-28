@@ -102,7 +102,7 @@ trait BaseInfo {
         try{
 
             if(!$this->cacheManager->exists($domainCacheKey) || $clearCache) {
-                info("Fetching site info domain: $domain, context: $context");
+                info("Fetching site info domain: $domain, or fetching context from config: $context");
                 //noinspection ConstantConditions
                 $siteInfo = $this->infoLoader->geSiteInfoByContextAndDomain($context, $domain, $fullDomain);
                 //Stop everything if site info is not correct.

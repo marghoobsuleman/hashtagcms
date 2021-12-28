@@ -23,7 +23,6 @@
     <input type="submit" value="Logout">
 </form>
 <div class="small" style="padding:10px; text-align: center;">
-    Page rendered in  - {{ (microtime(true) - LARAVEL_START) }}
 <a title="#CMS" href="https://www.hashtagcms.org/">Powered by HashtagCms.org</a>
 </div>
 
@@ -39,7 +38,7 @@
 @endif
 <script>
     (function () {
-        HashtagCms.Analytics.init(_siteProps_);
+       HashtagCms.Analytics.init(_siteProps_);
         //HashtagCms.Analytics.trackPageView(_siteProps_.categoryName + ""+_siteProps_.pageName)
     })()
 </script>

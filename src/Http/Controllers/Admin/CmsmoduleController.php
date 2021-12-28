@@ -270,7 +270,7 @@ class CmsmoduleController extends BaseAdminController
 
             $saveData["position"] = $this->dataSource::count()+1;
 
-            info($saveData);
+            //info($saveData);
 
             $arrSaveData = array("model" => $this->dataSource, "data" => $saveData);
 
