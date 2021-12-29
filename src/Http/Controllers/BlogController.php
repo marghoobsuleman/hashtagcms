@@ -47,5 +47,9 @@ class BlogController extends FrontendBaseController
 
     }
 
+    public function story($path, $params)
+    {
+        return $path;
+    }
 
 }

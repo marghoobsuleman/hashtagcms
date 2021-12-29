@@ -85,6 +85,7 @@ trait BaseInfo {
 
         $path = $request->path();
         $path_arr = explode("/", $path); //example: en/web/blog/test-blog
+        $path_size = sizeof($path_arr);
 
         // #Set site info
 
@@ -153,7 +154,7 @@ trait BaseInfo {
         $this->setLanguageInfo($langInfo, $path_arr[0]);
 
         // #Set tenant info
-        $tenantPlace = ($this->infoLoader->hasInInfoKeeper("foundLang") === true ) ? 1 : 0;
+        $tenantPlace = ($this->infoLoader->getInfoKeeper("foundLang") === true && $path_size > 1) ? 1 : 0;
         $tenantCacheKey = md5($domain."_".$path_arr[$tenantPlace]."_tenant");
 
         if(!$this->cacheManager->exists($tenantCacheKey) || $clearCache) {
@@ -233,8 +234,10 @@ trait BaseInfo {
         if($langInfo['iso_code'] === $iso_code) {
             $this->infoLoader->setInfoKeeper("foundLang", true);
         }
+
         $this->infoLoader->setObjInfo('language', $langInfo);
         $this->infoLoader->setInfoKeeper("langId", $langInfo["id"]);
+        $this->infoLoader->setInfoKeeper("lang_iso_code", $langInfo["iso_code"]);
         $this->infoLoader->setInfoKeeper("langInfo", array("id"=>$langInfo["id"],
             "name"=>$langInfo["name"], "iso_code"=>$langInfo["iso_code"],
             "language_code"=>$langInfo["language_code"], "date_format_lite"=>$langInfo["date_format_lite"],
@@ -263,6 +266,7 @@ trait BaseInfo {
 
         $this->infoLoader->setObjInfo('tenant', $tenantInfo);
         $this->infoLoader->setInfoKeeper("tenantId", $tenantInfo["id"]);
+        $this->infoLoader->setInfoKeeper("tenant_link_rewrite", $tenantInfo["link_rewrite"]);
         $this->infoLoader->setInfoKeeper("tenantInfo", array("id"=>$tenantInfo["id"],
             "name"=>$tenantInfo["name"], "link_rewrite"=>$tenantInfo["link_rewrite"]));
 
@@ -300,43 +304,87 @@ trait BaseInfo {
     private function setControllerInfo(string $path, mixed $request) {
 
         /*
-         *** Too Much Url Handling
-         ***
+         *
+         * Too Much Url Handling
+         *
          *** Mess it with your own risk :).
          ***
         */
 
+        $path_arr = explode("/", $path);
+        $pathLen = sizeof($path_arr);
+
+        $categoryName = "/";
+        $methodName = "index";
+        $lang = "en";
+        $tenant = "web";
+
+        $foundLang = $this->infoLoader->getInfoKeeper("foundLang");
+        $foundTenant = $this->infoLoader->getInfoKeeper("foundTenant");
+
+        $paramsValues = array();
+
+        if ($path === "/" || $pathLen===1) {
+            if ($foundLang || $foundTenant) {
+                //$categoryName = "/";
+            } else {
+                $categoryName = $path;
+            }
+        } else if ($pathLen === 2) {
+            if ($foundLang && $foundTenant) {
+                //found lang and tenant = en/web
+               // $categoryName = "/";
+            } else if (!$foundLang && !$foundTenant) {
+                //no lang and tenant fond in url = my/contact
+                $categoryName = $path_arr[0];
+                $methodName = $path_arr[1];
+            } else {
+                //either lang or tenant is there in url = web/example | en/example
+                $categoryName = $path_arr[1];
+            }
+        } else if ($pathLen === 3) {
+            if ($foundLang && $foundTenant) {
+                //found lang and tenant = en/web/example
+                $categoryName = $path_arr[2];
+            } else if(!$foundLang && !$foundTenant) {
+                //no lang and tenant fond in url = my/contact/page
+                $categoryName = $path_arr[0];
+                $methodName = $path_arr[1];
+                $paramsValues = $path_arr[2];
+            } else {
+                //either lang or tenant is there in url = web/example/page | en/example/page
+                $categoryName = $path_arr[1];
+                $methodName = $path_arr[2];
+            }
+        } else if ($pathLen >= 4) {
+            if ($foundLang && $foundTenant) {
+                //found lang and tenant = en/web/example/page/extra/link
+                $categoryName = $path_arr[2];
+                $methodName = $path_arr[3];
+                $paramsValues = array_splice($path_arr, 4, $pathLen);
+            } else if(!$foundLang && !$foundTenant) {
+                //no lang and tenant fond in url = anything/category/example/page
+                $categoryName = $path_arr[0];
+                $methodName = $path_arr[1];
+                $paramsValues = array_splice($path_arr, 2, $pathLen);
+            } else  {
+                //either lang or tenant is there in url = web/category/example/page | en/category/example/page
+                $categoryName = $path_arr[1];
+                $methodName = $path_arr[2];
+                $paramsValues = array_splice($path_arr, 3, $pathLen);
+            }
+        }
+
+        if($foundLang) {
+            $lang = $this->infoLoader->getInfoKeeper('lang_iso_code');
+        }
+        if($foundTenant) {
+            $tenant = $this->infoLoader->getInfoKeeper('tenant_link_rewrite');
+        }
+
+        //dd("foundLang: $foundLang, foundTenant: $foundTenant", "path: ".$path, "categoryName: ".$categoryName, "methodName: ".$methodName, "lang:".$lang, "tenant: ".$tenant, $params);
+
         info("============== Setting Controller Info ==============");
-
-        $path_arr = ($path == "/") ? array("/") : explode("/", $path);
-        $foundTenant = !($this->infoLoader->hasInInfoKeeper("foundTenant") === null) && $this->infoLoader->hasInInfoKeeper("foundTenant");
-        $foundLang = !($this->infoLoader->hasInInfoKeeper("foundLang") === null) && $this->infoLoader->hasInInfoKeeper("foundLang");
-
-        $fakeTenant = "fakeWeb";
-        $fakeLang = "fakeEn";
-
-        $controllerIndex = 2;
-        $methodIndex = 3;
-
-        //Normalize url
-
-        if(!$foundLang) {
-            array_unshift($path_arr, $fakeLang);
-        }
-        if(!$foundTenant) {
-            array_unshift($path_arr, $fakeTenant);
-        }
-        //dd("path_arr ",$path_arr);
-        // Controller and method is missing
-        if(sizeof($path_arr) === 2) {
-            array_push($path_arr, $this->defaultController, $this->defaultMethod);
-        }
-
-        //method is missing
-        if(sizeof($path_arr) === 3) {
-            $path_arr[] = $this->defaultMethod;
-        }
-
 
         $clearCache = $request->get('clearCache') ?? false;
         $domain = $request->getHost();
@@ -348,9 +396,9 @@ trait BaseInfo {
 
         if(!$this->cacheManager->exists($categoryCacheKey) || $clearCache) {
             info("Fetching category info : $path");
-            $categoryInfo = $this->infoLoader->getCategoryInfo($path_arr[$controllerIndex], '', $site_id);
+            $categoryInfo = $this->infoLoader->getCategoryInfo($categoryName, '', $site_id);
             if(!$foundTenant && !$foundLang) {
-                $categoryInfo = $this->infoLoader->getCategoryInfo($path_arr[$controllerIndex], $path, $site_id); // load category of full url and controller
+                $categoryInfo = $this->infoLoader->getCategoryInfo($categoryName, $path, $site_id); // load category of full url and controller
             }
 
             if($categoryInfo === null) {
@@ -370,97 +418,36 @@ trait BaseInfo {
             //$categoryInfo = $categoryInfo->toArray();
             $this->setCategoryInfo($categoryInfo->toArray());
         }
+        //dd("foundLang: $foundLang, foundTenant: $foundTenant", "path: ".$path, "categoryName: ".$categoryName, "methodName: ".$methodName, "lang:".$lang, "tenant: ".$tenant, $categoryInfo);
 
-        info("After making path array");
         info(json_encode($path_arr));
 
-        //dd("path_arr", $path_arr);
+        $controllerName = ($categoryName == "/") ? $this->defaultController : $categoryName;
 
-        //make copies for some use
-        $path_arr_copy = $path_arr;
-
-
-        $controllerName = $path_arr[$controllerIndex];
-        $methodName = $path_arr[$methodIndex];
-
-        $controllerName = ($controllerName == "/") ? $this->defaultController : $controllerName;
-
-        //  reality check for controller and method
+        //   reality check for controller and method
         //	* if class exist controllerName (we have BlogController for blog category) else it’s frontend
         //	* if method exist (method name is story for BlogController) else it’s index;
-        $callable = $this->getControllerName($categoryInfo, $controllerName);
-
-        $foundController = false;
-        $foundMethod = false;
-
-        if(class_exists($callable)) {
-            $foundController = true;
-        }
-
-        if(method_exists($callable, $methodName)) {
-
-            //means it already has method | en/web/blog/story
-            if(sizeof($path_arr) >= 4) {
-                $foundMethod = true;
-            }
-
-        }
-
-        //If controller found
-        if($foundController) {
-
-            //if method found
-            if($foundMethod) {
-
-                $linkRewrite = join("/", array_splice($path_arr_copy, $methodIndex+1, sizeof($path_arr_copy)-1));
-
-            } else {
-
-                $linkRewrite = join("/", array_splice($path_arr_copy, $methodIndex, sizeof($path_arr_copy)-1));
-            }
-
-
-        } else {
-
-            $controllerName = $this->defaultController;
-
-            if((sizeof($path_arr_copy) == 4 && $path_arr_copy[$methodIndex] == $this->defaultMethod)) {
-
-                $linkRewrite = join("/", array_splice($path_arr_copy, $controllerIndex, 1));
-
-            } else {
-
-                $linkRewrite = join("/", array_splice($path_arr_copy, $controllerIndex, sizeof($path_arr_copy)-1));
-            }
-
-            $callable = $this->getControllerName($categoryInfo, $controllerName);
-
-        }
-
-        if(!$foundMethod) {
-            $methodName = $this->defaultMethod;
-        }
-
-        $categoryName = ($path_arr[$controllerIndex] === $this->defaultController) ? "/" : join("/",array_splice($path_arr, $controllerIndex, sizeof($path_arr)-1));
-
+        $callableData = $this->getControllerName($categoryInfo, $controllerName, $methodName);
         //dd("categoryName: $categoryName ", "controllerName: $controllerName, methodName: $methodName");
+        $callable = $callableData['controllerName'];
+        $methodName = $callableData['methodName'];
+        $foundController = $callableData['foundController'];
+        $foundMethod = $callableData['foundMethod'];
 
-        $this->infoLoader->setInfoKeeper("controllerName", $controllerName);
-        $this->infoLoader->setInfoKeeper("methodName", $methodName);
+        $this->infoLoader->setInfoKeeper("controllerName", $callable);
+        $this->infoLoader->setInfoKeeper("methodName",$methodName );
         $this->infoLoader->setInfoKeeper("categoryName", $categoryName);
 
 
-        $linkRewrite = strtolower($linkRewrite);
-        //$values = [];
-
-
-        $values = explode('/', $linkRewrite);
-        // exit(json_encode($values));
+        // if controller is not found. $values will ie ["support", "tnc"]. if found $values will be ["tnc"]
+        if(!$foundController) {
+            array_unshift($paramsValues,$controllerName,$callableData['methodNameParam']);
+        } else if($foundController && !$foundMethod) {
+            array_unshift($paramsValues,$callableData['methodNameParam']);
+        }
 
         $ref = new \ReflectionMethod($callable, $methodName);
         $params = $ref->getParameters();
-
-
 
         $args = [];
 
@@ -470,10 +457,11 @@ trait BaseInfo {
 
             // assign untyped segments
             if ($matches[2] == null) {
-                $args[$matches[3]] = array_shift($values);
+                $args[$matches[3]] = array_shift($paramsValues);
             }
         }
-        $values = array_merge($args, $values);
+
+        $values = array_merge($args, $paramsValues);
 
 
         //Check if controller and found and dynamic link option available ie: blog/{link_rewrite?}
@@ -486,24 +474,26 @@ trait BaseInfo {
             $requiredCount = $totalCount - $optionalCount;
 
             //size($value)-1 because it gives category link_rewrite in value array. Need only param. ie: blog/test-story. need only test-story
-            if((sizeof($values)-1 > $totalCount) || sizeof($values)-1 < $requiredCount) {
+            if($requiredCount !== 0 && $requiredCount < sizeof($values)-1) {
                 info("Dynamic url is mismatched");
                 exit("Dynamic url is mismatched");
             }
+
             $valuesForContext = $values; //make a copy of values. ie.
             // if controller is not found. $values will ie ["support", "tnc"]. if found $values will be ["tnc"]
             if(!$foundController) {
-                array_splice($valuesForContext, 0,1); //remove first index because it's a category. also explain in above lines
+                //array_splice($valuesForContext, 0,1); //remove first index because it's a category. also explain in above lines
             }
             //dd('valuesForContext ',$valuesForContext);
             // Setting link_rewrite_patten keys with value in contextVars
-            $link_rewrite_patterns = explode("/", $link_rewrite_pattern);
-            foreach ($valuesForContext as $index=>$lr) {
-                $key = preg_replace("/\{|\}|\?/", "", $link_rewrite_patterns[$index]);
-                $this->infoLoader->setContextVars($key, $lr);
-            }
+             $link_rewrite_patterns = explode("/", $link_rewrite_pattern);
+             foreach ($valuesForContext as $index=>$lr) {
+                 $key = preg_replace("/\{|\}|\?/", "", $link_rewrite_patterns[$index]);
+                 $this->infoLoader->setContextVars($key, $lr);
+             }
             //dd("callable 1 ", $callable,$methodName, $values, $categoryInfo->link_rewrite_pattern);
         }
+        $this->infoLoader->setInfoKeeper("__link_rewrite_pattern__", join("/", $values)); //This is for global use in future
 
         $this->infoLoader->setInfoKeeper("callable", $callable."@".$methodName);
         $this->infoLoader->setInfoKeeper("callableValue", $values);
@@ -511,7 +501,6 @@ trait BaseInfo {
 
         $data = array("callable"=>$callable,
             "callableValue"=>$values,
-            "controllerIndex"=>$controllerIndex,
             "controllerName"=> $controllerName,
             "categoryName"=> $categoryName,
             "method"=> $methodName
@@ -528,7 +517,7 @@ trait BaseInfo {
      * @param string $controller_name
      * @return string
      */
-    private function getControllerName(?Category $categoryInfo, string $controller_name):string {
+    private function getControllerName(?Category $categoryInfo, string $controller_name, string $method_name):array {
 
         if($categoryInfo !== null) {
             $controller_name = isset($categoryInfo->controller_name) ? $categoryInfo->controller_name : str_replace("-", "", Str::title($controller_name));
@@ -540,10 +529,39 @@ trait BaseInfo {
 
         $namespace = config("hashtagcms.namespace");
         $appNamespace = app()->getNamespace();
-        $callable = $namespace."Http\Controllers\\".$controller_name."Controller";
-        $callableApp = $appNamespace."Http\Controllers\\".$controller_name."Controller";
+        $callable = $namespace."Http\Controllers\\".$controller_name."Controller"; //hashtag controller
+        $callableDefault = $namespace."Http\Controllers\FrontendController"; //hashtag default controller
+        $callableApp = $appNamespace."Http\Controllers\\".$controller_name."Controller"; // app controller
 
-        return class_exists($callableApp) ? $callableApp : $callable;
+        $finalCallableApp = class_exists($callableApp) ? $callableApp : $callable;
+
+        $data = array();
+        $foundController = false;
+        $foundMethod = false;
+        $this->infoLoader->setInfoKeeper("foundController", false);
+        $this->infoLoader->setInfoKeeper("foundMethod", false);
+        $data['methodNameParam'] = $method_name;
+
+        if(class_exists($finalCallableApp)) {
+            $this->infoLoader->setInfoKeeper("foundController", true);
+            $foundController = true;
+            $data['controllerName'] = $finalCallableApp;
+            $data['methodName'] = $this->defaultMethod;
+            if(method_exists($finalCallableApp, $method_name)) {
+                $this->infoLoader->setInfoKeeper("foundMethod", true);
+                $foundMethod = true;
+                $data['methodName'] = $method_name;
+            }
+        } else {
+            //default controller and method
+            $data['controllerName'] = $callableDefault;
+            $data['methodName'] = $this->defaultMethod;
+
+        }
+        $data['foundController'] = $foundController;
+        $data['foundMethod'] = $foundMethod;
+
+        return $data;
     }
 
 
