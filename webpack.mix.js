@@ -10,7 +10,7 @@ mix.js('resources/assets/js/installer.js', 'public/assets/installer/js');
 let themesForBackend = [
     {
         vueOption:{ version: 2 },
-        theme:{source:'basic', type:'theme'}, //folder
+        theme:{source:'default', type:'theme'}, //folder
         assets: [
             {source:'js/app.js', target:'js', type:'js'},
             {source:'js/error-handler.js', target:'js', type:'js'},

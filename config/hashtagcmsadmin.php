@@ -8,7 +8,7 @@ return [
         'base_path' => '/admin',
         'version' => env('BE_RESOURCE_VERSION', '311220210430'),
         'theme' => 'hashtagcms::be.default',
-        'assets_path' => 'assets/hashtagcms/be/basic',
+        'assets_path' => 'assets/hashtagcms/be/default',
         'app_url' => env("APP_URL"),
         'resource_dir' => 'be/default',
         'media_path' => '/storage/media', //media path
