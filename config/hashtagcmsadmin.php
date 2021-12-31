@@ -26,7 +26,7 @@ return [
             'approve'=>'glyphicon glyphicon-ok',
             'loading'=>'fa-spinner fa-pulse fa-fw'
         ),
-        'module_types'=>array('Static','Query','Service','Custom','QueryService','UrlService', 'MenuService')
+        'module_types'=>array('Static','Query','Service','Custom','QueryService','UrlService')
       ],
     "media" => [
         "upload_path"=>"public/media", //-- /storage/app/public/media - run - php artisan storage:link
