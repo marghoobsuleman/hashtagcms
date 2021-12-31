@@ -16,7 +16,6 @@ class BlogController extends FrontendBaseController
      */
     public function index(Request $request) {
         $infoKeeper = app()->HashtagCmsInfoLoader->getInfoKeeper();
-
         //check it's blog home
         if(empty($infoKeeper['callableValue'][0])) {
             $this->setModuleMandatoryCheck(false);

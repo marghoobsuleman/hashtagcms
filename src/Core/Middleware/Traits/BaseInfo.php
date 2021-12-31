@@ -524,7 +524,8 @@ trait BaseInfo {
      * Get controller name. If `App\Http\Controllers\{Controller}` exist, use that else use HashtagCms Controller
      * @param Category|null $categoryInfo
      * @param string $controller_name
-     * @return string
+     * @param string $method_name
+     * @return array
      */
     private function getControllerName(?Category $categoryInfo, string $controller_name, string $method_name):array {
 
