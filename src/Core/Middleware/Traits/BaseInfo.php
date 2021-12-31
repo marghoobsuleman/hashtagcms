@@ -346,7 +346,7 @@ trait BaseInfo {
                 //no lang and tenant fond in url = my/contact/page
                 $categoryName = $path_arr[0];
                 $methodName = $path_arr[1];
-                $paramsValues = $path_arr[2];
+                $paramsValues[] = $path_arr[2];
             } else {
                 //either lang or tenant is there in url = web/example/page | en/example/page
                 $categoryName = $path_arr[1];
@@ -435,14 +435,14 @@ trait BaseInfo {
         $this->infoLoader->setInfoKeeper("methodName",$methodName );
         $this->infoLoader->setInfoKeeper("categoryName", $categoryName);
 
-
         // if controller is not found. $values will ie ["support", "tnc"]. if found $values will be ["tnc"]
-        if(!$foundController) {
-            array_unshift($paramsValues,$controllerName,$callableData['methodNameParam']);
+        if(!$foundController && $categoryInfo != null) {
+            array_unshift($paramsValues, $controllerName, $callableData['methodNameParam']);
         }
         if($foundController && !$foundMethod) {
-            array_unshift($paramsValues,$callableData['methodNameParam']);
+            array_unshift($paramsValues, $callableData['methodNameParam']);
         }
+
 
         $ref = new \ReflectionMethod($callable, $methodName);
         $params = $ref->getParameters();

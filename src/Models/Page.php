@@ -76,8 +76,8 @@ class Page extends AdminBaseModel
             } else {
                 $where[] = array("categories.link_rewrite", "=", "$link_rewrite");
             }
-
         }
+
         $query = DB::table('pages')
             ->join('page_langs', 'pages.id', '=', 'page_langs.page_id')
             ->join('categories', 'categories.id', '=', 'pages.category_id')
@@ -88,6 +88,7 @@ class Page extends AdminBaseModel
                 'pages.enable_comments', 'pages.attachment', 'pages.img', 'pages.author', 'pages.created_at', 'pages.updated_at',
                 'page_langs.name', 'page_langs.title', 'page_langs.description', 'page_langs.page_content',
                 'page_langs.link_relation', 'page_langs.target', 'page_langs.active_key');
+
         if(is_array($link_rewrite)) {
             $query = $query->whereIn("categories.link_rewrite", $link_rewrite);
         }

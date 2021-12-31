@@ -101,9 +101,9 @@ if (! function_exists('getFormattedDate')) {
      * @param string $date
      * @return string
      */
-    function getFormattedDate(string $date=''):string
+    function getFormattedDate(string $date=null):string
     {
-        return \Carbon\Carbon::createFromTimestamp(strtotime($date))->fromNow();
+        return ($date!=null) ? \Carbon\Carbon::createFromTimestamp(strtotime($date))->fromNow() : "";
     }
 
 }

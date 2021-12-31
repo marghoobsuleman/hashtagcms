@@ -33,7 +33,7 @@ return [
         "dev.hashtagcms.com"=>env('CONTEXT', 'hashtagcms')
     ),
     "blog_per_page"=>10,
-    "more_categories_on_blog_listing"=>array(), //"support"
+    "more_categories_on_blog_listing"=>array("support"), //"support"
     "api_secrets"=>array(
         /**
          * This is a combination of context and random key. will be used in /api/hashtagcms/public/mobiles/configs/v1/site-configs?site=htcmsctx&api_secret=61c58507bbac1
