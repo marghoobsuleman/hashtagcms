@@ -3,7 +3,7 @@
 @else
     @php
         $commentsCount = isset($data) ? sizeof($data) : 0;
-        $hasComments =  $commentsCount > 0 ? true : false;
+        $hasComments =  $commentsCount > 0;
     @endphp
     <section class="section-comments">
         <div class="container">
@@ -45,7 +45,7 @@
                     @endforeach
                 </fieldset>
             @else
-                <legend>
+            <legend style="margin-bottom: 100px; display: none">
             <span class="first-text">
                 Be the first to write a comment.
             </span>

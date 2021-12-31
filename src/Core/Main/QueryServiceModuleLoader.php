@@ -2,6 +2,8 @@
 namespace MarghoobSuleman\HashtagCms\Core\Main;
 
 
+use Mockery\Exception;
+
 class QueryServiceModuleLoader extends Results implements ModuleLoaderImp
 {
 
@@ -27,21 +29,25 @@ class QueryServiceModuleLoader extends Results implements ModuleLoaderImp
 
         $data = array();
 
+        $qm = new QueryModuleLoader($query);
+        $data["queryData"] = $qm->getResult();
+
         if($query_as == "data" || $query_as == "") {
-            //we should retrun the data
+            //we should return the data
             $sm = new ServiceModuleLoader($serviceUrl, $method_type);
-            $qm = new QueryModuleLoader($query);
             $data["serviceData"] = $sm->getResult();
-            $data["queryData"] = $qm->getResult();
 
         } else {
-            $qm = new QueryModuleLoader($query);
-            $data2 = $qm->getResult();
-            $arguments = json_decode(json_encode($data2), true)[0]; //kind fo toArray()
+            try {
 
-            $data["queryData"] = $data2;
-            $sm = new ServiceModuleLoader($serviceUrl, $method_type, $arguments);
-            $data["serviceData"] = $sm->getResult();
+                $arguments = json_decode(json_encode($data["queryData"]), true)[0]; //kind fo toArray()
+                $sm = new ServiceModuleLoader($serviceUrl, $method_type, $arguments);
+                $data["serviceData"] = $sm->getResult();
+            } catch (Exception $exception) {
+
+                $data["serviceData"] = null;
+            }
+
 
         }
 

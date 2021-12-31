@@ -2,10 +2,8 @@
 
 namespace MarghoobSuleman\HashtagCms\Core\Middleware\Traits;
 
-use MarghoobSuleman\HashtagCms\Core\Common;
 use MarghoobSuleman\HashtagCms\Core\Main\CacheManager;
 use MarghoobSuleman\HashtagCms\Models\Category;
-use MarghoobSuleman\HashtagCms\Models\Site;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -316,8 +314,6 @@ trait BaseInfo {
 
         $categoryName = "/";
         $methodName = "index";
-        $lang = "en";
-        $tenant = "web";
 
         $foundLang = $this->infoLoader->getInfoKeeper("foundLang");
         $foundTenant = $this->infoLoader->getInfoKeeper("foundTenant");
@@ -375,11 +371,15 @@ trait BaseInfo {
             }
         }
 
+        $fullPath = $path;
+
         if($foundLang) {
             $lang = $this->infoLoader->getInfoKeeper('lang_iso_code');
+            $fullPath = str_replace($lang."/", "", $fullPath);
         }
         if($foundTenant) {
             $tenant = $this->infoLoader->getInfoKeeper('tenant_link_rewrite');
+            $fullPath = str_replace($tenant."/", "", $fullPath);
         }
 
         //dd("foundLang: $foundLang, foundTenant: $foundTenant", "path: ".$path, "categoryName: ".$categoryName, "methodName: ".$methodName, "lang:".$lang, "tenant: ".$tenant, $params);
@@ -396,10 +396,7 @@ trait BaseInfo {
 
         if(!$this->cacheManager->exists($categoryCacheKey) || $clearCache) {
             info("Fetching category info : $path");
-            $categoryInfo = $this->infoLoader->getCategoryInfo($categoryName, '', $site_id);
-            if(!$foundTenant && !$foundLang) {
-                $categoryInfo = $this->infoLoader->getCategoryInfo($categoryName, $path, $site_id); // load category of full url and controller
-            }
+            $categoryInfo = $this->infoLoader->getCategoryInfo($categoryName, $fullPath, $site_id);
 
             if($categoryInfo === null) {
                 info("$path : Category not found!");
@@ -415,7 +412,7 @@ trait BaseInfo {
         }
 
         if($categoryInfo !== null) {
-            //$categoryInfo = $categoryInfo->toArray();
+            $categoryName = $categoryInfo->link_rewrite;
             $this->setCategoryInfo($categoryInfo->toArray());
         }
         //dd("foundLang: $foundLang, foundTenant: $foundTenant", "path: ".$path, "categoryName: ".$categoryName, "methodName: ".$methodName, "lang:".$lang, "tenant: ".$tenant, $categoryInfo);
@@ -442,7 +439,8 @@ trait BaseInfo {
         // if controller is not found. $values will ie ["support", "tnc"]. if found $values will be ["tnc"]
         if(!$foundController) {
             array_unshift($paramsValues,$controllerName,$callableData['methodNameParam']);
-        } else if($foundController && !$foundMethod) {
+        }
+        if($foundController && !$foundMethod) {
             array_unshift($paramsValues,$callableData['methodNameParam']);
         }
 
@@ -482,18 +480,27 @@ trait BaseInfo {
             $valuesForContext = $values; //make a copy of values. ie.
             // if controller is not found. $values will ie ["support", "tnc"]. if found $values will be ["tnc"]
             if(!$foundController) {
-                //array_splice($valuesForContext, 0,1); //remove first index because it's a category. also explain in above lines
+                array_splice($valuesForContext, 0,1); //remove first index because it's a category. also explain in above lines
             }
-            //dd('valuesForContext ',$valuesForContext);
+            //dd('valuesForContext: ',$valuesForContext);
             // Setting link_rewrite_patten keys with value in contextVars
-             $link_rewrite_patterns = explode("/", $link_rewrite_pattern);
-             foreach ($valuesForContext as $index=>$lr) {
-                 $key = preg_replace("/\{|\}|\?/", "", $link_rewrite_patterns[$index]);
-                 $this->infoLoader->setContextVars($key, $lr);
-             }
+             $link_rewrite_patterns = explode("/", $link_rewrite_pattern); //make array
+            //dd($link_rewrite_patterns, $values);
+            if(sizeof($link_rewrite_patterns) === sizeof($values)) {
+                foreach ($valuesForContext as $index=>$lr) {
+                    $key = preg_replace("/\{|\}|\?/", "", $link_rewrite_patterns[$index]);
+                    $this->infoLoader->setContextVars($key, $lr);
+                }
+            } else {
+                $key = preg_replace("/\{|\}|\?/", "", $link_rewrite_pattern);
+                $this->infoLoader->setContextVars($key, join("/", $valuesForContext));
+            }
+
             //dd("callable 1 ", $callable,$methodName, $values, $categoryInfo->link_rewrite_pattern);
         }
+        //This is for global purpose if you need it somewhere
         $this->infoLoader->setInfoKeeper("__link_rewrite_pattern__", join("/", $values)); //This is for global use in future
+        $this->infoLoader->setContextVars("__link_rewrite_pattern__", join("/", $values)); //This is for global use in future
 
         $this->infoLoader->setInfoKeeper("callable", $callable."@".$methodName);
         $this->infoLoader->setInfoKeeper("callableValue", $values);
@@ -505,6 +512,8 @@ trait BaseInfo {
             "categoryName"=> $categoryName,
             "method"=> $methodName
         );
+
+        //dd($data);
 
         info("======================= setControllerInfo ================================");
         info("setControllerInfo: ". json_encode($data));

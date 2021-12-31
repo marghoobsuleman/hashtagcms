@@ -271,6 +271,7 @@ class InfoLoader
         if(!empty($category_link_rewrite)) {
             $cat1 = Category::where(array(
                 array("link_rewrite", '=', $category_link_rewrite),
+                array("publish_status", '=', 1),
                 array("site_id", '=', $site_id)
                 ))->first();
         }
@@ -278,6 +279,7 @@ class InfoLoader
         if(!empty($full_category_link_rewrite)) {
             $cat2 = Category::where(array(
                 array("link_rewrite", '=', $full_category_link_rewrite),
+                array("publish_status", '=', 1),
                 array("site_id", '=', $site_id)
             ))->first();
         }

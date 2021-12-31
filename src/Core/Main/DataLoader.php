@@ -1,8 +1,7 @@
 <?php
 namespace MarghoobSuleman\HashtagCms\Core\Main;
 use JetBrains\PhpStorm\ArrayShape;
-use MarghoobSuleman\HashtagCms\Core\Common;
-//use MarghoobSuleman\HashtagCms\Core\Main\ModuleLoader;
+use Illuminate\Support\Facades\DB;
 
 class DataLoader
 {
@@ -26,7 +25,11 @@ class DataLoader
      */
     public function loadData(array $params=null): mixed
     {
-
+        try {
+            DB::connection()->getPdo();
+        } catch (\Exception $e) {
+            return $this->getErrorMessage($e->getMessage(), 502);
+        }
         $params = $params ?? request()->all();
 
         if(empty($params['site'])) {
@@ -194,10 +197,15 @@ class DataLoader
             $optionalCount = preg_match_all("/\?}/", $link_rewrite_pattern, $matches);
             $requiredCount = $totalCount - $optionalCount;
 
-            if((sizeof($category_params) > $totalCount) || sizeof($category_params) < $requiredCount) {
+           /* if((sizeof($category_params) > $totalCount) || sizeof($category_params) < $requiredCount) {
                 info("loadData: Dynamic url is mismatched.");
                return $this->getErrorMessage("Dynamic url is mismatched.", 400); //Bad request
+            }*/
+            if($requiredCount !== 0 && $requiredCount < sizeof($category_params)) {
+                info("Dynamic url is mismatched");
+                return $this->getErrorMessage("Dynamic url is mismatched.", 400); //Bad request
             }
+
             //set in context
             $link_rewrite_patterns = explode("/", $link_rewrite_pattern);
             foreach ($category_params as $index=>$lr) {
@@ -207,6 +215,8 @@ class DataLoader
             //@todo: Need to find a solution for this - dynamic keys (link_rewrite) with this value
             if(!empty($contentUrl)) {
                 $this->infoLoader->setContextVars("link_rewrite", $contentUrl);
+                $this->infoLoader->setInfoKeeper("__link_rewrite_pattern__", $contentUrl); //This is for global use in future
+                $this->infoLoader->setContextVars("__link_rewrite_pattern__", $contentUrl); //This is for global use in future
             }
 
         }

@@ -22,7 +22,9 @@ trait FeEssential {
         try {
             info("============ Start loading data from request ============= ");
             $data = $layoutManager->getHTMLData();
-
+            if($data['status'] != 200) {
+                abort($data['status'], $data['message']);
+            }
             if($data["isLoginRequired"] && Auth::id() == null) {
                 $category = $layoutManager->getMetaObject("category");
                 $category = $category['link_rewrite'];

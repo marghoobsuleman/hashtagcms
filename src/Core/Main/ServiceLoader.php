@@ -30,6 +30,13 @@ class ServiceLoader extends DataLoader
      */
     public function allConfigs(string $context, string $lang=null, string $tenant=null): array
     {
+        // fetch site info from request -> context
+        // fetch lang info from request -> lang
+        // fetch tenant info from request -> tenant
+        // if lang is passed in request use that else fetch lang_id from site info
+        // if tenant is passed in request use that else fetch tenant_id from site info
+        // after that fetch all the info.
+
         if (empty($context)) {
             return $this->getErrorMessage("Site context is missing", 400);
         }
@@ -54,7 +61,6 @@ class ServiceLoader extends DataLoader
                 $tenant_id = $tenantInfo->id;
             }
         }
-
 
         $site_id = $site->id;
         $lang_id = ($lang_id == null) ? $site->lang_id : $lang_id;

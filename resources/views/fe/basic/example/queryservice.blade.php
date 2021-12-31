@@ -28,14 +28,7 @@
             <h3 class="ml-1">Query Data</h3>
         </div>
         <div class="row">
-            @foreach($queryData as $social)
-                @php
-                    $sLabel = ucfirst($social->name);
-                    $sCss = strtolower($social->name);
-                    $sHref = trim($social->value);
-                @endphp
-                <p class="p-3"><a class="social social-{{$sCss}}" href="{{$sHref}}" title="{{$sLabel}}" target="_blank" rel="noopener nofollow"><i class="fa fa-{{$sCss}}"></i> {{$sLabel}}</a> &nbsp;</p>
-            @endforeach
+            {{json_encode($queryData)}}
         </div>
     </div>
 </section>
