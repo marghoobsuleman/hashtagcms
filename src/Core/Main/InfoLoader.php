@@ -269,7 +269,7 @@ class InfoLoader
 
         // eg 1: support
         if(!empty($category_link_rewrite)) {
-            $cat1 = Category::where(array(
+            $cat1 = Category::withoutGlobalScopes()->where(array(
                 array("link_rewrite", '=', $category_link_rewrite),
                 array("publish_status", '=', 1),
                 array("site_id", '=', $site_id)
@@ -277,7 +277,7 @@ class InfoLoader
         }
         // eg 2. en/web/support/xyz-link/and-more-link
         if(!empty($full_category_link_rewrite)) {
-            $cat2 = Category::where(array(
+            $cat2 = Category::withoutGlobalScopes()->where(array(
                 array("link_rewrite", '=', $full_category_link_rewrite),
                 array("publish_status", '=', 1),
                 array("site_id", '=', $site_id)
@@ -400,7 +400,7 @@ class InfoLoader
      */
     public function getThemeInfo(int $theme_id):Theme
     {
-        return Theme::find($theme_id);
+        return Theme::withoutGlobalScopes()->find($theme_id);
     }
 
 

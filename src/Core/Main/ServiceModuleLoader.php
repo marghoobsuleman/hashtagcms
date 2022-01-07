@@ -24,7 +24,7 @@ class ServiceModuleLoader extends Results implements ModuleLoaderImp
      */
     public function process(string $service_url=null, string $method_type=null, array $withData=array()):void
     {
-        $data = null;
+        $data = array();
         if($service_url == "" || $service_url == null) {
             $this->setResult([]);
             return;

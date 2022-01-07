@@ -31,7 +31,7 @@ Route::middleware('api')->prefix("api/hashtagcms")->group(function() use($callab
      * Mobile Splash Screen
      * Used for config
      */
-    Route::get("public/mobiles/configs/v1/site-configs", function (Request $request)  use($callable) {
+    Route::get("public/configs/v1/site-configs", function (Request $request)  use($callable) {
 
         return app()->call($callable."ServiceController@siteConfigs");
 

@@ -36,7 +36,7 @@ return [
     "more_categories_on_blog_listing"=>array(), //"support"
     "api_secrets"=>array(
         /**
-         * This is a combination of context and random key. will be used in /api/hashtagcms/public/mobiles/configs/v1/site-configs?site=htcmsctx&api_secret=61c58507bbac1
+         * This is a combination of context and random key. will be used in /api/hashtagcms/public/configs/v1/site-configs?site=htcmsctx&api_secret=61c58507bbac1
          */
         "htcmsctx"=>"61c58507bbac1"
     )

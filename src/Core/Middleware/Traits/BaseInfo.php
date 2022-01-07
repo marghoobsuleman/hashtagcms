@@ -125,7 +125,6 @@ trait BaseInfo {
         $siteInfo = $siteInfo->toArray();
         //Set Site Info
         $this->setSiteInfo($siteInfo);
-
         // #Set lang info
         $langCacheKey = md5($domain."_".$path_arr[0]."_lang");
 

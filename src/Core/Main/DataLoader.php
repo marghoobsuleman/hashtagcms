@@ -98,6 +98,9 @@ class DataLoader
             $siteInfo = $this->cacheManager->get($contextCacheKey);
         }
 
+
+
+
         $site_id = $siteInfo['id'];
         app()->HashtagCms->infoLoader()->setInfoKeeper("site_id", $site_id);
 
@@ -226,6 +229,7 @@ class DataLoader
 
         // get theme info
         $themeCacheKey = ($context.'_'.$tenant.'_'.$lang).'_'.$theme_id;
+
         if(!$this->cacheManager->exists($themeCacheKey) || $clearCache) {
             info("loadData: Fetching theme info theme: $theme_id");
             //noinspection ConstantConditions
