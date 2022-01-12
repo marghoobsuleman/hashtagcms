@@ -13,7 +13,6 @@
                 <option>Select a Tenant</option>
                 <option v-for="tenant in tenants" :value="tenant.id">{{tenant.name}}</option>
             </select>
-            <label v-show="hasTenantMoreThanOne" title="It will be inserted or deleted for all tenants if checks."><input type="checkbox" v-model="applicableForAllTenants" /> Effective for all tenants</label>
 
             <div v-show="hasTheme" style="margin-left: 10px; display: inline"> <span @click="showInfo('theme', themeInfo.id)" class="hand" title="Click to see theme info"> Theme: {{themeInfo.name}}</span></div>
             <div class="pull-right text-right">
@@ -86,7 +85,6 @@
                 <div class="row">
                     <div class="plr5">
                         <label class="col-md-3">From:</label>
-
                         <select v-if="hasSiteMoreThanOne" class="form-control select" v-model="fromData.site_id">
                             <option value="0">Select a MicroSite</option>
                             <option v-for="site in allSites" :value="site.id">{{site.name}}</option>
@@ -124,6 +122,13 @@
                         </select>
                     </div>
                 </div>
+                <div class="row">
+                  <div class="plr5 v-space" v-show="hasTenantMoreThanOne">
+                    <div class="alert alert-info">
+                      Please do not select tenant if you want to copy modules in all tenant respectively.
+                    </div>
+                  </div>
+                </div>
             </div>
             <div slot="footer" class="center-align">
                 <div class="loader" v-show="isWorking">Please wait... <span class="fa fa-loader"></span> </div>
@@ -137,6 +142,9 @@
                 Warning!!!
             </div>
             <div slot="content">
+              <div>
+                <label v-show="hasTenantMoreThanOne" title="It will be inserted or deleted for all tenants if checks."><input type="checkbox" v-model="applicableForAllTenants" /> Effective for all tenants</label>
+              </div>
                 Are you sure to delete all modules from this category? Can't be undone.
             </div>
             <div slot="footer" class="center-align">
@@ -265,7 +273,8 @@
                 sortObj:{draggable:null},
                 userRights:(this.dataUserRights ? JSON.parse(this.dataUserRights) : []),
                 isModuleReadonly: (this.dataIsModuleReadonly == "1") ? true : false,
-                allSites:(typeof this.dataAllSites == "undefined" || this.dataAllSites == "") ? [] : JSON.parse(this.dataAllSites)
+                allSites:(typeof this.dataAllSites == "undefined" || this.dataAllSites == "") ? [] : JSON.parse(this.dataAllSites),
+                copyForAllTenants:false
             }
         },
         methods: {
@@ -396,7 +405,8 @@
                     let where = $this.getWhere();
                     postParams.data = datas;
                     postParams.where = where;
-                    postParams.applicableForAllTenants = this.applicableForAllTenants;
+                    //postParams.applicableForAllTenants = this.applicableForAllTenants;
+                    postParams.applicableForAllTenants = false;
                     this.saveNow(AdminConfig.admin_path("homepage/saveSettings"), postParams).then(function (res) {
                         //console.log(res);
                         Toast.show($this, "Saved...");

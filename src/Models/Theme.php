@@ -23,10 +23,13 @@ class Theme extends AdminBaseModel
      * @param int $target_site_id
      */
     public static function getThemeIdThroughSite(int $source_theme_id, int $target_site_id) {
-        $themeInfo = Theme::withoutGlobalScopes()->find($source_theme_id);
-        $themeWhere = array(array('alias', '=', $themeInfo->alias), array('site_id', '=', $target_site_id));
+        $themeInfo = Theme::withoutGlobalScopes()->where('id', '=', $source_theme_id)->first();
 
-        $themeInfo = Theme::withoutGlobalScopes()->where($themeWhere)->first();
-        return $themeInfo->id;
+        if($themeInfo && $themeInfo->alias) {
+            $themeWhere = array(array('alias', '=', $themeInfo->alias), array('site_id', '=', $target_site_id));
+            $theme = Theme::withoutGlobalScopes()->where($themeWhere)->first();
+            return $theme->id;
+        }
+        return null;
     }
 }

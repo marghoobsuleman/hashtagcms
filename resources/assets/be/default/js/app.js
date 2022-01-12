@@ -59,6 +59,8 @@ import PassportAuthorizedClients from './components/passport/AuthorizedClients';
 import PassportPersonalAccessTokens from './components/passport/PersonalAccessTokens';
 
 import LanguageCopier from "./components/LanguageCopier";
+import SiteCloner from "./components/SiteCloner";
+
 
 Vue.component('top-nav', TopNav);
 Vue.component('admin-modules', LeftNav);
@@ -102,6 +104,7 @@ Vue.component('passport-authorized-clients', PassportAuthorizedClients);
 Vue.component('passport-personal-access-tokens',PassportPersonalAccessTokens);
 
 Vue.component('language-copier', LanguageCopier);
+Vue.component('site-cloner', SiteCloner);
 
 
 const appVm = new Vue({

@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
+use Lcobucci\JWT\Exception;
 use MarghoobSuleman\HashtagCms\Models\Category;
 use MarghoobSuleman\HashtagCms\Models\CategoryLang;
 use MarghoobSuleman\HashtagCms\Models\CategorySite;
@@ -44,7 +45,12 @@ class SiteController extends BaseAdminController
                                         "languages"=>array("dataSource"=>Lang::class, "method"=>"combo"),
                                         "countries"=>array("dataSource"=>CountryLang::class, "method"=>"all")
                                     );
-
+    protected $moreActionBarItems = array(
+        array("label"=>"Clone Site",
+            "as"=>"icon",
+            "icon_css"=>"fa fa-copy", "action"=> "site/copysite"
+        )
+    );
     protected $moreActionFields = array(
         array("label"=>"Site Settings",
             "icon_css"=>"fa fa-cogs",
@@ -148,8 +154,8 @@ class SiteController extends BaseAdminController
     public function settings($id = 1, $tab='tenants')
     {
 
-        if(!$this->checkPolicy('edit')) {
-            return htcms_admin_view("common.error", Message::getWriteError());
+        if(!$this->checkPolicy('read')) {
+            return htcms_admin_view("common.error", Message::getReadError());
         }
 
         $siteInfo = Site::allInfo($id);
@@ -209,7 +215,7 @@ class SiteController extends BaseAdminController
                 $selectedData = Module::withoutGlobalScopes()->where('site_id', '=', $siteInfo->id)->get();
 
                 $message = ($selectedData->count() > 0) ? "Below modules are already available in your site." : "You can copy module from desired site. Choose site option, select and click on Add Selected.";
-
+                //Because we are shwoing site to choose
                 $data = array("label"=>"Modules",
                     "data"=>array("allSites"=>Site::with('lang')->get()),
                     "message"=>$message
@@ -221,7 +227,7 @@ class SiteController extends BaseAdminController
                 $selectedData = StaticModuleContent::withoutGlobalScopes()->where('site_id', '=', $siteInfo->id)->get();
 
                 $message = ($selectedData->count() > 0) ? "Below static modules are already available in your site." : "You can copy static module from desired site. Choose site option, select and click on Add Selected.";
-
+                //Because we are shwoing site to choose
                 $data = array("label"=>"StaticModules",
                     "data"=>array("allSites"=>Site::with('lang')->get()),
                     "message"=>$message
@@ -232,6 +238,7 @@ class SiteController extends BaseAdminController
                 $viewName = "copier";
                 $selectedData = SiteProp::withoutGlobalScopes()->where('site_id', '=', $siteInfo->id)->get();
                 $message = ($selectedData->count() > 0) ? "Below properties are already available in your site." : "You can copy properties from desired site. Choose site option, select and click on Add Selected.";
+                //Because we are shwoing site to choose
                 $data = array("label"=>"SiteProperties",
                     "data"=>array("allSites"=>Site::with('lang')->get()),
                     "message"=>$message
@@ -241,9 +248,10 @@ class SiteController extends BaseAdminController
             case 'themes':
 
                 $viewName = "copier";
-                $selectedData = Theme::where('site_id', '=', $siteInfo->id)->withoutGlobalScopes()->get();
+                $selectedData = Theme::withoutGlobalScopes()->where('site_id', '=', $siteInfo->id)->get();
                 //info($siteInfo->id. " " .json_encode($selectedData));
                 $message = ($selectedData->count() > 0) ? "Below themes are already available in your site." : "You can copy theme from desired site. Choose site option, select and click on Add Selected.";
+                //Because we are shwoing site to choose
                 $data = array("label"=>"Themes",
                     "data"=>array("allSites"=>Site::with('lang')->get()),
                     "message"=>$message
@@ -252,11 +260,12 @@ class SiteController extends BaseAdminController
                 break;
             case 'categories':
                 $viewName = "copier";
-                $selectedData = Category::with('lang')->withoutGlobalScopes()->where('site_id', '=', $siteInfo->id)->get();
+                $selectedData = Category::withoutGlobalScopes()->with('lang')->where('site_id', '=', $siteInfo->id)->get();
 
                 //info(json_encode($selectedData));
                 $path = htcms_admin_path("category/settings");
                 $message = ($selectedData->count() > 0) ? "Below categories are already available in your site." : "You can copy categories from desired site. Choose site option, select and click on Add Selected.";
+                //Because we are shwoing site to choose
                 $data = array("label"=>"Categories",
                                 "data"=>array("allSites"=>Site::with('lang')->get()),
                                 "message"=>$message);
@@ -278,8 +287,17 @@ class SiteController extends BaseAdminController
      * Find relationa and attach and detach from the site
      * @return mixed
      */
-    public function saveSettings() {
-        $data = request()->all();
+    public function saveSettings($byPrams=null) {
+
+        if(!$this->checkPolicy('edit')) {
+            if(\request()->ajax()) {
+                return response()->json(Message::getWriteError(), 401);
+            } else {
+                return htcms_admin_view("common.error", Message::getWriteError());
+            }
+        }
+
+        $data = ($byPrams==null) ? request()->all() : $byPrams;
         $site_id = $data["site_id"];
         $key = $data["key"];
         $ids = $data["ids"];
@@ -319,6 +337,13 @@ class SiteController extends BaseAdminController
      * @return mixed
      */
     public function removeSettings() {
+        if(!$this->checkPolicy('edit')) {
+            if(\request()->ajax()) {
+                return response()->json(Message::getWriteError(), 401);
+            } else {
+                return htcms_admin_view("common.error", Message::getWriteError());
+            }
+        }
         $data = request()->all();
 
         $site_id = $data["site_id"];
@@ -359,6 +384,7 @@ class SiteController extends BaseAdminController
      * @return bool
      */
     private function saveSettingWithLangs($data=array(), $source, $langSource, $idField='', $tabs=null, $toSite=null) {
+
         $inserted = FALSE;
 
         //info(json_encode($data));
@@ -371,7 +397,7 @@ class SiteController extends BaseAdminController
             $oldId = $val["id"];
 
             //get all languages for a category
-            $langData = $langSource::where($idField, "=", $oldId)->withoutGlobalScopes()->get()->toArray();
+            $langData = $langSource::withoutGlobalScopes()->where($idField, "=", $oldId)->get()->toArray();
 
             unset($val["id"]);
             unset($val["lang"]); //if exists
@@ -384,16 +410,21 @@ class SiteController extends BaseAdminController
             $inserted = $content->save();
 
             //Need to copy category_sites
-            if($tabs == "categories") {
+            if($tabs === "categories") {
                 $siteData = CategorySite::where("category_id", "=", $oldId)->get()->toArray();
                 $sData = [];
                 foreach ($siteData as $s=>$sd) {
                     $sd['category_id'] = $content->id;
                     $sd['site_id'] = $content->site_id;
-                    $sd['theme_id'] = Theme::getThemeIdThroughSite((int)$sd['theme_id'], (int)$val['site_id']);
+                    $sd['theme_id'] = Theme::getThemeIdThroughSite((int)$sd['theme_id'], (int)$val['site_id']); //it already has withoutGlobalScopes()
                     $sd['created_at'] = htcms_get_current_date();
                     $sd['updated_at'] = htcms_get_current_date();
-                    $sData[] = $sd;
+
+                    //if that category has theme and it is available in category_site table.
+                    if($sd['theme_id']) {
+                        $sData[] = $sd;
+                    }
+
                 }
                 try {
                     //info($sData);
@@ -431,9 +462,17 @@ class SiteController extends BaseAdminController
      * Copy things from source site to target site
      * @return array
      */
-    public function copySettings() {
+    public function copySettings($byPrams=null) {
 
-        $data = request()->all();
+        if(!$this->checkPolicy('edit')) {
+            if(\request()->ajax()) {
+                return response()->json(Message::getWriteError(), 401);
+            } else {
+                return htcms_admin_view("common.error", Message::getWriteError());
+            }
+        }
+
+        $data = ($byPrams==null) ? request()->all() : $byPrams;
         $fromSite = $data["fromSite"];
         $toSite = $data["toSite"];
         $copyWhat = $data["type"];
@@ -450,14 +489,15 @@ class SiteController extends BaseAdminController
                 $resetId = FALSE;
                 break;
             case "siteproperties":
+                $compareKey = "name";
                 $source = SiteProp::class;
                 break;
             case "themes":
                 $source = Theme::class;
                 break;
             case "categories":
-                $source = Category::class;
                 $compareKey = "link_rewrite";
+                $source = Category::class;
                 $resetId = FALSE;
                 break;
             default:
@@ -475,7 +515,6 @@ class SiteController extends BaseAdminController
         if(count($existing) > 0) {
             //filter
             foreach($data as $key=>$val) {
-
                 if($this->isExist($existing, $val[$compareKey], $compareKey) === FALSE) {
                     $toBeInserted[] = $val;
                 } else {
@@ -568,7 +607,7 @@ class SiteController extends BaseAdminController
         if($site_id != NULL) {
             switch (strtolower($key)) {
                 case "modules":
-                    $data = Module::where('site_id', '=', $site_id)->get();;
+                    $data = Module::withoutGlobalScopes()->where('site_id', '=', $site_id)->get();
                     break;
                 case "staticmodules":
                     $data = StaticModuleContent::withoutGlobalScopes()->where('site_id', '=', $site_id)->get();
@@ -577,16 +616,162 @@ class SiteController extends BaseAdminController
                     $data = SiteProp::withoutGlobalScopes()->where('site_id', '=', $site_id)->get();
                     break;
                 case "themes":
-                    $data = Theme::where('site_id', '=', $site_id)->get();;
+                    $data = Theme::withoutGlobalScopes()->where('site_id', '=', $site_id)->get();;
                     break;
                 case "categories":
-                    $data = Category::with('lang')->withoutGlobalScopes()->where('site_id', '=', $site_id)->get();
+                    $data = Category::withoutGlobalScopes()->with('lang')->where('site_id', '=', $site_id)->get();
                     break;
             }
             return $data;
         }
 
         return array("error"=>true, "message"=>"Site id is not provided");
+    }
+
+    /**
+     * @return mixed
+     */
+    public function copysite() {
+        $viewData["siteInfo"] = Site::with('lang')->get();
+        $viewData["backURL"] = $this->getBackURL();
+        return $this->viewNow("site.site-clone", $viewData);
+    }
+
+    /**
+     * @param $source_site_id
+     * @param $target_site_id
+     * @return \Illuminate\Http\JsonResponse|mixed|string|void
+     */
+    public function cloneSite($source_site_id=null, $target_site_id=null) {
+
+        if(!$this->checkPolicy('edit')) {
+            if(\request()->ajax()) {
+                return response()->json(Message::getWriteError(), 401);
+            } else {
+                return htcms_admin_view("common.error", Message::getWriteError());
+            }
+        }
+
+        if(empty($source_site_id)) {
+            $data = request()->all();
+            $source_site_id = $data['sourceSiteId'];
+            $target_site_id = $data['tagetSiteId'];
+        }
+
+
+        if($source_site_id == $target_site_id) {
+            $errorData["status"] = 400;
+            $errorData["title"] = "Alert";
+            $errorData["message"] = "Source and target site id can't be the same.";
+            return response()->json($errorData, $errorData["status"]);
+        }
+
+
+        $siteInfo = Site::allInfo($source_site_id);
+        $datas = array();
+        $targetSiteInfo = Site::find($target_site_id);
+
+        if($targetSiteInfo === null || $siteInfo === null) {
+            return "Source or target data is missing";
+        }
+
+        try {
+
+        } catch (\Exception $exception) {
+
+        }
+
+        //Pivot setting things
+        $itemsToAttach = array("tenant", "hook", "language", "zone", "country", "currency");
+        foreach ($itemsToAttach as $key=>$item) {
+            $finder = ($item == "language") ? "lang" : $item;
+            $finder = Str::title($finder);
+            $namespace = config("hashtagcms.namespace");
+            $finder = resolve($namespace.'Models\\'.$finder);
+            $attach["key"] = Str::plural($item);
+            $attach["ids"] =  $finder::all('id')->pluck("id")->toArray();
+            $attach["site_id"] = $target_site_id;
+            $attach["action"] = "add";
+            $res = $this->saveSettings($attach);
+            $msg = (empty($res)) ? Str::title($item)." copied" : "Unable to copy";
+            $datas[] = array("message"=>$msg, "component"=>$item);
+        }
+
+        //Copy things
+        $itemsToCopy = array("modules", "staticmodules", "themes", "categories", "siteproperties");
+        foreach ($itemsToCopy as $key=>$item) {
+            try {
+                $data["fromSite"] = array("site_id"=>$source_site_id, "data"=>$this->getBySite($source_site_id, $item)->toArray());
+                $data["toSite"] = array("site_id"=>$target_site_id);
+                $data["type"] = $item;
+                $res = $this->copySettings($data);
+
+                $title = $item;
+                $ignored = sizeof($res["ignored"]);
+                $copied = sizeof($res["copied"]);
+                $datas[] = array("message"=>"$copied $title copied and $ignored $title ignored", "component"=>$item);
+            } catch (Exception $exception) {
+                $datas[] = array("message"=>"$copied $title copied and $ignored $title ignored", "component"=>$item);
+                $datas[] = $exception->getMessage();
+            }
+
+        }
+        //Copy modules by category in module_site
+        $datas[] = array("message"=>"----------------------------------------", "component"=>"");
+
+        //Set default ids for target site;
+        $category_id = $siteInfo->category_id;
+        $theme_id = $siteInfo->theme_id;
+        $tenant_id = $siteInfo->tenant_id;
+        $lang_id = $siteInfo->lang_id;
+        $country_id = $siteInfo->country_id;
+
+        //set category
+        $categoryInfo = Category::withoutGlobalScopes()->where("id", "=", $category_id)->first();
+        $targetCategoryInfo = Category::withoutGlobalScopes()->where(array(array("link_rewrite", "=", $categoryInfo->link_rewrite), array("site_id", "=", $target_site_id)))->first();
+
+        //set theme
+        $themeInfo = Theme::withoutGlobalScopes()->where("id", "=", $theme_id)->first();
+        $targetThemeInfo = Theme::withoutGlobalScopes()->where(array(array("alias", "=", $themeInfo->alias), array("site_id", "=", $target_site_id)))->first();
+
+        $targetSiteInfo->category_id = $targetCategoryInfo->id;
+        $targetSiteInfo->theme_id = $targetThemeInfo->id;
+        $targetSiteInfo->tenant_id = $tenant_id;
+        $targetSiteInfo->lang_id = $lang_id;
+        $targetSiteInfo->country_id = $country_id;
+        $targetSiteInfo->save();
+
+        //Time to copy the modules
+        $site = Site::with(['tenant'])->find($source_site_id);
+        $allTeants = $site->tenant;
+        $categories = Category::withoutGlobalScopes()->where('site_id', '=', $source_site_id)->get();
+
+        $data = array("success" => false);
+        foreach ($categories as $category) {
+            $link_rewrite = $category->link_rewrite;
+            $tagetCategoryInfo = Category::withoutGlobalScopes()->where(array(array('site_id', '=', $target_site_id), array('link_rewrite', '=', $link_rewrite)))->first();
+            if($tagetCategoryInfo) {
+                foreach ($allTeants as $tenant) {
+                    $fromData['site_id'] = $source_site_id;
+                    $fromData['tenant_id'] = $tenant->id;
+                    $fromData['category_id'] = $category->id;
+                    $fromData['microsite_id'] = 0; //@todo: For microsite
+
+
+                    $toData['site_id'] = $target_site_id;
+                    $toData['tenant_id'] = $tenant->id;
+                    $toData['category_id'] = $tagetCategoryInfo->id;
+                    $toData['microsite_id'] = 0; //@todo: For microsite
+                    $data = Module::copyData($fromData, $toData); //this will return only last
+                    $datas[] = array("success"=>$data['success'], "message"=>$data['message'] ." - $link_rewrite, and tenant: {$tenant->link_rewrite}", "component"=>"module_site_copy", "data"=>array("fromData"=>$fromData, "toData"=>$toData));
+                }
+            } else {
+                $datas[] = array("success"=>false, "message"=>"Could not find cateogry $link_rewrite in target site", "component"=>"module_site_copy");
+            }
+
+        }
+
+        return $datas;
     }
 
 }

@@ -190,50 +190,24 @@ class HomepageController extends BaseAdminController
         $category_id = $where["category_id"];
         $toBeSaved = [];
         $userId = auth()->user()->id;
-        if($applicableForAllTenants == true) {
 
-            $sites = Site::with('tenant')->find($site_id);
-            foreach ($sites->tenant as $tenant) {
-                foreach ($data as $key=>$val) {
-                    $hook_id = $val["hook_id"];
-                    $modules = $val["modules"];
-                    foreach ($modules as $module) {
-                        $toBeSaved[] = array("site_id"=>$site_id, "microsite_id"=>$microsite_id,
-                            "tenant_id"=>$tenant->id, "category_id"=>$category_id,
-                            "position"=>$module["position"],
-                            "hook_id"=>$hook_id,
-                            "module_id"=>$module["module_id"],
-                            "publish_status"=>1,
-                            "insert_by"=>$userId,
-                            "update_by"=>$userId,
-                            "approved_by"=>$userId
-                        );
-                    }
-                }
-            }
-
-        } else {
-            foreach ($data as $key=>$val) {
-                $hook_id = $val["hook_id"];
-                $modules = $val["modules"];
-                foreach ($modules as $module) {
-                    $toBeSaved[] = array("site_id"=>$site_id, "microsite_id"=>$microsite_id,
-                        "tenant_id"=>$tenant_id, "category_id"=>$category_id,
-                        "position"=>$module["position"],
-                        "hook_id"=>$hook_id,
-                        "module_id"=>$module["module_id"],
-                        "publish_status"=>1,
-                        "insert_by"=>$userId,
-                        "update_by"=>$userId,
-                        "approved_by"=>$userId
-                    );
-                }
-            }
-
-            if($applicableForAllTenants == true) {
-                unset($where['tenant_id']);
+        foreach ($data as $key=>$val) {
+            $hook_id = $val["hook_id"];
+            $modules = $val["modules"];
+            foreach ($modules as $module) {
+                $toBeSaved[] = array("site_id"=>$site_id, "microsite_id"=>$microsite_id,
+                    "tenant_id"=>$tenant_id, "category_id"=>$category_id,
+                    "position"=>$module["position"],
+                    "hook_id"=>$hook_id,
+                    "module_id"=>$module["module_id"],
+                    "publish_status"=>1,
+                    "insert_by"=>$userId,
+                    "update_by"=>$userId,
+                    "approved_by"=>$userId
+                );
             }
         }
+
         $isSaved = false;
         //delete old one
         try {
@@ -290,6 +264,19 @@ class HomepageController extends BaseAdminController
         $allData = $request->all();
         $fromData = $allData["fromData"]; //{site_id:1, microsite_id:0, tenant_id:1, category_id:1}
         $toData = $allData["toData"];
-        return Module::copyData($fromData, $toData);
+        if($fromData['tenant_id'] == 0) {
+            $site = Site::with('tenant')->find($toData['site_id']);
+            $allTeants = $site->tenant;
+            $data = array("success"=>false);
+            foreach ($allTeants as $tenant) {
+                $fromData['tenant_id'] = $tenant->id;
+                $toData['tenant_id'] = $tenant->id;
+                $data = Module::copyData($fromData, $toData); //this will return only last
+            }
+            return $data;
+        } else {
+            return Module::copyData($fromData, $toData);
+        }
+
     }
 }

@@ -146,7 +146,8 @@ class Site extends AdminBaseModel
                         'microsite:id,site_id,name',
                         'country:id',
                         'zone',
-                        'hook'
+                        'hook',
+                        'prop'
                         ])->withoutGlobalScopes()->find($site_id);
     }
 
@@ -196,7 +197,6 @@ class Site extends AdminBaseModel
         //remove old
         $this->$key()->detach();
 
-
         //attach now
         return $this->$key()->attach($data);
     }
@@ -237,6 +237,22 @@ class Site extends AdminBaseModel
     public function staticmodule() {
         return $this->hasManyThrough(StaticModuleContentLang::class, StaticModuleContent::class);
         //return $this->hasMany(StaticModuleContent::class, "site_id","id");
+    }
+
+    /**
+     * Suported props
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function prop() {
+        return $this->hasMany(SiteProp::class);
+    }
+
+    /**
+     * Suported props
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function siteproperty() {
+        return $this->prop();
     }
 
 

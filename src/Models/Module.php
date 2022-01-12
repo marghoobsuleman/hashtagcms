@@ -67,60 +67,63 @@ class Module extends AdminBaseModel
      * Copy Data from one category to another
      * @param $fromData
      * @param $toData
+     * $param $forAllTenants
      * @return array
      */
     public static function copyData($fromData, $toData) {
         //{site_id:1, microsite_id:0, tenant_id:1, category_id:1}
 
-        if(($fromData["tenant_id"] === $toData["tenant_id"]) &&
-            ($fromData["category_id"] === $toData["category_id"]) &&
-            ($fromData["microsite_id"] === $toData["microsite_id"]) &&
-            ($fromData["site_id"] === $toData["site_id"]) ) {
+        $sourceSiteId = $fromData["site_id"];
+        $sourceTenantId = $fromData["tenant_id"];
+        $sourceCategoryId = $fromData["category_id"];
+        $sourceMicrositeId = $fromData["microsite_id"];
 
+        $targetSiteId = $toData["site_id"];
+        $targetTenantId = $toData["tenant_id"];
+        $targetCategoryId = $toData["category_id"];
+        $targetMicrositeId = $toData["microsite_id"];
+
+        if(($sourceTenantId === $targetTenantId) &&
+            ($sourceCategoryId === $targetCategoryId) &&
+            ($sourceMicrositeId === $targetMicrositeId) &&
+            ($sourceSiteId === $targetSiteId) ) {
             info("copy error");
-
-            return array("error"=>true, "message"=>"Source and target is same. Unable to copy.");
-
-        }
-
-        //copy in all tenant
-        if($fromData["tenant_id"] == 0) {
-            unset($fromData["tenant_id"]);
+            return array("success"=>false, "error"=>true, "message"=>"Source and target is same. Unable to copy");
         }
 
 
         //set theme category if it is not the same
-        if(($fromData["category_id"] !== $toData["category_id"]) || ($fromData["tenant_id"] !== $toData["tenant_id"])) {
+        if(($sourceCategoryId !== $targetCategoryId) || ($sourceTenantId !== $targetTenantId)) {
 
-            $fromWhere = array(array("category_site.tenant_id", "=", $fromData["tenant_id"]),
-                            array("category_site.site_id", "=", $fromData["site_id"]),
-                            array("category_site.category_id", "=", $fromData["category_id"])
-                            );
+            $fromWhere = array(array("category_site.tenant_id", "=", $sourceTenantId),
+                array("category_site.site_id", "=", $sourceSiteId),
+                array("category_site.category_id", "=", $sourceCategoryId)
+            );
             //
 
             $fromCategory = DB::table('categories')
-                                    ->join("category_site", "categories.id", "=", "category_site.category_id")
-                                    ->where($fromWhere)->first();
+                ->join("category_site", "categories.id", "=", "category_site.category_id")
+                ->where($fromWhere)->first();
             //info($fromCategory);
             if(empty($fromCategory)) {
-                return array("error"=>true, "message"=>"Source category not found. Unable to copy.");
+                return array("success"=>false, "error"=>true, "message"=>"Could not find the source category. Unable to copy");
             }
             if($fromCategory->theme_id == 0 || $fromCategory->theme_id == null) {
-                return array("error"=>true, "message"=>"Theme is missing in source category. Unable to copy.");
+                return array("success"=>false, "error"=>true, "message"=>"Theme is missing in source category. Unable to copy");
             }
 
             $theme_id = $fromCategory->theme_id;
 
             // if site is not the same.
             // use theme alias and get the theme id for the desired site.
-            if($toData["site_id"] != $fromData["site_id"]) {
+            if($targetSiteId != $sourceSiteId) {
                 //get old theme and fetch alias. get that alias and target site id for theme id
-                $theme_id = Theme::getThemeIdThroughSite($theme_id, $toData["site_id"]);
+                $theme_id = Theme::getThemeIdThroughSite($theme_id, $targetSiteId);
             }
 
-            $toWhere = array(array("tenant_id", "=", $toData["tenant_id"]),
-                array("site_id", "=", $toData["site_id"]),
-                array("category_id", "=", $toData["category_id"])
+            $toWhere = array(array("tenant_id", "=", $targetTenantId),
+                array("site_id", "=", $targetSiteId),
+                array("category_id", "=", $targetCategoryId)
             );
 
             DB::table("category_site")->where($toWhere)->update(["theme_id"=>$theme_id]);
@@ -137,9 +140,9 @@ class Module extends AdminBaseModel
 
         foreach ($data as $row) {
             $current = $row;
-            $current->site_id = $toData["site_id"];
-            $current->tenant_id = $toData["tenant_id"];
-            $current->category_id = $toData["category_id"];
+            $current->site_id = $targetSiteId;
+            $current->tenant_id = $targetTenantId;
+            $current->category_id = $targetCategoryId;
             $current->insert_by = $user_id;
             $current->update_by = $user_id;
             $current->approved_by = $user_id;
@@ -147,9 +150,9 @@ class Module extends AdminBaseModel
             $current->updated_at = htcms_get_current_date();
 
             //Need to fetch module id based on module alias
-            if($toData["site_id"] != $fromData["site_id"]) {
+            if($targetSiteId != $sourceSiteId) {
                 $moduleAlias = Module::withoutGlobalScopes()->find($current->module_id, "alias")->alias;
-                $where = array(array('site_id', '=', $toData["site_id"]), array('alias', '=', $moduleAlias));
+                $where = array(array('site_id', '=', $targetSiteId), array('alias', '=', $moduleAlias));
                 $current->module_id =  Module::withoutGlobalScopes()->where($where)->first("id")->id;
             }
 
@@ -163,13 +166,13 @@ class Module extends AdminBaseModel
             $inserted = DB::table("module_site")->insert($newData);
         } catch (\Exception $e) {
             DB::rollBack();
-            return array("success"=>false);
+            return array("success"=>false, "message"=>$e->getMessage());
         }
 
         DB::commit();
         //info(json_encode($newData));
         //inesrt new
-        return array("success"=>$inserted);
+        return array("success"=>$inserted, "message"=>"Modules are copied for the category");
 
     }
 

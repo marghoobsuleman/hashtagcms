@@ -52,6 +52,7 @@
 
     import {Toast} from '../helpers/Common';
 
+
     export default {
 
         mounted() {
@@ -144,8 +145,9 @@
 
                             feedback(res);
 
-                        }).catch(function() {
-
+                        }).catch(function(res) {
+                          console.error("error: ", res.data.message);
+                          Toast.show($this, res.data.message, 5000);
                         });
                     }
                 }
