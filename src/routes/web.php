@@ -73,6 +73,7 @@ Route::prefix('admin')->group(function () {
 }); //,
 
 if (HashtagCms::isRoutesEnabled()) {
+    
     Route::match(['get', 'post', 'delete'], '{all?}', function(Request $request, $all="/") {
         $infoKeeper = app()->HashtagCmsInfoLoader->getInfoKeeper();
         //These are coming from FeMiddleware-> Core/BaseInfo Trait
@@ -106,7 +107,7 @@ if (HashtagCms::isRoutesEnabled()) {
             );
         }
 
-    })->where('all', '^((?!assets/)|(?!fonts/).)*?')->middleware(["web", "interceptor"]);
+    })->where("all", HashtagCms::getIgnoredPath())->middleware(["web", "interceptor"]);
 
     //Keep some original routes
     Auth::routes();

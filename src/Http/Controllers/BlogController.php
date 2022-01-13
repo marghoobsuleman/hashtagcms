@@ -18,7 +18,7 @@ class BlogController extends FrontendBaseController
         $infoKeeper = app()->HashtagCmsInfoLoader->getInfoKeeper();
         //check it's blog home
         if(empty($infoKeeper['callableValue'][0])) {
-            $this->setModuleMandatoryCheck(false);
+            $this->setModuleMandatoryCheck(false); //in base controlle
 
             $perPage = config("hashtagcms.blog_per_page");
             $category_link_rewrite = $infoKeeper['category_link_rewrite'];

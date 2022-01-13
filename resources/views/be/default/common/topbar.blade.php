@@ -8,4 +8,5 @@ $userName = $user->name;
          data-sitename="{{htcms_admin_config('site_label')}}"
          data-current-site="{{htcms_get_siteId_for_admin()}}"
          data-site-combo="true"
-        ></top-nav>
+         data-logo-height="35">
+</top-nav>

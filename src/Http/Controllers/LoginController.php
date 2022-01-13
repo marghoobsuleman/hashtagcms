@@ -278,6 +278,7 @@ class LoginController extends FrontendBaseController
         $user = Socialite::driver($provider)->user();
 
         dd($user);
+        //@todo: Implement Social login
 
         // $user->token;
     }

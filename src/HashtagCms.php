@@ -10,6 +10,7 @@ class HashtagCms
     private $frontEndRouteEnabled = true;
     private $installtionRoutes = true;
 
+    private $ignoredPath = "(?!assets/)|(?!fonts/)";
 
     /**
      * Get Header Menu as an array
@@ -109,6 +110,23 @@ class HashtagCms
     public function getAllMetaTags()
     {
         return htcms_get_all_meta_tags();
+    }
+
+    /**
+     * Get ignored path
+     * @return string
+     */
+    public function getIgnoredPath():string {
+        return "^(".$this->ignoredPath.".)*?";
+    }
+
+    /**
+     * Set directory to ignored path
+     * @param string $path
+     * @return void
+     */
+    public function setDirectoryToIgnoredPath(string $path) {
+        $this->ignoredPath = $this->ignoredPath."|(?!$path/)";
     }
 
 }
