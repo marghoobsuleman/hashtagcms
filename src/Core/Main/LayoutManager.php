@@ -38,7 +38,7 @@ class LayoutManager extends Results
         $this->infoLoader = app()->HashtagCmsInfoLoader;
         $this->themeFolder = config("hashtagcms.info.theme_folder");
         $this->resourceUrl = config("hashtagcms.info.assets_path.base_url");
-        $this->resourceDir = $this->resourceUrl.config("hashtagcms.info.assets_path.base_path");
+        $this->resourceDir = config("hashtagcms.info.assets_path.base_path");
         $this->jsFolder = config("hashtagcms.info.assets_path.js");
         $this->cssFolder = config("hashtagcms.info.assets_path.css");
         $this->imageFolder = config("hashtagcms.info.assets_path.image");

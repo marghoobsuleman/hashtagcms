@@ -1,4 +1,14 @@
 # Changelog
+## Version 1.3.2
+- Backend: Site copy support
+- Backend: Logo height can be set via data-props
+- Frontend: Analytics controller bug fixed on multisite. 
+- Frontend: Asset path fetching based on current site. 
+- Frontend: Fixed 404 issue while working with multsite. 
+
+## Version 1.3.1
+- Frontend: Fixed few multisite issue.
+
 ## Version 1.3.0
 - Optimization
 - Frontend: Major Code Refactoring

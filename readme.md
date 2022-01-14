@@ -56,6 +56,12 @@ Route::get('/', function () {
 - You are done :)
 
 ## Change log
+- v1.3.2 Changes
+  - Backend: Site copy support
+  - Backend: Logo height can be set via data-props
+  - Frontend: Analytics controller bug fixed on multisite.
+  - Frontend: Asset path fetching based on current site.
+  - Frontend: Fixed 404 issue while working with multsite.
 
 Please see the [changelog](changelog.md) for more information on what has changed recently.
 
