@@ -267,7 +267,7 @@ class DataLoader
         // Set Language
         $this->infoLoader->setLanguageId($lang_id);
 
-        $parsedThemeWithData = $this->infoLoader->getModuleSiteInfoDataByParsedHooksAndModules($parsedTheme, $category_id, $site_id, $tenant_id, $microsite_id);
+        $parsedThemeWithData = $this->infoLoader->getModuleSiteInfoDataByParsedHooksAndModules($parsedTheme, $category_id, $site_id, $tenant_id, $microsite_id, $lang_id);
         //dd($parsedThemeWithData);
 
         // set seo content

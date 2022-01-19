@@ -1,4 +1,17 @@
 # Changelog
+
+- v1.3.3 Changes
+- How to update to v1.3.2 to v1.3.3:
+```bash 
+  > composer upgrade 
+  > php artisan migrate
+```  
+- Frontend: Separate asset path support for different domain. you can configure that in config/hashtagcms.php
+- Backend: Added Module Props and Module Props langs
+- Backend: Adde support for module props copy and in clone site too.
+- API: Module props added in api results
+
+
 ## Version 1.3.2
 - Backend: Site copy support
 - Backend: Logo height can be set via data-props

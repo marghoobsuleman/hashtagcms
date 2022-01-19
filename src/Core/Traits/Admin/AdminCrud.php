@@ -169,12 +169,12 @@ trait AdminCrud {
      * @return mixed
      */
 
-    protected function saveDataWithLang($saveData=array(), $langData=array(), $where=NULL) {
+    protected function saveDataWithLang($saveData=array(), $langData=array(), $where=NULL, $upateInAllLangs=false) {
 
         $data["saveData"] = $saveData;
         $data["langData"] = $langData;
 
-        return $this->saveAllData($data, $where);
+        return $this->saveAllData($data, $where, $upateInAllLangs);
     }
 
     /**
@@ -186,24 +186,24 @@ trait AdminCrud {
      * @return mixed
      */
     //working
-    protected function saveDataWithLangAndSite($saveData=array(), $langData=array(), $siteData=array(), $where=NULL) {
+    protected function saveDataWithLangAndSite($saveData=array(), $langData=array(), $siteData=array(), $where=NULL, $upateInAllLangs=false) {
 
         $data["saveData"] = $saveData;
         $data["langData"] = $langData;
 
         $data["siteData"] = $siteData;
 
-        return $this->saveAllData($data, $where);
+        return $this->saveAllData($data, $where, $upateInAllLangs);
     }
 
-    protected function saveDataWithLangAndTenant($saveData=array(), $langData=array(), $tenantData=array(), $where=NULL) {
+    protected function saveDataWithLangAndTenant($saveData=array(), $langData=array(), $tenantData=array(), $where=NULL, $upateInAllLangs=false) {
 
         $data["saveData"] = $saveData;
         $data["langData"] = $langData;
 
         $data["tenantData"] = $tenantData;
 
-        return $this->saveAllData($data, $where);
+        return $this->saveAllData($data, $where, $upateInAllLangs);
     }
 
     /**
@@ -212,11 +212,11 @@ trait AdminCrud {
      * @param null $where
      * @return mixed
      */
-    protected function saveData($saveData=array(), $where=NULL) {
+    protected function saveData($saveData=array(), $where=NULL, $upateInAllLangs=false) {
 
         $data["saveData"] = $saveData;
 
-        return $this->saveAllData($data, $where);
+        return $this->saveAllData($data, $where, $upateInAllLangs);
 
     }
 
@@ -226,13 +226,15 @@ trait AdminCrud {
      * @param null $where
      * @return mixed
      */
-    private function saveAllData($data, $where=NULL) {
+    private function saveAllData($data, $where=NULL, $upateInAllLangs=false) {
 
         //Better to be safe
         if(!$this->checkPolicy('edit')) {
             return Message::getWriteError();
         }
-
+        //Start db transaction
+        DB::beginTransaction();
+        //need to log query
         QueryLogger::enableQueryLog();
 
         $savedDataModel =  $data["saveData"]["model"];
@@ -241,6 +243,7 @@ trait AdminCrud {
 
         $langData = NULL;
         $siteData = NULL;
+
 
         //Lang Data
         if(isset($data["langData"])) {
@@ -258,6 +261,7 @@ trait AdminCrud {
 
         $rData = array();
 
+        /**************************** Insert ********************************/
         //Save | Insert
         if($where==NULL || $where<=0) {
 
@@ -285,14 +289,18 @@ trait AdminCrud {
 
             $rData["source"] = $mainModel;
 
-
-
             if(isset($data["langData"]) || isset($data["siteData"]) || isset($data["tenantData"])) {
-                $mainModel = $mainModel->find($rData["id"]);
+                $mainModel = $mainModel->find($rData["id"]); //could have withoutGlobalScopes(). but it will work on current site
             }
 
             //Save Language Model
             if($langData!=NULL) {
+
+                if(!method_exists($mainModel, 'lang')) {
+                    DB::rollBack();
+                    throw new \Exception("'lang' relation method is needed in source class.");
+                }
+
                // dd($supportedSiteLangs);
                 $langDatas = array();
                 foreach ($supportedSiteLangs as $key=>$siteLang) {
@@ -303,13 +311,18 @@ trait AdminCrud {
                     $langDatas[] = $langData;
                 }
                 //info(json_encode($langDatas));
-
                 $rData["isSavedLang"] = $mainModel->lang()->createMany($langDatas);
             }
 
             //Site Data
             try {
                 if(isset($data["siteData"])) {
+
+                    if(!method_exists($mainModel, 'site')) {
+                        DB::rollBack();
+                        throw new \Exception("'site' relation method is needed in source class.");
+                    }
+
                     //Model must have belongsToMany relation with 'site'
                     $siteData = $data["siteData"]["data"];
                     $siteInfo = Site::find($siteData["site_id"]);
@@ -317,12 +330,18 @@ trait AdminCrud {
                     $mainModel->site()->attach($siteInfo, $siteData);
                 }
             } catch (\Exception $e) {
+                DB::rollBack();
+                throw new \Exception("rollback: ". $e->getMessage());
                 info($e->getMessage(), "Error: ");
             }
 
 
             //Tenant Data
             if(isset($data["tenantData"])) {
+                if(!method_exists($mainModel, 'tenant')) {
+                    DB::rollBack();
+                    throw new \Exception("'tenant' relation method is needed in source class.");
+                }
                 //Model must have belongsToMany relation with 'tenant'
                 $tenantData = $data["tenantData"]["data"];
                 $supportedSiteTenant = $this->getSupportedSiteTenant($tenantData['site_id']);//tenant data must have a site_id
@@ -338,14 +357,30 @@ trait AdminCrud {
             $actionLog = "insert";
 
         } else {
+            /**************************** Update ********************************/
 
-            //Update
             $mainModel = new $savedDataModel();
 
             //lang data
             if($langData!=NULL) {
+                $langMethod = 'lang';
+                $foundLangMethod = true;
+                if($upateInAllLangs === true) {
+                    $langMethod = 'langs';
+                }
 
-                $mainModel = $mainModel->with('lang')->find($where);
+                if(!method_exists($mainModel, $langMethod)) {
+                    $foundLangMethod = false;
+                }
+
+                //if saving lang and don't have 'lang' relation in model. ignore everything.
+                if(!$foundLangMethod) {
+                    DB::rollBack();
+                    throw new \Exception("Update Error: '$langMethod' relation method is needed in source class. ");
+                }
+
+
+                $mainModel = $mainModel->with($langMethod)->find($where);
 
             } else {
 
@@ -361,16 +396,43 @@ trait AdminCrud {
             if($langData != NULL) {
                 //info("lang_id: ".$langData["lang_id"]);
                 $langData["lang_id"] = (isset($langData["lang_id"])) ? $langData["lang_id"] : htcms_get_language_id_for_admin();
-                $rData["isSavedLang"] = $mainModel->lang()->update($langData);
+                //
+                //dd($mainModel, $langData);
+                if ($upateInAllLangs===true) {
+                    // in all langs
+                    $mainTable =  Str::singular($mainModel->getTable());
+                    $primaryKey = $mainTable."_".$mainModel->getKeyName();
+                    $langTable = $mainTable."_langs";
+                    foreach ($supportedSiteLangs as $supportedLang) {
+                        $newLangData = $langData;
+                        $newLangData['lang_id'] = $supportedLang->id;
+                        $arrWhere = array(array($primaryKey, "=", $where), array("lang_id", "=", $supportedLang->id));
+                        $rData["isSavedLang"] = $this->rawUpdate($langTable, $newLangData, $arrWhere, false);
+                    }
+
+                } else {
+                    //in one lang
+                    $rData["isSavedLang"] = $mainModel->lang()->update($langData);
+                }
             }
 
             if(isset($data["siteData"])) {
+
+                if(!method_exists($mainModel, 'site')) {
+                    DB::rollBack();
+                    throw new \Exception("Update Error:  'site' relation method is needed in source class.");
+                }
+
                 //Model must have belongsToMany relation with 'site'
                 $siteData = $data["siteData"]["data"];
                 $mainModel->site()->updateExistingPivot($siteData["site_id"], $siteData);
             }
 
             if(isset($data["tenantData"])) {
+                if(!method_exists($mainModel, 'tenant')) {
+                    DB::rollBack();
+                    throw new \Exception("Update Error: 'tenant' relation method is needed in source class.");
+                }
                 //Model must have belongsToMany relation with 'tenant'
                 $tenantData = $data["tenantData"]["data"];
                 //info(json_encode($tenantData));
@@ -392,6 +454,8 @@ trait AdminCrud {
             info($exception->getMessage());
 
         }
+
+        DB::commit();
 
         return $rData;
     }
@@ -559,26 +623,30 @@ trait AdminCrud {
      * @param string $table
      * @param array $data
      * @param array $where
+     * @param bool $enableLog
      * @return int
      */
-    public function rawUpdate($table="", $data=array(), $where=array()) {
-
-        QueryLogger::enableQueryLog();
+    public function rawUpdate($table="", $data=array(), $where=array(), $enableLog=true) {
+        if($enableLog) {
+            QueryLogger::enableQueryLog();
+        }
 
         $update = DB::table($table)
             ->where($where)
             ->update($data);
 
         //Logging
-        try{
+        if($enableLog) {
+            try {
 
-            $queryLog = QueryLogger::getQueryLog();
-            QueryLogger::log('rawUpdate', $queryLog, $data, $where);
+                $queryLog = QueryLogger::getQueryLog();
+                QueryLogger::log('rawUpdate', $queryLog, $data, $where);
 
-        } catch (\Exception $exception) {
+            } catch (\Exception $exception) {
 
-            info($exception->getMessage());
+                info($exception->getMessage());
 
+            }
         }
 
         return $update;

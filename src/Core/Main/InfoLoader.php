@@ -483,13 +483,15 @@ class InfoLoader
      * @param int $site_id
      * @param int $tenant_id
      * @param int $microsite_id
+     * @param int $lang_id
      * @return array
      */
-    #[ArrayShape(["hooks" => "array|mixed", "modules" => "mixed"])] public function getModuleSiteInfoDataByParsedHooksAndModules(array $parsedTheme, int $category_id, int $site_id, int $tenant_id, int $microsite_id):array
+    #[ArrayShape(["hooks" => "array|mixed", "modules" => "mixed"])] public function getModuleSiteInfoDataByParsedHooksAndModules(array $parsedTheme, int $category_id, int $site_id, int $tenant_id, int $microsite_id, int $lang_id):array
     {
 
         $parsedHooks = $parsedTheme['hooks'];
         $parsedModules = $parsedTheme['modules'];
+
 
         //$moduleDataLoader = app()->HashtagCmsModuleLoader;
         //$env = $environment = strtolower(env("APP_ENV"));
@@ -505,15 +507,15 @@ class InfoLoader
             $parsedHooks[$index]['modules'] = $this->getModuleSiteInfo($category_id, $tenant_id, $site_id, $microsite_id, $currentHook['id']);
             //get data for each module
             foreach ($parsedHooks[$index]['modules'] as $moduleIndex=>$currentModule) {
-                $this->getAndManipulateModuleData($currentModule);
+                $this->getAndManipulateModuleData($currentModule, $tenant_id, $lang_id);
             }
         }
 
 
-        //for modules
+        //for modules in theme
         if(sizeof($parsedModules) > 0) {
-            foreach ($parsedModules as $index=>$currentModule) {
-                $this->getAndManipulateModuleData($currentModule);
+            foreach ($parsedModules as $index=>$currentModuleInTheme) {
+                $this->getAndManipulateModuleData($currentModuleInTheme, $tenant_id, $lang_id);
             }
         }
 
@@ -522,14 +524,22 @@ class InfoLoader
 
     /**
      * @param \stdClass $module
+     * @param int $site_id
+     * @param int $tenant_id
+     * @param int $lang_id
      * @return void
      */
-    private function getAndManipulateModuleData(\stdClass $module): void
+    private function getAndManipulateModuleData(\stdClass $module, int $tenant_id, int $lang_id): void
     {
+
+        $module_id = (isset($module->id)) ? $module->id : $module->module_id;
         $env = $environment = strtolower(env("APP_ENV"));
         $moduleLoader = app()->HashtagCms->moduleLoader();
         $module->placeholder = "%{cms.module.".$module->alias."}%";
+        //add module props here
         $module->data = $moduleLoader->getModuleData($module);
+        $module->props = $moduleLoader->getModulePropsById($module_id, $tenant_id, $lang_id);
+
         if($env === 'prod' && $module->individual_cache === 0) {
             unset($module->data_handler);
             unset($module->data_key_map);

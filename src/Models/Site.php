@@ -255,5 +255,8 @@ class Site extends AdminBaseModel
         return $this->prop();
     }
 
+    public function moduleprop() {
+        return $this->hasMany(ModuleProp::class);
+    }
 
 }

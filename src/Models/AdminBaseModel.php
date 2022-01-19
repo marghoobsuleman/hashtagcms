@@ -139,7 +139,7 @@ abstract class AdminBaseModel extends Model
             $with = (is_array($with)) ? $with : array($with);
         }
 
-        $obj = ($with!='') ? static::with($with) : new static;
+        $obj = ($with!='') ? static::withoutGlobalScopes()->with($with) : new static;
 
         $data = $obj->findOrFail($id)->toArray();
 

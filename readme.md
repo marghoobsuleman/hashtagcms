@@ -56,12 +56,19 @@ Route::get('/', function () {
 - You are done :)
 
 ## Change log
-- v1.3.2 Changes
-  - Backend: Site copy support
-  - Backend: Logo height can be set via data-props
-  - Frontend: Analytics controller bug fixed on multisite.
-  - Frontend: Asset path fetching based on current site.
-  - Frontend: Fixed 404 issue while working with multsite.
+- v1.3.3 Changes
+- How to update to v1.3.2 to v1.3.3:
+```bash 
+  > composer upgrade 
+  > php artisan migrate
+```  
+- done - Frontend: Separate asset path support for different domain. you can configure that in config/hashtagcms.php
+- done - Backend: Added Module Props and Module Props langs
+- done - Backend: Adde support for module props copy and in clone site too.
+- done - API: Module props added in api results
+
+
+- later: headers in modules table
 
 Please see the [changelog](changelog.md) for more information on what has changed recently.
 

@@ -17,6 +17,8 @@ use MarghoobSuleman\HashtagCms\Models\CountryLang;
 use MarghoobSuleman\HashtagCms\Models\Currency;
 use MarghoobSuleman\HashtagCms\Models\Hook;
 use MarghoobSuleman\HashtagCms\Models\Lang;
+use MarghoobSuleman\HashtagCms\Models\ModuleProp;
+use MarghoobSuleman\HashtagCms\Models\ModulePropLang;
 use MarghoobSuleman\HashtagCms\Models\Site;
 use MarghoobSuleman\HashtagCms\Models\SiteProp;
 use MarghoobSuleman\HashtagCms\Models\StaticModuleContent;
@@ -166,7 +168,7 @@ class SiteController extends BaseAdminController
         $viewData["siteInfo"] = $siteInfo;
         $viewData["tabs"] = array("Tenants", "Hooks", "Languages", "Zones",
                                     "Countries", "Currencies", "Modules",
-                                    "Static Modules", "Themes", "Categories", "Site Properties");
+                                    "Static Modules", "Themes", "Categories", "Site Properties", "Module Properties");
 
         $tab = str_replace(" ", "", strtolower($tab));
         $toBeSelected = Str::singular($tab);
@@ -178,39 +180,32 @@ class SiteController extends BaseAdminController
         $tabName = Str::plural($tab);
         switch ($tabName) {
             case 'countries':
-
                 $data = array("label"=>"Countries", "data"=>Country::with("lang:country_id,name")->get(["id"]));
-
                 break;
+
             case 'zones':
-
                 $data = array("label"=>"Zones", "data"=>Zone::all(["id", "name"]));
-
                 break;
+
             case 'tenants':
-
                 $data = array("label"=>"Tenants", "data"=>Tenant::all(["id", "name"]));
-
                 break;
-            case 'languages':
 
+            case 'languages':
                 $data = array("label"=>"Languages",
                     "data"=>Lang::all(["id", "name"])
                 );
-
                 break;
+
             case 'hooks':
-
                 $data = array("label"=>"Hooks", "data"=>Hook::all(["id", "name"]));
-
                 break;
+
             case 'currencies':
-
                 $data = array("label"=>"Currency", "data"=>Currency::all(["id", "name"]));
-
                 break;
-            case 'modules':
 
+            case 'modules':
                 $viewName = "copier";
                 $selectedData = Module::withoutGlobalScopes()->where('site_id', '=', $siteInfo->id)->get();
 
@@ -222,6 +217,7 @@ class SiteController extends BaseAdminController
                     );
 
                 break;
+
             case 'staticmodules':
                 $viewName = "copier";
                 $selectedData = StaticModuleContent::withoutGlobalScopes()->where('site_id', '=', $siteInfo->id)->get();
@@ -234,6 +230,7 @@ class SiteController extends BaseAdminController
                     );
 
                 break;
+
             case 'siteproperties':
                 $viewName = "copier";
                 $selectedData = SiteProp::withoutGlobalScopes()->where('site_id', '=', $siteInfo->id)->get();
@@ -245,8 +242,8 @@ class SiteController extends BaseAdminController
                     );
 
                 break;
-            case 'themes':
 
+            case 'themes':
                 $viewName = "copier";
                 $selectedData = Theme::withoutGlobalScopes()->where('site_id', '=', $siteInfo->id)->get();
                 //info($siteInfo->id. " " .json_encode($selectedData));
@@ -258,6 +255,7 @@ class SiteController extends BaseAdminController
                     );
 
                 break;
+
             case 'categories':
                 $viewName = "copier";
                 $selectedData = Category::withoutGlobalScopes()->with('lang')->where('site_id', '=', $siteInfo->id)->get();
@@ -270,6 +268,18 @@ class SiteController extends BaseAdminController
                                 "data"=>array("allSites"=>Site::with('lang')->get()),
                                 "message"=>$message);
                 break;
+
+            case 'moduleproperties':
+                $viewName = "copier";
+                $selectedData = ModuleProp::withoutGlobalScopes()->where('site_id', '=', $siteInfo->id)->get();
+                $message = ($selectedData->count() > 0) ? "Below properties are already available in your site." : "You can copy properties from desired site. Choose site option, select and click on Add Selected.";
+                //Because we are shwoing site to choose
+                $data = array("label"=>"SiteProperties",
+                    "data"=>array("allSites"=>Site::with('lang')->get()),
+                    "message"=>$message
+                );
+
+                break;
         }
 
         $viewData["selectedData"] = $selectedData;
@@ -277,6 +287,7 @@ class SiteController extends BaseAdminController
 
         $viewData["allData"] = $data;
         $viewData["backURL"] = $this->getBackURL();
+
 
         //return $viewData;
         return $this->viewNow("site.".$viewName, $viewData);
@@ -323,10 +334,24 @@ class SiteController extends BaseAdminController
      * @return bool
      */
     private function isExist($data=array(), $compare='', $compareKey='') {
+        //if array -> comare = (value1, value2); //comparreKey = (key1, key2);
+        //else -> comare = value1; //comparreKey = key1;
         foreach ($data as $key=>$val) {
-            if($compare === $val[$compareKey]) {
-                return TRUE;
+            if(is_array($compareKey)) {
+                $valArr = [];
+                foreach ($compareKey as $cKey) {
+                    $valArr[] = $val[$cKey];
+                }
+                //check with compare keys and values
+                if($valArr === $compare) {
+                    return TRUE;
+                }
+            } else {
+                if($compare === $val[$compareKey]) {
+                    return TRUE;
+                }
             }
+
         }
         return FALSE;
     }
@@ -366,6 +391,9 @@ class SiteController extends BaseAdminController
             case "siteproperties":
                 $source = SiteProp::class;
                 break;
+            case "moduleproperties":
+                $source = ModuleProp::class;
+                break;
         }
 
         $rData["deleted"] = $source::withoutGlobalScopes()->find($ids)->each->forceDelete();
@@ -389,6 +417,7 @@ class SiteController extends BaseAdminController
 
         //info(json_encode($data));
         //return false;
+        $toSiteId = $toSite['site_id'];
 
         DB::beginTransaction();
 
@@ -406,6 +435,18 @@ class SiteController extends BaseAdminController
             $content = new $source;
             foreach ($val as $k=>$v) {
                 $content->$k = $v;
+
+                //module id - need to solve for below
+                if($tabs === "moduleproperties") {
+                    //change module id based on site
+                    if($k === "module_id") {
+                        $mD = DB::selectOne("select id from modules where alias=(select alias from modules where id=$v) and site_id=$toSiteId");
+                        if($mD) {
+                            $content->$k = $mD->id;
+                        }
+                    }
+                    json_encode($content);
+                }
             }
             $inserted = $content->save();
 
@@ -484,20 +525,31 @@ class SiteController extends BaseAdminController
             case "modules":
                 $source = Module::class;
             break;
+
             case "staticmodules":
                 $source = StaticModuleContent::class;
                 $resetId = FALSE;
                 break;
+
             case "siteproperties":
-                $compareKey = "name";
+                $compareKey = array("name", "tenant_id");
+                //$compareKey = "name";
                 $source = SiteProp::class;
                 break;
+
             case "themes":
                 $source = Theme::class;
                 break;
+
             case "categories":
                 $compareKey = "link_rewrite";
                 $source = Category::class;
+                $resetId = FALSE;
+                break;
+
+            case "moduleproperties":
+                $compareKey = array("name", "tenant_id");
+                $source = ModuleProp::class;
                 $resetId = FALSE;
                 break;
             default:
@@ -515,7 +567,15 @@ class SiteController extends BaseAdminController
         if(count($existing) > 0) {
             //filter
             foreach($data as $key=>$val) {
-                if($this->isExist($existing, $val[$compareKey], $compareKey) === FALSE) {
+                if (is_array($compareKey)) {
+                    $values = array();
+                    foreach ($compareKey as $cKey) {
+                        $values[] = $val[$cKey];
+                    }
+                } else {
+                    $values = $val[$compareKey];
+                }
+                if($this->isExist($existing, $values, $compareKey) === FALSE) {
                     $toBeInserted[] = $val;
                 } else {
                     $alreadyExist[] = $val;
@@ -526,7 +586,7 @@ class SiteController extends BaseAdminController
             $toBeInserted = $data;
         }
 
-        //return $toBeInserted;
+        //return $toBeInserted; //for testing
 
         //remove some of keys and add site id
         $finalData = array();
@@ -557,18 +617,27 @@ class SiteController extends BaseAdminController
                     case "modules":
                         $inserted = Module::insert($finalData);
                         break;
+
                     case "staticmodules":
                         $inserted =  $this->saveSettingWithLangs($finalData, StaticModuleContent::class, StaticModuleContentLang::class, "static_module_content_id");
                         break;
+
                     case "siteproperties":
                         $inserted =  SiteProp::insert($finalData);;
                         break;
+
                     case "themes":
                         $inserted = Theme::insert($finalData);
                         break;
+
                     case "categories":
                         $withData = ['lang'];
                         $inserted =  $this->saveSettingWithLangs($finalData, Category::class, CategoryLang::class, "category_id", "categories", $toSite);
+                        break;
+
+                    case "moduleproperties":
+                        $withData = ['lang'];
+                        $inserted =  $this->saveSettingWithLangs($finalData, ModuleProp::class, ModulePropLang::class, "module_prop_id", "moduleproperties", $toSite);
                         break;
                 }
             } catch (\Exception $e) {
@@ -609,17 +678,25 @@ class SiteController extends BaseAdminController
                 case "modules":
                     $data = Module::withoutGlobalScopes()->where('site_id', '=', $site_id)->get();
                     break;
+
                 case "staticmodules":
                     $data = StaticModuleContent::withoutGlobalScopes()->where('site_id', '=', $site_id)->get();
                     break;
+
                 case "siteproperties":
                     $data = SiteProp::withoutGlobalScopes()->where('site_id', '=', $site_id)->get();
                     break;
+
                 case "themes":
                     $data = Theme::withoutGlobalScopes()->where('site_id', '=', $site_id)->get();;
                     break;
+
                 case "categories":
                     $data = Category::withoutGlobalScopes()->with('lang')->where('site_id', '=', $site_id)->get();
+                    break;
+
+                case "moduleproperties":
+                    $data = ModuleProp::withoutGlobalScopes()->where('site_id', '=', $site_id)->get();
                     break;
             }
             return $data;
@@ -698,7 +775,7 @@ class SiteController extends BaseAdminController
         }
 
         //Copy things
-        $itemsToCopy = array("modules", "staticmodules", "themes", "categories", "siteproperties");
+        $itemsToCopy = array("modules", "staticmodules", "themes", "categories", "siteproperties", "moduleproperties");
         foreach ($itemsToCopy as $key=>$item) {
             try {
                 $data["fromSite"] = array("site_id"=>$source_site_id, "data"=>$this->getBySite($source_site_id, $item)->toArray());
