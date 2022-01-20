@@ -340,5 +340,6 @@ class ModuleLoader
         $info = $this->getModuleInfo($alias, false);
         return $this->getModuleData($info);
     }
+    
 
 }

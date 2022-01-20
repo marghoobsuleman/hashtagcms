@@ -1,4 +1,34 @@
 # Changelog
+
+- v1.3.3 Changes
+- How to update to v1.3.2 to v1.3.3:
+```bash 
+  > composer upgrade 
+  > php artisan migrate
+  > php artisan make:seed CmsModuleTableSeeder
+    open CmsModuleTableSeeder and paste below content in run()
+     
+        $table_name = 'cms_modules';
+        $date = date('Y-m-d H:i:s');
+        $cms_modules = array(
+            array('name' => 'Module Properties','controller_name' => 'moduleproperty','display_name' => NULL,'parent_id' => '13','sub_title' => 'Manage Module Propeties','icon_css' => 'fa fa-cog','list_view_name' => NULL,'edit_view_name' => NULL,'position' => '30','created_at' => $date,'updated_at' => $date,'deleted_at' => NULL)
+        );
+
+        $res = DB::selectOne("select * from $table_name where controller_name='moduleproperty'");
+        if (!$res) {
+            DB::table($table_name)->insert($cms_modules);
+        }
+    
+  > php artisan db:seed CmsModuleTableSeeder
+```
+- Frontend: Separate assets path support for different domain. you can configure that in config/hashtagcms.php
+- Backend: Added Module Props and Module Props langs with view and controller
+- Backend: Added support for module props copy in site config and in site clone too.
+- Backend: Fixed in create frontend module.
+- Backend: added 'headers' column in module table. Will use this field to send header with each module. (implement in next version)
+- API: Module props added in api results
+- API: Site props key value is similar to module props
+
 ## Version 1.3.2
 - Backend: Site copy support
 - Backend: Logo height can be set via data-props

@@ -8,6 +8,13 @@ return [
         'site_name'=>'Hashtag CMS',
         'base_path' => '',
         'theme' => 'fe.default',
+        /***
+         * In case you want to setup different CDN for diffrent site
+         */
+        /*'assets_path'=>array("dev.hashtagcms.com"=>array('base_url'=>env('ASSET_URL', ''),
+                                    'base_path'=>'/assets/hashtagcms/fe',
+                                    'js'=>'js', 'css'=>'css', 'image'=>'img')
+        ),*/
         'assets_path'=>array('base_url'=>env('ASSET_URL', ''),
                             'base_path'=>'/assets/hashtagcms/fe',
                             'js'=>'js', 'css'=>'css', 'image'=>'img'),

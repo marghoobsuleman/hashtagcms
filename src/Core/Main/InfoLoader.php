@@ -483,13 +483,15 @@ class InfoLoader
      * @param int $site_id
      * @param int $tenant_id
      * @param int $microsite_id
+     * @param int $lang_id
      * @return array
      */
-    #[ArrayShape(["hooks" => "array|mixed", "modules" => "mixed"])] public function getModuleSiteInfoDataByParsedHooksAndModules(array $parsedTheme, int $category_id, int $site_id, int $tenant_id, int $microsite_id):array
+    #[ArrayShape(["hooks" => "array|mixed", "modules" => "mixed"])] public function getModuleSiteInfoDataByParsedHooksAndModules(array $parsedTheme, int $category_id, int $site_id, int $tenant_id, int $microsite_id, int $lang_id):array
     {
 
         $parsedHooks = $parsedTheme['hooks'];
         $parsedModules = $parsedTheme['modules'];
+
 
         //$moduleDataLoader = app()->HashtagCmsModuleLoader;
         //$env = $environment = strtolower(env("APP_ENV"));
@@ -505,15 +507,15 @@ class InfoLoader
             $parsedHooks[$index]['modules'] = $this->getModuleSiteInfo($category_id, $tenant_id, $site_id, $microsite_id, $currentHook['id']);
             //get data for each module
             foreach ($parsedHooks[$index]['modules'] as $moduleIndex=>$currentModule) {
-                $this->getAndManipulateModuleData($currentModule);
+                $this->getAndManipulateModuleData($currentModule, $tenant_id, $lang_id);
             }
         }
 
 
-        //for modules
+        //for modules in theme
         if(sizeof($parsedModules) > 0) {
-            foreach ($parsedModules as $index=>$currentModule) {
-                $this->getAndManipulateModuleData($currentModule);
+            foreach ($parsedModules as $index=>$currentModuleInTheme) {
+                $this->getAndManipulateModuleData($currentModuleInTheme, $tenant_id, $lang_id);
             }
         }
 
@@ -522,14 +524,22 @@ class InfoLoader
 
     /**
      * @param \stdClass $module
+     * @param int $site_id
+     * @param int $tenant_id
+     * @param int $lang_id
      * @return void
      */
-    private function getAndManipulateModuleData(\stdClass $module): void
+    private function getAndManipulateModuleData(\stdClass $module, int $tenant_id, int $lang_id): void
     {
+
+        $module_id = (isset($module->id)) ? $module->id : $module->module_id;
         $env = $environment = strtolower(env("APP_ENV"));
         $moduleLoader = app()->HashtagCms->moduleLoader();
         $module->placeholder = "%{cms.module.".$module->alias."}%";
+        //add module props here
         $module->data = $moduleLoader->getModuleData($module);
+        $module->props = $this->getModulePropsById($module_id, $tenant_id, $lang_id);
+
         if($env === 'prod' && $module->individual_cache === 0) {
             unset($module->data_handler);
             unset($module->data_key_map);
@@ -562,7 +572,16 @@ class InfoLoader
         $htCmsCommon = app()->HashtagCms;
         $query = "select name, value, group_name from site_props where is_public=1 and site_id=:site_id and tenant_id=:tenant_id";
         $params = array("site_id"=>$site_id, "tenant_id"=>$tenant_id);
-        return $htCmsCommon->dbSelect($query, $params);
+
+        $res = $htCmsCommon->dbSelect($query, $params);
+
+        $data = [];
+        if(sizeof($res)>0) {
+            foreach ($res as $key=>$val) {
+                $data[] = array($val->name=>$val->value, "group"=>$val->group_name);
+            }
+        }
+        return $data;
     }
 
 
@@ -699,6 +718,28 @@ class InfoLoader
         return $htCmsCommon->dbSelect($query, $params);
     }
 
+    /**
+     * @param int $id
+     * @param int $tenant_id
+     * @param int $lang_id
+     * @return mixed
+     */
+    public function getModulePropsById(int $id, int $tenant_id, int $lang_id) {
+        $htCmsCommon = app()->HashtagCms;
+        $query = "select mp.name, mp.group, mpl.value
+                    from module_props mp
+                    left join module_prop_langs mpl on (mpl.module_prop_id = mp.id)
+                    where mp.module_id=:id  and mpl.lang_id=:lang_id and mp.tenant_id=:tenant";
+        $params = array("tenant"=>$tenant_id, "lang_id"=>$lang_id, "id"=>$id);
+        $res = $htCmsCommon->dbSelect($query, $params);
+        $data = [];
+        if(sizeof($res)>0) {
+            foreach ($res as $key=>$val) {
+                $data[] = array($val->name=>$val->value, "group"=>$val->group);
+            }
+        }
+        return $data;
+    }
 
 
 

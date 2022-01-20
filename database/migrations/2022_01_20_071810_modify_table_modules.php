@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class ModifyModuleTable extends Migration
+class ModifyTableModules extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,14 @@ class ModifyModuleTable extends Migration
      */
     public function up()
     {
-        // @todo: will remove in 1.4.0
-        Schema::table('modules', function($table)
-        {
-            \Illuminate\Support\Facades\DB::statement("ALTER TABLE modules CHANGE COLUMN data_type data_type VARCHAR(100) NOT NULL;");
-        });
+        //@todo: will remove in 1.4.0
+        Schema::table('modules', function (Blueprint $table) {
 
+            if (!Schema::hasColumn('modules', 'headers')) {
+                $table->text("headers")->nullable();
+            }
+
+        });
     }
 
     /**

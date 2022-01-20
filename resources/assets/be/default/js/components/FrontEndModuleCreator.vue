@@ -59,12 +59,12 @@
                         </option>
                     </select>
                     <div class="text text-danger">{{this.errors.data_type}}</div>
-                    <div class="alert alert-info" v-show="form.data_type != ''" v-html="this.dataTypesInfo[form.data_type] || '' "></div>
+                    <div class="alert alert-info" v-show="form.data_type != '' && this.dataTypesInfo[form.data_type]" v-html="this.dataTypesInfo[form.data_type] || '' "></div>
                 </div>
             </div>
 
-            <div v-show="showQueryForm">
-            <div class="form-group">
+            <div v-show="showServiceForm">
+              <div class="form-group">
                 <label class="col-sm-3" for="method_type">Method Type</label>
                 <div class="col-sm-7">
                     <select  class="form-control select-big" v-model="form.method_type" id="method_type" name="method_type">
@@ -76,8 +76,7 @@
                     <div class="text text-danger">{{this.errors.data_type}}</div>
                 </div>
             </div>
-
-            <div class="form-group">
+              <div class="form-group">
                 <label class="col-sm-3" for="service_params">Service Params</label>
                 <div class="col-sm-7">
                     <input type="text"  class="form-control" id="service_params" name="service_params" v-model="form.service_params"
@@ -85,6 +84,14 @@
                     <div class="text text-danger">{{this.errors.service_params}}</div>
                 </div>
             </div>
+              <div class="form-group">
+                <label class="col-sm-3" for="service_params">Service Headers</label>
+                <div class="col-sm-7">
+                  <textarea rows="5"  class="form-control input" id="headers" name="headers" v-model="form.headers"
+                            placeholder="Service header as json" />
+                  <div class="text text-danger">{{this.errors.headers}}</div>
+                </div>
+              </div>
           </div>
 
             <div class="form-group ">
@@ -112,14 +119,14 @@
             <div class="form-group ">
                 <label class="col-sm-3" for="data_handler">Data Handler</label>
                 <label class="col-sm-7">
-                   <textarea rows="5" id="data_handler" name="data_handler" v-bind:style="fluidCol" v-model="form.data_handler"/>
+                   <textarea rows="5"  class="form-control input" placeholder="Query or Service URL or filteration for this module" id="data_handler" name="data_handler" v-bind:style="fluidCol" v-model="form.data_handler"/>
                 </label>
             </div>
 
             <div class="form-group ">
                 <label class="col-sm-3" for="data_key_map">Data Key Map</label>
                 <label class="col-sm-7">
-                   <textarea rows="5"  v-bind:style="fluidCol" id="data_key_map" name="data_key_map" v-model="form.data_key_map"/>
+                   <textarea rows="5"  class="form-control input"  placeholder="key to be replaced in comma seperated. ie: :site_id, :lang_id " v-bind:style="fluidCol" id="data_key_map" name="data_key_map" v-model="form.data_key_map"/>
                 </label>
             </div>
 
@@ -133,7 +140,7 @@
                      <label class="col-sm-3" v-bind:style="sFont" for="query_statement">Query</label>
 
                      <label class="col-sm-7">
-                       <textarea rows="5"  v-bind:style="fluidCol" id="query_statement" name="query_statement" v-model="form.query_statement"/>
+                       <textarea  class="form-control input" rows="5"  v-bind:style="fluidCol" id="query_statement" name="query_statement" v-model="form.query_statement"/>
                      </label>
                    </div>
 
@@ -156,7 +163,7 @@
             <div class="form-group ">
                 <label class="col-sm-3" for="description">Description</label>
                 <label class="col-sm-7">
-                   <textarea rows="5"  v-bind:style="fluidCol" id="description" name="description" v-model="form.description"/>
+                   <textarea  class="form-control input" rows="5"  v-bind:style="fluidCol" id="description" name="description" v-model="form.description"/>
                 </label>
             </div>
 
@@ -262,7 +269,8 @@
                     is_mandatory:0,
                     service_params:"",
                     actionPerformed:this.dataActionPerformed,
-                    backURL:this.dataBackUrl
+                    backURL:this.dataBackUrl,
+                    headers:''
             }),
                 errors:{},
                 cacheData: {},
@@ -275,16 +283,23 @@
         },
         computed:{
           showQueryForm: function () {
-            if(this.form.data_type.indexOf('QueryService') > -1){
+            if(this.form.data_type.toLowerCase().indexOf('queryservice') > -1){
               return true;
             }else{
               return false;
             }
           },
-            showAllUpdateSection: function () {
-
-                return (this.dataActionPerformed == 'edit' && this.siteData.length > 1);
+          showServiceForm: function () {
+            if(this.form.data_type.toLowerCase().indexOf('service') > -1){
+              return true;
+            }else{
+              return false;
             }
+          },
+          showAllUpdateSection: function () {
+
+              return (this.dataActionPerformed == 'edit' && this.siteData.length > 1);
+          }
 
         },
         methods: {

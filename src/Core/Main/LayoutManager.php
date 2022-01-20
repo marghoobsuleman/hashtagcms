@@ -30,6 +30,8 @@ class LayoutManager extends Results
     private string $cssFolder;
     private string $imageFolder;
 
+    private array $backupAssetFolder = array('base_url'=>'', 'base_path'=>'/assets/hashtagcms/fe', 'js'=>'js', 'css'=>'css', 'image'=>'img');
+
 
     function __construct()
     {
@@ -37,12 +39,21 @@ class LayoutManager extends Results
 
         $this->infoLoader = app()->HashtagCmsInfoLoader;
         $this->themeFolder = config("hashtagcms.info.theme_folder");
-        $this->resourceUrl = config("hashtagcms.info.assets_path.base_url");
-        $this->resourceDir = config("hashtagcms.info.assets_path.base_path");
-        $this->jsFolder = config("hashtagcms.info.assets_path.js");
-        $this->cssFolder = config("hashtagcms.info.assets_path.css");
-        $this->imageFolder = config("hashtagcms.info.assets_path.image");
+        $host = request()->getHost();
+        info("getHost ".request()->getHost());
+        $assetPath = config("hashtagcms.info.assets_path");
+        $assetPath = (isset($assetPath[$host])) ? $assetPath[$host] : $assetPath;
+        if(!isset($assetPath['base_url'])) {
+            $assetPath = $this->backupAssetFolder;
+        }
+        $this->resourceUrl = $assetPath['base_url'];
+        $this->resourceDir = $assetPath['base_path'];
+        $this->jsFolder = $assetPath['js'];
+        $this->cssFolder = $assetPath['css'];
+        $this->imageFolder =  $assetPath['image'];
     }
+
+
 
     /**
      * Set meta and html object

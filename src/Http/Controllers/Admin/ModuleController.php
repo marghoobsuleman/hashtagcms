@@ -103,6 +103,8 @@ class ModuleController extends BaseAdminController
         $saveData['shared'] = $data["shared"];
         $saveData['is_seo_module'] = $data["is_seo_module"];
 
+        $saveData['headers'] = $data["headers"] ?? ""; //added on 20 Jan 2022
+
         $saveData['query_statement'] = $data["query_statement"];
         $saveData['query_as'] = $data["query_as"];
 
