@@ -24,7 +24,8 @@ class CreateModulesTable extends Migration
 
             $table->string('view_name', 200);
 
-            $table->enum('data_type', ['Static','Query','Service','Custom','QueryService','UrlService']);
+            //$table->enum('data_type', ['Static','Query','Service','Custom','QueryService','UrlService']);
+            $table->string("data_type", 100);
 
             $table->text('query_statement')->nullable();
             $table->enum('query_as', ['', 'param', 'data'])->nullable();
@@ -38,6 +39,7 @@ class CreateModulesTable extends Migration
 
             $table->enum('method_type', ['GET', 'POST', 'PUT', 'DELETE'])->nullable();
             $table->string('service_params', 255)->nullable();
+            $table->text("headers")->nullable();
 
             $table->tinyInteger('individual_cache')->nullable()->default(0)->comment("If you want to cache this module on each link");
 

@@ -13,6 +13,7 @@ class ModifyCategoryTable extends Migration
      */
     public function up()
     {
+        //@todo: this  will be removed in 1.4.0 release.
         Schema::table('categories', function (Blueprint $table) {
 
             if (!Schema::hasColumn('categories', 'controller_name')) {

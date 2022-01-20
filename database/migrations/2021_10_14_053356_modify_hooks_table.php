@@ -13,10 +13,11 @@ class ModifyHooksTable extends Migration
      */
     public function up()
     {
+        //@todo: will remove in 1.4.0
         Schema::table('hooks', function (Blueprint $table) {
 
             if (!Schema::hasColumn('hooks', 'direction')) {
-                $table->enum('direction', ['horizontal', 'vertical'])->default('horizontal');
+                $table->enum('direction', ['', 'vertical', 'horizotnal'])->nullable()->default('');
             }
 
         });

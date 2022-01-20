@@ -44,13 +44,15 @@ class CmsModulesTableSeeder extends Seeder
             array('id' => '40','name' => 'Contacts','controller_name' => 'contact','display_name' => NULL,'parent_id' => '0','sub_title' => 'Manage Contacts','icon_css' => 'fa fa-telegram','list_view_name' => NULL,'edit_view_name' => NULL,'position' => '26','created_at' => $date,'updated_at' => $date,'deleted_at' => NULL),
             array('id' => '41','name' => 'Subscribers','controller_name' => 'subscriber','display_name' => NULL,'parent_id' => '0','sub_title' => 'Manage Subscribers','icon_css' => 'fa fa-handshake-o','list_view_name' => NULL,'edit_view_name' => NULL,'position' => '27','created_at' => $date,'updated_at' => $date,'deleted_at' => NULL),
             array('id' => '42','name' => 'Blog','controller_name' => 'blog','display_name' => NULL,'parent_id' => '0','sub_title' => 'Manage Blogs','icon_css' => 'fa fa-quote-right','list_view_name' => NULL,'edit_view_name' => 'page/addedit','position' => '19','created_at' => $date,'updated_at' => $date,'deleted_at' => NULL),
-            array('id' => '43','name' => 'Comments','controller_name' => 'comment','display_name' => NULL,'parent_id' => '0','sub_title' => 'Manage Comments','icon_css' => 'fa fa-comments-o','list_view_name' => NULL,'edit_view_name' => NULL,'position' => '29','created_at' => $date,'updated_at' => $date,'deleted_at' => NULL)
+            array('id' => '43','name' => 'Comments','controller_name' => 'comment','display_name' => NULL,'parent_id' => '0','sub_title' => 'Manage Comments','icon_css' => 'fa fa-comments-o','list_view_name' => NULL,'edit_view_name' => NULL,'position' => '29','created_at' => $date,'updated_at' => $date,'deleted_at' => NULL),
+            array('id' => '44','name' => 'Module Properties','controller_name' => 'moduleproperty','display_name' => NULL,'parent_id' => '13','sub_title' => 'Manage Module Propeties','icon_css' => 'fa fa-cog','list_view_name' => NULL,'edit_view_name' => NULL,'position' => '30','created_at' => $date,'updated_at' => $date,'deleted_at' => NULL)
         );
 
-        if(DB::table($table_name)->get()->count() == 0) {
+        if(DB::table($table_name)->get()->count() === 0) {
             DB::table($table_name)->insert($cms_modules);
         } else {
             echo "SeedingError: `$table_name` table is not empty\n";
         }
+
     }
 }

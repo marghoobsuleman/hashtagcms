@@ -340,29 +340,6 @@ class ModuleLoader
         $info = $this->getModuleInfo($alias, false);
         return $this->getModuleData($info);
     }
-
-
-    /**
-     * @param int $id
-     * @param int $tenant_id
-     * @param int $lang_id
-     * @return mixed
-     */
-    public function getModulePropsById(int $id, int $tenant_id, int $lang_id) {
-        $htCmsCommon = app()->HashtagCms;
-        $query = "select mp.name, mp.group, mpl.value
-                    from module_props mp
-                    left join module_prop_langs mpl on (mpl.module_prop_id = mp.id)
-                    where mp.module_id=:id  and mpl.lang_id=:lang_id and mp.tenant_id=:tenant";
-        $params = array("tenant"=>$tenant_id, "lang_id"=>$lang_id, "id"=>$id);
-        $data = $htCmsCommon->dbSelect($query, $params);
-        $arr = [];
-        if(sizeof($data)>0) {
-           foreach ($data as $key=>$val) {
-               $arr[] = array($val->name=>$val->value, "group"=>$val->group);
-           }
-        }
-        return $arr;
-    }
+    
 
 }

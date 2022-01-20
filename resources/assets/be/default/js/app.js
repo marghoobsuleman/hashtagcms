@@ -9,7 +9,7 @@ let vue = require('vue').default;
 
 window.Vue = vue;
 
-Vue.config.devtools = true;
+Vue.config.devtools = false;
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
