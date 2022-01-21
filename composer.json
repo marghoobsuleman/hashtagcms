@@ -1,5 +1,5 @@
 {
-    "name": "marghoobsuleman/hashtagcms",
+    "name": "DeRaja/hashtagcms",
     "description": "Headless CMS, Use it as Headless CMS or Bundled, API enabled, Admin Panel, Multisite, Multitenant, Multilingual, and oAuth 2.0.\nThe Most powerful, fast and user-friendly platform. Made with PHP Laravel Framework.",
     "license": "MIT",
     "authors": [
@@ -9,7 +9,7 @@
             "homepage": "https://www.marghoobsuleman.com"
         }
     ],
-    "homepage": "https://github.com/marghoobsuleman/hashtagcms",
+    "homepage": "https://github.com/DeRaja/hashtagcms",
     "keywords": ["Laravel", "HashtagCms", "Marghoob Suleman", "Headless CMS", "CMS", "Mobile Api Supported CMS", "Hashtag Cms"],
     "require": {
         "laravel/ui": "^3.0",
@@ -39,6 +39,15 @@
             "MarghoobSuleman\\HashtagCms\\Tests\\": "tests"
         }
     },
+    "repositories": {
+        "foo": {
+            "type": "composer",
+            "url": "https://github.com/DeRaja/hashtagcms"
+        }
+    },
+   "dependencies": {
+            "follow-redirects": ">=1.14.7"
+        },
     "extra": {
         "laravel": {
             "aliases": {
