@@ -49,9 +49,30 @@ class ModuleLoader
      */
     public function getServiceModule(mixed $module, array $withData=array()): mixed
     {
-        $serviceUrl = ($module->data_handler == "" || $module->data_handler==null) ? "" : $module->data_handler;
+
+        $serviceUrl = ($module->data_handler == "" || $module->data_handler == null) ? "" : $module->data_handler;
         $methodType = $module->method_type;
-        $ml = new ServiceModuleLoader($serviceUrl, $methodType, $withData);
+        $moduleHeaderJson = $module->headers;
+        $headerJson = [];
+        if (!empty($moduleHeaderJson)) {
+            try {
+                $headerJson = json_decode($moduleHeaderJson, true);
+                if(!empty($headerJson)) {
+                    foreach ($headerJson as $key=>$value) {
+                        $headerJson[$key] = request()->headers->get($key);
+                    }
+                } else {
+                    info("Unable to parse header json for the module name: ".$module->name. ", alias: ".$module->alias);
+                    $headerJson = [];
+                }
+            } catch (\Exception $exception) {
+                info("Invalid header json for the module name: ".$module->name.", alias: ".$module->alias);
+                $headerJson = [];
+            }
+        }
+
+
+        $ml = new ServiceModuleLoader($serviceUrl, $methodType, $withData, $headerJson);
         return $ml->getResult();
     }
 
@@ -343,3 +364,4 @@ class ModuleLoader
     
 
 }
+

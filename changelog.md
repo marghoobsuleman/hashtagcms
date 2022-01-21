@@ -1,6 +1,9 @@
 # Changelog
 
-- v1.3.3 Changes
+#v1.3.4 Changes
+- API: Send api header with modules
+
+#v1.3.3 Changes
 - How to update to v1.3.2 to v1.3.3:
 ```bash 
   > composer upgrade 

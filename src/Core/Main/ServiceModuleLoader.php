@@ -8,11 +8,11 @@ class ServiceModuleLoader extends Results implements ModuleLoaderImp
 
     protected array $result;
 
-    function __construct(string $service_url=null, string $method_type=null, array $withData=array())
+    function __construct(string $service_url=null, string $method_type=null, array $withData=array(), array $headers=array())
     {
         parent::__construct();
         if ($service_url != null) {
-            $this->process($service_url, $method_type, $withData);
+            $this->process($service_url, $method_type, $withData, $headers);
         }
     }
 
@@ -20,9 +20,10 @@ class ServiceModuleLoader extends Results implements ModuleLoaderImp
      * @param string|null $service_url
      * @param string|null $method_type
      * @param array $withData
+     * @param array $headers
      * @return void
      */
-    public function process(string $service_url=null, string $method_type=null, array $withData=array()):void
+    public function process(string $service_url=null, string $method_type=null, array $withData=array(), array $headers=array()):void
     {
         $data = array();
         if($service_url == "" || $service_url == null) {
@@ -45,11 +46,13 @@ class ServiceModuleLoader extends Results implements ModuleLoaderImp
 
         try {
             $data = match (strtolower($method_type)) {
-                "get" => Http::get($url, $arguments)->json(),
-                "post" => Http::post($url, $arguments)->json(),
+                "get" => Http::withHeaders($headers)->get($url, $arguments)->json(),
+                "post" => Http::withHeaders($headers)->post($url, $arguments)->json(),
             };
+
         } catch (Exception $exception) {
             info("Error: getServiceModule ".$exception->getMessage());
+            $this->setResult([]);
         }
 
         $this->setResult($data);

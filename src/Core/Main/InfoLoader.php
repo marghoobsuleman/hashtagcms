@@ -463,7 +463,7 @@ class InfoLoader
 
         $query = "select ms.module_id, ms.hook_id, ms.position,
         m.name, m.alias, m.is_seo_module, m.linked_module, m.view_name, m.data_type, m.query_statement, m.shared,
-        m.query_as, m.data_handler, m.data_key_map, m.is_mandatory,
+        m.query_as, m.data_handler, m.data_key_map, m.is_mandatory, m.headers,
         m.method_type, m.service_params, m.individual_cache, m.cache_group
         from module_site ms
         left join modules m on (ms.module_id = m.id)
