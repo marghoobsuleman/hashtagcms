@@ -45,9 +45,6 @@
             "url": "https://github.com/DeRaja/hashtagcms"
         }
     },
-   "dependencies": {
-            "follow-redirects": ">=1.14.7"
-    },
     "extra": {
         "laravel": {
             "aliases": {
