@@ -13,11 +13,11 @@ class UrlServiceModuleLoader extends Results implements ModuleLoaderImp
      * @param string|null $method_type
      * @param string|null $data_key_map
      */
-    function __construct(string $service_url=null, string $method_type=null, string $data_key_map=null)
+    function __construct(string $service_url=null, string $method_type=null, string $data_key_map=null, array $headers=array())
     {
         parent::__construct();
         if ($service_url != null) {
-            $this->process($service_url, $method_type, $data_key_map);
+            $this->process($service_url, $method_type, $data_key_map, $headers);
         }
     }
 
@@ -27,7 +27,7 @@ class UrlServiceModuleLoader extends Results implements ModuleLoaderImp
      * @param string|null $data_key_map
      * @return void
      */
-    public function process(string $service_url=null, string $method_type=null, string $data_key_map=null):void
+    public function process(string $service_url=null, string $method_type=null, string $data_key_map=null, array $headers=array()):void
     {
 
         if($service_url == "" || $service_url == null) {
@@ -37,7 +37,7 @@ class UrlServiceModuleLoader extends Results implements ModuleLoaderImp
         $urls = explode("?", $service_url);
         $url = $urls[0];
         $arguments = $this->makeQueryParams($data_key_map);
-        $ml = new ServiceModuleLoader($url, $method_type, $arguments);
+        $ml = new ServiceModuleLoader($url, $method_type, $arguments, $headers);
         $this->setResult($ml->getResult());
 
     }

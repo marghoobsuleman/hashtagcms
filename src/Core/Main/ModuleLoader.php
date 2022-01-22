@@ -42,16 +42,11 @@ class ModuleLoader
     }
 
     /**
-     * Get service module
+     * Get header json
      * @param mixed $module
-     * @param array $withData
-     * @return mixed
+     * @return array|mixed
      */
-    public function getServiceModule(mixed $module, array $withData=array()): mixed
-    {
-
-        $serviceUrl = ($module->data_handler == "" || $module->data_handler == null) ? "" : $module->data_handler;
-        $methodType = $module->method_type;
+    private function getHeaderJson(mixed $module) {
         $moduleHeaderJson = $module->headers;
         $headerJson = [];
         if (!empty($moduleHeaderJson)) {
@@ -70,8 +65,21 @@ class ModuleLoader
                 $headerJson = [];
             }
         }
+        return $headerJson;
+    }
 
+    /**
+     * Get service module
+     * @param mixed $module
+     * @param array $withData
+     * @return mixed
+     */
+    public function getServiceModule(mixed $module, array $withData=array()): mixed
+    {
 
+        $serviceUrl = ($module->data_handler == "" || $module->data_handler == null) ? "" : $module->data_handler;
+        $methodType = $module->method_type;
+        $headerJson = $this->getHeaderJson($module);
         $ml = new ServiceModuleLoader($serviceUrl, $methodType, $withData, $headerJson);
         return $ml->getResult();
     }
@@ -88,7 +96,9 @@ class ModuleLoader
         $methodType = $module->method_type;
         $dataKeyMap = $module->data_key_map;
 
-        $ml = new UrlServiceModuleLoader($serviceUrl, $methodType, $dataKeyMap);
+        $headerJson = $this->getHeaderJson($module);
+
+        $ml = new UrlServiceModuleLoader($serviceUrl, $methodType, $dataKeyMap, $headerJson);
         return $ml->getResult();
     }
 
