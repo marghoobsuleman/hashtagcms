@@ -10,7 +10,7 @@ use MarghoobSuleman\HashtagCms\Models\CmsPermission;
 use MarghoobSuleman\HashtagCms\Models\Site;
 use MarghoobSuleman\HashtagCms\Models\Category;
 use MarghoobSuleman\HashtagCms\Models\Module;
-use MarghoobSuleman\HashtagCms\Models\Tenant;
+use MarghoobSuleman\HashtagCms\Models\Platform;
 use MarghoobSuleman\HashtagCms\Models\Theme;
 use MarghoobSuleman\HashtagCms\Core\Helpers\Message;
 
@@ -98,9 +98,9 @@ class HomepageController extends BaseAdminController
         $site_id = htcms_get_siteId_for_admin();
         $site = Site::find($site_id); //Get Site Info
         $category_id = (isset($site->category_id) || $site->category_id > 0) ? $site->category_id : 0;
-        $tenant_id = (isset($site->tenant_id) || $site->tenant_id > 0) ? $site->tenant_id : Tenant::all()[0]->id;
+        $platform_id = (isset($site->platform_id) || $site->platform_id > 0) ? $site->platform_id : Platform::all()[0]->id;
 
-        $params = array("category_id"=>$category_id, "tenant_id"=>$tenant_id, "site_id"=>$site_id);
+        $params = array("category_id"=>$category_id, "platform_id"=>$platform_id, "site_id"=>$site_id);
         return redirect()->intended(htcms_admin_path("homepage/ui", $params));
     }
 
@@ -123,7 +123,7 @@ class HomepageController extends BaseAdminController
         $site = Site::find($site_id); //Get Site Info
 
         $category_id = $request["category_id"] ?? $site->category_id;
-        $tenant_id = $request["tenant_id"] ?? $site->tenant_id;
+        $platform_id = $request["platform_id"] ?? $site->platform_id;
 
 
         $categoryInfo = Category::find($category_id);
@@ -132,7 +132,7 @@ class HomepageController extends BaseAdminController
 
         if(isset($categoryInfo) && !empty($categoryInfo)) {
 
-            $theme_id = $categoryInfo->getFromSitePivot($tenant_id, "theme_id");
+            $theme_id = $categoryInfo->getFromSitePivot($platform_id, "theme_id");
 
             if($theme_id) {
 
@@ -140,7 +140,7 @@ class HomepageController extends BaseAdminController
             }
 
             //info("theme_id ".$theme_id);
-            $categoryModules = Category::getModules($category_id, $tenant_id, $site_id, $microsite_id)->toArray();
+            $categoryModules = Category::getModules($category_id, $platform_id, $site_id, $microsite_id)->toArray();
         }
 
         $allModules = Module::where("site_id", "=", $site_id)->get();
@@ -148,7 +148,7 @@ class HomepageController extends BaseAdminController
 
         $viewData["site_id"] = $site_id;
         $viewData["microsite_id"] = $microsite_id;
-        $viewData["tenant_id"] = $tenant_id;
+        $viewData["platform_id"] = $platform_id;
         $viewData["category_id"] = $category_id;
 
         $viewData["siteInfo"] = $site;
@@ -182,11 +182,11 @@ class HomepageController extends BaseAdminController
         $allData = $request->all();
         $data = $allData["data"];
         $where = $allData["where"];
-        $applicableForAllTenants = $allData['applicableForAllTenants'];
+        $applicableForAllPlatforms = $allData['applicableForAllPlatforms'];
 
         $site_id = $where["site_id"];
         $microsite_id = $where["microsite_id"];
-        $tenant_id = $where["tenant_id"];
+        $platform_id = $where["platform_id"];
         $category_id = $where["category_id"];
         $toBeSaved = [];
         $userId = auth()->user()->id;
@@ -196,7 +196,7 @@ class HomepageController extends BaseAdminController
             $modules = $val["modules"];
             foreach ($modules as $module) {
                 $toBeSaved[] = array("site_id"=>$site_id, "microsite_id"=>$microsite_id,
-                    "tenant_id"=>$tenant_id, "category_id"=>$category_id,
+                    "platform_id"=>$platform_id, "category_id"=>$category_id,
                     "position"=>$module["position"],
                     "hook_id"=>$hook_id,
                     "module_id"=>$module["module_id"],
@@ -238,11 +238,11 @@ class HomepageController extends BaseAdminController
 
         $allData = $request->all();
         $where = $allData["where"];
-        $applicableForAllTenants = $allData['applicableForAllTenants'];
+        $applicableForAllPlatforms = $allData['applicableForAllPlatforms'];
 
-        //remove tenant_id
-        if($applicableForAllTenants == true) {
-            unset($where['tenant_id']);
+        //remove platform_id
+        if($applicableForAllPlatforms == true) {
+            unset($where['platform_id']);
         }
 
         $rData["isSaved"] = $this->rawDelete($this->tableModuleSite, $where);
@@ -262,15 +262,15 @@ class HomepageController extends BaseAdminController
         }
 
         $allData = $request->all();
-        $fromData = $allData["fromData"]; //{site_id:1, microsite_id:0, tenant_id:1, category_id:1}
+        $fromData = $allData["fromData"]; //{site_id:1, microsite_id:0, platform_id:1, category_id:1}
         $toData = $allData["toData"];
-        if($fromData['tenant_id'] == 0) {
-            $site = Site::with('tenant')->find($toData['site_id']);
-            $allTeants = $site->tenant;
+        if($fromData['platform_id'] == 0) {
+            $site = Site::with('platform')->find($toData['site_id']);
+            $allTeants = $site->platform;
             $data = array("success"=>false);
-            foreach ($allTeants as $tenant) {
-                $fromData['tenant_id'] = $tenant->id;
-                $toData['tenant_id'] = $tenant->id;
+            foreach ($allTeants as $platform) {
+                $fromData['platform_id'] = $platform->id;
+                $toData['platform_id'] = $platform->id;
                 $data = Module::copyData($fromData, $toData); //this will return only last
             }
             return $data;

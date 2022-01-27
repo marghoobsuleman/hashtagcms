@@ -13,11 +13,11 @@ use Illuminate\Support\Facades\DB;
  * Following properties will be there inside app()->HashtagCmsInfoLoader->getInfoKeeper()
  * siteInfo =  {"id":1,"name":"CMS","context":"hashtagcms","favicon":"","title":"Welcome to #CMS"}
  *
- * tenantInfo: {"id":1, "name":"India","link_rewrite":"in","created_at":"2018-09-21 04:00:07","updated_at":"2018-09-21 04:00:07","deleted_at":null,"pivot":{"site_id":1,"tenant_id":1}}
+ * platformInfo: {"id":1, "name":"India","link_rewrite":"in","created_at":"2018-09-21 04:00:07","updated_at":"2018-09-21 04:00:07","deleted_at":null,"pivot":{"site_id":1,"platform_id":1}}
  *
  * langInfo: {"id":1,"name":"English","iso_code":"en","language_code":"en","date_format_lite":"Y-m-d","date_format_full":"y-m-d H:i:s","is_rtl":0,"created_at":"2018-09-21 04:00:07","updated_at":"2018-09-21 04:00:07","deleted_at":null,"pivot":{"site_id":1,"lang_id":1}}
  *
- * controllerIndex = to check if tenant lang etc is there in url
+ * controllerIndex = to check if platform lang etc is there in url
  * controllerName = extracted from url pattern
  * controllerParams = ["about-us","contact"]
  * controllerParamsPath = "about-us\/contact"
@@ -37,7 +37,7 @@ trait BaseInfo {
      * Web link could be
      * www.hashtagcms.org/en/web/home
      * en - language (optional)
-     * web - tenant  (optional)
+     * web - platform  (optional)
      * home or / - category
      */
 
@@ -70,7 +70,7 @@ trait BaseInfo {
         $clearCache = $request->get('clearCache') ?? false;
         //Set Site Info
         //Set Lang Info
-        //Set Tenant Info
+        //Set Platform Info
         //Set Category Info
         //Set LinkRewrite Info
 
@@ -79,7 +79,7 @@ trait BaseInfo {
         // or  https://www.hashtagcms.org/en/web/ or https://www.hashtagcms.org/en/web
         // or  https://www.hashtagcms.org/en/web/blog or https://www.hashtagcms.org/en/web/blog/test-story
         // or https://www.hashtagcms.org/blog or https://www.hashtagcms.org/blog/test-story
-        // language and tenant can be in url. if it's not there; use default one.
+        // language and platform can be in url. if it's not there; use default one.
 
         $path = $request->path();
         $path_arr = explode("/", $path); //example: en/web/blog/test-blog
@@ -118,6 +118,7 @@ trait BaseInfo {
             }
 
         } catch (\Exception $e) {
+            info("Site info error: ".$e->getMessage());
             return $e->getMessage();
         }
 
@@ -142,7 +143,7 @@ trait BaseInfo {
 
         } else {
             $langInfo = $this->cacheManager->get($langCacheKey);
-            info("From Cache ($langCacheKey): Fetching tenant info: Path: $path_arr[0], lang_id: $siteInfo[lang_id]");
+            info("From Cache ($langCacheKey): Fetching platform info: Path: $path_arr[0], lang_id: $siteInfo[lang_id]");
         }
 
         $langInfo = $langInfo->toArray();
@@ -150,30 +151,30 @@ trait BaseInfo {
         // ##Setting Language Info
         $this->setLanguageInfo($langInfo, $path_arr[0]);
 
-        // #Set tenant info
-        $tenantPlace = ($this->infoLoader->getInfoKeeper("foundLang") === true && $path_size > 1) ? 1 : 0;
-        $tenantCacheKey = md5($domain."_".$path_arr[$tenantPlace]."_tenant");
+        // #Set platform info
+        $platformPlace = ($this->infoLoader->getInfoKeeper("foundLang") === true && $path_size > 1) ? 1 : 0;
+        $platformCacheKey = md5($domain."_".$path_arr[$platformPlace]."_platform");
 
-        if(!$this->cacheManager->exists($tenantCacheKey) || $clearCache) {
-            info("Fetching tenant info: Path: $path_arr[$tenantPlace], tenant_id: $siteInfo[tenant_id]");
-            $tenantInfo = $this->infoLoader->getTenantInfo($path_arr[$tenantPlace], $siteInfo['tenant_id']); //index 1 is tenant code or get the default tenant id from site table
-            //dd($path_arr[1], $siteInfo['tenant_id'], $tenantInfo);
-            //Stop everything if tenant info is not correct.
-            if($tenantInfo === null) {
-                info("tenant not found!");
-                exit("Tenant has not been set up");
+        if(!$this->cacheManager->exists($platformCacheKey) || $clearCache) {
+            info("Fetching platform info: Path: $path_arr[$platformPlace], platform_id: $siteInfo[platform_id]");
+            $platformInfo = $this->infoLoader->getPlatformInfo($path_arr[$platformPlace], $siteInfo['platform_id']); //index 1 is platform code or get the default platform id from site table
+            //dd($path_arr[1], $siteInfo['platform_id'], $platformInfo);
+            //Stop everything if platform info is not correct.
+            if($platformInfo === null) {
+                info("platform not found!");
+                exit("Platform has not been set up");
             }
-            $this->cacheManager->put($tenantCacheKey, $tenantInfo);
+            $this->cacheManager->put($platformCacheKey, $platformInfo);
 
         } else {
-            $tenantInfo = $this->cacheManager->get($tenantCacheKey);
-            info("From Cache ($tenantCacheKey): Fetching tenant info: Path: $path_arr[$tenantPlace], lang_id: $siteInfo[tenant_id]");
+            $platformInfo = $this->cacheManager->get($platformCacheKey);
+            info("From Cache ($platformCacheKey): Fetching platform info: Path: $path_arr[$platformPlace], lang_id: $siteInfo[platform_id]");
         }
 
-        $tenantInfo = $tenantInfo->toArray();
-        //dd("tenantInfo", $tenantInfo);
-        // ##Setting Tenant Info
-        $this->setTenantInfo($tenantInfo, $path_arr[$tenantPlace]);
+        $platformInfo = $platformInfo->toArray();
+        //dd("platformInfo", $platformInfo);
+        // ##Setting Platform Info
+        $this->setPlatformInfo($platformInfo, $path_arr[$platformPlace]);
 
         info("path array", $path_arr);
 
@@ -193,7 +194,7 @@ trait BaseInfo {
             "favicon"=>$siteInfo["favicon"],
             "category_id"=>$siteInfo["category_id"],
             "theme_id"=>$siteInfo["theme_id"],
-            "tenant_id"=>$siteInfo["tenant_id"],
+            "platform_id"=>$siteInfo["platform_id"],
             "lang_id"=>$siteInfo["lang_id"],
             "country_id"=>$siteInfo["country_id"],
             "domain"=>$siteInfo["domain"],
@@ -249,27 +250,27 @@ trait BaseInfo {
 
 
     /**
-     * Set Tenant Info
-     * @param array $tenantInfo
-     * @param string $tenant_code
+     * Set Platform Info
+     * @param array $platformInfo
+     * @param string $platform_code
      */
-    private function setTenantInfo(array $tenantInfo, string $tenant_code) {
+    private function setPlatformInfo(array $platformInfo, string $platform_code) {
 
-        $this->infoLoader->setInfoKeeper("foundTenant", false);
+        $this->infoLoader->setInfoKeeper("foundPlatform", false);
 
-        if($tenantInfo['link_rewrite'] === $tenant_code) {
-            $this->infoLoader->setInfoKeeper("foundTenant", true);
+        if($platformInfo['link_rewrite'] === $platform_code) {
+            $this->infoLoader->setInfoKeeper("foundPlatform", true);
         }
 
-        $this->infoLoader->setObjInfo('tenant', $tenantInfo);
-        $this->infoLoader->setInfoKeeper("tenantId", $tenantInfo["id"]);
-        $this->infoLoader->setInfoKeeper("tenant_link_rewrite", $tenantInfo["link_rewrite"]);
-        $this->infoLoader->setInfoKeeper("tenantInfo", array("id"=>$tenantInfo["id"],
-            "name"=>$tenantInfo["name"], "link_rewrite"=>$tenantInfo["link_rewrite"]));
+        $this->infoLoader->setObjInfo('platform', $platformInfo);
+        $this->infoLoader->setInfoKeeper("platformId", $platformInfo["id"]);
+        $this->infoLoader->setInfoKeeper("platform_link_rewrite", $platformInfo["link_rewrite"]);
+        $this->infoLoader->setInfoKeeper("platformInfo", array("id"=>$platformInfo["id"],
+            "name"=>$platformInfo["name"], "link_rewrite"=>$platformInfo["link_rewrite"]));
 
         //Set locale
-        info("======================= setTenantInfo ================================");
-        info("setTenantInfo:langInfo ". json_encode($tenantInfo));
+        info("======================= setPlatformInfo ================================");
+        info("setPlatformInfo:langInfo ". json_encode($platformInfo));
         info("====================================================================================");
 
     }
@@ -315,55 +316,55 @@ trait BaseInfo {
         $methodName = "index";
 
         $foundLang = $this->infoLoader->getInfoKeeper("foundLang");
-        $foundTenant = $this->infoLoader->getInfoKeeper("foundTenant");
+        $foundPlatform = $this->infoLoader->getInfoKeeper("foundPlatform");
 
         $paramsValues = array();
 
         if ($path === "/" || $pathLen===1) {
-            if ($foundLang || $foundTenant) {
+            if ($foundLang || $foundPlatform) {
                 //$categoryName = "/";
             } else {
                 $categoryName = $path;
             }
         } else if ($pathLen === 2) {
-            if ($foundLang && $foundTenant) {
-                //found lang and tenant = en/web
+            if ($foundLang && $foundPlatform) {
+                //found lang and platform = en/web
                // $categoryName = "/";
-            } else if (!$foundLang && !$foundTenant) {
-                //no lang and tenant fond in url = my/contact
+            } else if (!$foundLang && !$foundPlatform) {
+                //no lang and platform fond in url = my/contact
                 $categoryName = $path_arr[0];
                 $methodName = $path_arr[1];
             } else {
-                //either lang or tenant is there in url = web/example | en/example
+                //either lang or platform is there in url = web/example | en/example
                 $categoryName = $path_arr[1];
             }
         } else if ($pathLen === 3) {
-            if ($foundLang && $foundTenant) {
-                //found lang and tenant = en/web/example
+            if ($foundLang && $foundPlatform) {
+                //found lang and platform = en/web/example
                 $categoryName = $path_arr[2];
-            } else if(!$foundLang && !$foundTenant) {
-                //no lang and tenant fond in url = my/contact/page
+            } else if(!$foundLang && !$foundPlatform) {
+                //no lang and platform fond in url = my/contact/page
                 $categoryName = $path_arr[0];
                 $methodName = $path_arr[1];
                 $paramsValues[] = $path_arr[2];
             } else {
-                //either lang or tenant is there in url = web/example/page | en/example/page
+                //either lang or platform is there in url = web/example/page | en/example/page
                 $categoryName = $path_arr[1];
                 $methodName = $path_arr[2];
             }
         } else if ($pathLen >= 4) {
-            if ($foundLang && $foundTenant) {
-                //found lang and tenant = en/web/example/page/extra/link
+            if ($foundLang && $foundPlatform) {
+                //found lang and platform = en/web/example/page/extra/link
                 $categoryName = $path_arr[2];
                 $methodName = $path_arr[3];
                 $paramsValues = array_splice($path_arr, 4, $pathLen);
-            } else if(!$foundLang && !$foundTenant) {
-                //no lang and tenant fond in url = anything/category/example/page
+            } else if(!$foundLang && !$foundPlatform) {
+                //no lang and platform fond in url = anything/category/example/page
                 $categoryName = $path_arr[0];
                 $methodName = $path_arr[1];
                 $paramsValues = array_splice($path_arr, 2, $pathLen);
             } else  {
-                //either lang or tenant is there in url = web/category/example/page | en/category/example/page
+                //either lang or platform is there in url = web/category/example/page | en/category/example/page
                 $categoryName = $path_arr[1];
                 $methodName = $path_arr[2];
                 $paramsValues = array_splice($path_arr, 3, $pathLen);
@@ -376,12 +377,12 @@ trait BaseInfo {
             $lang = $this->infoLoader->getInfoKeeper('lang_iso_code');
             $fullPath = str_replace($lang."/", "", $fullPath);
         }
-        if($foundTenant) {
-            $tenant = $this->infoLoader->getInfoKeeper('tenant_link_rewrite');
-            $fullPath = str_replace($tenant."/", "", $fullPath);
+        if($foundPlatform) {
+            $platform = $this->infoLoader->getInfoKeeper('platform_link_rewrite');
+            $fullPath = str_replace($platform."/", "", $fullPath);
         }
 
-        //dd("foundLang: $foundLang, foundTenant: $foundTenant", "path: ".$path, "categoryName: ".$categoryName, "methodName: ".$methodName, "lang:".$lang, "tenant: ".$tenant, $params);
+        //dd("foundLang: $foundLang, foundPlatform: $foundPlatform", "path: ".$path, "categoryName: ".$categoryName, "methodName: ".$methodName, "lang:".$lang, "platform: ".$platform, $params);
 
         info("============== Setting Controller Info ==============");
 
@@ -414,7 +415,7 @@ trait BaseInfo {
             $categoryName = $categoryInfo->link_rewrite;
             $this->setCategoryInfo($categoryInfo->toArray());
         }
-        //dd("foundLang: $foundLang, foundTenant: $foundTenant", "path: ".$path, "categoryName: ".$categoryName, "methodName: ".$methodName, "lang:".$lang, "tenant: ".$tenant, $categoryInfo);
+        //dd("foundLang: $foundLang, foundPlatform: $foundPlatform", "path: ".$path, "categoryName: ".$categoryName, "methodName: ".$methodName, "lang:".$lang, "platform: ".$platform, $categoryInfo);
 
         info(json_encode($path_arr));
 

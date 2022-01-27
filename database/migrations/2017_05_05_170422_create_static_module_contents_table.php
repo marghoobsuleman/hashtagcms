@@ -50,6 +50,15 @@ class CreateStaticModuleContentsTable extends Migration
             $table->primary(["static_module_content_id", "lang_id"], "static_content_id_lang_id");
         });
 
+        //Relation on site
+        Schema::table('static_module_contents', function (Blueprint $table) {
+
+            $table->foreign('site_id')
+                ->references('id')
+                ->on('sites')
+                ->onDelete('cascade');
+
+        });
     }
 
     /**

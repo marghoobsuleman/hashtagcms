@@ -13,7 +13,7 @@ class CreateSitewiseTable extends Migration
      */
     public function up()
     {
-        //Country
+        //Create country site pivot
         Schema::create('country_site', function (Blueprint $table) {
 
             $table->bigInteger('country_id', false, true);
@@ -21,6 +21,7 @@ class CreateSitewiseTable extends Migration
 
         });
 
+        //Relation on country<->site
         Schema::table('country_site', function (Blueprint $table) {
 
             $table->foreign('country_id')
@@ -37,7 +38,7 @@ class CreateSitewiseTable extends Migration
 
         });
 
-        //Currency
+        //Create currency site pivot
         Schema::create('currency_site', function (Blueprint $table) {
 
             $table->bigInteger('currency_id', false, true);
@@ -63,6 +64,7 @@ class CreateSitewiseTable extends Migration
             $table->primary(['currency_id', 'site_id']);
         });
 
+
         //Site Zone
         Schema::create('site_zone', function (Blueprint $table) {
 
@@ -87,19 +89,20 @@ class CreateSitewiseTable extends Migration
             $table->primary(['zone_id', 'site_id']);
         });
 
-        //Tenants
-        Schema::create('site_tenant', function (Blueprint $table) {
+        //Create pivot site<->platform
+        Schema::create('platform_site', function (Blueprint $table) {
 
-            $table->bigInteger('tenant_id', false, true);
+            $table->bigInteger('platform_id', false, true);
             $table->bigInteger('site_id', false, true);
 
         });
 
-        Schema::table('site_tenant', function (Blueprint $table) {
+        //Relation on site<->plateform
+        Schema::table('platform_site', function (Blueprint $table) {
 
-            $table->foreign('tenant_id')
+            $table->foreign('platform_id')
                 ->references('id')
-                ->on('tenants')
+                ->on('platforms')
                 ->onDelete('cascade');
 
             $table->foreign('site_id')
@@ -107,7 +110,7 @@ class CreateSitewiseTable extends Migration
                 ->on('sites')
                 ->onDelete('cascade');
 
-            $table->primary(['tenant_id', 'site_id']);
+            $table->primary(['platform_id', 'site_id']);
         });
 
         //Lang
@@ -162,12 +165,10 @@ class CreateSitewiseTable extends Migration
         //Modules
         Schema::create('module_site', function (Blueprint $table) {
 
-           // $table->increments('id');
-
             $table->bigInteger('site_id', false, true);
             $table->bigInteger('microsite_id', false, true)->default(0);
 
-            $table->bigInteger('tenant_id', false, true);
+            $table->bigInteger('platform_id', false, true);
 
             $table->bigInteger('category_id', false, true);
             $table->bigInteger('hook_id', false, true);
@@ -185,45 +186,49 @@ class CreateSitewiseTable extends Migration
 
         });
 
-
+        //Relation
         Schema::table("module_site", function (Blueprint $table) {
 
+            //on site
             $table->foreign('site_id')
                 ->references('id')
                 ->on('sites')
                 ->onDelete('cascade');
 
-            $table->foreign('tenant_id')
+            //on platform
+            $table->foreign('platform_id')
                 ->references('id')
-                ->on('tenants')
+                ->on('platforms')
                 ->onDelete('cascade');
 
+            //on category
             $table->foreign('category_id')
                 ->references('id')
                 ->on('categories')
                 ->onDelete('cascade');
 
+            //on hook
             $table->foreign('hook_id')
                 ->references('id')
                 ->on('hooks')
                 ->onDelete('cascade');
 
+            //on module
             $table->foreign('module_id')
                 ->references('id')
                 ->on('modules')
                 ->onDelete('cascade');
 
-           //$table->unique("id", "module_site_id");
-           $table->primary(['site_id', 'tenant_id', 'category_id', 'hook_id', 'module_id'], 'site_tenant_category_hook_module');
+           $table->primary(['site_id', 'platform_id', 'category_id', 'hook_id', 'module_id'], 'platform_site_category_hook_module');
 
         });
 
-        //Categories
+        //Create category site pivot
         Schema::create('category_site', function (Blueprint $table) {
 
             $table->bigInteger('category_id', false, true);
             $table->bigInteger('site_id', false, true);
-            $table->bigInteger('tenant_id', false, true);
+            $table->bigInteger('platform_id', false, true);
 
             $table->bigInteger('theme_id', false, true)->nullable();
             $table->string('icon', 255)->nullable();
@@ -242,16 +247,18 @@ class CreateSitewiseTable extends Migration
             $table->softDeletes();
         });
 
+        //Relation
         Schema::table('category_site', function (Blueprint $table) {
 
+            //on category
             $table->foreign('category_id')
                 ->references('id')
                 ->on('categories')
                 ->onDelete('cascade');
-
-            $table->foreign('tenant_id')
+            //on platform
+            $table->foreign('platform_id')
                 ->references('id')
-                ->on('tenants')
+                ->on('platforms')
                 ->onDelete('cascade');
 
             $table->foreign('site_id')
@@ -259,7 +266,7 @@ class CreateSitewiseTable extends Migration
                 ->on('sites')
                 ->onDelete('cascade');
 
-            $table->primary(['category_id', 'tenant_id', 'site_id']);
+            $table->primary(['category_id', 'platform_id', 'site_id']);
         });
 
     }
@@ -275,8 +282,8 @@ class CreateSitewiseTable extends Migration
 
         Schema::dropIfExists('country_site');
         Schema::dropIfExists('currency_site');
-        Schema::dropIfExists('site_zone');
-        Schema::dropIfExists('site_tenant');
+        Schema::dropIfExists('site_zone'); // what's the rule of pivot table - table zones and site min(z,s)
+        Schema::dropIfExists('platform_site');
         Schema::dropIfExists('lang_site');
         Schema::dropIfExists('hook_site');
         Schema::dropIfExists('module_site');

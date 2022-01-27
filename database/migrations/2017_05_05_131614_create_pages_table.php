@@ -18,7 +18,7 @@ class CreatePagesTable extends Migration
             $table->bigInteger('parent_id', false, true)->nullable();
             $table->bigInteger('site_id', false, true);
             $table->bigInteger('microsite_id')->nullable()->default(0);
-            $table->bigInteger('tenant_id', false, true)->nullable();
+            $table->bigInteger('platform_id', false, true)->nullable();
             $table->bigInteger('category_id', false, true)->nullable();
 
             $table->string('alias', 60)->nullable();
@@ -88,6 +88,18 @@ class CreatePagesTable extends Migration
             $table->foreign('page_id')
                 ->references('id')
                 ->on('pages')
+                ->onDelete('cascade');
+
+            $table->primary(["page_id", "lang_id"]);
+
+        });
+
+        //Relation on site
+        Schema::table('pages', function (Blueprint $table) {
+
+            $table->foreign('site_id')
+                ->references('id')
+                ->on('sites')
                 ->onDelete('cascade');
 
         });

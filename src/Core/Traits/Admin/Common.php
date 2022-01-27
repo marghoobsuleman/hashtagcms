@@ -19,11 +19,11 @@ trait Common {
 
     }
 
-    public function getSupportedSiteTenant($site_id = NULL) {
+    public function getSupportedSitePlatform($site_id = NULL) {
 
         $site_id = ($site_id == NULL) ? htcms_get_siteId_for_admin() : $site_id;
-        $site = Site::with('tenant')->where("id", "=", $site_id)->get();
-        return $site[0]->tenant;
+        $site = Site::with('platform')->where("id", "=", $site_id)->get();
+        return $site[0]->platform;
 
     }
 

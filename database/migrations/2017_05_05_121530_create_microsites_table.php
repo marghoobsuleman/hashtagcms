@@ -43,6 +43,16 @@ class CreateMicrositesTable extends Migration
             $table->softDeletes();
 
         });
+
+        //Relation on site
+        Schema::table('microsites', function (Blueprint $table) {
+
+            $table->foreign('site_id')
+                ->references('id')
+                ->on('sites')
+                ->onDelete('cascade');
+        });
+
     }
 
     /**

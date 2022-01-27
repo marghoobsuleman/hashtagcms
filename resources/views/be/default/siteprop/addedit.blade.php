@@ -19,7 +19,7 @@
         $name = old('name');
         $value = old('value');
         $site_id = old('site_id', htcms_get_siteId_for_admin());
-        $tenant_id = old('tenant_id');
+        $platform_id = old('platform_id');
         $is_public = old('is_public', 0);
 
         //print_r($results);
@@ -118,23 +118,23 @@
                     <div class="form-group">
 
                         <div class="col-sm-2">
-                            {!!  FormHelper::label('tenant_id', 'Tenant') !!}
+                            {!!  FormHelper::label('platform_id', 'Platform') !!}
                         </div>
 
                         <div class="col-sm-10">
 
-                            <tenant-button
-                                    data-id="tenant_id"
+                            <platform-button
+                                    data-id="platform_id"
 
-                                    data-name="{{$id > 0 ? 'tenant_id' : 'tenant_id[]'}}"
+                                    data-name="{{$id > 0 ? 'platform_id' : 'platform_id[]'}}"
 
                                     data-site-id="{{$site_id}}"
 
-                                   @if($id > 0) data-selected="{{$tenant_id}}" @endif
+                                   @if($id > 0) data-selected="{{$platform_id}}" @endif
 
                                     data-fetch-on-init="true"
                                     @if($id === 0) data-multiple="true" @endif
-                            ></tenant-button>
+                            ></platform-button>
 
                         </div>
                     </div>

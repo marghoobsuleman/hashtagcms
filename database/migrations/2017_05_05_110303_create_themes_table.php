@@ -26,8 +26,19 @@ class CreateThemesTable extends Migration
             $table->text('footer_content')->nullable();
             $table->timestamps();
             $table->softDeletes();
+        });
+
+
+        //Relation on site
+        Schema::table('themes', function (Blueprint $table) {
+
+            $table->foreign('site_id')
+                ->references('id')
+                ->on('sites')
+                ->onDelete('cascade');
 
         });
+
     }
 
     /**

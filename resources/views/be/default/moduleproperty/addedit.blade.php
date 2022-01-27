@@ -28,14 +28,14 @@
 
 
        $moduleComboName = "module_id";
-            $tenantComboName = "tenant_id";
+            $platformComboName = "platform_id";
         if ($actionPerformed === 'add') {
              $moduleComboName = "module_id[]";
-            $tenantComboName = "tenant_id[]";
+            $platformComboName = "platform_id[]";
         }
 
         $module_id = old($moduleComboName, array());
-        $tenant_id = old($tenantComboName, array());
+        $platform_id = old($platformComboName, array());
 
         //dd($module_id, $moduleComboName, $actionPerformed);
 
@@ -82,10 +82,10 @@
 
                 <div class="form-group">
                     <div class="col-sm-2">
-                        {!!  FormHelper::label('tenant_id', 'Choose Tenants') !!}
+                        {!!  FormHelper::label('platform_id', 'Choose Platforms') !!}
                     </div>
                     <div class="col-sm-4">
-                        {!! FormHelper::select($tenantComboName, $tenants, array('id'=>'tenant_id', 'class'=>'form-control select-big'), $tenant_id, array("value"=>"id", "label"=>"name")) !!}
+                        {!! FormHelper::select($platformComboName, $platforms, array('id'=>'platform_id', 'class'=>'form-control select-big'), $platform_id, array("value"=>"id", "label"=>"name")) !!}
                     </div>
                 </div>
 

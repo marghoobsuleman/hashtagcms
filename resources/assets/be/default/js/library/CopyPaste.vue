@@ -51,7 +51,7 @@
         },
         data() {
             return {
-                ignoreFields:(typeof this.dataIgnoreFields === "undefined") ? ["id", "site_id", "backURL", "actionPerformed", "tenant_id", "_token", "insert_by", "update_by"] : JSON.parse(this.dataIgnoreFields),
+                ignoreFields:(typeof this.dataIgnoreFields === "undefined") ? ["id", "site_id", "backURL", "actionPerformed", "platform_id", "_token", "insert_by", "update_by"] : JSON.parse(this.dataIgnoreFields),
                 copyKey:"cms_copy_data",
                 backURL:(typeof this.dataBackUrl === "undefined" || this.dataBackUrl=="") ? "" : this.dataBackUrl,
                 storage:window.localStorage

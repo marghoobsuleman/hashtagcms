@@ -90,7 +90,9 @@
         },
         computed: {
           domainName() {
-              return (this.siteInfo.domain.indexOf("http") >= 0) ? this.siteInfo.domain : "http://"+this.siteInfo.domain;
+              let domain = (this.siteInfo.domain.indexOf("http") >= 0) ? this.siteInfo.domain : "http://"+this.siteInfo.domain;
+              domain = (domain+"/example").replace("//example", "/example");
+              return domain;
           }
         },
         data() {

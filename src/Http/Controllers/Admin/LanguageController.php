@@ -12,6 +12,7 @@ use MarghoobSuleman\HashtagCms\Models\Country;
 use MarghoobSuleman\HashtagCms\Models\Site;
 use MarghoobSuleman\HashtagCms\Models\Lang;
 use MarghoobSuleman\HashtagCms\Core\Helpers\Message;
+use PHPUnit\Exception;
 
 class LanguageController extends BaseAdminController
 {
@@ -87,11 +88,19 @@ class LanguageController extends BaseAdminController
             //This is in base controller
             $savedData = $this->saveData($arrSaveData);
 
-            //Add default language in all tables
+            //Add default language in all tables based on new id
             if($savedData["id"]) {
                 Lang::insertLangInAllTables($savedData["id"]);
             }
             //$savedData = $this->saveDataWithLang($arrSaveData, $arrLangData);
+
+            //update language count in site table;
+            try {
+                Site::updateLangCount(htcms_get_siteId_for_admin());
+            } catch (Exception $exception) {
+                //
+            }
+
         }
 
         $viewData["id"] = $savedData["id"];;

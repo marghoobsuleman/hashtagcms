@@ -6,7 +6,7 @@ return [
         'site_label' => '#CMS - Admin',
         'base_context' => 'admin',
         'base_path' => '/admin',
-        'version' => env('BE_RESOURCE_VERSION', '20012022010830'),
+        'version' => env('BE_RESOURCE_VERSION', '250120221115'),
         'theme' => 'hashtagcms::be.default',
         'assets_path' => 'assets/hashtagcms/be/default',
         'app_url' => env("APP_URL"),

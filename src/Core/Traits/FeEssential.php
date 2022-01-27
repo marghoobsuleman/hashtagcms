@@ -13,7 +13,7 @@ trait FeEssential {
 
     /**
      * Load data
-     * InfoKeeper already has site, category, tenant, and category info (Interceptor Middleware)
+     * InfoKeeper already has site, category, platform, and category info (Interceptor Middleware)
      * @param Request $request
      */
     public function index(Request $request) {
@@ -70,7 +70,7 @@ trait FeEssential {
      * @param array $obj
      *              - site
      *              - language
-     *              - tenant
+     *              - platform
      *              - theme
      *              - category
      */
@@ -78,7 +78,7 @@ trait FeEssential {
 
         $info = array('site'=>$obj['site'],
             'language'=>$obj['language'],
-            'tenant'=>$obj['tenant'],
+            'platform'=>$obj['platform'],
             'theme'=>$obj['theme'],
             'category'=>$obj['category'],
         );
@@ -87,7 +87,7 @@ trait FeEssential {
         //set info
         $infoLoader->setObjInfo($info);
 
-        $infoLoader->setMultiContextVars($obj['category']->id, $obj['site']->id, $obj['tenant']->id, $obj['microsite']);
+        $infoLoader->setMultiContextVars($obj['category']->id, $obj['site']->id, $obj['platform']->id, $obj['microsite']);
         $infoLoader->setLanguageId($obj['language']->id, $obj['language']->iso_code);
 
         app()->HashtagCms->setThemePath($obj['theme']->directory);

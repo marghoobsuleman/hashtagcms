@@ -14,11 +14,9 @@ class HashtagCmsDatabaseSeeder extends Seeder
     {
         //Site
         $this->call(SitesTableSeeder::class);
-        $this->call(SiteLangsTableSeeder::class);
 
         //Language
         $this->call(LangsTableSeeder::class);
-
 
         //Countries
         $this->call(CountriesTableSeeder::class);
@@ -38,17 +36,17 @@ class HashtagCmsDatabaseSeeder extends Seeder
 
 
         //User and Rights
-        $this->call(UserTableSeeder::class);
+        $this->call(UsersTableSeeder::class);
         //roles
-        $this->call(RoleTableSeeder::class);
+        $this->call(RolesTableSeeder::class);
         //permission
-        $this->call(PermissionTableSeeder::class);
+        $this->call(PermissionsTableSeeder::class);
         //permission role
         $this->call(PermissionRoleTableSeeder::class);
 
 
-        //Tenants
-        $this->call(TenantsTableSeeder::class);
+        //Platforms
+        $this->call(PlatformsTableSeeder::class);
 
         //Hooks
         $this->call(HooksTableSeeder::class);
@@ -58,7 +56,7 @@ class HashtagCmsDatabaseSeeder extends Seeder
 
 
         //category
-        $this->call(CategoryTableSeeder::class);
+        $this->call(CategoriesTableSeeder::class);
 
         //Modules
         $this->call(ModulesTableSeeder::class);
@@ -77,8 +75,8 @@ class HashtagCmsDatabaseSeeder extends Seeder
         //langs
         $this->call(LangSiteTableSeeder::class); //done
 
-        //tenants
-        $this->call(TenantSiteTableSeeder::class); //done
+        //platforms
+        $this->call(PlatformSiteTableSeeder::class); //done
 
         //hooks
         $this->call(HookSiteTableSeeder::class); //done
@@ -99,13 +97,13 @@ class HashtagCmsDatabaseSeeder extends Seeder
         $this->call(MicrositesTableSeeder::class);
 
         //Page
-        $this->call(PageTableSeeder::class);
+        $this->call(PagesTableSeeder::class);
 
         //StaticModuleContent
-        $this->call(StaticModuleContentTableSeeder::class);
+        $this->call(StaticModuleContentsTableSeeder::class);
 
         //Installation check
-        $this->call(SitePropTableSeeder::class);
+        $this->call(SitePropsTableSeeder::class);
 
     }
 }

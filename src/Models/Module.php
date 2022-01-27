@@ -67,23 +67,23 @@ class Module extends AdminBaseModel
      * Copy Data from one category to another
      * @param $fromData
      * @param $toData
-     * $param $forAllTenants
+     * $param $forAllPlatforms
      * @return array
      */
     public static function copyData($fromData, $toData) {
-        //{site_id:1, microsite_id:0, tenant_id:1, category_id:1}
+        //{site_id:1, microsite_id:0, platform_id:1, category_id:1}
 
         $sourceSiteId = $fromData["site_id"];
-        $sourceTenantId = $fromData["tenant_id"];
+        $sourcePlatformId = $fromData["platform_id"];
         $sourceCategoryId = $fromData["category_id"];
         $sourceMicrositeId = $fromData["microsite_id"];
 
         $targetSiteId = $toData["site_id"];
-        $targetTenantId = $toData["tenant_id"];
+        $targetPlatformId = $toData["platform_id"];
         $targetCategoryId = $toData["category_id"];
         $targetMicrositeId = $toData["microsite_id"];
 
-        if(($sourceTenantId === $targetTenantId) &&
+        if(($sourcePlatformId === $targetPlatformId) &&
             ($sourceCategoryId === $targetCategoryId) &&
             ($sourceMicrositeId === $targetMicrositeId) &&
             ($sourceSiteId === $targetSiteId) ) {
@@ -93,9 +93,9 @@ class Module extends AdminBaseModel
 
 
         //set theme category if it is not the same
-        if(($sourceCategoryId !== $targetCategoryId) || ($sourceTenantId !== $targetTenantId)) {
+        if(($sourceCategoryId !== $targetCategoryId) || ($sourcePlatformId !== $targetPlatformId)) {
 
-            $fromWhere = array(array("category_site.tenant_id", "=", $sourceTenantId),
+            $fromWhere = array(array("category_site.platform_id", "=", $sourcePlatformId),
                 array("category_site.site_id", "=", $sourceSiteId),
                 array("category_site.category_id", "=", $sourceCategoryId)
             );
@@ -121,7 +121,7 @@ class Module extends AdminBaseModel
                 $theme_id = Theme::getThemeIdThroughSite($theme_id, $targetSiteId);
             }
 
-            $toWhere = array(array("tenant_id", "=", $targetTenantId),
+            $toWhere = array(array("platform_id", "=", $targetPlatformId),
                 array("site_id", "=", $targetSiteId),
                 array("category_id", "=", $targetCategoryId)
             );
@@ -141,7 +141,7 @@ class Module extends AdminBaseModel
         foreach ($data as $row) {
             $current = $row;
             $current->site_id = $targetSiteId;
-            $current->tenant_id = $targetTenantId;
+            $current->platform_id = $targetPlatformId;
             $current->category_id = $targetCategoryId;
             $current->insert_by = $user_id;
             $current->update_by = $user_id;

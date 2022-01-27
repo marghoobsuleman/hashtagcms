@@ -4,7 +4,7 @@ namespace MarghoobSuleman\HashtagCms\Core\Main;
 use MarghoobSuleman\HashtagCms\Models\Category;
 use MarghoobSuleman\HashtagCms\Models\Lang;
 use MarghoobSuleman\HashtagCms\Models\Site;
-use MarghoobSuleman\HashtagCms\Models\Tenant;
+use MarghoobSuleman\HashtagCms\Models\Platform;
 
 class ServiceLoader extends DataLoader
 {
@@ -25,23 +25,23 @@ class ServiceLoader extends DataLoader
      * Get site config
      * @param string $context
      * @param string|null $lang
-     * @param string|null $tenant
+     * @param string|null $platform
      * @return array
      */
-    public function allConfigs(string $context, string $lang=null, string $tenant=null): array
+    public function allConfigs(string $context, string $lang=null, string $platform=null): array
     {
         // fetch site info from request -> context
         // fetch lang info from request -> lang
-        // fetch tenant info from request -> tenant
+        // fetch platform info from request -> platform
         // if lang is passed in request use that else fetch lang_id from site info
-        // if tenant is passed in request use that else fetch tenant_id from site info
+        // if platform is passed in request use that else fetch platform_id from site info
         // after that fetch all the info.
 
         if (empty($context)) {
             return $this->getErrorMessage("Site context is missing", 400);
         }
         $lang_id = null;
-        $tenant_id = null;
+        $platform_id = null;
         //@todo: Default currency id is missing
         $site = Site::where('context', '=', $context)->first();
 
@@ -55,33 +55,33 @@ class ServiceLoader extends DataLoader
                 $lang_id = $langInfo->id;
             }
         }
-        if(!empty($tenant)) {
-            $tenantInfo = Tenant::where('link_rewrite', '=', $tenant)->first();
-            if(!empty($tenantInfo)) {
-                $tenant_id = $tenantInfo->id;
+        if(!empty($platform)) {
+            $platformInfo = Platform::where('link_rewrite', '=', $platform)->first();
+            if(!empty($platformInfo)) {
+                $platform_id = $platformInfo->id;
             }
         }
 
         $site_id = $site->id;
         $lang_id = ($lang_id == null) ? $site->lang_id : $lang_id;
-        $tenant_id = ($tenant_id == null) ? $site->tenant_id : $tenant_id; //will use this
+        $platform_id = ($platform_id == null) ? $site->platform_id : $platform_id; //will use this
 
         $siteInfo = $this->infoLoader->getSiteInfo($context, $lang_id);
-        $tenants = $this->infoLoader->getAllSupportedTenants($site_id);
+        $platforms = $this->infoLoader->getAllSupportedPlatforms($site_id);
         $langs = $this->infoLoader->getAllSupportedLangs($site_id);
         $currencies = $this->infoLoader->getAllSupportedCurrencies($site_id);
         $zones = $this->infoLoader->getAllSupportedZones($site_id);
-        $categories = $this->infoLoader->getAllSupportedCategories($site_id, $lang_id, $tenant_id);
+        $categories = $this->infoLoader->getAllSupportedCategories($site_id, $lang_id, $platform_id);
         $countries = $this->infoLoader->getAllSupportedCountries($site_id, $lang_id);
-        $props = $this->infoLoader->getSitePropsInfo($site_id, $tenant_id);
+        $props = $this->infoLoader->getSitePropsInfo($site_id, $platform_id);
 
         $data['site'] = $siteInfo;
         $data["defaults"] = array("category_id"=>$site->category_id,
             "lang_id"=>$site->lang_id,
             "country_id"=>$site->country_id,
-            "tenant_id"=>$site->tenant_id,
+            "platform_id"=>$site->platform_id,
             "currency_id"=>$site->currency_id ?? 1);
-        $data['tenants'] = $tenants;
+        $data['platforms'] = $platforms;
         $data['langs'] = $langs;
         $data['categories'] = $categories;
         $data['currencies'] = $currencies;

@@ -16,7 +16,7 @@ class ZoneSiteTableSeeder extends Seeder
     {
         $table_name = 'site_zone';
         $date = date('Y-m-d H:i:s');
-        $site_zone = array(
+        $zone_site = array(
             array('zone_id' => '1','site_id' => '1','created_at' => $date,'updated_at' => $date,'deleted_at' => NULL),
             array('zone_id' => '2','site_id' => '1','created_at' => $date,'updated_at' => $date,'deleted_at' => NULL),
             array('zone_id' => '3','site_id' => '1','created_at' => $date,'updated_at' => $date,'deleted_at' => NULL),
@@ -28,7 +28,7 @@ class ZoneSiteTableSeeder extends Seeder
         );
 
         if(DB::table($table_name)->get()->count() == 0) {
-            DB::table($table_name)->insert($site_zone);
+            DB::table($table_name)->insert($zone_site);
 
         } else {
             echo "SeedingError: `zone_sites` table is not empty\n";

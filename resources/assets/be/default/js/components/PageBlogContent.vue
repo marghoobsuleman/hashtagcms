@@ -82,13 +82,13 @@
     <div class="form-group">
 
       <div class="col-sm-2">
-        <label for="tenant_id">Tenant</label>
+        <label for="platform_id">Platform</label>
       </div>
 
       <div class="col-sm-10">
-        <select name="tenant_id" id="tenant_id" v-model="form.tenant_id">
+        <select name="platform_id" id="platform_id" v-model="form.platform_id">
           <option value="">Select</option>
-          <option v-for="tenant in tenants" :value="tenant.id">{{tenant.name}}</option>
+          <option v-for="platform in platforms" :value="platform.id">{{platform.name}}</option>
         </select>
 
       </div>
@@ -326,7 +326,7 @@
             contentType: JSON.parse(this.dataContentType),
             contentTypes:[],
             contentCategories:[],
-            tenants:[],
+            platforms:[],
             form: new Form({
               id:0,
               name: "",

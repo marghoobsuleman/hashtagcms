@@ -196,12 +196,12 @@ trait AdminCrud {
         return $this->saveAllData($data, $where, $upateInAllLangs);
     }
 
-    protected function saveDataWithLangAndTenant($saveData=array(), $langData=array(), $tenantData=array(), $where=NULL, $upateInAllLangs=false) {
+    protected function saveDataWithLangAndPlatform($saveData=array(), $langData=array(), $platformData=array(), $where=NULL, $upateInAllLangs=false) {
 
         $data["saveData"] = $saveData;
         $data["langData"] = $langData;
 
-        $data["tenantData"] = $tenantData;
+        $data["platformData"] = $platformData;
 
         return $this->saveAllData($data, $where, $upateInAllLangs);
     }
@@ -252,8 +252,8 @@ trait AdminCrud {
             if(isset($data["siteData"])) {
                 $site_id = $data["siteData"]["site_id"] ??  htcms_get_siteId_for_admin();
             }
-            if(isset($data["tenantData"])) {
-                $site_id = $data["tenantData"]["site_id"] ??  htcms_get_siteId_for_admin();
+            if(isset($data["platformData"])) {
+                $site_id = $data["platformData"]["site_id"] ??  htcms_get_siteId_for_admin();
             }
             $supportedSiteLangs = $this->getSupportedSiteLang($site_id); //This is in Common Trait
 
@@ -289,7 +289,7 @@ trait AdminCrud {
 
             $rData["source"] = $mainModel;
 
-            if(isset($data["langData"]) || isset($data["siteData"]) || isset($data["tenantData"])) {
+            if(isset($data["langData"]) || isset($data["siteData"]) || isset($data["platformData"])) {
                 $mainModel = $mainModel->find($rData["id"]); //could have withoutGlobalScopes(). but it will work on current site
             }
 
@@ -336,20 +336,20 @@ trait AdminCrud {
             }
 
 
-            //Tenant Data
-            if(isset($data["tenantData"])) {
-                if(!method_exists($mainModel, 'tenant')) {
+            //Platform Data
+            if(isset($data["platformData"])) {
+                if(!method_exists($mainModel, 'platform')) {
                     DB::rollBack();
-                    throw new \Exception("'tenant' relation method is needed in source class.");
+                    throw new \Exception("'platform' relation method is needed in source class.");
                 }
-                //Model must have belongsToMany relation with 'tenant'
-                $tenantData = $data["tenantData"]["data"];
-                $supportedSiteTenant = $this->getSupportedSiteTenant($tenantData['site_id']);//tenant data must have a site_id
+                //Model must have belongsToMany relation with 'platform'
+                $platformData = $data["platformData"]["data"];
+                $supportedSitePlatform = $this->getSupportedSitePlatform($platformData['site_id']);//platform data must have a site_id
 
-                //add in supported tenant
-                foreach ($supportedSiteTenant as $key=>$tenant) {
-                    $tenantData["tenant_id"] = $tenant["id"];
-                    $mainModel->tenant()->attach($tenant, $tenantData);
+                //add in supported platform
+                foreach ($supportedSitePlatform as $key=>$platform) {
+                    $platformData["platform_id"] = $platform["id"];
+                    $mainModel->platform()->attach($platform, $platformData);
                 }
 
             }
@@ -428,15 +428,15 @@ trait AdminCrud {
                 $mainModel->site()->updateExistingPivot($siteData["site_id"], $siteData);
             }
 
-            if(isset($data["tenantData"])) {
-                if(!method_exists($mainModel, 'tenant')) {
+            if(isset($data["platformData"])) {
+                if(!method_exists($mainModel, 'platform')) {
                     DB::rollBack();
-                    throw new \Exception("Update Error: 'tenant' relation method is needed in source class.");
+                    throw new \Exception("Update Error: 'platform' relation method is needed in source class.");
                 }
-                //Model must have belongsToMany relation with 'tenant'
-                $tenantData = $data["tenantData"]["data"];
-                //info(json_encode($tenantData));
-                $mainModel->tenant()->updateExistingPivot($tenantData["tenant_id"], $tenantData);
+                //Model must have belongsToMany relation with 'platform'
+                $platformData = $data["platformData"]["data"];
+                //info(json_encode($platformData));
+                $mainModel->platform()->updateExistingPivot($platformData["platform_id"], $platformData);
             }
 
             $queryLog = QueryLogger::getQueryLog();

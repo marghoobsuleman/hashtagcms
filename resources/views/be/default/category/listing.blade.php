@@ -20,12 +20,12 @@
     </action-bar>
 
     @if($paginator)
-        <category-tenant
-        data-tenants="{{json_encode($extraData["tenants"])}}"
+        <category-platform
+        data-platforms="{{json_encode($extraData["platforms"])}}"
 
         >
 
-        </category-tenant>
+        </category-platform>
 
         <table-view
                 data-list="{{json_encode($paginator->items())}}"

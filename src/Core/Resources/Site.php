@@ -46,7 +46,7 @@ class Site extends JsonResource
             "name"=>  $this->name,
             "category_id"=> $this->category_id,
             "theme_id"=> $this->theme_id,
-            "tenant_id"=> $this->tenant_id,
+            "platform_id"=> $this->platform_id,
             "lang_id"=> $this->lang_id,
             "under_maintenance"=> $this->under_maintenance,
             "domain"=> $this->domain,
@@ -60,7 +60,7 @@ class Site extends JsonResource
                 "categories"=>Category::with('lang')->where('site_id', $this->id)->withoutGlobalScopes()->get(),
                 "themes"=>Theme::where('site_id', '=', $this->id)->withoutGlobalScopes()->get(),
                 "microsites"=>$this->when($isWeb, $this->microsite), //when it is web - will work on this
-                "tenants"=>$this->tenant,
+                "platforms"=>$this->platform,
                 "languages"=>$this->language,
                 "countries"=>$this->country,
                 "zones"=>$this->zone,

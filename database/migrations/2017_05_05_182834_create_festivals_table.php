@@ -34,6 +34,15 @@ class CreateFestivalsTable extends Migration
             $table->softDeletes();
 
         });
+
+        //Relation on site
+        Schema::table('festivals', function (Blueprint $table) {
+
+            $table->foreign('site_id')
+                ->references('id')
+                ->on('sites')
+                ->onDelete('cascade');
+        });
     }
 
     /**

@@ -15,7 +15,7 @@ class Category extends AdminBaseModel
 
     protected $categorySiteTable = "category_site";
 
-    protected $additionalColumns = ["site_id", "tenant_id", "theme_id", "icon", "icon_css",
+    protected $additionalColumns = ["site_id", "platform_id", "theme_id", "icon", "icon_css",
         "header_content", "footer_content", "exclude_in_listing", "cache_category", "position"];
 
     /**
@@ -55,12 +55,12 @@ class Category extends AdminBaseModel
 
 
     /**
-     * With Tenant
+     * With Platform
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function tenant() {
+    public function platform() {
 
-        return $this->belongsToMany(Tenant::class, "category_site")->withPivot($this->additionalColumns);
+        return $this->belongsToMany(Platform::class, "category_site")->withPivot($this->additionalColumns);
     }
 
     /**
@@ -120,10 +120,10 @@ class Category extends AdminBaseModel
      *
      * @param int $id
      * @param string $with
-     * @param int $tenant_id
+     * @param int $platform_id
      * @return array
      */
-    public static function getById($id=0, $with='', $tenant_id=1) {
+    public static function getById($id=0, $with='', $platform_id=1) {
 
 
         //$category = Category::find($id, $with);
@@ -134,29 +134,29 @@ class Category extends AdminBaseModel
 
 
         $where = array(array("site_id", $data->site_id),
-            array("tenant_id", $tenant_id));
+            array("platform_id", $platform_id));
 
-        $tenant_data = $data->tenant()->where($where)->get()->toArray();
+        $platform_data = $data->platform()->where($where)->get()->toArray();
         $data = $data->toArray();
-        $data["tenant_wise"] = self::pivotToArray($tenant_data);
-        $data["tenants"] = Site::with("tenant")->where("id", $data["site_id"])->get(["id"]);
-        $data["tenants"] = ($data["tenants"]->count() > 0) ? $data["tenants"][0]->tenant : array();
-        $data["tenant_id"] = $tenant_id;
+        $data["platform_wise"] = self::pivotToArray($platform_data);
+        $data["platforms"] = Site::with("platform")->where("id", $data["site_id"])->get(["id"]);
+        $data["platforms"] = ($data["platforms"]->count() > 0) ? $data["platforms"][0]->platform : array();
+        $data["platform_id"] = $platform_id;
         return $data;
     }
 
     /**
      * @param int $category_id
-     * @param null $tenant_id
+     * @param null $platform_id
      * @param int $site_id
      * @param null $microsite_id
      * @return mixed
      */
-    public static function getModules($category_id=1, $tenant_id=NULL, $site_id=1, $microsite_id=NULL) {
+    public static function getModules($category_id=1, $platform_id=NULL, $site_id=1, $microsite_id=NULL) {
 
         $where = array("category_id"=>$category_id, "site_id"=>$site_id);
-        if($tenant_id !== NULL) {
-            $where["tenant_id"] = $tenant_id;
+        if($platform_id !== NULL) {
+            $where["platform_id"] = $platform_id;
         }
         if($microsite_id !== NULL) {
             $where["microsite_id"] = $microsite_id;
@@ -175,7 +175,7 @@ class Category extends AdminBaseModel
     public function getFromSitePivot($tenent_id=NULL, $key=NULL) {
 
         if($tenent_id !== NULL) {
-            $data = $this->site()->wherePivot("tenant_id", $tenent_id)->get()->toArray();
+            $data = $this->site()->wherePivot("platform_id", $tenent_id)->get()->toArray();
             $data = (sizeof($data) > 0) ? $data[0] : [];
             if($key === NULL) {
 
@@ -202,14 +202,14 @@ class Category extends AdminBaseModel
      * Get category info by link_rewrite
      * @param string $link_rewrite
      * @param int $lang_id
-     * @param int $tenant_id
+     * @param int $platform_id
      * @param int $site_id
      * @return mixed|null
      */
-    public static function getByLinkrewrite($link_rewrite='', $lang_id=1, $tenant_id=1, $site_id=1) {
+    public static function getByLinkrewrite($link_rewrite='', $lang_id=1, $platform_id=1, $site_id=1) {
 
         $where = array(
-            array("category_site.tenant_id", "=", $tenant_id),
+            array("category_site.platform_id", "=", $platform_id),
             array("category_site.site_id", "=", $site_id),
             array("categories.publish_status", "=", 1),
             array("category_langs.lang_id", "=", $lang_id),

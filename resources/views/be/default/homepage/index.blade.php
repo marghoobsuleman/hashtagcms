@@ -8,11 +8,11 @@
         $site_id = (isset($site_id)) ? $site_id : $siteInfo->id;
         $microsite_id = (isset($microsite_id)) ? $microsite_id : 0;
         $category_id = (isset($category_id)) ? $category_id : $siteInfo->category_id;
-        $tenant_id = (isset($tenant_id)) ? $tenant_id : 1;
+        $platform_id = (isset($platform_id)) ? $platform_id : 1;
 
         $categories = isset($siteInfo->category) ? $siteInfo->category : [];
         $microsites = isset($siteInfo->microsite) ? $siteInfo->microsite : [];
-        $tenants = isset($siteInfo->tenant) ? $siteInfo->tenant : [];
+        $platforms = isset($siteInfo->platform) ? $siteInfo->platform : [];
 
     @endphp
 
@@ -25,12 +25,12 @@
     <admin-homepage
             data-site-id="{{$site_id}}"
             data-microsite-id="{{$microsite_id}}"
-            data-tenant-id="{{$tenant_id}}"
+            data-platform-id="{{$platform_id}}"
             data-category-id="{{$category_id}}"
 
             data-categories="{{$categories}}"
             data-microsites="{{$microsites}}"
-            data-tenants="{{$tenants}}"
+            data-platforms="{{$platforms}}"
 
             data-site-info="{{json_encode($siteInfo)}}"
             data-hook-info="{{json_encode($siteInfo->hook)}}"

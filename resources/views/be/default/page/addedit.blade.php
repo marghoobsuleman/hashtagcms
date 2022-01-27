@@ -17,7 +17,7 @@
         $alias = old("alias");
         $site_id = old('site_id', htcms_get_siteId_for_admin());
         $category_id = old("category_id", $defaultCategory ?? "");
-        $tenant_id = old("tenant_id");
+        $platform_id = old("platform_id");
         $parent_id = old("parent_id");
         $link_navigation = old("link_navigation");
         $link_rewrite = old("link_rewrite");
@@ -171,11 +171,11 @@
                 <div class="form-group">
 
                     <div class="col-sm-2">
-                        {!!  FormHelper::label('tenant_id', 'Tenant') !!}
+                        {!!  FormHelper::label('platform_id', 'Platform') !!}
                     </div>
 
                     <div class="col-sm-10">
-                        {!! FormHelper::select('tenant_id', $tenants, array(), $tenant_id, array("label"=>"name","value"=>"id")) !!}
+                        {!! FormHelper::select('platform_id', $platforms, array(), $platform_id, array("label"=>"name","value"=>"id")) !!}
                     </div>
                 </div>
 

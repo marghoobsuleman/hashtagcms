@@ -18,10 +18,13 @@ class CreateMediasTable extends Migration
 
             $table->id();
             $table->bigInteger('site_id', false, true);
-            $table->bigInteger('user_id', false, true)->nullable();
-            $table->bigInteger('content_id', false, true)->nullable();
 
+            $table->bigInteger('user_id', false, true)->nullable();
+
+            $table->bigInteger('content_id', false, true)->nullable();
+            $table->string('content_for', 255)->nullable();
             $table->string('normal', 255)->nullable();
+
             $table->string('extra_extra_extra_high', 255)->nullable();
             $table->string('extra_extra_high', 255)->nullable();
             $table->string('extra_high', 255)->nullable();
@@ -29,7 +32,7 @@ class CreateMediasTable extends Migration
             $table->string('medium', 255)->nullable();
             $table->string('low', 255)->nullable();
 
-            $table->enum('image_type', ['visitor', 'content', 'category', 'common', 'events', 'offer', 'microsite'])->default('content');
+            $table->string('image_type', 255)->nullable()->default('content');
             $table->string('image_group')->nullable();
             $table->string('image_key', 100)->nullable();
             $table->integer('position')->nullable();
@@ -53,8 +56,19 @@ class CreateMediasTable extends Migration
                 ->references("id")
                 ->on("medias")
                 ->onDelete('cascade');
+
+            $table->primary(['media_id', 'lang_id']);
+
         });
 
+        //Relation on site
+        Schema::table('medias', function (Blueprint $table) {
+
+            $table->foreign('site_id')
+                ->references('id')
+                ->on('sites')
+                ->onDelete('cascade');
+        });
     }
 
     /**

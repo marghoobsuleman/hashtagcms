@@ -43,7 +43,7 @@ import InfoxBoxes from './components/InfoxBoxes';
 import SiteWiseData from './components/SiteWiseData';
 import SiteWiseCopier from './components/SiteWiseCopier';
 import LeftMenuShowHide from './library/LeftMenuShowHide';
-import CategoryTenant from './components/CategoryTenant';
+import CategoryPlatform from './components/CategoryPlatform';
 import GloablSiteButton from './components/GloablSiteButton';
 
 import Homepage from './components/Homepage';
@@ -52,7 +52,7 @@ import Loader from './library/Loader';
 import CopyPaste from './library/CopyPaste';
 
 import SiteButton from './components/SiteButton';
-import TenantButton from './components/TenantButton';
+import PlatformButton from './components/PlatformButton';
 
 import PassportClient from './components/passport/Clients';
 import PassportAuthorizedClients from './components/passport/AuthorizedClients';
@@ -89,14 +89,14 @@ Vue.component('info-boxes', InfoxBoxes);
 Vue.component('site-wise', SiteWiseData);
 Vue.component('site-wise-copier', SiteWiseCopier);
 Vue.component('left-menu-toggle', LeftMenuShowHide);
-Vue.component('category-tenant', CategoryTenant);
+Vue.component('category-platform', CategoryPlatform);
 Vue.component('global-site-button', GloablSiteButton);
 Vue.component('admin-homepage', Homepage);
 Vue.component('admin-category-settings', CategorySettings);
 Vue.component('admin-loader', Loader);
 Vue.component('copy-paste', CopyPaste);
 Vue.component('site-button', SiteButton);
-Vue.component('tenant-button', TenantButton);
+Vue.component('platform-button', PlatformButton);
 
 
 Vue.component('passport-clients', PassportClient);

@@ -16,7 +16,7 @@ class CreateCommentsTable extends Migration
         Schema::create('comments', function (Blueprint $table) {
             $table->id();
             $table->bigInteger("parent_id")->nullable();
-            $table->bigInteger("site_id");
+            $table->bigInteger("site_id", false, true);
             $table->string("name", 255);
             $table->string("email", 255);
             $table->bigInteger("category_id");
@@ -26,6 +26,16 @@ class CreateCommentsTable extends Migration
             $table->timestamps();
             $table->softDeletes();
         });
+
+        //Relation on site
+        Schema::table('comments', function (Blueprint $table) {
+
+            $table->foreign('site_id')
+                ->references('id')
+                ->on('sites')
+                ->onDelete('cascade');
+        });
+
     }
 
     /**

@@ -7,13 +7,13 @@ use Illuminate\Support\Facades\Validator;
 
 use MarghoobSuleman\HashtagCms\Models\SiteProp;
 use MarghoobSuleman\HashtagCms\Models\Site;
-use MarghoobSuleman\HashtagCms\Models\Tenant;
+use MarghoobSuleman\HashtagCms\Models\Platform;
 use MarghoobSuleman\HashtagCms\Core\Helpers\Message;
 
 
 class SitepropController extends BaseAdminController
 {
-    protected $dataFields = ['id','site_id','tenant_id', 'group_name', 'name','value','updated_at'];
+    protected $dataFields = ['id','site_id','platform_id', 'group_name', 'name','value','updated_at'];
 
     protected $dataSource = SiteProp::class;
 
@@ -22,7 +22,7 @@ class SitepropController extends BaseAdminController
     protected $actionFields = array("edit", "delete"); //This is last column of the row
 
     protected $bindDataWithAddEdit = array("sites"=>array("dataSource"=>Site::class, "method"=>"all"),
-        "tenants"=>array("dataSource"=>Tenant::class, "method"=>"all"),
+        "platforms"=>array("dataSource"=>Platform::class, "method"=>"all"),
         "siteGroups"=>array("dataSource"=>SiteProp::class, "method"=>"getSiteGroup"));
 
 
@@ -55,7 +55,7 @@ class SitepropController extends BaseAdminController
         $saveData["name"] = $data["name"];
         $saveData["value"] = $data["value"];
         $saveData["site_id"] = $data["site_id"];
-        $saveData["tenant_id"] = $data["tenant_id"];
+        $saveData["platform_id"] = $data["platform_id"];
         $saveData["group_name"] = $data["group_name"];
         $saveData["created_at"] = htcms_get_current_date();
         $saveData["updated_at"] = htcms_get_current_date();
@@ -71,10 +71,10 @@ class SitepropController extends BaseAdminController
             //$savedData = $this->saveDataWithLang($arrSaveData, $arrLangData, $where);
 
         } else {
-            foreach ($saveData['tenant_id'] as $tenant){
+            foreach ($saveData['platform_id'] as $platform){
                 $SiteProp = SiteProp::create([
                     'site_id' => $saveData['site_id'],
-                    'tenant_id' => $tenant,
+                    'platform_id' => $platform,
                     'group_name' => $saveData['group_name'],
                     'name' => $saveData['name'],
                     'value' => $saveData['value'],

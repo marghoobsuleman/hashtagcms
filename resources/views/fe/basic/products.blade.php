@@ -9,11 +9,9 @@
             </div>
             <div class="col-lg-5 offset-lg-1">
                 <div class="promo-section__description">
-                    <h2 class="promo-section__title">Intuitive interface for managing modules</h2>
+                    <h2 class="promo-section__title">{{____("hashtagcms::modules.products_1")}}</h2>
                     <p class="lead">
-                        You can easily create and manage frontend module from the CMS. An easy way to manage your website.
-                        You can drag & drop, and set the position of the module easily from the CMS.
-
+                        {{____("hashtagcms::modules.products_2")}}
                     </p>
                 </div>
             </div>

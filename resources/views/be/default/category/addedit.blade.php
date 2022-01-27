@@ -62,16 +62,16 @@
         $lang["link_relation"] = old('lang_link_relation');
         $lang["third_party_mapping_key"] = old('lang_third_party_mapping_key');
 
-        $tenant_wise["tenant_id"] = old("tenant_id", 1);
-        $tenant_wise["icon_css"] = old("icon_css");
-        $tenant_wise["header_content"] = old("header_content");
-        $tenant_wise["footer_content"] = old("footer_content");
-        $tenant_wise["exclude_in_listing"] = old("exclude_in_listing");
-        $tenant_wise["cache_category"] =  old("cache_category");
-        $tenant_wise["theme_id"] =  old("theme_id");
+        $platform_wise["platform_id"] = old("platform_id", 1);
+        $platform_wise["icon_css"] = old("icon_css");
+        $platform_wise["header_content"] = old("header_content");
+        $platform_wise["footer_content"] = old("footer_content");
+        $platform_wise["exclude_in_listing"] = old("exclude_in_listing");
+        $platform_wise["cache_category"] =  old("cache_category");
+        $platform_wise["theme_id"] =  old("theme_id");
 
         $insert_by = Auth()->user()->id;
-        $tenant_id = 1;
+        $platform_id = 1;
 //echo "<pre>";
 //print_r($results);
 
@@ -79,17 +79,17 @@
         if(isset($results)) {
             extract($results);
         }
-if(count($tenant_wise) == 0) {
-        $tenant_wise["tenant_id"] = old("tenant_id", $tenant_id);
-        $tenant_wise["icon_css"] = old("icon_css");
-        $tenant_wise["header_content"] = old("header_content");
-        $tenant_wise["footer_content"] = old("footer_content");
-        $tenant_wise["exclude_in_listing"] = old("exclude_in_listing");
-        $tenant_wise["cache_category"] =  old("cache_category");
-        $tenant_wise["theme_id"] =  old("theme_id");
+if(count($platform_wise) == 0) {
+        $platform_wise["platform_id"] = old("platform_id", $platform_id);
+        $platform_wise["icon_css"] = old("icon_css");
+        $platform_wise["header_content"] = old("header_content");
+        $platform_wise["footer_content"] = old("footer_content");
+        $platform_wise["exclude_in_listing"] = old("exclude_in_listing");
+        $platform_wise["cache_category"] =  old("cache_category");
+        $platform_wise["theme_id"] =  old("theme_id");
 }
 
-        //if tenant_wise not found
+        //if platform_wise not found
 
 //dd($categories);
 
@@ -116,7 +116,7 @@ if(count($tenant_wise) == 0) {
 
 
                     {!! FormHelper::input('hidden', 'site_id', $site_id) !!}
-                    {!! FormHelper::input('hidden', 'tenant_id', $tenant_wise["tenant_id"]) !!}
+                    {!! FormHelper::input('hidden', 'platform_id', $platform_wise["platform_id"]) !!}
 
                     <div class="form-group">
                         <div class="col-sm-2">
@@ -213,7 +213,7 @@ if(count($tenant_wise) == 0) {
                         </div>
 
                         <div class="col-sm-10">
-                            {!! FormHelper::textarea('header_content', $tenant_wise["header_content"], array('class'=>'form-control')) !!}
+                            {!! FormHelper::textarea('header_content', $platform_wise["header_content"], array('class'=>'form-control')) !!}
                         </div>
 
                     </div>
@@ -225,7 +225,7 @@ if(count($tenant_wise) == 0) {
                         </div>
 
                         <div class="col-sm-10">
-                            {!! FormHelper::textarea('footer_content', $tenant_wise["footer_content"], array('class'=>'form-control')) !!}
+                            {!! FormHelper::textarea('footer_content', $platform_wise["footer_content"], array('class'=>'form-control')) !!}
                         </div>
 
                     </div>
@@ -237,7 +237,7 @@ if(count($tenant_wise) == 0) {
                         </div>
 
                         <div class="col-sm-10">
-                            {!! FormHelper::select('theme_id', $themes, array(), $tenant_wise["theme_id"], array("label"=>"name","value"=>"id")) !!}
+                            {!! FormHelper::select('theme_id', $themes, array(), $platform_wise["theme_id"], array("label"=>"name","value"=>"id")) !!}
                         </div>
 
                     </div>
@@ -292,7 +292,7 @@ if(count($tenant_wise) == 0) {
                             </div>
 
                             <div class="col-sm-10">
-                                {!! FormHelper::input('text', 'icon_css', $tenant_wise["icon_css"] , array('class'=>'form-control')) !!}
+                                {!! FormHelper::input('text', 'icon_css', $platform_wise["icon_css"] , array('class'=>'form-control')) !!}
                             </div>
                         </div>
 
@@ -397,7 +397,7 @@ if(count($tenant_wise) == 0) {
                                 </div>
 
                                 <div class="col-sm-10">
-                                    {!! FormHelper::input('checkbox', 'exclude_in_listing', $tenant_wise["exclude_in_listing"]) !!}
+                                    {!! FormHelper::input('checkbox', 'exclude_in_listing', $platform_wise["exclude_in_listing"]) !!}
                                 </div>
                             </div>
 
@@ -429,7 +429,7 @@ if(count($tenant_wise) == 0) {
                                 </div>
 
                                 <div class="col-sm-10">
-                                    {!! FormHelper::input('text', 'cache_category', $tenant_wise["cache_category"], array('class'=>'form-control')) !!}
+                                    {!! FormHelper::input('text', 'cache_category', $platform_wise["cache_category"], array('class'=>'form-control')) !!}
                                 </div>
 
                             </div>

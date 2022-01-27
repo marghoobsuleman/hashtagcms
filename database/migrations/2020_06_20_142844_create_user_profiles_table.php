@@ -19,7 +19,7 @@ class CreateUserProfilesTable extends Migration
             $table->bigInteger("user_id", false, true);
             $table->string("father_name", 255)->nullable();
             $table->string("mother_name", 255)->nullable();
-            $table->enum("id_card_type", ['Aadhaar', 'Passport', 'Driving License'])->nullable()->default("Aadhaar");
+            $table->string("id_card_type",255)->nullable();
             $table->string("id_card_number", 50)->nullable();
 
             $table->string("mobile", 50);
@@ -28,6 +28,15 @@ class CreateUserProfilesTable extends Migration
 
             $table->timestamps();
             $table->softDeletes();
+        });
+
+        //Relation on users
+        Schema::table('user_profiles', function (Blueprint $table) {
+
+            $table->foreign('user_id')
+                ->references('id')
+                ->on('users')
+                ->onDelete('cascade');
         });
     }
 

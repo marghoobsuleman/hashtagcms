@@ -13,10 +13,10 @@ class Lang extends AdminBaseModel
 
     /**
      * With site
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function site() {
-        return $this->hasMany(LangSite::class);
+        return $this->belongsToMany(Site::class);
     }
 
 
@@ -77,7 +77,13 @@ class Lang extends AdminBaseModel
 
     }
 
-
+    /**
+     * Copy lang data
+     * @param $sourceLangId
+     * @param $targetLangId
+     * @param $tables
+     * @return array
+     */
     public function copyLangData($sourceLangId=null, $targetLangId=null, $tables=array()) {
 
         $data = [];
@@ -101,6 +107,7 @@ class Lang extends AdminBaseModel
             $data[] = array("table"=>$table, "status"=>$status, "message"=>$msg);
 
         }
+        return $data;
     }
 
 

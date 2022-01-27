@@ -17,7 +17,7 @@ class CreateSitePropsTable extends Migration
 
             $table->id();
             $table->bigInteger("site_id", false, true);
-            $table->bigInteger("tenant_id", false, true);
+            $table->bigInteger("platform_id", false, true);
             $table->string("name", 100);
             $table->text("value");
             $table->string("group_name", 60)->nullable();
@@ -25,6 +25,15 @@ class CreateSitePropsTable extends Migration
 
             $table->timestamps();
             $table->softDeletes();
+        });
+
+        //Relation on site
+        Schema::table('site_props', function (Blueprint $table) {
+
+            $table->foreign('site_id')
+                ->references('id')
+                ->on('sites')
+                ->onDelete('cascade');
         });
     }
 

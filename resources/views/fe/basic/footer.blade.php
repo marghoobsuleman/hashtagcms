@@ -30,8 +30,8 @@
         <div class="container text-center">
             <span class="copyright">
               &copy; @php echo date("Y"). " ".htcms_get_site_info("name"); @endphp
+                <br>
             </span>
         </div>
     </div> <!-- end footer bottom -->
 </footer> <!-- end footer -->
-

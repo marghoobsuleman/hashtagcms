@@ -1,15 +1,15 @@
 <template>
     <div>
-        <div v-show="hasMicrosites || hasTenantsMoreThanOne || hasTenantsMoreThanOne" class="btn-group margin-top-05 homepage-toolbar" role="group" style="display: inherit">
+        <div v-show="hasMicrosites || hasPlatformsMoreThanOne || hasPlatformsMoreThanOne" class="btn-group margin-top-05 homepage-toolbar" role="group" style="display: inherit">
             <select v-show="hasMicrosites" class="form-control select" v-model="micrositeId" @change="fetchNewData()">
                 <option value="0">Select a MicroSite</option>
                 <option v-for="microsite in siteMicrosites" :value="microsite.id">{{microsite.name}}</option>
             </select>
-            <select v-show="hasTenantsMoreThanOne" class="form-control select" v-model="tenantId" @change="fetchNewData()">
-                <option>Select a Tenant</option>
-                <option v-for="tenant in siteTenants" :value="tenant.id">{{tenant.name}}</option>
+            <select v-show="hasPlatformsMoreThanOne" class="form-control select" v-model="platformId" @change="fetchNewData()">
+                <option>Select a Platform</option>
+                <option v-for="platform in sitePlatforms" :value="platform.id">{{platform.name}}</option>
             </select>
-            <label class="hide" v-show="hasTenantsMoreThanOne" title="It will be inserted or deleted for all tenants if checks."><input type="checkbox" v-model="applicableForAllTenants" /> Effective for all tenants</label>
+            <label class="hide" v-show="hasPlatformsMoreThanOne" title="It will be inserted or deleted for all platforms if checks."><input type="checkbox" v-model="applicableForAllPlatforms" /> Effective for all platforms</label>
         </div>
 
         <div class="col-md-12">
@@ -34,23 +34,23 @@
                     <div class="panel-sub-heading" style="padding:4px" v-if="showSearch('allCategories')">
                         <div class="input-group">
                             <span class="input-group-addon">Search</span>
-                            <input type="text" v-model="searchKeyTenantCategory"  class="form-control" aria-describedby="basic-addon3" placeholder="Search by id or name">
+                            <input type="text" v-model="searchKeyPlatformCategory"  class="form-control" aria-describedby="basic-addon3" placeholder="Search by id or name">
                         </div>
                     </div>
                     <ul class="list-group category-items js_category" style="min-height: 200px" ref="droppableArea">
-                        <li class="list-group-item js_item" v-for="tenantCategory in filterData('allCategories')"
-                            :data-category-id="tenantCategory.category_id"
-                            :data-theme-id="tenantCategory.theme_id"
-                            :data-cache-category="tenantCategory.cache_category"
+                        <li class="list-group-item js_item" v-for="platformCategory in filterData('allCategories')"
+                            :data-category-id="platformCategory.category_id"
+                            :data-theme-id="platformCategory.theme_id"
+                            :data-cache-category="platformCategory.cache_category"
                             @click="setCurrentSelection($event)">
-                           <input v-show="showCheckbox" type="checkbox" v-model="tenantCategory.selected" />
-                            {{tenantCategory.category_name}}
-                            <small class="text-info" title="Theme" v-show="tenantCategory.theme_id > 0"> - {{getThemeName(tenantCategory.theme_id)}}
+                           <input v-show="showCheckbox" type="checkbox" v-model="platformCategory.selected" />
+                            {{platformCategory.category_name}}
+                            <small class="text-info" title="Theme" v-show="platformCategory.theme_id > 0"> - {{getThemeName(platformCategory.theme_id)}}
                             </small>
-                            <small class="text-danger" v-show="tenantCategory.theme_id <= 0"> <br />Theme is missing</small>
+                            <small class="text-danger" v-show="platformCategory.theme_id <= 0"> <br />Theme is missing</small>
                             <span role="toolbar" class="btn-toolbar pull-right toolbar-category">
                                 <span class="btn-group">
-                                    <button title="Delete from this tenant" type="button" aria-label="Delete from this tenant" class="btn btn-default icon-btn js_delete">
+                                    <button title="Delete from this platform" type="button" aria-label="Delete from this platform" class="btn btn-default icon-btn js_delete">
                                         <span aria-hidden="true" class="fa fa-trash-o js_delete"></span>
                                     </button>
                                     <button title="More Info" type="button" aria-label="More Info" class="btn btn-default js_info icon-btn">
@@ -112,11 +112,11 @@
         },
         props: [
             'dataSiteId',
-            'dataSiteTenants',
+            'dataSitePlatforms',
             'dataSiteCategories',
             'dataSiteThemes',
             'dataSiteMicrosites',
-            'dataTenantId',
+            'dataPlatformId',
             'dataMicrositeId',
             'dataCategories'
         ],
@@ -124,16 +124,16 @@
             return {
                 checkAll:false,
                 showCheckbox:false,
-                siteTenants:(typeof this.dataSiteTenants === "undefined" || this.dataSiteTenants === "") ? [] : JSON.parse(this.dataSiteTenants),
+                sitePlatforms:(typeof this.dataSitePlatforms === "undefined" || this.dataSitePlatforms === "") ? [] : JSON.parse(this.dataSitePlatforms),
                 siteCategories:(typeof this.dataSiteCategories === "undefined" || this.dataSiteCategories === "") ? [] : JSON.parse(this.dataSiteCategories),
                 siteThemes:(typeof this.dataSiteThemes === "undefined" || this.dataSiteThemes === "") ? [] : JSON.parse(this.dataSiteThemes),
                 siteMicrosites:(typeof this.dataSiteMicrosites === "undefined" || this.dataSiteMicrosites === "") ? [] : JSON.parse(this.dataSiteMicrosites),
                 categories:(typeof this.dataCategories === "undefined" || this.dataCategories === "") ? [] : JSON.parse(this.dataCategories),
-                tenantId:(typeof this.dataTenantId === "undefined" || this.dataTenantId === "") ? 1 : parseInt(this.dataTenantId),
+                platformId:(typeof this.dataPlatformId === "undefined" || this.dataPlatformId === "") ? 1 : parseInt(this.dataPlatformId),
                 micrositeId:(typeof this.dataMicrositeId === "undefined" || this.dataMicrositeId === "") ? 0 : parseInt(this.dataMicrositeId),
-                searchKeyTenantCategory:'',
+                searchKeyPlatformCategory:'',
                 searchKeyCategory:'',
-                applicableForAllTenants:false,
+                applicableForAllPlatforms:false,
                 categoryId:0,
                 currentSelection: {category_id: 0, theme_id:"", cache_category:""},
                 allCategories:[],
@@ -146,8 +146,8 @@
             }
         },
         computed: {
-            hasTenantsMoreThanOne() {
-                return this.siteTenants.length > 1;
+            hasPlatformsMoreThanOne() {
+                return this.sitePlatforms.length > 1;
             },
             hasMicrosites() {
                 return this.siteMicrosites.length > 0;
@@ -202,7 +202,7 @@
             getWhere() {
                 let where =  {
                     microsite_id:this.micrositeId,
-                    tenant_id:this.tenantId,
+                    platform_id:this.platformId,
                     category_id:this.categoryId,
                     site_id:this.siteId
                 };
@@ -222,7 +222,7 @@
             updateIndex() {
                 let $this = this;
                 let allCategories = document.querySelectorAll(".js_category li");
-                let tenantId = this.tenantId;
+                let platformId = this.platformId;
                 let datas = [];
                 for(let i=0; i<allCategories.length; i++) {
                     let current = allCategories[i];
@@ -230,7 +230,7 @@
                     let categoryInfo = this.getCategoryInfo(current.getAttribute("data-category-id"), "allCategories");
                     //console.log("categoryInfo ", categoryInfo);
                     let data = {position:(i+1)};
-                    let where = {category_id:categoryInfo.category_id, tenant_id:tenantId}; //microsite_id:
+                    let where = {category_id:categoryInfo.category_id, platform_id:platformId}; //microsite_id:
                     datas.push({where, data});
                 }
 
@@ -238,7 +238,7 @@
                     let url = AdminConfig.admin_path("category/updateIndex");
                     let postParams = {};
                     postParams.data = datas;
-                    //postParams.applicableForAllTenants = "false";//$this.applicableForAllTenants;
+                    //postParams.applicableForAllPlatforms = "false";//$this.applicableForAllPlatforms;
                     this.saveNow(url, postParams).then(function (res) {
                         //console.log(res);
                         Toast.show($this, "Saved...");
@@ -254,7 +254,7 @@
                 return whereArr.length > 10;
             },
             filterData(findIn="allCategories") {
-                let key = (findIn==="allCategories") ? this.searchKeyTenantCategory : this.searchKeyCategory;
+                let key = (findIn==="allCategories") ? this.searchKeyPlatformCategory : this.searchKeyCategory;
                 let whereArr = (findIn==="allCategories") ? this.allCategories : this.allSiteCategories;
                 if(key !== "" && key != null) {
 
@@ -410,7 +410,7 @@
 
                             //we can send feedback
                             if(isAdded === false) {
-                                Toast.show($this, "Category is already added in this tenant...");
+                                Toast.show($this, "Category is already added in this platform...");
                             }
                         }
 
@@ -482,13 +482,13 @@
                     let where = $this.getWhere();
                     let postParams = {};
                     delete category["name"];
-                    category.tenant_id = where.tenant_id;
+                    category.platform_id = where.platform_id;
                     postParams.data = {
                         category_id:category.category_id,
-                        tenant_id:where.tenant_id,
+                        platform_id:where.platform_id,
                         site_id:where.site_id
                         };
-                    //postParams.applicableForAllTenants = "false";//$this.applicableForAllTenants;
+                    //postParams.applicableForAllPlatforms = "false";//$this.applicableForAllPlatforms;
                     $this.saveNow(url, postParams).then(function (res) {
                         console.log(res);
                         Toast.show($this, "Saved...");
@@ -544,7 +544,7 @@
                     let postParams = {};
                     let where = $this.getWhere();
 
-                    postParams.where = {category_id:categoryInfo.category_id, tenant_id:where.tenant_id, microsite_id:where.microsite_id};
+                    postParams.where = {category_id:categoryInfo.category_id, platform_id:where.platform_id, microsite_id:where.microsite_id};
 
                     $this.saveNow(url, postParams).then(function (res) {
                         console.log(res);

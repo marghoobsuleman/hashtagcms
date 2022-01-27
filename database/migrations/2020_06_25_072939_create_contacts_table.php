@@ -23,6 +23,15 @@ class CreateContactsTable extends Migration
             $table->timestamps();
             $table->softDeletes();
         });
+
+        //Relation on site
+        Schema::table('contacts', function (Blueprint $table) {
+
+            $table->foreign('site_id')
+                ->references('id')
+                ->on('sites')
+                ->onDelete('cascade');
+        });
     }
 
     /**

@@ -24,8 +24,9 @@ class CreateCmsPermissionsTable extends Migration
 
         });
 
-
+        //Relation
         Schema::table('cms_permissions', function (Blueprint $table) {
+
             $table->foreign('module_id')
                 ->references('id')
                 ->on('cms_modules')

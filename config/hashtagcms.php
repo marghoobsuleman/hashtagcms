@@ -35,7 +35,7 @@ return [
         'css_error_close_button'=>'fa fa-times',
         'error_close_text'=>''
     ],
-    "default"=>array("lang"=>"en", "tenant"=>"web", "when_default_category_not_found"=>"home"),
+    "default"=>array("lang"=>"en", "platform"=>"web", "when_default_category_not_found"=>"home"),
     "domains" => array(
         "dev.hashtagcms.com"=>env('CONTEXT', 'hashtagcms')
     ),

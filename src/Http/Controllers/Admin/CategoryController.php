@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 use MarghoobSuleman\HashtagCms\Models\CategorySite;
-use MarghoobSuleman\HashtagCms\Models\Tenant;
+use MarghoobSuleman\HashtagCms\Models\Platform;
 use MarghoobSuleman\HashtagCms\Models\Category;
 use MarghoobSuleman\HashtagCms\Models\Theme;
 use MarghoobSuleman\HashtagCms\Models\Site;
@@ -34,7 +34,7 @@ class CategoryController extends BaseAdminController
         )
     );
 
-    protected $bindDataWithListing = array("tenants"=>array("dataSource"=>Site::class, "method"=>"getSupportedTenants"));
+    protected $bindDataWithListing = array("platforms"=>array("dataSource"=>Site::class, "method"=>"getSupportedPlatforms"));
 
     protected $actionFields = array("edit", "delete"); //This is last column of the row
 
@@ -43,20 +43,20 @@ class CategoryController extends BaseAdminController
                                                   "categories"=>array("dataSource"=>Category::class, "method"=>"parentOnly"),
                                                   "target_types"=>array("dataSource"=>Category::class, "method"=>"getTargetType"),
                                                   "relation_types"=>array("dataSource"=>Category::class, "method"=>"getLinkRelationType"),
-        "tenants"=>array("dataSource"=>Tenant::class, "method"=>"all")
+        "platforms"=>array("dataSource"=>Platform::class, "method"=>"all")
         );
 
     /**
      * @Override
      *
      * @param int $id
-     * @param int $tenant_id
+     * @param int $platform_id
      * @return \Illuminate\Http\Response|void
      */
-    public function edit($id = 0, $tenant_id = 1)
+    public function edit($id = 0, $platform_id = 1)
     {
 
-        return parent::edit($id, $tenant_id);
+        return parent::edit($id, $platform_id);
 
     }
 
@@ -170,7 +170,7 @@ class CategoryController extends BaseAdminController
 
         //Site Data
         $siteData["site_id"] =  $data["site_id"];
-        $siteData["tenant_id"] =  $data["tenant_id"];
+        $siteData["platform_id"] =  $data["platform_id"];
         $siteData["exclude_in_listing"] =  $data["exclude_in_listing"] ?? 0;
 
         $siteData["theme_id"] =  $data["theme_id"];
@@ -222,13 +222,13 @@ class CategoryController extends BaseAdminController
 
             //dd($arrSaveData, $arrLangData, $arrSiteData);
             //This is in base controller
-            $savedData = $this->saveDataWithLangAndTenant($arrSaveData, $arrLangData, $arrSiteData, $where);
+            $savedData = $this->saveDataWithLangAndPlatform($arrSaveData, $arrLangData, $arrSiteData, $where);
 
 
         } else {
 
             //This is in base controller
-            $savedData = $this->saveDataWithLangAndTenant($arrSaveData, $arrLangData, $arrSiteData);
+            $savedData = $this->saveDataWithLangAndPlatform($arrSaveData, $arrLangData, $arrSiteData);
 
         }
 
@@ -249,20 +249,20 @@ class CategoryController extends BaseAdminController
     public function settings() {
 
         $request = request()->all();
-        $tenant_id = $request["tenant_id"] ?? 1;
+        $platform_id = $request["platform_id"] ?? 1;
         $site_id = $request["site_id"] ?? htcms_get_siteId_for_admin();
         $microsite_id = $request["microsite_id"] ?? 0;
 
         $sites = Site::with(['microsite:site_id,id,name',
-                            'tenant:id,name',
+                            'platform:id,name',
                             'theme:site_id,id,name',
                             'category:site_id,category_id,name'])->find($site_id)->toArray();
 
-        $categories = CategorySite::with("lang")->where(array(array("site_id", "=", $site_id), array("tenant_id", "=", $tenant_id)))->get();
+        $categories = CategorySite::with("lang")->where(array(array("site_id", "=", $site_id), array("platform_id", "=", $platform_id)))->get();
 
         $viewData["microsite_id"] = $microsite_id;
-        $viewData["tenant_id"] = $tenant_id;
-        $viewData["siteTenants"] = $sites["tenant"];;
+        $viewData["platform_id"] = $platform_id;
+        $viewData["sitePlatforms"] = $sites["platform"];;
         $viewData["siteMicrosites"] = $sites["microsite"];
         $viewData["siteThemes"] = $sites["theme"];
         $viewData["siteCategories"] = $sites["category"];

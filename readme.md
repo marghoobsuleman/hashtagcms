@@ -5,7 +5,7 @@
 
 
 Headless CMS, Use it as Headless CMS or Bundled, API enabled, 
-Admin Panel, Multisite, Multitenant, Multilingual, and oAuth 2.0.
+Admin Panel, multisite/multitenant, multiplatform, multilingual, and oAuth 2.0.
 The Most powerful, fast, user-friendly and secured platform. Made with PHP Laravel Framework.
 
 ## Installation
@@ -57,11 +57,27 @@ Route::get('/', function () {
 ```
 - You are done :)
 
-## Change log
-##v1.3.4 Changes
-- API: Send api header with modules
+#Test
+```bash 
+php artisan test vendor/marghoobsuleman/hashtagcms
+```
 
-Please see the [changelog](changelog.md) for more information on what has changed recently.
+## Change log
+#v1.3.5 Changes
+- Major changes (Need fresh intallation)
+- 'Tenants' will be called as 'Platforms' from now on. Since this CMS is built for corporates;
+multiple feedback received for 'tenant'. In corporate world site is a tenant and tenant is a platform. 
+- all tenant_id will be referred as platform_id. 
+- some tables have been removed and added few to make sense. index and primary keys are also fixed/added.
+- shipped with two languages by default
+- fixed site's lang count issue
+- Added test cases
+```bash
+php artisan config:cache 
+php artisan test vendor/marghoobsuleman/hashtagcms
+```
+
+###Please see the [changelog](changelog.md) for more information on what has changed recently.
 
 
 ## Contributing

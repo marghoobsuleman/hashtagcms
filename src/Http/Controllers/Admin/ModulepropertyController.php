@@ -9,21 +9,21 @@ use MarghoobSuleman\HashtagCms\Models\ModuleProp;
 use MarghoobSuleman\HashtagCms\Core\Helpers\Message;
 use MarghoobSuleman\HashtagCms\Http\Controllers\Admin\BaseAdminController;
 use MarghoobSuleman\HashtagCms\Models\Module;
-use MarghoobSuleman\HashtagCms\Models\Tenant;
+use MarghoobSuleman\HashtagCms\Models\Platform;
 
 class ModulepropertyController extends BaseAdminController
 {
-    protected $dataFields = ['id','name','lang.value as value', 'group', 'module.alias', 'tenant.name','updated_at'];
+    protected $dataFields = ['id','name','lang.value as value', 'group', 'module.alias', 'platform.name','updated_at'];
 
     protected $dataSource = ModuleProp::class;
 
-    protected $dataWith = ['lang', 'module', 'tenant'];
+    protected $dataWith = ['lang', 'module', 'platform'];
 
     protected $actionFields = array("edit", "delete"); //This is last column of the row
 
     protected $bindDataWithAddEdit = array(
                                     "modules"=>array("dataSource"=>Module::class, "method"=>"all", "params"=>array("id", "alias")),
-                                    "tenants"=>array("dataSource"=>Tenant::class, "method"=>"all", "params"=>array("id", "name")),
+                                    "platforms"=>array("dataSource"=>Platform::class, "method"=>"all", "params"=>array("id", "name")),
                                     );
 
 
@@ -36,7 +36,7 @@ class ModulepropertyController extends BaseAdminController
              }
              $rules = ["module_id" => "required",
                          "site_id" => "required",
-                         "tenant_id" => "required",
+                         "platform_id" => "required",
                          "name" => "required|max:100|string",
                          "group" => "nullable|max:100|string",
                          "value" => "required|max:500|string"
@@ -67,7 +67,7 @@ class ModulepropertyController extends BaseAdminController
             $arrLangData = array("data"=>$langData);
 
             if ($data["actionPerformed"] === 'edit') {
-                $saveData['tenant_id'] = $data['tenant_id'];
+                $saveData['platform_id'] = $data['platform_id'];
                 $saveData['module_id'] = $data['module_id'];
 
                 $arrSaveData = array("model"=>$this->dataSource,  "data"=>$saveData);
@@ -77,12 +77,12 @@ class ModulepropertyController extends BaseAdminController
                 $savedData = $this->saveDataWithLang($arrSaveData, $arrLangData, $where, $updateInAllLanguages);
             } else {
                 //it will always be in array
-                $allTenants = $data['tenant_id'];
+                $allPlatforms = $data['platform_id'];
                 $allModules = $data['module_id'];
-                //insert in all tenant
-                if(is_array($allTenants)) {
-                    foreach ($allTenants as $current_tenant_id) {
-                        $saveData['tenant_id'] = $current_tenant_id;
+                //insert in all platform
+                if(is_array($allPlatforms)) {
+                    foreach ($allPlatforms as $current_platform_id) {
+                        $saveData['platform_id'] = $current_platform_id;
                         //check if there is multiple modules
                         if(is_array($allModules)) {
                             foreach ($allModules as $current_module_id) {

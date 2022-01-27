@@ -5,7 +5,7 @@ use MarghoobSuleman\HashtagCms\Models\Category;
 use MarghoobSuleman\HashtagCms\Models\Lang;
 use MarghoobSuleman\HashtagCms\Models\Module;
 use MarghoobSuleman\HashtagCms\Models\Site;
-use MarghoobSuleman\HashtagCms\Models\Tenant;
+use MarghoobSuleman\HashtagCms\Models\Platform;
 use MarghoobSuleman\HashtagCms\Models\Theme;
 use MarghoobSuleman\HashtagCms\Models\Hook;
 
@@ -14,7 +14,7 @@ class InfoLoader
 
     private Site $siteInfo;
     private Lang $langInfo;
-    private Tenant $tenantInfo;
+    private Platform $platformInfo;
     private Category $categoryInfo;
     private array $infoKeeper;
     private array $contextVars;
@@ -42,7 +42,7 @@ class InfoLoader
         $siteInfo =  Site::where("context", '=', $context)
                 ->orWhere('domain', '=', $domain)
                 ->orWhere('domain', '=', $fullDomain)
-                ->with(['tenant', 'language'])->first();
+                ->with(['platform', 'language'])->first();
 
         return $siteInfo !=null ? $siteInfo : null;
     }
@@ -57,7 +57,7 @@ class InfoLoader
     {
         $htCmsCommon = app()->HashtagCms;
 
-        $query = "select s.id, s.name, sl.title, s.category_id as default_category_id, s.tenant_id as default_tenant_id, s.lang_id as default_lang_id, s.country_id as default_country_id,
+        $query = "select s.id, s.name, sl.title, s.category_id as default_category_id, s.platform_id as default_platform_id, s.lang_id as default_lang_id, s.country_id as default_country_id,
                     s.under_maintenance, s.domain, s.context, s.favicon, s.lang_count                   
                     from sites s                    
                     left join site_langs sl on (sl.site_id = s.id)
@@ -106,38 +106,38 @@ class InfoLoader
     }
 
     /**
-     * Get tenant Info
-     * @param string $tenant_code
-     * @param int|null $tenant_id
-     * @return Tenant|null
+     * Get platform Info
+     * @param string $platform_code
+     * @param int|null $platform_id
+     * @return Platform|null
      */
-    public function getTenantInfo(string $tenant_code, int $tenant_id=null): ?Tenant
+    public function getPlatformInfo(string $platform_code, int $platform_id=null): ?Platform
     {
-        if($tenant_code !== '/') {
-            $tenantInfo = Tenant::where("link_rewrite", '=', $tenant_code)->first();
-            if($tenantInfo != null) {
-                $this->setTenantInfo($tenantInfo);
-                return $tenantInfo;
+        if($platform_code !== '/') {
+            $platformInfo = Platform::where("link_rewrite", '=', $platform_code)->first();
+            if($platformInfo != null) {
+                $this->setPlatformInfo($platformInfo);
+                return $platformInfo;
             }
         }
 
-        if($tenant_id !== null) {
-            $tenantInfo = Tenant::where("id", '=', $tenant_id)->first();
-            if($tenantInfo != null) {
-                $this->setTenantInfo($tenantInfo);
-                return $tenantInfo;
+        if($platform_id !== null) {
+            $platformInfo = Platform::where("id", '=', $platform_id)->first();
+            if($platformInfo != null) {
+                $this->setPlatformInfo($platformInfo);
+                return $platformInfo;
             }
         }
         return null;
     }
 
     /**
-     * Set tenant info
-     * @param Tenant $tenantInfo
+     * Set platform info
+     * @param Platform $platformInfo
      */
-    public function setTenantInfo(Tenant $tenantInfo): void
+    public function setPlatformInfo(Platform $platformInfo): void
     {
-        $this->tenantInfo = $tenantInfo;
+        $this->platformInfo = $platformInfo;
     }
 
 
@@ -243,13 +243,13 @@ class InfoLoader
      * Set context variable to replace in query etc
      * @param int $category_id
      * @param int $site_id
-     * @param int $tenant_id
+     * @param int $platform_id
      * @param int $microsite_id
      */
-    public function setMultiContextVars(int $category_id, int $site_id, int $tenant_id, int $microsite_id=0):void {
+    public function setMultiContextVars(int $category_id, int $site_id, int $platform_id, int $microsite_id=0):void {
         $this->setContextVars("category_id", $category_id);
         $this->setContextVars("site_id", $site_id);
-        $this->setContextVars("tenant_id", $tenant_id);
+        $this->setContextVars("platform_id", $platform_id);
         $this->setContextVars("microsite_id", $microsite_id);
     }
 
@@ -323,20 +323,20 @@ class InfoLoader
     }
 
     /**
-     * @param string $tenant_link_rewrite
+     * @param string $platform_link_rewrite
      * @param int $site_id
      * @return array|null
      */
-    public function getTenantSiteInfo(string $tenant_link_rewrite, int $site_id): ?array
+    public function getPlatformSiteInfo(string $platform_link_rewrite, int $site_id): ?array
     {
         $htCmsCommon = app()->HashtagCms;
 
-        $query = "select site_tenant.*, tenants.*
-                    from site_tenant
-                    left join tenants on(site_tenant.tenant_id = tenants.id)
-                    where site_tenant.site_id=:site_id and tenants.link_rewrite=:link_rewrite and tenants.deleted_at is null;";
+        $query = "select platform_site.*, platforms.*
+                    from platform_site
+                    left join platforms on(platform_site.platform_id = platforms.id)
+                    where platform_site.site_id=:site_id and platforms.link_rewrite=:link_rewrite and platforms.deleted_at is null;";
 
-        $info = $htCmsCommon->dbSelectOne($query, array("link_rewrite"=>$tenant_link_rewrite, "site_id"=>$site_id));
+        $info = $htCmsCommon->dbSelectOne($query, array("link_rewrite"=>$platform_link_rewrite, "site_id"=>$site_id));
 
         return sizeof($info) > 0 ? $info : null;
     }
@@ -344,25 +344,25 @@ class InfoLoader
     /**
      * @param string $category_link_rewrite
      * @param int $site_id
-     * @param int $tenant_id
+     * @param int $platform_id
      * @param int $lang_id
      * @param string|null $fullUrl
      * @return array|null
      */
-    public function getCategorySiteInfo(string $category_link_rewrite, int $site_id, int $tenant_id, int $lang_id, string $fullUrl=null): ?array
+    public function getCategorySiteInfo(string $category_link_rewrite, int $site_id, int $platform_id, int $lang_id, string $fullUrl=null): ?array
     {
         $htCmsCommon = app()->HashtagCms;
 
         $query = "select c.id, c.controller_name, c.required_login, c.parent_id, c.site_id, c.is_site_default, c.is_root_category, c.is_new, c.has_wap,
         c.wap_url, c.link_rewrite, c.link_navigation, c.link_rewrite_pattern, c.has_some_special_module,c.read_count,
-        cs.site_id, cs.tenant_id, cs.theme_id, cs.icon_css, cs.header_content, cs.footer_content, cs.cache_category,
+        cs.site_id, cs.platform_id, cs.theme_id, cs.icon_css, cs.header_content, cs.footer_content, cs.cache_category,
         cl.name, cl.title, cl.excerpt, cl.content, cl.active_key,
         cl.third_party_mapping_key, cl.b2b_mapping, cl.is_external, cl.link_relation, cl.target,
         cl.meta_title, cl.meta_keywords, cl.meta_description, cl.meta_robots, cl.meta_canonical, c.created_at, c.updated_at
         from categories c
         left join category_site cs on(cs.category_id = c.id)
         left join category_langs cl on(c.id = cl.category_id)
-        where cs.tenant_id=:tenant_id and cs.site_id=:site_id and c.publish_status=1 and c.deleted_at is null and cl.is_external=0 and cl.lang_id=:lang_id and ";
+        where cs.platform_id=:platform_id and cs.site_id=:site_id and c.publish_status=1 and c.deleted_at is null and cl.is_external=0 and cl.lang_id=:lang_id and ";
 
         $hasFullUrl = !empty($fullUrl);
 
@@ -377,7 +377,7 @@ class InfoLoader
         }
 
         $info = $htCmsCommon->dbSelect($query, array("link_rewrite"=>$category_link_rewrite, "site_id"=>$site_id,
-                                                    "tenant_id"=>$tenant_id, "lang_id"=>$lang_id));
+                                                    "platform_id"=>$platform_id, "lang_id"=>$lang_id));
 
         // if there is two results find from the full url
         // ie: you pass blog in `$category_link_rewrite` and `$fullUrl` blog/any-content-link, it will return blog/any-content-link
@@ -445,16 +445,16 @@ class InfoLoader
     /**
      * Get all modules based on hook and category etc
      * @param int $category_id
-     * @param int $tenant_id
+     * @param int $platform_id
      * @param int $site_id
      * @param int|null $microsite_id
      * @param int|null $hook_id
      * @return array|null
      */
-    public function getModuleSiteInfo(int $category_id, int $tenant_id, int $site_id, int $microsite_id=null, int $hook_id=null): ?array
+    public function getModuleSiteInfo(int $category_id, int $platform_id, int $site_id, int $microsite_id=null, int $hook_id=null): ?array
     {
         $htCmsCommon = app()->HashtagCms;
-        $params = array("category_id"=>$category_id, "tenant_id"=>$tenant_id, "site_id"=>$site_id, "microsite_id"=>$microsite_id);
+        $params = array("category_id"=>$category_id, "platform_id"=>$platform_id, "site_id"=>$site_id, "microsite_id"=>$microsite_id);
         $withHook = "";
         if($hook_id != null) {
             $withHook = " AND ms.hook_id=:hook_id";
@@ -468,7 +468,7 @@ class InfoLoader
         from module_site ms
         left join modules m on (ms.module_id = m.id)
         where ms.category_id = :category_id AND ms.site_id = :site_id
-        AND ms.tenant_id = :tenant_id AND ms.microsite_id = :microsite_id $withHook
+        AND ms.platform_id = :platform_id AND ms.microsite_id = :microsite_id $withHook
         order by ms.hook_id, ms.position ASC";
 
         return $htCmsCommon->dbSelect($query, $params);
@@ -481,12 +481,12 @@ class InfoLoader
      * @param array $parsedTheme
      * @param int $category_id
      * @param int $site_id
-     * @param int $tenant_id
+     * @param int $platform_id
      * @param int $microsite_id
      * @param int $lang_id
      * @return array
      */
-    #[ArrayShape(["hooks" => "array|mixed", "modules" => "mixed"])] public function getModuleSiteInfoDataByParsedHooksAndModules(array $parsedTheme, int $category_id, int $site_id, int $tenant_id, int $microsite_id, int $lang_id):array
+    #[ArrayShape(["hooks" => "array|mixed", "modules" => "mixed"])] public function getModuleSiteInfoDataByParsedHooksAndModules(array $parsedTheme, int $category_id, int $site_id, int $platform_id, int $microsite_id, int $lang_id):array
     {
 
         $parsedHooks = $parsedTheme['hooks'];
@@ -504,10 +504,10 @@ class InfoLoader
             $hoodPlaceHolder = "%{cms.hook.".$currentHook['alias']."}%";
             $parsedHooks[$index]['placeholder'] = $hoodPlaceHolder;
 
-            $parsedHooks[$index]['modules'] = $this->getModuleSiteInfo($category_id, $tenant_id, $site_id, $microsite_id, $currentHook['id']);
+            $parsedHooks[$index]['modules'] = $this->getModuleSiteInfo($category_id, $platform_id, $site_id, $microsite_id, $currentHook['id']);
             //get data for each module
             foreach ($parsedHooks[$index]['modules'] as $moduleIndex=>$currentModule) {
-                $this->getAndManipulateModuleData($currentModule, $tenant_id, $lang_id);
+                $this->getAndManipulateModuleData($currentModule, $platform_id, $lang_id);
             }
         }
 
@@ -515,7 +515,7 @@ class InfoLoader
         //for modules in theme
         if(sizeof($parsedModules) > 0) {
             foreach ($parsedModules as $index=>$currentModuleInTheme) {
-                $this->getAndManipulateModuleData($currentModuleInTheme, $tenant_id, $lang_id);
+                $this->getAndManipulateModuleData($currentModuleInTheme, $platform_id, $lang_id);
             }
         }
 
@@ -525,11 +525,11 @@ class InfoLoader
     /**
      * @param \stdClass $module
      * @param int $site_id
-     * @param int $tenant_id
+     * @param int $platform_id
      * @param int $lang_id
      * @return void
      */
-    private function getAndManipulateModuleData(\stdClass $module, int $tenant_id, int $lang_id): void
+    private function getAndManipulateModuleData(\stdClass $module, int $platform_id, int $lang_id): void
     {
 
         $module_id = (isset($module->id)) ? $module->id : $module->module_id;
@@ -538,7 +538,7 @@ class InfoLoader
         $module->placeholder = "%{cms.module.".$module->alias."}%";
         //add module props here
         $module->data = $moduleLoader->getModuleData($module);
-        $module->props = $this->getModulePropsById($module_id, $tenant_id, $lang_id);
+        $module->props = $this->getModulePropsById($module_id, $platform_id, $lang_id);
 
         if($env === 'prod' && $module->individual_cache === 0) {
             unset($module->data_handler);
@@ -565,13 +565,13 @@ class InfoLoader
     /**
      * Get site props
      * @param int $site_id
-     * @param int $tenant_id
+     * @param int $platform_id
      * @return array
      */
-    public function getSitePropsInfo(int $site_id, int $tenant_id):array {
+    public function getSitePropsInfo(int $site_id, int $platform_id):array {
         $htCmsCommon = app()->HashtagCms;
-        $query = "select name, value, group_name from site_props where is_public=1 and site_id=:site_id and tenant_id=:tenant_id";
-        $params = array("site_id"=>$site_id, "tenant_id"=>$tenant_id);
+        $query = "select name, value, group_name from site_props where is_public=1 and site_id=:site_id and platform_id=:platform_id";
+        $params = array("site_id"=>$site_id, "platform_id"=>$platform_id);
 
         $res = $htCmsCommon->dbSelect($query, $params);
 
@@ -608,16 +608,16 @@ class InfoLoader
     /******************************************************** Mostly used in API *********************************************************/
 
     /**
-     * Get all supported Tenants
+     * Get all supported Platforms
      * @param int $site_id
      * @return array
      */
-    public function getAllSupportedTenants(int $site_id):array
+    public function getAllSupportedPlatforms(int $site_id):array
     {
         $htCmsCommon = app()->HashtagCms;
-        $query = "select site_tenant.site_id, tenants.* from site_tenant 
-                    left join tenants on (site_tenant.tenant_id=tenants.id)
-                  where site_tenant.site_id=:site_id and tenants.deleted_at is null;";
+        $query = "select platform_site.site_id, platforms.* from platform_site 
+                    left join platforms on (platform_site.platform_id=platforms.id)
+                  where platform_site.site_id=:site_id and platforms.deleted_at is null;";
         $params = array("site_id"=>$site_id);
         return $htCmsCommon->dbSelect($query, $params);
     }
@@ -661,9 +661,9 @@ class InfoLoader
     public function getAllSupportedZones(int $site_id):array
     {
         $htCmsCommon = app()->HashtagCms;
-        $query = "select zones.id,zones.name from site_zone
-                left join zones on (site_zone.zone_id=zones.id)
-                where site_zone.site_id=:site_id and zones.deleted_at is null;";
+        $query = "select zones.id,zones.name from zone_site
+                left join zones on (zone_site.zone_id=zones.id)
+                where zone_site.site_id=:site_id and zones.deleted_at is null;";
         $params = array("site_id"=>$site_id);
         return $htCmsCommon->dbSelect($query, $params);
     }
@@ -693,10 +693,10 @@ class InfoLoader
      * Get all supported countries
      * @param int $site_id
      * @param int $lang_id
-     * @param int|null $tenant_id
+     * @param int|null $platform_id
      * @return array
      */
-    public function getAllSupportedCategories(int $site_id, int $lang_id, int $tenant_id=null):array
+    public function getAllSupportedCategories(int $site_id, int $lang_id, int $platform_id=null):array
     {
         $htCmsCommon = app()->HashtagCms;
         $query = "select categories.id,categories.parent_id,categories.site_id, categories.is_site_default,categories.is_root_category, categories.is_new,
@@ -711,26 +711,26 @@ class InfoLoader
                 left join category_langs on(categories.id = category_langs.category_id)
                  where category_site.site_id=:site_id and category_langs.lang_id=:lang_id and categories.deleted_at is null and categories.publish_status>0";
         $params = array("site_id"=>$site_id, "lang_id"=>$lang_id);
-        if(!empty($tenant_id)) {
-            $query = $query." and category_site.tenant_id=:tenant_id";
-            $params['tenant_id'] = $tenant_id;
+        if(!empty($platform_id)) {
+            $query = $query." and category_site.platform_id=:platform_id";
+            $params['platform_id'] = $platform_id;
         }
         return $htCmsCommon->dbSelect($query, $params);
     }
 
     /**
      * @param int $id
-     * @param int $tenant_id
+     * @param int $platform_id
      * @param int $lang_id
      * @return mixed
      */
-    public function getModulePropsById(int $id, int $tenant_id, int $lang_id) {
+    public function getModulePropsById(int $id, int $platform_id, int $lang_id) {
         $htCmsCommon = app()->HashtagCms;
         $query = "select mp.name, mp.group, mpl.value
                     from module_props mp
                     left join module_prop_langs mpl on (mpl.module_prop_id = mp.id)
-                    where mp.module_id=:id  and mpl.lang_id=:lang_id and mp.tenant_id=:tenant";
-        $params = array("tenant"=>$tenant_id, "lang_id"=>$lang_id, "id"=>$id);
+                    where mp.module_id=:id  and mpl.lang_id=:lang_id and mp.platform_id=:platform";
+        $params = array("platform"=>$platform_id, "lang_id"=>$lang_id, "id"=>$id);
         $res = $htCmsCommon->dbSelect($query, $params);
         $data = [];
         if(sizeof($res)>0) {

@@ -2,6 +2,15 @@
 <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
 <![endif]-->
 <header>
+<span style="float:right; position: relative; top:0; padding: 10px">
+    <?php
+    if(htcms_get_language_id() === 1) {
+        echo '<a href="/hi/web/">हिंदीं</a>';
+    } else {
+        echo '<a href="/en/web/">English</a>';
+    }
+    ?>
+</span>
 <!-- header-start -->
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <a class="navbar-brand" href="{{htcms_get_path('/')}}">{{htcms_get_site_info("name")}}</a>

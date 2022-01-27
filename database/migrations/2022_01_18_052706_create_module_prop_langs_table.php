@@ -29,6 +29,8 @@ class CreateModulePropLangsTable extends Migration
                 ->on('module_props')
                 ->onDelete('cascade');
 
+            $table->primary(['module_prop_id', 'lang_id']);
+
         });
     }
 

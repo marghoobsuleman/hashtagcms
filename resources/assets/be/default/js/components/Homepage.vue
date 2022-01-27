@@ -9,9 +9,9 @@
                 <option>Select a Category</option>
                 <option v-for="category in categories" :value="category.category_id">{{category.name}}</option>
             </select>
-            <select v-show="hasTenantMoreThanOne" class="form-control select" v-model="tenantId" @change="fetchNewData()">
-                <option>Select a Tenant</option>
-                <option v-for="tenant in tenants" :value="tenant.id">{{tenant.name}}</option>
+            <select v-show="hasPlatformMoreThanOne" class="form-control select" v-model="platformId" @change="fetchNewData()">
+                <option>Select a Platform</option>
+                <option v-for="platform in platforms" :value="platform.id">{{platform.name}}</option>
             </select>
 
             <div v-show="hasTheme" style="margin-left: 10px; display: inline"> <span @click="showInfo('theme', themeInfo.id)" class="hand" title="Click to see theme info"> Theme: {{themeInfo.name}}</span></div>
@@ -93,9 +93,9 @@
                             <option value="0">Select a MicroSite</option>
                             <option v-for="microsite in microsites" :value="microsite.id">{{microsite.name}}</option>
                         </select>
-                        <select v-if="hasTenantMoreThanOne" class="form-control select" v-model="fromData.tenant_id">
-                            <option value="0">Select a Tenant</option>
-                            <option v-for="tenant in tenants" :value="tenant.id">{{tenant.name}}</option>
+                        <select v-if="hasPlatformMoreThanOne" class="form-control select" v-model="fromData.platform_id">
+                            <option value="0">Select a Platform</option>
+                            <option v-for="platform in platforms" :value="platform.id">{{platform.name}}</option>
                         </select>
                         <select class="form-control select" v-model="fromData.category_id">
                             <option value="0">Select a Category</option>
@@ -112,9 +112,9 @@
                             <option value="0">Select a MicroSite</option>
                             <option v-for="microsite in microsites" :value="microsite.id">{{microsite.name}}</option>
                         </select>
-                        <select v-if="hasTenantMoreThanOne" class="form-control select" v-model="toData.tenant_id">
-                            <option value="0">Select a Tenant</option>
-                            <option v-for="tenant in tenants" :value="tenant.id">{{tenant.name}}</option>
+                        <select v-if="hasPlatformMoreThanOne" class="form-control select" v-model="toData.platform_id">
+                            <option value="0">Select a Platform</option>
+                            <option v-for="platform in platforms" :value="platform.id">{{platform.name}}</option>
                         </select>
                         <select class="form-control select" v-model="toData.category_id">
                             <option value="0">Select a Category</option>
@@ -123,9 +123,9 @@
                     </div>
                 </div>
                 <div class="row">
-                  <div class="plr5 v-space" v-show="hasTenantMoreThanOne">
+                  <div class="plr5 v-space" v-show="hasPlatformMoreThanOne">
                     <div class="alert alert-info">
-                      Please do not select tenant if you want to copy modules in all tenant respectively.
+                      Please do not select platform if you want to copy modules in all platform respectively.
                     </div>
                   </div>
                 </div>
@@ -143,7 +143,7 @@
             </div>
             <div slot="content">
               <div>
-                <label v-show="hasTenantMoreThanOne" title="It will be inserted or deleted for all tenants if checks."><input type="checkbox" v-model="applicableForAllTenants" /> Effective for all tenants</label>
+                <label v-show="hasPlatformMoreThanOne" title="It will be inserted or deleted for all platforms if checks."><input type="checkbox" v-model="applicableForAllPlatforms" /> Effective for all platforms</label>
               </div>
                 Are you sure to delete all modules from this category? Can't be undone.
             </div>
@@ -188,11 +188,11 @@
         props: [
             'dataCategories',
             'dataMicrosites',
-            'dataTenants',
+            'dataPlatforms',
             'dataSiteId',
             'dataMicrositeId',
             'dataCategoryId',
-            'dataTenantId',
+            'dataPlatformId',
             'dataSiteInfo',
             'dataHookInfo',
             'dataAllModules',
@@ -212,9 +212,9 @@
                 //return true;
                 return this.microsites.length > 0;
             },
-            hasTenantMoreThanOne() {
+            hasPlatformMoreThanOne() {
                 //return true;
-                return this.tenants.length > 1;
+                return this.platforms.length > 1;
             },
             hasTheme() {
                 return this.themeInfo && this.themeInfo["id"];
@@ -231,7 +231,7 @@
             },
             modalWidth() {
 
-                if(this.hasSiteMoreThanOne && this.hasTenantMoreThanOne) {
+                if(this.hasSiteMoreThanOne && this.hasPlatformMoreThanOne) {
                     return "800px";
                 }
                 return "";
@@ -248,10 +248,10 @@
                 categoriesData:{},
                 categories:(typeof this.dataCategories == "undefined" || this.dataCategories == "") ? [] : JSON.parse(this.dataCategories),
                 microsites:(typeof this.dataMicrosites == "undefined" || this.dataMicrosites == "") ? [] : JSON.parse(this.dataMicrosites),
-                tenants:(typeof this.dataTenants == "undefined" || this.dataTenants == "") ? [] : JSON.parse(this.dataTenants),
+                platforms:(typeof this.dataPlatforms == "undefined" || this.dataPlatforms == "") ? [] : JSON.parse(this.dataPlatforms),
                 siteId:(typeof this.dataSiteId == "undefined" || this.dataSiteId == "") ? 1 : parseInt(this.dataSiteId),
                 microSiteId:(typeof this.dataMicrositeId == "undefined" || this.dataMicrositeId == "") ? 0 : parseInt(this.dataMicrositeId),
-                tenantId:(typeof this.dataTenantId == "undefined" || this.dataTenantId == "") ? 1 : parseInt(this.dataTenantId),
+                platformId:(typeof this.dataPlatformId == "undefined" || this.dataPlatformId == "") ? 1 : parseInt(this.dataPlatformId),
                 categoryId:(typeof this.dataCategoryId == "undefined" || this.dataCategoryId == "") ? 0 : parseInt(this.dataCategoryId),
                 siteInfo:(typeof this.dataSiteInfo == "undefined" || this.dataSiteInfo == "") ? [] : JSON.parse(this.dataSiteInfo),
                 hookInfo:(typeof this.dataHookInfo == "undefined" || this.dataHookInfo == "") ? [] : JSON.parse(this.dataHookInfo),
@@ -266,15 +266,15 @@
                 errors:[],
                 enableSave:false,
                 searchKey:'',
-                applicableForAllTenants:false,
-                fromData:{site_id:0, microsite_id:0, tenant_id:0, category_id:0},
-                toData:{site_id:0, microsite_id:0, tenant_id:0, category_id:0},
+                applicableForAllPlatforms:false,
+                fromData:{site_id:0, microsite_id:0, platform_id:0, category_id:0},
+                toData:{site_id:0, microsite_id:0, platform_id:0, category_id:0},
                 isWorking:false,
                 sortObj:{draggable:null},
                 userRights:(this.dataUserRights ? JSON.parse(this.dataUserRights) : []),
                 isModuleReadonly: (this.dataIsModuleReadonly == "1") ? true : false,
                 allSites:(typeof this.dataAllSites == "undefined" || this.dataAllSites == "") ? [] : JSON.parse(this.dataAllSites),
-                copyForAllTenants:false
+                copyForAllPlatforms:false
             }
         },
         methods: {
@@ -293,8 +293,8 @@
                     this.enableSorting();
                     this.makeCategories();
                 } else {
-                    let path = AdminConfig.admin_path("category/settings", {tenant_id: this.tenantId});
-                    this.addErrorMessage(`This category/tenant/theme is not available in category_site table.
+                    let path = AdminConfig.admin_path("category/settings", {platform_id: this.platformId});
+                    this.addErrorMessage(`This category/platform/theme is not available in category_site table.
                          You need to drag and drop in category <a href='${path}'>settings</a>.`);
                 }
 
@@ -320,8 +320,8 @@
                     this.toData.site_id = this.siteId;
                 }
 
-                this.fromData.tenant_id = this.tenantId;
-                this.toData.tenant_id = this.tenantId;
+                this.fromData.platform_id = this.platformId;
+                this.toData.platform_id = this.platformId;
                 this.toData.category_id = this.categoryId;
             },
             filterModules() {
@@ -364,7 +364,7 @@
                 let where =  {
                     site_id:this.siteId,
                     microsite_id:this.microSiteId,
-                    tenant_id:this.tenantId,
+                    platform_id:this.platformId,
                     category_id:this.categoryId
                 };
                 return where;
@@ -405,8 +405,8 @@
                     let where = $this.getWhere();
                     postParams.data = datas;
                     postParams.where = where;
-                    //postParams.applicableForAllTenants = this.applicableForAllTenants;
-                    postParams.applicableForAllTenants = false;
+                    //postParams.applicableForAllPlatforms = this.applicableForAllPlatforms;
+                    postParams.applicableForAllPlatforms = false;
                     this.saveNow(AdminConfig.admin_path("homepage/saveSettings"), postParams).then(function (res) {
                         //console.log(res);
                         Toast.show($this, "Saved...");
@@ -519,7 +519,7 @@
                 }
                 let postParams = {};
                 postParams.where = where;
-                postParams.applicableForAllTenants = this.applicableForAllTenants;
+                postParams.applicableForAllPlatforms = this.applicableForAllPlatforms;
                 return this.saveNow(AdminConfig.admin_path("homepage/removeModules"), postParams).then(function (res) {
                     console.log(res);
                     //Toast.show($this, res.message);

@@ -39,8 +39,8 @@ class DataLoader
         if(empty($params['lang'])) {
             return $this->getErrorMessage("Lang is missing", 400);
         }
-        if(empty($params['tenant'])) {
-            return $this->getErrorMessage("Tenant is missing", 400);
+        if(empty($params['platform'])) {
+            return $this->getErrorMessage("Platform is missing", 400);
         }
         if(empty($params['category'])) {
             return $this->getErrorMessage("Category is missing", 400);
@@ -48,7 +48,7 @@ class DataLoader
 
         $context = $params['site'];
         $lang = $params['lang'];
-        $tenant = $params['tenant'];
+        $platform = $params['platform'];
         $category = $params['category'];
         $microsite = $params['microsite'] ?? 0; //will have something to handle later
         $microsite_id = $microsite;
@@ -125,45 +125,45 @@ class DataLoader
         $lang_id = $langSiteInfo['id'];
         app()->HashtagCms->infoLoader()->setInfoKeeper("lang_id", $lang_id);
 
-        //check tenant - return 404 if not found - check in site_tenant table
-        $tenantCacheKey = $context.'_'.$tenant;
-        if(!$this->cacheManager->exists($tenantCacheKey) || $clearCache) {
-            info("loadData: Fetching tenant info tenant: $tenant, context: $context");
+        //check platform - return 404 if not found - check in platform_site table
+        $platformCacheKey = $context.'_'.$platform;
+        if(!$this->cacheManager->exists($platformCacheKey) || $clearCache) {
+            info("loadData: Fetching platform info platform: $platform, context: $context");
             //noinspection ConstantConditions
-            $tenantSiteInfo = $this->infoLoader->getTenantSiteInfo($tenant, $site_id);
+            $platformSiteInfo = $this->infoLoader->getPlatformSiteInfo($platform, $site_id);
 
             //Stop everything if lang info is not correct.
-            if(empty($tenantSiteInfo) || sizeof($tenantSiteInfo) === 0) {
-                info("loadData: Tenant is not supported for this site");
-                return $this->getErrorMessage("Tenant is not supported for this site", 400);
+            if(empty($platformSiteInfo) || sizeof($platformSiteInfo) === 0) {
+                info("loadData: Platform is not supported for this site");
+                return $this->getErrorMessage("Platform is not supported for this site", 400);
             }
-            $this->cacheManager->put($tenantCacheKey, $tenantSiteInfo);
+            $this->cacheManager->put($platformCacheKey, $platformSiteInfo);
 
         } else {
-            info("loadData: From Cache ($tenantCacheKey): Fetching tenant info, context: $context, tenant: $tenant");
-            $tenantSiteInfo = $this->cacheManager->get($tenantCacheKey);
+            info("loadData: From Cache ($platformCacheKey): Fetching platform info, context: $context, platform: $platform");
+            $platformSiteInfo = $this->cacheManager->get($platformCacheKey);
         }
 
-        $tenant_id = $tenantSiteInfo['id'];
-        app()->HashtagCms->infoLoader()->setInfoKeeper("tenant_id", $tenant_id);
+        $platform_id = $platformSiteInfo['id'];
+        app()->HashtagCms->infoLoader()->setInfoKeeper("platform_id", $platform_id);
 
-        //check tenant - return 404 if not found - check in site_tenant table
-        $propsCacheKey = $context.'_'.$tenant."_props";
+        //check platform - return 404 if not found - check in platform_site table
+        $propsCacheKey = $context.'_'.$platform."_props";
         if(!$this->cacheManager->exists($propsCacheKey) || $clearCache) {
-            info("loadData: Site props info tenant: $tenant, context: $context");
+            info("loadData: Site props info platform: $platform, context: $context");
             //noinspection ConstantConditions
-            $sitePropsInfo = $this->infoLoader->getSitePropsInfo($site_id, $tenant_id);
+            $sitePropsInfo = $this->infoLoader->getSitePropsInfo($site_id, $platform_id);
             $this->cacheManager->put($propsCacheKey, $sitePropsInfo);
 
         } else {
-            info("loadData: From Cache ($propsCacheKey): Fetching tenant info, context: $context, tenant: $tenant");
+            info("loadData: From Cache ($propsCacheKey): Fetching platform info, context: $context, platform: $platform");
             $sitePropsInfo = $this->cacheManager->get($propsCacheKey);
         }
 
         //check category - it could be "category or category/{link_rewrite} or category/{link_rewrite?}", ie blog, or blog/test-content
         //  ie: support/tnc
         $category_params = array();
-        $categoryCacheKey = ($context.'_'.$tenant.'_'.$lang).'_'.(str_replace("/", "_",$category));
+        $categoryCacheKey = ($context.'_'.$platform.'_'.$lang).'_'.(str_replace("/", "_",$category));
         if(!$this->cacheManager->exists($categoryCacheKey) || $clearCache) {
 
             $fullUrl = null;
@@ -176,10 +176,10 @@ class DataLoader
                 // index 0 is category, rest can be link_rewrite for content based on link_rewrite_pattern field
             }
 
-            info("loadData: Fetching category info category: $category, context: $context, tenant: $tenant lang: $lang");
+            info("loadData: Fetching category info category: $category, context: $context, platform: $platform lang: $lang");
 
             //noinspection ConstantConditions
-            $categorySiteInfo = $this->infoLoader->getCategorySiteInfo($category, $site_id, $tenant_id, $lang_id, $fullUrl);
+            $categorySiteInfo = $this->infoLoader->getCategorySiteInfo($category, $site_id, $platform_id, $lang_id, $fullUrl);
 
             //Stop everything if lang info is not correct.
             if(empty($categorySiteInfo) || sizeof($categorySiteInfo) === 0) {
@@ -189,7 +189,7 @@ class DataLoader
             $this->cacheManager->put($categoryCacheKey, $categorySiteInfo);
 
         } else {
-            info("loadData: From Cache ($categoryCacheKey): Fetching tenant info, context: $context, tenant: $tenant");
+            info("loadData: From Cache ($categoryCacheKey): Fetching platform info, context: $context, platform: $platform");
             $categorySiteInfo = $this->cacheManager->get($categoryCacheKey);
         }
         $category_id = $categorySiteInfo['id'];
@@ -228,7 +228,7 @@ class DataLoader
         app()->HashtagCms->infoLoader()->setInfoKeeper("theme_id", $theme_id);
 
         // get theme info
-        $themeCacheKey = ($context.'_'.$tenant.'_'.$lang).'_'.$theme_id;
+        $themeCacheKey = ($context.'_'.$platform.'_'.$lang).'_'.$theme_id;
 
         if(!$this->cacheManager->exists($themeCacheKey) || $clearCache) {
             info("loadData: Fetching theme info theme: $theme_id");
@@ -263,11 +263,11 @@ class DataLoader
             return $this->getErrorMessage("There is no hook or module in the theme.", 404);
         }
 
-        $this->infoLoader->setMultiContextVars($category_id, $site_id, $tenant_id, $microsite_id);
+        $this->infoLoader->setMultiContextVars($category_id, $site_id, $platform_id, $microsite_id);
         // Set Language
         $this->infoLoader->setLanguageId($lang_id);
 
-        $parsedThemeWithData = $this->infoLoader->getModuleSiteInfoDataByParsedHooksAndModules($parsedTheme, $category_id, $site_id, $tenant_id, $microsite_id, $lang_id);
+        $parsedThemeWithData = $this->infoLoader->getModuleSiteInfoDataByParsedHooksAndModules($parsedTheme, $category_id, $site_id, $platform_id, $microsite_id, $lang_id);
         //dd($parsedThemeWithData);
 
         // set seo content
@@ -374,12 +374,12 @@ class DataLoader
             "category"=>$categorySiteInfo,
             "lang"=>$langInfo,
             "theme"=> array_merge($themeInfo, array("hooks"=>$parsedThemeWithData['hooks'], "modules"=>$parsedThemeWithData['modules'])),
-            "tenant"=>$tenantSiteInfo,
+            "platform"=>$platformSiteInfo,
             "siteProps"=>$sitePropsInfo
         );
         $data['isLoginRequired'] = $isLoginRequired;
         $data['status'] = 200;
-        info("loadData: Fetching completed for category: $category, context: $context, tenant: $tenant lang: $lang");
+        info("loadData: Fetching completed for category: $category, context: $context, platform: $platform lang: $lang");
         return $data;
 
     }

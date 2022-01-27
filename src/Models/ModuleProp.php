@@ -48,8 +48,8 @@ class ModuleProp extends AdminBaseModel
         return $this->belongsTo(Module::class);
     }
 
-    public function tenant() {
-        return $this->belongsTo(Tenant::class);
+    public function platform() {
+        return $this->belongsTo(Platform::class);
     }
 
 

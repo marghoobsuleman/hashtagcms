@@ -542,7 +542,7 @@ class LayoutManager extends Results
 
         $categoryLinkrewrite = $infoKeeper["categoryName"];
         $siteContext = $infoKeeper["siteInfo"]["context"];
-        $tenantLinkrewrite = $infoKeeper["tenantInfo"]["link_rewrite"];
+        $platformLinkrewrite = $infoKeeper["platformInfo"]["link_rewrite"];
         $langCode = $infoKeeper["langInfo"]["iso_code"];
         $micrositeId = 0;
         $clearCache = request()->get("clearCache")==="true";
@@ -550,7 +550,7 @@ class LayoutManager extends Results
         $startTime = microtime(true);
         $dataLoader = app()->HashtagCmsDataLoader;
         $requestParams = array("category"=>$categoryLinkrewrite, "site"=>$siteContext,
-            "lang"=>$langCode, "tenant"=>$tenantLinkrewrite,
+            "lang"=>$langCode, "platform"=>$platformLinkrewrite,
             "microsite"=>$micrositeId, "clearCache"=>$clearCache);
 
         $data = $dataLoader->loadData($requestParams);
@@ -697,7 +697,7 @@ class LayoutManager extends Results
      */
     public function fullPathStyle(): bool
     {
-        return $this->infoLoader->getInfoKeeper("foundLang") || $this->infoLoader->getInfoKeeper("foundTenant");
+        return $this->infoLoader->getInfoKeeper("foundLang") || $this->infoLoader->getInfoKeeper("foundPlatform");
     }
 
 
@@ -714,7 +714,7 @@ class LayoutManager extends Results
                     c.link_navigation, cl.name, cl.title, cl.is_external, cs.position, cl.link_relation, 
                     cl.target, cl.active_key from categories c left join category_langs cl on (cl.category_id = c.id) 
                     left join category_site cs on (cs.category_id = c.id) where c.deleted_at is null and c.publish_status=1 
-                    and c.site_id=:site_id and cl.lang_id=:lang_id and cs.tenant_id=:tenant_id and 
+                    and c.site_id=:site_id and cl.lang_id=:lang_id and cs.platform_id=:platform_id and 
                     cs.exclude_in_listing = 0 order by cs.position asc";
 
         $data = $this->dbSelect($query);

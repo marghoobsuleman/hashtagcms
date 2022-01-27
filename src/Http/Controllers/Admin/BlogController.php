@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 use MarghoobSuleman\HashtagCms\Core\Traits\Admin\BlogPageCommon;
-use MarghoobSuleman\HashtagCms\Models\Tenant;
+use MarghoobSuleman\HashtagCms\Models\Platform;
 use MarghoobSuleman\HashtagCms\Models\Category;
 use MarghoobSuleman\HashtagCms\Models\Page;
 use MarghoobSuleman\HashtagCms\Models\User as UserData;
@@ -30,7 +30,7 @@ class BlogController extends BaseAdminController
 
     protected $users;
 
-    protected $bindDataWithAddEdit = array("tenants" => array("dataSource" => Tenant::class, "method" => "all"),
+    protected $bindDataWithAddEdit = array("platforms" => array("dataSource" => Platform::class, "method" => "all"),
                                         "targetTypes" => array("dataSource" => Category::class, "method" => "getTargetType"),
                                         "relationTypes" => array("dataSource" => Category::class, "method" => "getLinkRelationType"),
                                         "contentCategories" => array("dataSource" => Category::class, "method" => "parentOnlyDynamic"),

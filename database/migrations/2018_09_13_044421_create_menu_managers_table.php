@@ -16,10 +16,10 @@ class CreateMenuManagersTable extends Migration
         Schema::create('menu_managers', function (Blueprint $table) {
 
             $table->id();
+            $table->bigInteger('site_id', false, true);
             $table->string("menu_group", 60);
             $table->bigInteger("parent_id", false, true)->nullable();
             $table->string("link_rewrite")->nullable();
-            $table->bigInteger('site_id', false, true);
             $table->integer("position")->nullable();
             $table->enum("menu_type", ["link", "module"])->nullable()->default("link");
             $table->string("module_alias", 150)->nullable();
@@ -45,8 +45,11 @@ class CreateMenuManagersTable extends Migration
                 ->references('id')
                 ->on('menu_managers')
                 ->onDelete('cascade');
+
+            $table->primary(['menu_manager_id', 'lang_id']);
         });
 
+        //Relation on site
         Schema::table('menu_managers', function (Blueprint $table) {
             $table->foreign('site_id')
                 ->references('id')

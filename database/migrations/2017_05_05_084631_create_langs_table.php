@@ -38,7 +38,7 @@ class CreateLangsTable extends Migration
         Schema::disableForeignKeyConstraints();
 
         Schema::dropIfExists('langs');
-        Schema::dropIfExists('lang_site');
+        Schema::dropIfExists('lang_site'); //@todo: why this is here
 
         Schema::enableForeignKeyConstraints();
     }

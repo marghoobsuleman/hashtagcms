@@ -27,7 +27,7 @@
         $lang_count = old("lang_count");
         $theme_id = old("theme_id", 0);
         $category_id = old("category_id", 0);
-        $tenant_id = old("tenant_id", 0);
+        $platform_id = old("platform_id", 0);
         $country_id = old("country_id", 0);
 
 
@@ -161,12 +161,12 @@
                         <div class="form-group">
 
                             <div class="col-sm-2">
-                                {!!  FormHelper::label('tenant_id', 'Tenant') !!}
+                                {!!  FormHelper::label('platform_id', 'Platform') !!}
                             </div>
 
                             <div class="col-sm-10">
                                 <div class="col-sm-10">
-                                    {!! FormHelper::select('tenant_id', $tenant, array(), $tenant_id) !!}
+                                    {!! FormHelper::select('platform_id', $platform, array(), $platform_id) !!}
                                 </div>
                             </div>
 

@@ -44,7 +44,7 @@ class CreateModulesTable extends Migration
             $table->tinyInteger('individual_cache')->nullable()->default(0)->comment("If you want to cache this module on each link");
 
             $table->string('cache_group', 100)->nullable();
-            $table->tinyInteger('is_seo_module')->nullable()->default(0)->comment("Use this module for SEO. Needs to meta fields");
+            $table->tinyInteger('is_seo_module')->nullable()->default(0)->comment("Use this module for SEO. Needs to have meta fields");
 
             $table->tinyInteger('live_edit')->nullable()->default(0);
             $table->tinyInteger('shared')->nullable()->default(0);
@@ -52,6 +52,15 @@ class CreateModulesTable extends Migration
             $table->timestamps();
             $table->softDeletes();
 
+        });
+
+        //Relation on site
+        Schema::table('modules', function (Blueprint $table) {
+
+            $table->foreign('site_id')
+                ->references('id')
+                ->on('sites')
+                ->onDelete('cascade');
         });
 
     }

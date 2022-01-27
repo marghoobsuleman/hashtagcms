@@ -157,8 +157,8 @@ if (! function_exists('htcms_get_path')) {
 
         if($layoutManager->fullPathStyle()) {
             $lang = htcms_get_lang_info("iso_code");
-            $tenant = htcms_get_tenant_info("link_rewrite");
-            return htcms_get_domain_path($lang."/".$tenant."/".$path);
+            $platform = htcms_get_platform_info("link_rewrite");
+            return htcms_get_domain_path($lang."/".$platform."/".$path);
         }
 
         return htcms_get_domain_path($path);
@@ -277,17 +277,17 @@ if (! function_exists('htcms_get_language_id')) {
 }
 
 
-if (! function_exists('htcms_get_tenant_info')) {
+if (! function_exists('htcms_get_platform_info')) {
 
     /**
      *
-     * Get tenant info from the request
+     * Get platform info from the request
      * @param string|null $key
      * @return string|array|null
      */
-    function htcms_get_tenant_info(string $key=null): string|array|null
+    function htcms_get_platform_info(string $key=null): string|array|null
     {
-        return app()->HashtagCms->infoLoader()->getObjInfo('tenant', $key);
+        return app()->HashtagCms->infoLoader()->getObjInfo('platform', $key);
     }
 
 }
@@ -429,12 +429,44 @@ if (! function_exists('htcms_get_site_props')) {
             "categoryId"=>$categoryInfo['id'],
             "categoryName"=>$categoryInfo['name'],
             "categoryLinkRewrite"=>$categoryInfo['link_rewrite'],
-            "tenantId"=>htcms_get_tenant_info('id'),
-            "tenantName"=>htcms_get_tenant_info('name'),
+            "platformId"=>htcms_get_platform_info('id'),
+            "platformName"=>htcms_get_platform_info('name'),
             "pageId"=> $categoryInfo['page_id'] ?? -1,
             "pageLinkRewrite"=> $categoryInfo['page_link_rewrite'] ?? "",
             "pageName"=> $categoryInfo['page_name'] ?? ""
         );
         return ($asJson == true) ? json_encode($siteProps) : $siteProps;
+    }
+}
+
+if (! function_exists('____')) {
+
+    /**
+     * Four underscore
+     * For lang translation by key
+     * @param string $string
+     *
+     */
+    function ____(string $key):string
+    {
+        $str = __($key); // find it in "hashtagcms::file.key"; - lang/vendor/hashtagcms/en/file
+
+        $isHashtag = (strpos($key, "hashtagcms::") === false) ? false : true;
+
+        if($isHashtag && $str === $key) {
+            //could not find the lang
+            //try to find in lang/en/file
+            $key = str_replace("hashtagcms::", "", $key);
+            $str = __($key);
+        }
+        //not there too. return label/key
+        if($str === $key) {
+            $hasDot = (strpos($key, ".") === false) ? false : true;
+            $pos = strpos($key, ".");
+            $add = ($hasDot) ? 1 : 0;
+            $str = substr($key, $pos+$add, strlen($key));
+        }
+
+        return $str;
     }
 }

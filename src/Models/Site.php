@@ -4,13 +4,14 @@ namespace MarghoobSuleman\HashtagCms\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use MarghoobSuleman\HashtagCms\Core\Scopes\SiteScope;
 
 
 class Site extends AdminBaseModel
 {
     protected $guarded = array();
 
-    protected $additionalColumns = ["site_id", "microsite_id", "tenant_id", "category_id",
+    protected $additionalColumns = ["site_id", "microsite_id", "platform_id", "category_id",
         "hook_id", "module_id", "position", "publish_status"];
 
     protected $currencyColumns = ["conversion_rate", "markup", "markup_type"];
@@ -50,17 +51,17 @@ class Site extends AdminBaseModel
      */
     public function theme() {
 
-      return $this->hasMany(Theme::class);
+      return $this->hasMany(Theme::class)->withoutGlobalScope(SiteScope::class);
 
     }
 
     /**
-     * Supported Tenant
+     * Supported Platform
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function tenant() {
+    public function platform() {
 
-        return $this->belongsToMany(Tenant::class);
+        return $this->belongsToMany(Platform::class); //, "platform_site", "platform_id"
 
     }
 
@@ -120,7 +121,7 @@ class Site extends AdminBaseModel
      * @return Site[]|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
      */
     public function homepage() {
-        return $this->with(['tenant', 'category', 'hook'])->withoutGlobalScopes()->get(); //'module',
+        return $this->with(['platform', 'category', 'hook'])->withoutGlobalScopes()->get(); //'module',
 
     }
 
@@ -141,7 +142,7 @@ class Site extends AdminBaseModel
                         'category:category_id,site_id,lang_id,name,title',
                         'staticmodule:id,alias',
                         'theme:id,site_id,name,directory',
-                        'tenant:id,name',
+                        'platform:id,name',
                         'language:id,name,iso_code',
                         'microsite:id,site_id,name',
                         'country:id',
@@ -161,16 +162,16 @@ class Site extends AdminBaseModel
         $site = new self;
 
         if($site_id == NULL) {
-            return $site->with(['category', 'theme', 'tenant', 'language', 'microsite', 'country'])->get();
+            return $site->with(['category', 'theme', 'platform', 'language', 'microsite', 'country'])->get();
         } else {
-            return $site->with(['category', 'theme', 'tenant', 'language', 'microsite', 'country'])->find($site_id);
+            return $site->with(['category', 'theme', 'platform', 'language', 'microsite', 'country'])->find($site_id);
         }
 
     }
 
 
     /**
-     * Attach country, tenant etc in site
+     * Attach country, platform etc in site
      * @param $toAttachKey - country, etc
      * @param $toAttachIds  - array
      * @return mixed
@@ -180,7 +181,8 @@ class Site extends AdminBaseModel
         $key = Str::singular(strtolower($toAttachKey));
 
         $finder = Str::title($key);
-        $finder = ($finder == "Language") ? "Lang" : $finder; //hack for language
+        $finder = ($finder === "Language") ? "Lang" : $finder; //hack for language
+        $needToUpdateLangCount = ($finder === "Lang");
         $namespace = config("hashtagcms.namespace");
         $finder = resolve($namespace.'Models\\'.$finder);
 
@@ -197,8 +199,16 @@ class Site extends AdminBaseModel
         //remove old
         $this->$key()->detach();
 
+        $updated = $this->$key()->attach($data); //it doesn't return anything :)
+
+        //info("needToUpdateLangCount: $needToUpdateLangCount, ".Str::title($key));
+
+        if ($needToUpdateLangCount) {
+            self::updateLangCount();
+        }
+
         //attach now
-        return $this->$key()->attach($data);
+        return $updated;
     }
 
     /**
@@ -212,25 +222,45 @@ class Site extends AdminBaseModel
 
         if(count($toDetachArray) > 0) {
             $old = $this->$key()->whereIn("id", $toDetachArray)->get(); //$this->country()->whereIn("id", [1,2])->get();
-            return $this->$key()->detach($old);
+
+            $data = $this->$key()->detach($old);
+
+            if($key === "language" || $toDetachKey === "lang") {
+                self::updateLangCount();
+            }
+            return $data;
         }
 
-        //remove old
-        return $this->$key()->detach();
+        $data = $this->$key()->detach();
+
+        if($key === "language" || $toDetachKey === "lang") {
+            self::updateLangCount();
+        }
+        
+        return $data;
 
     }
 
     /**
-     * Get Supported tenants
+     * Get Supported platforms
      * @param null $site_id
      * @return mixed
      */
-    public static function getSupportedTenants($site_id = NULL) {
+    public static function getSupportedPlatforms($site_id = NULL) {
         $site_id = ($site_id === NULL) ? htcms_get_siteId_for_admin() : $site_id;
-        $tenants = Site::with('tenant')->where("id", $site_id)->get();
+        $site = Site::with('platform')->where("id", $site_id)->first();
+        return $site->platform;
 
-        return $tenants[0]->tenant;
+    }
 
+    /**
+     * @param $site_id
+     * @return void
+     */
+    public static function getSupportedLangs($site_id = NULL) {
+        $site_id = ($site_id === NULL) ? htcms_get_siteId_for_admin() : $site_id;
+        $site = Site::with('language')->where("id", $site_id)->first();
+        return $site->language;
     }
 
 
@@ -255,8 +285,22 @@ class Site extends AdminBaseModel
         return $this->prop();
     }
 
+    /**
+     * Get module props
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function moduleprop() {
         return $this->hasMany(ModuleProp::class);
+    }
+
+    /**
+     * @param $site_id
+     * @return void
+     */
+    public static function updateLangCount($site_id=null) {
+        $id = $site_id === null ? htcms_get_siteId_for_admin() : $site_id;
+        $count = self::getSupportedLangs($id)->count();
+        self::find($id)->update(array("lang_count"=>$count));
     }
 
 }

@@ -51,6 +51,7 @@ class CreateCountriesTable extends Migration
                 ->on('countries')
                 ->onDelete('cascade');
 
+            $table->primary(['country_id', 'lang_id']);
         });
 
     }

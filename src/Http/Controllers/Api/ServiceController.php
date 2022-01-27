@@ -19,7 +19,7 @@ class ServiceController extends ApiBaseController
         $query = $request->all();
         $context = $query['site'];
         $lang = $query['lang'] ?? null;
-        $tenant = $query['tenant'] ?? null;
+        $platform = $query['platform'] ?? null;
 
         $api_secret = $query['api_secret'];
         $secrets = config("hashtagcms.api_secrets");
@@ -35,14 +35,14 @@ class ServiceController extends ApiBaseController
         }
 
         $loader = new ServiceLoader();
-        return $loader->allConfigs($context, $lang, $tenant);
+        return $loader->allConfigs($context, $lang, $platform);
 
     }
 
     /**
      * Load data
      * @queryParam $lang language code
-     * @queryParam $tenant Tenant link rewrite
+     * @queryParam $platform Platform link rewrite
      * @queryParam $category Category link rewrite or id
      * @param Request $request
      * @return array|string
@@ -66,7 +66,7 @@ class ServiceController extends ApiBaseController
      * @queryParam $name - Module Alias
      * @queryParam $json - return type as json or html
      * @queryParam $lang - language code
-     * @queryParam $tenant - tenant link rewrite - web|android
+     * @queryParam $platform - platform link rewrite - web|android
      * @queryParam $site - site context
      * @queryParam $category - category link rewrite
      * @queryParam $microsite - microsite id
@@ -100,7 +100,7 @@ class ServiceController extends ApiBaseController
      * @queryParam $name - Hook Alias
      * @queryParam $json - return type as json or html
      * @queryParam $lang - language code
-     * @queryParam $tenant - tenant link rewrite - web|android
+     * @queryParam $platform - platform link rewrite - web|android
      * @queryParam $site - site context
      * @queryParam $category - category link rewrite
      * @queryParam $microsite - microsite id

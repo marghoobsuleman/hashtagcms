@@ -83,7 +83,7 @@ class Page extends AdminBaseModel
             ->join('categories', 'categories.id', '=', 'pages.category_id')
             ->join('users', 'users.id', '=', 'pages.insert_by')
             ->select('categories.link_rewrite as category_link_rewrite', 'users.name as user_name', 'pages.read_count',
-                'pages.id', 'pages.site_id', 'pages.microsite_id', 'pages.tenant_id', 'pages.category_id', 'pages.alias',
+                'pages.id', 'pages.site_id', 'pages.microsite_id', 'pages.platform_id', 'pages.category_id', 'pages.alias',
                 'pages.exclude_in_listing', 'pages.content_type', 'pages.position', 'pages.link_rewrite', 'pages.menu_placement',
                 'pages.enable_comments', 'pages.attachment', 'pages.img', 'pages.author', 'pages.created_at', 'pages.updated_at',
                 'page_langs.name', 'page_langs.title', 'page_langs.description', 'page_langs.page_content',

@@ -13,6 +13,7 @@ class CreateRolesTable extends Migration
      */
     public function up()
     {
+        //Create roles table
         Schema::create('roles', function (Blueprint $table) {
             $table->id();
             $table->string('name');
@@ -22,6 +23,7 @@ class CreateRolesTable extends Migration
 
         });
 
+        //Create permissions table
         Schema::create('permissions', function (Blueprint $table) {
             $table->id();
             $table->string('name');
@@ -31,18 +33,19 @@ class CreateRolesTable extends Migration
 
         });
 
-
+        //Create permission<->role pivot
         Schema::create('permission_role', function (Blueprint $table) {
             $table->bigInteger('permission_id', false, true);
             $table->bigInteger('role_id', false, true);
         });
 
+        //Create role<->user pivot
         Schema::create('role_user', function (Blueprint $table) {
             $table->bigInteger('role_id', false, true);
             $table->bigInteger('user_id', false, true);
         });
 
-
+        //Relation on permission role
         Schema::table('permission_role', function (Blueprint $table) {
 
             $table->foreign('permission_id')
@@ -58,6 +61,7 @@ class CreateRolesTable extends Migration
             $table->primary(['permission_id', 'role_id']);
         });
 
+        //Relation on role user
         Schema::table('role_user', function (Blueprint $table) {
             $table->foreign('role_id')
                 ->references('id')

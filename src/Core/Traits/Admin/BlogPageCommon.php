@@ -12,7 +12,7 @@ trait BlogPageCommon {
             "category_id" => "nullable|numeric",
             "parent_id" => "nullable|numeric",
             "site_id" => "required|numeric",
-            "tenant_id" => "nullable|numeric",
+            "platform_id" => "nullable|numeric",
             "alias" => "nullable|max:60|string",
             "microsite_id" => "nullable|numeric",
             "exclude_in_listing" => "nullable|integer",
@@ -54,7 +54,7 @@ trait BlogPageCommon {
         $saveData["content_type"] = $data["content_type"];
 
         $saveData["site_id"] =  $data["site_id"] ?? htcms_get_siteId_for_admin();
-        $saveData["tenant_id"] = $data["tenant_id"];
+        $saveData["platform_id"] = $data["platform_id"];
 
         $saveData["link_navigation"] = $data["link_navigation"];
         $saveData["link_rewrite"] = $data["link_rewrite"];

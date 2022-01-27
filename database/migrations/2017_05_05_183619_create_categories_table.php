@@ -91,6 +91,19 @@ class CreateCategoriesTable extends Migration
                 ->on('categories')
                 ->onDelete('cascade');
 
+            $table->primary(['category_id', 'lang_id']);
+
+        });
+
+
+        //Relation on site
+        Schema::table('categories', function (Blueprint $table) {
+
+            $table->foreign('site_id')
+                ->references('id')
+                ->on('sites')
+                ->onDelete('cascade');
+
         });
 
 

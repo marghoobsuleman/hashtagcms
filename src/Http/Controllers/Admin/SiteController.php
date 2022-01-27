@@ -23,7 +23,7 @@ use MarghoobSuleman\HashtagCms\Models\Site;
 use MarghoobSuleman\HashtagCms\Models\SiteProp;
 use MarghoobSuleman\HashtagCms\Models\StaticModuleContent;
 use MarghoobSuleman\HashtagCms\Models\StaticModuleContentLang;
-use MarghoobSuleman\HashtagCms\Models\Tenant;
+use MarghoobSuleman\HashtagCms\Models\Platform;
 use MarghoobSuleman\HashtagCms\Models\Theme;
 use MarghoobSuleman\HashtagCms\Models\Zone;
 use MarghoobSuleman\HashtagCms\Models\Module;
@@ -37,7 +37,7 @@ class SiteController extends BaseAdminController
 
     protected $dataSource = Site::class;
 
-    protected $dataWith = ['lang', 'category', 'theme', 'tenant'];
+    protected $dataWith = ['lang', 'category', 'theme', 'platform'];
 
     protected $minResults = 1;
 
@@ -106,7 +106,7 @@ class SiteController extends BaseAdminController
         $saveData["category_id"] = $data["category_id"] ?? 0;
         $saveData["theme_id"] = $data["theme_id"] ?? 0;
         $saveData["lang_id"] = $data["lang_id"] ?? 0;
-        $saveData["tenant_id"] = $data["tenant_id"] ?? 0;
+        $saveData["platform_id"] = $data["platform_id"] ?? 0;
         $saveData["country_id"] = $data["country_id"] ?? 0;
 
 
@@ -153,7 +153,7 @@ class SiteController extends BaseAdminController
      * @param string $tab
      * @return mixed
      */
-    public function settings($id = 1, $tab='tenants')
+    public function settings($id = 1, $tab='platforms')
     {
 
         if(!$this->checkPolicy('read')) {
@@ -163,10 +163,10 @@ class SiteController extends BaseAdminController
         $siteInfo = Site::allInfo($id);
 
 
-        $tab = (empty($tab)) ? "tenants" : $tab;
+        $tab = (empty($tab)) ? "platforms" : $tab;
 
         $viewData["siteInfo"] = $siteInfo;
-        $viewData["tabs"] = array("Tenants", "Hooks", "Languages", "Zones",
+        $viewData["tabs"] = array("Platforms", "Hooks", "Languages", "Zones",
                                     "Countries", "Currencies", "Modules",
                                     "Static Modules", "Themes", "Categories", "Site Properties", "Module Properties");
 
@@ -187,8 +187,8 @@ class SiteController extends BaseAdminController
                 $data = array("label"=>"Zones", "data"=>Zone::all(["id", "name"]));
                 break;
 
-            case 'tenants':
-                $data = array("label"=>"Tenants", "data"=>Tenant::all(["id", "name"]));
+            case 'platforms':
+                $data = array("label"=>"Platforms", "data"=>Platform::all(["id", "name"]));
                 break;
 
             case 'languages':
@@ -532,7 +532,7 @@ class SiteController extends BaseAdminController
                 break;
 
             case "siteproperties":
-                $compareKey = array("name", "tenant_id");
+                $compareKey = array("name", "platform_id");
                 //$compareKey = "name";
                 $source = SiteProp::class;
                 break;
@@ -548,7 +548,7 @@ class SiteController extends BaseAdminController
                 break;
 
             case "moduleproperties":
-                $compareKey = array("name", "tenant_id");
+                $compareKey = array("name", "platform_id");
                 $source = ModuleProp::class;
                 $resetId = FALSE;
                 break;
@@ -759,7 +759,7 @@ class SiteController extends BaseAdminController
         }
 
         //Pivot setting things
-        $itemsToAttach = array("tenant", "hook", "language", "zone", "country", "currency");
+        $itemsToAttach = array("platform", "hook", "language", "zone", "country", "currency");
         foreach ($itemsToAttach as $key=>$item) {
             $finder = ($item == "language") ? "lang" : $item;
             $finder = Str::title($finder);
@@ -799,7 +799,7 @@ class SiteController extends BaseAdminController
         //Set default ids for target site;
         $category_id = $siteInfo->category_id;
         $theme_id = $siteInfo->theme_id;
-        $tenant_id = $siteInfo->tenant_id;
+        $platform_id = $siteInfo->platform_id;
         $lang_id = $siteInfo->lang_id;
         $country_id = $siteInfo->country_id;
 
@@ -813,14 +813,14 @@ class SiteController extends BaseAdminController
 
         $targetSiteInfo->category_id = $targetCategoryInfo->id;
         $targetSiteInfo->theme_id = $targetThemeInfo->id;
-        $targetSiteInfo->tenant_id = $tenant_id;
+        $targetSiteInfo->platform_id = $platform_id;
         $targetSiteInfo->lang_id = $lang_id;
         $targetSiteInfo->country_id = $country_id;
         $targetSiteInfo->save();
 
         //Time to copy the modules
-        $site = Site::with(['tenant'])->find($source_site_id);
-        $allTeants = $site->tenant;
+        $site = Site::with(['platform'])->find($source_site_id);
+        $allTeants = $site->platform;
         $categories = Category::withoutGlobalScopes()->where('site_id', '=', $source_site_id)->get();
 
         $data = array("success" => false);
@@ -828,19 +828,19 @@ class SiteController extends BaseAdminController
             $link_rewrite = $category->link_rewrite;
             $tagetCategoryInfo = Category::withoutGlobalScopes()->where(array(array('site_id', '=', $target_site_id), array('link_rewrite', '=', $link_rewrite)))->first();
             if($tagetCategoryInfo) {
-                foreach ($allTeants as $tenant) {
+                foreach ($allTeants as $platform) {
                     $fromData['site_id'] = $source_site_id;
-                    $fromData['tenant_id'] = $tenant->id;
+                    $fromData['platform_id'] = $platform->id;
                     $fromData['category_id'] = $category->id;
                     $fromData['microsite_id'] = 0; //@todo: For microsite
 
 
                     $toData['site_id'] = $target_site_id;
-                    $toData['tenant_id'] = $tenant->id;
+                    $toData['platform_id'] = $platform->id;
                     $toData['category_id'] = $tagetCategoryInfo->id;
                     $toData['microsite_id'] = 0; //@todo: For microsite
                     $data = Module::copyData($fromData, $toData); //this will return only last
-                    $datas[] = array("success"=>$data['success'], "message"=>$data['message'] ." - $link_rewrite, and tenant: {$tenant->link_rewrite}", "component"=>"module_site_copy", "data"=>array("fromData"=>$fromData, "toData"=>$toData));
+                    $datas[] = array("success"=>$data['success'], "message"=>$data['message'] ." - $link_rewrite, and platform: {$platform->link_rewrite}", "component"=>"module_site_copy", "data"=>array("fromData"=>$fromData, "toData"=>$toData));
                 }
             } else {
                 $datas[] = array("success"=>false, "message"=>"Could not find cateogry $link_rewrite in target site", "component"=>"module_site_copy");

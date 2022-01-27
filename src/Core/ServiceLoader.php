@@ -6,7 +6,7 @@ use MarghoobSuleman\HashtagCms\Models\Category;
 use MarghoobSuleman\HashtagCms\Models\CategorySite;
 use MarghoobSuleman\HashtagCms\Models\Lang;
 use MarghoobSuleman\HashtagCms\Models\Site;
-use MarghoobSuleman\HashtagCms\Models\Tenant;
+use MarghoobSuleman\HashtagCms\Models\Platform;
 use MarghoobSuleman\HashtagCms\Models\Theme;
 
 class ServiceLoader
@@ -49,15 +49,15 @@ class ServiceLoader
      * Set base info
      * @param string|null $category
      * @param string $language
-     * @param string $tenant_link_rewrite
+     * @param string $platform_link_rewrite
      * @param string|null $site_context
      * @param int $microsite_id
      * @return array
      */
-    protected function setInitBaseInfo(string $category=null, string $language='en', string $tenant_link_rewrite='web',
+    protected function setInitBaseInfo(string $category=null, string $language='en', string $platform_link_rewrite='web',
                                        string $site_context=null, int $microsite_id=0) {
 
-        $key = $category.$language.$tenant_link_rewrite.$site_context.$microsite_id;
+        $key = $category.$language.$platform_link_rewrite.$site_context.$microsite_id;
 
         if(!isset($this->allModuleEtcInfo[$key])) {
 
@@ -72,27 +72,27 @@ class ServiceLoader
                 return $this->getError("Language is not defined");
             }
 
-            $tenantInfo = Tenant::where("link_rewrite", "=", $tenant_link_rewrite)->first();
+            $platformInfo = Platform::where("link_rewrite", "=", $platform_link_rewrite)->first();
 
-            if($tenantInfo == null) {
-                return $this->getError("Tenant is not defined");
+            if($platformInfo == null) {
+                return $this->getError("Platform is not defined");
             }
 
             $categoryInfo = Category::orderBy("id", "desc")->where("link_rewrite", "=", $category)->orWhere("id", "=", $siteInfo->category_id)->first();
             if($categoryInfo == null) {
                 return $this->getError("Category is not defined");
             }
-            $categorySiteInfo = CategorySite::where(array("category_id"=>$categoryInfo->id, "site_id"=>$siteInfo->id, "tenant_id"=>$tenantInfo->id))->first();
+            $categorySiteInfo = CategorySite::where(array("category_id"=>$categoryInfo->id, "site_id"=>$siteInfo->id, "platform_id"=>$platformInfo->id))->first();
 
             if($categorySiteInfo == null) {
-                return $this->getError("Theme is not defined this tenant or this tenant does not exists.");
+                return $this->getError("Theme is not defined this platform or this platform does not exists.");
             }
 
             $themeInfo = Theme::find($categorySiteInfo->theme_id)->first();
 
             $info = array("site"=>$siteInfo,
                 "language"=>$langInfo,
-                "tenant"=>$tenantInfo,
+                "platform"=>$platformInfo,
                 "theme"=>$themeInfo,
                 "category"=>$categoryInfo,
                 'microsite'=>$microsite_id
@@ -114,15 +114,15 @@ class ServiceLoader
      * Set and get initial base info
      * @param string|null $category
      * @param string $language
-     * @param string $tenant_link_rewrite
+     * @param string $platform_link_rewrite
      * @param string|null $site_context
      * @param int $microsite_id
      * @return array
      */
-    public function getInitBaseInfo(string $category=null, string $language='en', string $tenant_link_rewrite='web',
+    public function getInitBaseInfo(string $category=null, string $language='en', string $platform_link_rewrite='web',
                                     string $site_context=null, int $microsite_id=0) {
 
-        return $this->setInitBaseInfo($category, $language, $tenant_link_rewrite, $site_context, $microsite_id);
+        return $this->setInitBaseInfo($category, $language, $platform_link_rewrite, $site_context, $microsite_id);
 
     }
 
@@ -132,16 +132,16 @@ class ServiceLoader
      * @param bool $asJson
      * @param string|null $category
      * @param string $language
-     * @param string $tenant_link_rewrite
+     * @param string $platform_link_rewrite
      * @param string|null $site_context
      * @param int $microsite_id
      * @return array|string
      */
-    public function loadModuleByAlias(string $name=null, bool $asJson=true, string $category=null, string $language='en', string $tenant_link_rewrite='web',
+    public function loadModuleByAlias(string $name=null, bool $asJson=true, string $category=null, string $language='en', string $platform_link_rewrite='web',
                                       string $site_context=null, int $microsite_id=0) {
 
 
-        $info = $this->setInitBaseInfo($category, $language, $tenant_link_rewrite, $site_context, $microsite_id);
+        $info = $this->setInitBaseInfo($category, $language, $platform_link_rewrite, $site_context, $microsite_id);
 
         if($info['status'] != 200) {
             return $info;
@@ -179,17 +179,17 @@ class ServiceLoader
      * @param bool $asJson
      * @param string|null $category
      * @param string $language
-     * @param string $tenant_link_rewrite
+     * @param string $platform_link_rewrite
      * @param string|null $site_context
      * @param int $microsite_id
      * @return array|string
      */
-    public function loadModulesByHookAlias(string $name=null, bool $asJson=true, string $category=null, string $language='en', string $tenant_link_rewrite='web',
+    public function loadModulesByHookAlias(string $name=null, bool $asJson=true, string $category=null, string $language='en', string $platform_link_rewrite='web',
                                            string $site_context=null, int $microsite_id=0): array|string
     {
 
 
-        $info = $this->setInitBaseInfo($category, $language, $tenant_link_rewrite, $site_context, $microsite_id);
+        $info = $this->setInitBaseInfo($category, $language, $platform_link_rewrite, $site_context, $microsite_id);
 
         if($info['status'] != 200) {
             return $info;
@@ -199,14 +199,14 @@ class ServiceLoader
 
         $category_id = $info["category"]->id;
         $site_id = $info["site"]->id;
-        $tenant_id = $info["tenant"]->id;
+        $platform_id = $info["platform"]->id;
         $hook_id = $hookInfo["id"];
 
-        $hookData =  $this->moduleLoader->getCategoryModules($category_id, $site_id, $tenant_id, $microsite_id, $hook_id);
+        $hookData =  $this->moduleLoader->getCategoryModules($category_id, $site_id, $platform_id, $microsite_id, $hook_id);
         $data = [];
 
         foreach ($hookData as $module) {
-            $data[] = $this->loadModuleByAlias($module->alias, $asJson, $category, $language, $tenant_link_rewrite, $site_context, $microsite_id);
+            $data[] = $this->loadModuleByAlias($module->alias, $asJson, $category, $language, $platform_link_rewrite, $site_context, $microsite_id);
         }
 
         return ($asJson) ? $data : join("", $data);

@@ -17,7 +17,7 @@ class CreateModulePropsTable extends Migration
             $table->id();
             $table->bigInteger("module_id", false, true);
             $table->bigInteger("site_id", false, true);
-            $table->bigInteger("tenant_id", false, true);
+            $table->bigInteger("platform_id", false, true);
             $table->string("name", 100);
             $table->string("group", 100)->nullable();
             $table->timestamps();
@@ -38,16 +38,16 @@ class CreateModulePropsTable extends Migration
                     ->on('sites')
                     ->onDelete('cascade');
 
-                //on tenant
-                $table->foreign('tenant_id')
+                //on platform
+                $table->foreign('platform_id')
                     ->references('id')
-                    ->on('tenants')
+                    ->on('platforms')
                     ->onDelete('cascade');
 
-                $table->index(['module_id', 'site_id', 'tenant_id'], "module_site_tenant_foreign");
+                $table->index(['module_id', 'site_id', 'platform_id'], "module_platform_site_idx");
 
             } catch (Exception $exception) {
-                log($exception->getMessage());
+                info($exception->getMessage());
             }
 
 
