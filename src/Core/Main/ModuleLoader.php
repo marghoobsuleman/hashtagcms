@@ -37,7 +37,8 @@ class ModuleLoader
     public function getQueryModule(mixed $module): array
     {
         $query = $module->data_handler;
-        $ml = new QueryModuleLoader($query);
+        $database = $module->description;
+        $ml = new QueryModuleLoader($query, $database);
         return $ml->getResult();
     }
 
@@ -80,6 +81,14 @@ class ModuleLoader
         $serviceUrl = ($module->data_handler == "" || $module->data_handler == null) ? "" : $module->data_handler;
         $methodType = $module->method_type;
         $headerJson = $this->getHeaderJson($module);
+
+        $service_params = $module->service_params; //make data
+        if($service_params) {
+            parse_str($service_params, $arguments);
+            $withData = array_merge($withData, $arguments);
+            $headerJson['Content-Type'] = "text/html";
+        }
+
         $ml = new ServiceModuleLoader($serviceUrl, $methodType, $withData, $headerJson);
         return $ml->getResult();
     }
@@ -95,8 +104,14 @@ class ModuleLoader
         $serviceUrl = ($module->data_handler == "" || $module->data_handler==null) ? "" : $module->data_handler;
         $methodType = $module->method_type;
         $dataKeyMap = $module->data_key_map;
-
         $headerJson = $this->getHeaderJson($module);
+
+        $service_params = $module->service_params; //make data
+        if($service_params) {
+            parse_str($service_params, $arguments);
+            $withData = array_merge($withData, $arguments);
+            $headerJson['Content-Type'] = "text/html";
+        }
 
         $ml = new UrlServiceModuleLoader($serviceUrl, $methodType, $dataKeyMap, $headerJson);
         return $ml->getResult();
@@ -115,6 +130,7 @@ class ModuleLoader
         $serviceUrl = ($module->data_handler == "" || $module->data_handler==null) ? "" : $module->data_handler;
         $methodType = $module->method_type;
         $dataKeyMap = $module->data_key_map;
+        $database = $module->description;
 
         $dataHandler = $module->data_handler;
         $queryAs = $module->query_as;

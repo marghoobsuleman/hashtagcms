@@ -3,7 +3,7 @@ namespace MarghoobSuleman\HashtagCms\Core\Main;
 
 use Illuminate\Support\Facades\Http;
 
-class UrlServiceModuleLoader extends Results implements ModuleLoaderImp
+class UrlServiceModuleLoader extends Results implements ModuleLoaderServiceImp
 {
 
     protected array $result;
@@ -45,7 +45,7 @@ class UrlServiceModuleLoader extends Results implements ModuleLoaderImp
     /**
      * @return array
      */
-    public function getResult():array
+    public function getResult():mixed
     {
         return $this->result;
     }
@@ -55,7 +55,7 @@ class UrlServiceModuleLoader extends Results implements ModuleLoaderImp
      * @param array $data
      * @return void
      */
-    public function setResult(array $data):void
+    public function setResult(mixed $data):void
     {
         $this->result = collect($data)->all();
     }

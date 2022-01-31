@@ -14,29 +14,30 @@ class Common extends Results
 
     function __construct()
     {
-
         info("==========- init common -===============");
     }
 
 
     /**
+     * @override
      * Parse query and get the results
      * @param string $query
      * @param array $byParams
      * @return array|null (optional)
      */
-    public function dbSelect(string $query, array $byParams=array()):?array {
-        return parent::dbSelect($query, $byParams);
+    public function dbSelect(string $query, array $byParams=array(), string $database=null):?array {
+        return parent::dbSelect($query, $byParams, $database);
     }
 
     /**
+     * @override
      * Parse query and get the results
      * @param string $query
      * @param array $byParams
      * @return array|null (optional)
      */
-    public function dbSelectOne(string $query, array $byParams=array()):?array {
-        return parent::dbSelectOne($query, $byParams);
+    public function dbSelectOne(string $query, array $byParams=array(), string $database=null):?array {
+        return parent::dbSelectOne($query, $byParams, $database);
     }
 
 

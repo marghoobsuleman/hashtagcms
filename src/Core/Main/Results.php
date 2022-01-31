@@ -21,7 +21,7 @@ class Results
      * @param array $byParams
      * @return array|null (optional)
      */
-    public function dbSelect(string $query, array $byParams=array()): ?array
+    public function dbSelect(string $query, array $byParams=array(), string $database=null): ?array
     {
         //$queryParams = $this->findAndReplaceGlobalIds($query);
         $queryParams = (sizeof($byParams)==0) ? $this->findAndReplaceGlobalIds($query) : $byParams;
@@ -30,11 +30,18 @@ class Results
         info(json_encode($query));
         info(json_encode($queryParams));*/
         try {
-
-            if(sizeof($queryParams) > 0) {
-                return DB::select($query, $queryParams);
+            if($database === null) {
+                if(sizeof($queryParams) > 0) {
+                    return DB::select($query, $queryParams);
+                }
+                return DB::select($query);
+            } else {
+                if(sizeof($queryParams) > 0) {
+                    return DB::connection($database)->select($query, $queryParams);
+                }
+                return DB::connection($database)->select($query);
             }
-            return DB::select($query);
+
 
         } catch (\Exception $e) {
             info("dbSelect: There is an error: ".$e->getMessage());
@@ -49,7 +56,7 @@ class Results
      * @param array $byParams
      * @return array|null (optional)
      */
-    public function dbSelectOne(string $query, array $byParams=array()):?array {
+    public function dbSelectOne(string $query, array $byParams=array(), string $database=null):?array {
 
         $queryParams = (sizeof($byParams)==0) ? $this->findAndReplaceGlobalIds($query) : $byParams;
 
@@ -61,10 +68,19 @@ class Results
 
         try {
 
-            if(sizeof($queryParams) > 0) {
-                $data =  DB::selectOne($query, $queryParams);
+            if($database === null) {
+
+                if(sizeof($queryParams) > 0) {
+                    $data =  DB::selectOne($query, $queryParams);
+                } else {
+                    $data = DB::selectOne($query);
+                }
+
             } else {
-                $data = DB::selectOne($query);
+                if(sizeof($queryParams) > 0) {
+                    return DB::connection($database)->selectOne($query, $queryParams);
+                }
+                return DB::connection($database)->selectOne($query);
             }
 
             return  ($data !== null) ? (array)$data : array();

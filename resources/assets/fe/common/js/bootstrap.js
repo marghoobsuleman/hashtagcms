@@ -1,22 +1,18 @@
+import Analytics from "./utils/Analytics";
+import Subscribe from "./components/Subscribe";
 
-try {
-    //require('bootstrap-sass');
-} catch (e) {}
+window.HashtagCms = {};
+window.HashtagCms.Subscribe = new Subscribe();
+window.HashtagCms.Analytics = new Analytics();
 
-import AdminConfig from '../../common/js/helpers/AdminConfig';
-import Velocity from '../../common/js/vendors/velocity.min';
-window.pluralize = require('pluralize');
-window._ = require('lodash'); //used in passport
-import {Storage, Fetcher} from '../../common/js/helpers/Common';
+/**
+ * We'll load the axios HTTP library which allows us to easily issue requests
+ * to our Laravel back-end. This library automatically handles sending the
+ * CSRF token as a header based on the value of the "XSRF" token cookie.
+ */
+
 window.axios = require('axios');
-
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-window.AdminConfig = new AdminConfig();
-window.Velocity = Velocity;
-
-window.log = console.log;
-window.Store = new Storage();
-window.Fetcher = new Fetcher();
 
 /**
  * Next we will register the CSRF Token as a common header with Axios so that
@@ -44,5 +40,7 @@ if (token) {
 
 // window.Echo = new Echo({
 //     broadcaster: 'pusher',
-//     key: 'your-pusher-key'
+//     key: process.env.MIX_PUSHER_APP_KEY,
+//     cluster: process.env.MIX_PUSHER_APP_CLUSTER,
+//     encrypted: true
 // });

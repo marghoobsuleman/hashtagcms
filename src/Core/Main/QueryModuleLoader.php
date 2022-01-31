@@ -7,11 +7,11 @@ class QueryModuleLoader extends Results implements ModuleLoaderImp
 
     protected array $result;
 
-    function __construct(string $query=null)
+    function __construct(string $query=null, string $database=null)
     {
         parent::__construct();
         if ($query != null) {
-            $this->process($query);
+            $this->process($query, $database);
         }
     }
 
@@ -19,9 +19,10 @@ class QueryModuleLoader extends Results implements ModuleLoaderImp
      * @param string $query
      * @return void
      */
-    public function process(string $query):void
+    public function process(string $query, string $database=null):void
     {
-        $data = $this->dbSelect($query);
+
+        $data = $this->dbSelect($query, array(), $database);
         $this->setResult($data);
     }
 

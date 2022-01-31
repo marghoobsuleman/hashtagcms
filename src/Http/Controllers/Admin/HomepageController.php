@@ -182,7 +182,7 @@ class HomepageController extends BaseAdminController
         $allData = $request->all();
         $data = $allData["data"];
         $where = $allData["where"];
-        $applicableForAllPlatforms = $allData['applicableForAllPlatforms'];
+        $applicableForAllPlatforms = $allData['applicableForAllPlatforms'] ?? 0;
 
         $site_id = $where["site_id"];
         $microsite_id = $where["microsite_id"];

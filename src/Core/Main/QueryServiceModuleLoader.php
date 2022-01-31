@@ -9,11 +9,11 @@ class QueryServiceModuleLoader extends Results implements ModuleLoaderImp
 
     protected array $result;
 
-    function __construct(string $query, string $serviceUrl, string $query_as, string $method_type)
+    function __construct(string $query, string $serviceUrl, string $query_as, string $method_type, string $database=null)
     {
         parent::__construct();
         if ($query != null) {
-            $this->process($query, $serviceUrl, $query_as, $method_type);
+            $this->process($query, $serviceUrl, $query_as, $method_type, $database);
         }
     }
 
@@ -24,22 +24,22 @@ class QueryServiceModuleLoader extends Results implements ModuleLoaderImp
      * @param string $method_type
      * @return void
      */
-    public function process(string $query, string $serviceUrl, string $query_as, string $method_type):void
+    public function process(string $query, string $serviceUrl, string $query_as, string $method_type, string $database=null):void
     {
 
         $data = array();
 
-        $qm = new QueryModuleLoader($query);
+        $qm = new QueryModuleLoader($query, $database);
         $data["queryData"] = $qm->getResult();
 
         if($query_as == "data" || $query_as == "") {
+
             //we should return the data
             $sm = new ServiceModuleLoader($serviceUrl, $method_type);
             $data["serviceData"] = $sm->getResult();
 
         } else {
             try {
-
                 $arguments = json_decode(json_encode($data["queryData"]), true)[0]; //kind fo toArray()
                 $sm = new ServiceModuleLoader($serviceUrl, $method_type, $arguments);
                 $data["serviceData"] = $sm->getResult();

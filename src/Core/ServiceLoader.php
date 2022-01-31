@@ -78,7 +78,7 @@ class ServiceLoader
                 return $this->getError("Platform is not defined");
             }
 
-            $categoryInfo = Category::orderBy("id", "desc")->where("link_rewrite", "=", $category)->orWhere("id", "=", $siteInfo->category_id)->first();
+            $categoryInfo = Category::withouGlobalScopes()->orderBy("id", "desc")->where("link_rewrite", "=", $category)->orWhere("id", "=", $siteInfo->category_id)->first();
             if($categoryInfo == null) {
                 return $this->getError("Category is not defined");
             }

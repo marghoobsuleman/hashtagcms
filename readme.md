@@ -63,6 +63,12 @@ php artisan test vendor/marghoobsuleman/hashtagcms
 ```
 
 ## Change log
+#v1.3.6 Changes
+- Backend/Frontend: Corrected folder structure for js libraries for future re-usabilty.
+- Backend: Handle multi database in query module.
+- Backend: Handle 'resultType=html' in service type. In case you need html from a service.
+- Backend: Fixed saving module in PageManager if there is only one paltform.
+
 #v1.3.5 Changes
 - Major changes (Need fresh intallation)
 - 'Tenants' will be called as 'Platforms' from now on. Since this CMS is built for corporates;

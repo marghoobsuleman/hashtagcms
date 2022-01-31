@@ -1,2 +1,2 @@
-import MapAPI from './helpers/Map';
+import MapAPI from '../../common/js/helpers/Map';
 window.MapApi = new MapAPI();

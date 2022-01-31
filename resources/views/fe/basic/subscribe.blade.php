@@ -12,7 +12,7 @@
                         <div class="col-4">
                             <button class="btn btn-lg btn-primary btn-block subscribe" type="submit">{{____("hashtagcms::auth.Submit")}}</button>
                         </div>
-                        <div class="alert col-12 mt-2" data-message-holder="subscribe-message-holder" style="display: none; background-color: lightyellow">
+                        <div class="alert col-12 mt-2" data-message-holder="subscribe-message-holder" style="display: none; background-color: lightyellow; color:#000">
                             <span class="message" data-class="subscribe-message"></span> <span data-class="subscribe-close" title="Close" class="pull-right pointer hand" style="background-color: #5f5f5f; color:#fff;padding:1px 5px">x</span>
                         </div>
                     </div>

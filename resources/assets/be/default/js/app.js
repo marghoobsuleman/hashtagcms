@@ -17,49 +17,49 @@ Vue.config.devtools = false;
  */
 
 Vue.filter('humanize', function(value) {
-  if (!value) return '';
-  value = value.toString().replace(/_/g, " ");
-  return value.charAt(0).toUpperCase() + value.slice(1);
+    if (!value) return '';
+    value = value.toString().replace(/_/g, " ");
+    return value.charAt(0).toUpperCase() + value.slice(1);
 });
 
-import TopNav from './components/TopNav';
-import LeftNav from './components/LeftNav';
-import TabularView from './components/TabularView';
-import SearchBar from './components/SearchBar';
-import ActionBar from './components/ActionBar';
-import MenuSorter from './components/MenuSorter';
-import TimerButton from './library/TimerButton';
-import ModalBox from './library/ModalBox';
-import ToastBox from './library/ToastBox';
+import TopNav from '../../common/js/components/TopNav';
+import LeftNav from '../../common/js/components/LeftNav';
+import TabularView from '../../common/js/components/TabularView';
+import SearchBar from '../../common/js/components/SearchBar';
+import ActionBar from '../../common/js/components/ActionBar';
+import MenuSorter from '../../common/js/components/MenuSorter';
+import TimerButton from '../../common/js/library/TimerButton';
+import ModalBox from '../../common/js/library/ModalBox';
+import ToastBox from '../../common/js/library/ToastBox';
 
-//import SplitButton from './library/SplitButton';
-import Pagination from './components/Pagination';
-import ModuleCreator from './components/ModuleCreator';
-import ModulePermission from './components/ModulePermission';
-import FrontEndModuleCreator from './components/FrontEndModuleCreator';
-import CmsModuleDropdown from './components/CmsModuleDropdown';
-import InfoBox from './library/InfoBox';
-import InfoxBoxes from './components/InfoxBoxes';
-import SiteWiseData from './components/SiteWiseData';
-import SiteWiseCopier from './components/SiteWiseCopier';
-import LeftMenuShowHide from './library/LeftMenuShowHide';
-import CategoryPlatform from './components/CategoryPlatform';
-import GloablSiteButton from './components/GloablSiteButton';
+//import SplitButton from '../../common/js/library/SplitButton';
+import Pagination from '../../common/js/components/Pagination';
+import ModuleCreator from '../../common/js/components/ModuleCreator';
+import ModulePermission from '../../common/js/components/ModulePermission';
+import FrontEndModuleCreator from '../../common/js/components/FrontEndModuleCreator';
+import CmsModuleDropdown from '../../common/js/components/CmsModuleDropdown';
+import InfoBox from '../../common/js/library/InfoBox';
+import InfoxBoxes from '../../common/js/components/InfoxBoxes';
+import SiteWiseData from '../../common/js/components/SiteWiseData';
+import SiteWiseCopier from '../../common/js/components/SiteWiseCopier';
+import LeftMenuShowHide from '../../common/js/library/LeftMenuShowHide';
+import CategoryPlatform from '../../common/js/components/CategoryPlatform';
+import GloablSiteButton from '../../common/js/components/GloablSiteButton';
 
-import Homepage from './components/Homepage';
-import CategorySettings from './components/CategorySettings';
-import Loader from './library/Loader';
-import CopyPaste from './library/CopyPaste';
+import Homepage from '../../common/js/components/Homepage';
+import CategorySettings from '../../common/js/components/CategorySettings';
+import Loader from '../../common/js/library/Loader';
+import CopyPaste from '../../common/js/library/CopyPaste';
 
-import SiteButton from './components/SiteButton';
-import PlatformButton from './components/PlatformButton';
+import SiteButton from '../../common/js/components/SiteButton';
+import PlatformButton from '../../common/js/components/PlatformButton';
 
-import PassportClient from './components/passport/Clients';
-import PassportAuthorizedClients from './components/passport/AuthorizedClients';
-import PassportPersonalAccessTokens from './components/passport/PersonalAccessTokens';
+import PassportClient from '../../common/js/components/passport/Clients';
+import PassportAuthorizedClients from '../../common/js/components/passport/AuthorizedClients';
+import PassportPersonalAccessTokens from '../../common/js/components/passport/PersonalAccessTokens';
 
-import LanguageCopier from "./components/LanguageCopier";
-import SiteCloner from "./components/SiteCloner";
+import LanguageCopier from "../../common/js/components/LanguageCopier";
+import SiteCloner from "../../common/js/components/SiteCloner";
 
 
 Vue.component('top-nav', TopNav);
@@ -74,7 +74,7 @@ Vue.component('timer-button', TimerButton);
 Vue.component('modal-box', ModalBox);
 Vue.component('toast-box', ToastBox);
 
-//Vue.component('split-button', require('./library/SplitButton); //@todo: temp
+//Vue.component('split-button', require('../../common/js/library/SplitButton); //@todo: temp
 
 Vue.component('Pagination', Pagination);
 Vue.component('module-creator', ModuleCreator);

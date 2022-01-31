@@ -16,13 +16,15 @@ let themesForBackend = [
             {source:'js/error-handler.js', target:'js', type:'js'},
             {source:'js/ie-polyfills.js', target:'js', type:'js'},
             {source:'js/map.js', target:'js', type:'js'},
-            {source:'js/vendors', target:'js/vendors', type:'copy'},
+            {source:'../common/js/vendors', target:'js/vendors', type:'copy'},
             {source:'sass/app.scss', target:'css', type:'css'},
             {source:'img', target:'img', type:'copy'},
             {source:'js/editor.js', target:'js', type:'js'}
         ]
     }
 ];
+
+
 
 let themesForFrontend = [
     {
