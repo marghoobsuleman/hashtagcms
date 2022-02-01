@@ -63,6 +63,10 @@ php artisan test vendor/marghoobsuleman/hashtagcms
 ```
 
 ## Change log
+#v1.3.7 Changes
+- Backend: Fixed issue while adding category
+- Frontend: Minor bug fixes while loading after running a test
+
 #v1.3.6 Changes
 - Backend/Frontend: Corrected folder structure for js libraries for future re-usabilty.
 - Backend: Handle multi database in query module.

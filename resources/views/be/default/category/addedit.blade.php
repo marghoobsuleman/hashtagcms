@@ -25,7 +25,7 @@
         $link_rewrite_pattern = old('link_rewrite_pattern');
         $link_navigation = old('link_navigation');
         $is_new = old('is_new');
-        $icon = old('icon');
+        $platform_wise["icon"] = old('icon');
         $icon_css = old('icon_css');
         $exclude_in_listing = old('exclude_in_listing');
         $cache_category = old('cache_category');

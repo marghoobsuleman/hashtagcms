@@ -372,24 +372,29 @@ class LayoutManager extends Results
 
         $allData = array();
         $infoKeeper = app()->HashtagCmsInfoLoader->getInfoKeeper();
-        //info("parseBodyContent: 1");
+        info("parseBodyContent: 1");
         //info(json_encode($infoKeeper));
-        foreach ($hooks as $key=>$hook) {
-            $placeholder = $hook["placeholder"];
-            $modules = $hook["modules"];
-            //making string
-            if(!isset($allData[$placeholder])) {
-                $allData[$placeholder] = array();
+        try {
+            foreach ($hooks as $key=>$hook) {
+                $placeholder = $hook["placeholder"];
+                $modules = $hook["modules"];
+                //making string
+                if(!isset($allData[$placeholder])) {
+                    $allData[$placeholder] = array();
+                }
+                //dd("modules", $modules);
+                foreach ($modules as $index=>$module) {
+                    $viewData = $this->getParsedViewData((array)$module, $infoKeeper);
+                    $allData[$placeholder][] = $viewData;
+                }
+                //info("placeholder: ".$placeholder);
             }
-            //dd("modules", $modules);
-            foreach ($modules as $index=>$module) {
-                $viewData = $this->getParsedViewData((array)$module, $infoKeeper);
-                $allData[$placeholder][] = $viewData;
-            }
-            //info("placeholder: ".$placeholder);
+        } catch (\Exception $exception) {
+            info("errro: ". $exception->getMessage());
         }
 
-       // info("parseBodyContent: 2");
+
+       info("parseBodyContent: 2");
 
         foreach ($modulesInTheme as $index=>$moduleT) {
             $placeholder = $moduleT->placeholder;
