@@ -55,7 +55,7 @@ class ModuleLoader
                 $headerJson = json_decode($moduleHeaderJson, true);
                 if(!empty($headerJson)) {
                     foreach ($headerJson as $key=>$value) {
-                        $headerJson[$key] = request()->headers->get($key);
+                        $headerJson[$key] = ($value === "") ? request()->headers->get($key) : $value;
                     }
                 } else {
                     info("Unable to parse header json for the module name: ".$module->name. ", alias: ".$module->alias);
@@ -86,7 +86,6 @@ class ModuleLoader
         if($service_params) {
             parse_str($service_params, $arguments);
             $withData = array_merge($withData, $arguments);
-            $headerJson['Content-Type'] = "text/html";
         }
 
         $ml = new ServiceModuleLoader($serviceUrl, $methodType, $withData, $headerJson);
@@ -96,9 +95,10 @@ class ModuleLoader
     /**
      * Get module from a service URL. It also parse all query params and send it the service url
      * @param mixed $module
+     * @param array $withData
      * @return array|null
      */
-    public function getUrlServiceModule(mixed $module): ?array
+    public function getUrlServiceModule(mixed $module, array $withData=array()): ?array
     {
 
         $serviceUrl = ($module->data_handler == "" || $module->data_handler==null) ? "" : $module->data_handler;
@@ -110,10 +110,9 @@ class ModuleLoader
         if($service_params) {
             parse_str($service_params, $arguments);
             $withData = array_merge($withData, $arguments);
-            $headerJson['Content-Type'] = "text/html";
         }
 
-        $ml = new UrlServiceModuleLoader($serviceUrl, $methodType, $dataKeyMap, $headerJson);
+        $ml = new UrlServiceModuleLoader($serviceUrl, $methodType, $withData, $dataKeyMap, $headerJson);
         return $ml->getResult();
     }
 
@@ -258,7 +257,7 @@ class ModuleLoader
 
         // Is there any module is required in a category?
         // lets check it
-        if(($is_mandatory == 1 && sizeof($data)==0) && self::getMandatoryCheck()) {
+        if(($is_mandatory == 1 && is_array($data) && sizeof($data)===0) && self::getMandatoryCheck()) {
             //dd("Mandatory content is missing");
             $this->contentFound = false;
         }

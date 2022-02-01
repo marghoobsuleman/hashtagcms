@@ -47,7 +47,7 @@ class ThemeController extends BaseAdminController
             "alias" => "required|max:60|string",
             "directory" => "required|max:60|string",
             "body_class" => "nullable|max:255|string",
-            "img_preview" => "nullable|max:255|string",
+            "img_preview" => "nullable|file",
             "skeleton" => "required"
         ];
 
@@ -78,10 +78,12 @@ class ThemeController extends BaseAdminController
         //update Image
         $img_preview = $this->upload($module_name, request()->file("img_preview"));
 
-
         if($img_preview!=NULL) {
-
             $saveData["img_preview"] = $img_preview;
+        }
+
+        if($data["img_preview_deleted"] != "0") {
+            $saveData["img_preview"] = "";
         }
 
         $arrSaveData = array("model"=>$this->dataSource,  "data"=>$saveData);

@@ -38,27 +38,39 @@ class ServiceModuleLoader extends Results implements ModuleLoaderServiceImp
         $arguments = array();
 
         //make sure if we are not passing data
-        if(sizeof($urls)>1 && sizeof($withData) == 0) {
+        if(sizeof($urls)>1) {
             //we have arguments too
             parse_str($urls[1], $arguments);
         }
 
-
         $url = $urls[0];
         $arguments = array_merge($arguments, $withData);
+        $contentTypes = array('text/css', 'text/csv', 'text/html', 'text/plain', 'text/xml');
 
+        $contentType = "json";
+
+        //if in params
+        if (isset($arguments['resultType']) && in_array($arguments['resultType'], $contentTypes)) {
+            $headers['Content-Type'] = $arguments['resultType'];
+            $contentType = "text";
+        }
+        //if in headers - it can merge with above one. but don't want to.
+        if (isset($headers['Content-Type']) && in_array($headers['Content-Type'], $contentTypes)) {
+            $contentType = "text";
+        }
 
         try {
+
             switch (strtolower($method_type)) {
                 case "get":
-                    if (isset($headers['Content-Type']) && $headers['Content-Type'] === "text/html") {
+                    if ($contentType === "text") {
                         $data = Http::withHeaders($headers)->get($url, $arguments)->body();
                     } else {
                         $data = Http::withHeaders($headers)->get($url, $arguments)->json();
                     }
                     break;
                 case "post":
-                    if (isset($headers['Content-Type']) && $headers['Content-Type'] === "text/html") {
+                    if ($contentType === "text") {
                         $data = Http::withHeaders($headers)->post($url, $arguments)->body();
                     } else {
                         $data = Http::withHeaders($headers)->post($url, $arguments)->json();

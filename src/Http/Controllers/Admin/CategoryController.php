@@ -80,7 +80,7 @@ class CategoryController extends BaseAdminController
             "is_root_category" => "nullable|integer",
             "is_new" => "nullable|integer",
             "theme_id" => "nullable|numeric",
-            "icon" => "nullable|max:255|string",
+            "icon" => "nullable|file",
             "icon_css" => "nullable|max:255|string",
             "position" => "nullable|numeric",
             "has_wap" => "nullable|integer",
@@ -181,6 +181,11 @@ class CategoryController extends BaseAdminController
         if($icon!=NULL) {
 
             $siteData["icon"] = $icon;
+        }
+
+        //it will have some value if user has clicked on delete
+        if($data['icon_deleted'] != "0" ) {
+            $siteData["icon"] = "";
         }
 
         $siteData["icon_css"] = $data["icon_css"];

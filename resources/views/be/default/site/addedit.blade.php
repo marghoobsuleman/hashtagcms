@@ -123,7 +123,7 @@
                         </div>
 
                         <div class="col-sm-10">
-                            {!! FormHelper::file('favicon', $favicon, array('accept'=>'image/*'), TRUE) !!}
+                            {!! FormHelper::file('favicon', $favicon, array('accept'=>'image/*'), TRUE, 100) !!}
                         </div>
 
                     </div>

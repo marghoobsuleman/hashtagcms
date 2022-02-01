@@ -132,18 +132,9 @@
                         </div>
 
                         <div class="col-sm-10">
-                            {!! FormHelper::file('img_preview', $img_preview, array()) !!}
+                            {!! FormHelper::file('img_preview', $img_preview, array(), true, 200) !!}
                         </div>
                     </div>
-
-                    @if (strlen($img_preview) > 5)
-                        <div class="form-group">
-                            <label class="col-sm-2"></label>
-                            <div class="col-sm-9 card imgWidthFix shadow-box v-pad-space" style="width: 200px; overflow: hidden">
-                                <a href="{{htcms_get_media($img_preview)}}" target="_blank"><img src="{{htcms_get_media($img_preview)}}" /></a>
-                            </div>
-                        </div>
-                    @endif
 
                     <div class="form-group">
 

@@ -4,7 +4,8 @@
 - Backend/Frontend: Corrected folder structure for js libraries for future re-usabilty.
 - Backend: Handle multi database in query module.
 - Backend: Handle 'resultType=html' in service type. In case you need html from a service.
-- Backend: Fixed saving module in PageManager if there is only one paltform. 
+- Backend: Fixed saving module in PageManager if there is only one paltform.
+- Backend: Fixed minor issue on image/icon upload in site and theme 
 
 #v1.3.5 Changes
 - Major changes (Need fresh intallation)

@@ -365,7 +365,7 @@
                     </div>
 
                     <div class="col-sm-10">
-                        {!! FormHelper::file('attachment', $attachment, array('accept'=>'*'), TRUE) !!}
+                        {!! FormHelper::file('attachment', $attachment, array('accept'=>'*'), TRUE, 100) !!}
                     </div>
 
                 </div>

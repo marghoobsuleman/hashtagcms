@@ -33,7 +33,7 @@ use MarghoobSuleman\HashtagCms\Core\Helpers\Message;
 class SiteController extends BaseAdminController
 {
 
-    protected $dataFields = array("id", "name", "lang.title", "context", "logo");
+    protected $dataFields = array("id", "name", "lang.title as title", "context", "logo");
 
     protected $dataSource = Site::class;
 
@@ -79,7 +79,7 @@ class SiteController extends BaseAdminController
             "under_maintenance" => "nullable|integer",
             "domain" => "required|max:255|string",
             "context" => "required|max:40|string",
-            "favicon" => "nullable|max:255|file",
+            "favicon" => "nullable|file",
             "lang_count" => "nullable|numeric",
             "lang_title" => "required|max:255|string"
         ];
@@ -100,7 +100,6 @@ class SiteController extends BaseAdminController
         $saveData["name"] = $data["name"];
         $saveData["domain"] = $data["domain"];
         $saveData["context"] = $data["context"];
-        $saveData["favicon"] = "";
         $saveData["under_maintenance"] = $data["under_maintenance"] ?? 0;
 
         $saveData["category_id"] = $data["category_id"] ?? 0;
@@ -115,8 +114,12 @@ class SiteController extends BaseAdminController
         $icon = $this->upload($module_name, request()->file("favicon"));
 
         if($icon != NULL) {
-
             $saveData["favicon"] = $icon;
+        }
+
+        //it will have some value if user has clicked on delete
+        if($data['favicon_deleted'] != "0" ) {
+            $saveData["favicon"] = "";
         }
 
         $arrLangData = array("data"=>$langData);

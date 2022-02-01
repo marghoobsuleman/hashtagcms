@@ -79,15 +79,16 @@
         if(isset($results)) {
             extract($results);
         }
-if(count($platform_wise) == 0) {
-        $platform_wise["platform_id"] = old("platform_id", $platform_id);
-        $platform_wise["icon_css"] = old("icon_css");
-        $platform_wise["header_content"] = old("header_content");
-        $platform_wise["footer_content"] = old("footer_content");
-        $platform_wise["exclude_in_listing"] = old("exclude_in_listing");
-        $platform_wise["cache_category"] =  old("cache_category");
-        $platform_wise["theme_id"] =  old("theme_id");
-}
+        if(count($platform_wise) == 0) {
+                $platform_wise["platform_id"] = old("platform_id", $platform_id);
+                $platform_wise["icon_css"] = old("icon_css");
+                $platform_wise["icon"] = old("icon");
+                $platform_wise["header_content"] = old("header_content");
+                $platform_wise["footer_content"] = old("footer_content");
+                $platform_wise["exclude_in_listing"] = old("exclude_in_listing");
+                $platform_wise["cache_category"] =  old("cache_category");
+                $platform_wise["theme_id"] =  old("theme_id");
+        }
 
         //if platform_wise not found
 
@@ -279,7 +280,7 @@ if(count($platform_wise) == 0) {
                             </div>
 
                             <div class="col-sm-10">
-                                {!! FormHelper::file('icon', '', array('accept'=>'image/*'), TRUE) !!}
+                                {!! FormHelper::file('icon', $platform_wise["icon"], array('accept'=>'image/*'), TRUE, 100) !!}
                             </div>
 
                         </div>
