@@ -36,7 +36,7 @@
         "blueimp-md5": "^2.18.0",
         "mdn-polyfills": "^5.20.0",
         "moment": "^2.29.1",
-        "node-sass": "^6.0.1",
+        "node-sass": "^7.0.0",
         "pluralize": "^8.0.0",
         "popper.js": "^1.16.1",
         "secure-ls": "^1.2.6",
