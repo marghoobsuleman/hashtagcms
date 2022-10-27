@@ -6,7 +6,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 use MarghoobSuleman\HashtagCms\Core\Traits\RoleManager;
-use Laravel\Passport\HasApiTokens;
+//use Laravel\Passport\HasApiTokens;
+use Laravel\Sanctum\HasApiTokens;
 use MarghoobSuleman\HashtagCms\Models\UserProfile;
 
 class User extends Authenticatable

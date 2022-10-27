@@ -1,5 +1,13 @@
 # Changelog
 
+#v1.3.8 Changes
+#### Please note: This updates need fresh installation. Not my fault; it's Laravel :)
+- Backend: Move Passport to Sanctum for authentication
+- Backend: Moved to vite
+- Backend: Vue 2 to Vue 3
+- Frontend: Moved to API based validation. 
+- API: Added v2 api
+
 #v1.3.7 Changes
 - Backend: Fixed issue while adding category
 - Frontend: Minor bug fixes while loading after running a test

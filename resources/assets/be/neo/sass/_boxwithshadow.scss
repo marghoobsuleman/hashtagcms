@@ -1,0 +1,224 @@
+
+// The dropdown menu (ul)
+.box-with-shadow {
+  min-width: 160px;
+  padding: 5px 0;
+  margin: 2px 0 0; // override default ul
+  list-style: none;
+  font-size: $font-size-base;
+  text-align: left; // Ensures proper alignment if parent has it changed (e.g., modal footer)
+  background-color: $dropdown-bg;
+  border: 1px solid $dropdown-fallback-border; // IE8 fallback
+  border: 1px solid $dropdown-border;
+  border-radius: $border-radius-base;
+  @include box-shadow(0 6px 12px rgba(0,0,0,.175));
+  background-clip: padding-box;
+  margin-bottom: 10px;
+  // Dividers (basically an hr) within the dropdown
+  .divider {
+    @include nav-divider($dropdown-divider-bg);
+  }
+
+}
+
+// Hover/Focus state
+.box-with-shadow-child > li {
+  &:hover,
+  &:focus {
+    text-decoration: none;
+    color: $dropdown-link-hover-color;
+    background-color: $dropdown-link-hover-bg;
+    cursor: default;
+  }
+}
+
+// Active state
+.box-with-shadow-child > .active {
+  &,
+  &:hover,
+  &:focus {
+    color: $dropdown-link-active-color;
+    text-decoration: none;
+    outline: 0;
+    background-color: $dropdown-link-active-bg;
+  }
+}
+
+// Disabled state
+//
+// Gray out text and ensure the hover/focus state remains gray
+
+.box-with-shadow-child > .disabled {
+  &,
+  &:hover,
+  &:focus {
+    color: $dropdown-link-disabled-color;
+  }
+
+  // Nuke hover/focus effects
+  &:hover,
+  &:focus {
+    text-decoration: none;
+    background-color: transparent;
+    background-image: none; // Remove CSS gradient
+    @include reset-filter;
+    cursor: $cursor-disabled;
+  }
+}
+
+.box-with-shadow-child {
+  max-height: 200px; overflow:auto;
+  padding:0;
+  // Links within the dropdown menu
+  > li {
+    display: block;
+    padding: 3px 20px;
+    clear: both;
+    font-weight: normal;
+    line-height: $line-height-base;
+    color: $dropdown-link-color;
+    white-space: nowrap; // prevent links from randomly breaking onto new lines
+  }
+}
+
+// Dropdown section headers
+.box-with-shadow-header {
+  display: block;
+  padding: 5px 20px 0;
+  font-size: $font-size-small;
+  line-height: $line-height-base;
+  color: $dropdown-header-color;
+  white-space: nowrap; // as with > li > a
+}
+
+// Backdrop to catch body clicks on mobile, etc.
+.box-with-shadow-backdrop {
+  position: fixed;
+}
+
+// Right aligned dropdowns
+.pull-right > .box-with-shadow {
+  right: 0;
+  left: auto;
+}
+
+.box-with-shadow-child-inline {
+  padding:0;
+  // Links within the dropdown menu
+  > li {
+    display: inline-block;
+    padding: 3px 20px;
+    clear: both;
+    font-weight: normal;
+    line-height: $line-height-base;
+    color: $dropdown-link-color;
+    white-space: nowrap; // prevent links from randomly breaking onto new lines
+  }
+}
+
+.shadow-box {
+  background: #fff;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+  border-radius: 2px;
+  margin-bottom: 20px;
+  border:1px solid #c3c3c3;
+  @include box-shadow(0 3px 6px rgba(0,0,0,.175));
+}
+
+.info-box {
+  display: block;
+  min-height: 60px;
+  background: #fff;
+  width: 100%;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+  border-radius: 2px;
+  margin-bottom: 20px;
+  border:1px solid #c3c3c3;
+  @include box-shadow(0 3px 6px rgba(0,0,0,.175));
+}
+
+.info-box:hover {
+  border:1px solid #9d9d9d;
+  @include box-shadow(0 6px 12px rgba(0,0,0,.175));
+}
+
+
+.info-box .info-box-icon {
+  border-top-left-radius: 2px;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 2px;
+  display: block;
+  float: left;
+  width: 80px;
+  text-align: center;
+  font-size: 37px;
+  background: #fff;
+  border-right:1px solid #c3c3c3;
+}
+
+
+.info-box .info-box-content {
+  padding: 5px 0;
+  margin-left: 90px;
+}
+.info-box .info-box-number {
+  display: block;
+  font-weight: bold;
+  font-size: 18px;
+}
+.info-box .info-box-text {
+  display: block;
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.info-box .info-box-text {
+  text-transform: uppercase;
+}
+.info-box .color-1 {
+  background: deeppink;
+  color:white;
+}
+.info-box .color-2 {
+  background: deepskyblue;
+  color:white;
+}
+.info-box .color-3 {
+  background: darkgreen;
+  color:white;
+}
+.info-box .color-4 {
+  background: coral;
+  color:white;
+}
+.info-box .color-5 {
+  background: darkmagenta;
+  color:white;
+}
+
+.info-box .color-6 {
+  background: darkblue;
+  color:white;
+}
+
+.info-box .color-7 {
+  background: darkcyan;
+  color:white;
+}
+
+.info-box .color-8 {
+  background: darkolivegreen;
+  color:white;
+}
+
+.info-box .color-9 {
+  background: darkgoldenrod;
+  color:white;
+}
+
+.info-box .color-10 {
+  background: darkslateblue;
+  color:white;
+}

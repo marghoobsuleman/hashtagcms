@@ -162,7 +162,7 @@
 
     import {Toast, Modal, Loader} from '../helpers/Common';
     import Sortable from 'sortablejs';
-    import InfoPopup from './InfoPopup';
+    import InfoPopup from './InfoPopup.vue';
 
 
     export default {

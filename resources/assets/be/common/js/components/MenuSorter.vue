@@ -33,7 +33,7 @@
     import Sortable from 'sortablejs';
     import {Toast} from '../helpers/Common';
 
-    import SplitButton from '../library/SplitButton';
+    import SplitButton from '../library/SplitButton.vue';
 
     export default {
 

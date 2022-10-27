@@ -48,7 +48,7 @@
 
 <script>
 
-  import LanguageButton from '../components/LanguageButton';
+  import LanguageButton from '../components/LanguageButton.vue';
   import {Toast} from '../helpers/Common';
 
 

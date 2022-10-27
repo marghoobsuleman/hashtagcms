@@ -19,7 +19,7 @@
 <script>
 
   import {EventBus} from "../helpers/event-bus";
-  import DownloadButton from './Downlods';
+  import DownloadButton from './Downlods.vue';
   export default {
       components:{
           'download-button':DownloadButton

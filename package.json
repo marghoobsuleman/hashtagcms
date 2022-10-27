@@ -1,48 +1,25 @@
 {
     "private": true,
     "scripts": {
-        "dev": "npm run development",
-        "devbuild": "cross-env NODE_ENV=devbuild node_modules/webpack/bin/webpack.js --progress --config=node_modules/laravel-mix/setup/webpack.config.js",
-        "development": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --config=node_modules/laravel-mix/setup/webpack.config.js",
-        "watch": "npm run development -- --watch",
-        "watch-poll": "npm run watch -- --watch-poll",
-        "hot": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --config=node_modules/laravel-mix/setup/webpack.config.js",
-        "prod": "npm run production",
-        "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --progress --config=node_modules/laravel-mix/setup/webpack.config.js"
+        "dev": "vite",
+        "build": "vite build"
     },
     "devDependencies": {
-        "@popperjs/core": "^2.9.3",
-        "ajv": "^8.6.2",
-        "bootstrap": "^5.1.0",
-        "bootstrap-sass": "^3.4.1",
-        "cross-env": "^7.0.3",
-        "css-loader": "^6.2.0",
-        "dotenv": "^10.0.0",
-        "fibers": "^5.0.0",
-        "file-loader": "^6.2.0",
-        "img-loader": "^4.0.0",
-        "laravel-mix": "^6.0.27",
+        "@vitejs/plugin-vue": "^3.1.2",
+        "axios": "^0.27.2",
+        "laravel-vite-plugin": "^0.6.0",
         "lodash": "^4.17.21",
-        "resolve-url-loader": "^4.0.0",
-        "sass": "^1.37.5",
-        "sass-loader": "^12.1.0",
-        "vue-loader": "^15.9.8",
-        "vue-template-compiler": "^2.6.14"
+        "postcss": "^8.1.14",
+        "require": "^2.4.20",
+        "sass": "^1.55.0",
+        "vite": "^3.0.0",
+        "vite-plugin-static-copy": "^0.11.0"
     },
     "dependencies": {
-        "@fortawesome/fontawesome-free": "^5.15.4",
-        "ajv-keywords": "^5.0.0",
-        "axios": "^0.21.2",
-        "blueimp-md5": "^2.18.0",
-        "mdn-polyfills": "^5.20.0",
-        "moment": "^2.29.1",
-        "node-sass": "^6.0.1",
+        "bootstrap": "^5.2.2",
         "pluralize": "^8.0.0",
-        "popper.js": "^1.16.1",
         "secure-ls": "^1.2.6",
-        "sortablejs": "^1.14.0",
-        "tinymce": "^5.10.0",
-        "vue": "^2.6.14",
-        "vuedraggable": "^2.24.3"
+        "sortablejs": "^1.15.0",
+        "vue": "^3.2.41"
     }
 }

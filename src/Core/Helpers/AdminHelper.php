@@ -48,8 +48,14 @@ if (! function_exists('htcms_admin_asset')) {
      * @return boolean
      */
     function htcms_admin_asset($url='') {
+        /*try {
+            return vite($url);
+        } catch (Error $error) {
+            //do nothing
+        }*/
+
         $preFix = Str::contains($url, "?") ? "&" : "?";
-        $path = htcms_admin_config('assets_path');
+        $path = htcms_admin_config('theme_assets');
         $appUrl = env('APP_URL');
         return $appUrl."/".$path."/".$url.$preFix."verions=".htcms_admin_config('version');
     }
