@@ -23,8 +23,8 @@
 
             @foreach($data as $row)
                 <div class="col-lg-4">
-                    <info-box data-label="{{$row['label']}}"
-                              data-total="{{$row['total']}}"
+                    <info-box data-title="{{$row['label']}}"
+                              data-sub-title="{{$row['total']}}"
                               data-icon-css="{{$row['icon']}}"
                               data-link="{{htcms_admin_path($row['link'])}}"
                     ></info-box>

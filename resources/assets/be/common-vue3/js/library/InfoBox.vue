@@ -1,13 +1,13 @@
 <template>
-  <div class="card info-box shadow">
+  <div class="card mb-3 shadow info-box">
     <span :class="getColor()+' info-box-icon'"><i style="font-style: normal" :class="icon">{{getIconText()}}</i></span>
     <div class="card-body">
       <h5 class="card-title">
         <a v-if="link!==''" :href="link" class="info-box-text"><span class="info-box-text" v-html="content"></span></a>
-        <span v-if="link==''" class="info-box-text">{{content}}</span>
+        <span v-if="link===''" class="info-box-text">{{content}}</span>
       </h5>
-      <p class="card-text">
-        <span v-if="total" class="info-box-number">{{total}}</span>
+      <p class="card-text text-center" v-if="subTitle!==''">
+        {{subTitle}}
       </p>
     </div>
   </div>
@@ -16,39 +16,30 @@
 <script>
     export default {
         mounted() {
-            //console.log("this.label "+this.label);
-            //console.log(this.content);
+
         },
         props: [
             'dataInfo',
             'dataColorIndex',
-            'dataTotal',
-            'dataLabel',
+            'dataSubTitle',
+            'dataTitle',
             'dataIconCss',
             'dataLink'
         ],
         data() {
             return {
-                info:(typeof this.dataInfo == "undefined") ? [] : (typeof this.dataInfo == "string") ? JSON.parse(this.dataInfo) : this.dataInfo,
-                total:(typeof this.dataTotal == "undefined") ? 0 : (typeof this.dataTotal == "string") ? parseInt(this.dataTotal) : this.dataTotal,
-                label:this.dataLabel,
+                info:(typeof this.dataInfo == "undefined") ? null : (typeof this.dataInfo == "string") ? JSON.parse(this.dataInfo) : this.dataInfo,
+                subTitle:(typeof this.dataSubTitle !== "undefined") ? this.dataSubTitle : "",
                 iconCss:this.dataIconCss,
                 link:(typeof this.dataLink == "undefined") ? "" : this.dataLink
             }
         },
         computed: {
             content() {
-
-                return (typeof this.label == "undefined") ? this.info.name : this.label;
-
-                if((typeof this.label == "undefined" || this.label == "") && this.info.length != 0) {
-                    return this.info.name;
-                } else {
-                    return this.label;
-                }
+              return (this.info !== null) ? this.info.name : this.dataTitle;
             },
             icon() {
-                if((typeof this.iconCss == "undefined" || this.iconCss == "") && this.info.length != 0) {
+                if((typeof this.iconCss == "undefined" || this.iconCss === "") && this.info !== null) {
                     return this.info.icon_css;
                 } else {
                     return this.iconCss;
@@ -58,7 +49,7 @@
         },
         methods: {
             getIconText() {
-                return ((this.info.icon_css === "" || !this.info.icon_css) && typeof this.label == "undefined") ? (this.content.replace(/[^a-zA-Z- ]/g, "").match(/\b\w/g)).join("") : "";
+                return (this.info?.icon_css || typeof this.iconCss === "undefined") ? (this.content.replace(/[^a-zA-Z- ]/g, "").match(/\b\w/g)).join("") : "";
             },
             getColor: function () {
                 let n = (!this.dataColorIndex) ? this.getSerialNumber() : this.dataColorIndex;
@@ -71,15 +62,15 @@
                 return Math.floor(Math.random() * (max - min)) + min;
             },
             getSerialNumber() {
-                if(Store.fetch("counter")==undefined) {
+                if(Store.fetch("counter")===undefined) {
                     Store.store("counter", 1);
-                };
+                }
 
                 let counter = Store.fetch("counter");
 
                 if(counter>10) {
                     counter = 1;
-                };
+                }
                 Store.store("counter", (counter+1));
 
                 return counter;

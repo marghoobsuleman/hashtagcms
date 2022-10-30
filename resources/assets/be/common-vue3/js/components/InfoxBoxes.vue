@@ -3,7 +3,10 @@
         <div v-if="hasAccess(module.id)" class="col-auto hand" @click="navigate(module)" :title="module.name">
             <info-box
                     :key="module.name+index"
-                    :data-info="module">
+                    :data-title="module.name"
+                    :data-sub-title="module.sub_title"
+                    :data-icon-css="module.icon_css"
+                    >
             </info-box>
         </div>
     </template>
@@ -18,7 +21,8 @@
             'info-box':InfoBox
         },
         mounted() {
-            console.log(this.modulesAllowed);
+            //console.log(this.modulesAllowed);
+          //
         },
         props: [
             'dataModules',
