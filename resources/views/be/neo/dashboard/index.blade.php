@@ -20,9 +20,8 @@
     </div>
     <div class="container">
         <div class="row" style="margin-top: 10px">
-
             @foreach($data as $row)
-                <div class="col-lg-4">
+                <div class="col-auto">
                     <info-box data-title="{{$row['label']}}"
                               data-sub-title="{{$row['total']}}"
                               data-icon-css="{{$row['icon']}}"

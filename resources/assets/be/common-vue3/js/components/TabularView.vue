@@ -4,7 +4,7 @@
           <table class="table margin-top-10 table-grid" v-for="row in rows" :key="row.key" :id="'row_'+row.id">
               <tr v-for="fields in headings">
                   <td :class="'header head_'+getFieldName(fields)">
-                      {{getFieldName(fields) | fieldsName }}
+                      {{filterFieldsName(getFieldName(fields)) }}
                       <div class="clearboth"></div>
                   </td>
                   <td>
@@ -16,11 +16,11 @@
               </tr>
           </table>
       </div>
-      <table class="table table-bordered margin-top-10"  v-if="layoutType == 'table'">
+      <table class="table border shadow-sm mt-2 table-grid"  v-if="layoutType === 'table'">
         <thead>
           <tr>
-            <th v-for="fields in headings" :class="'head_'+getFieldName(fields) | snakeCase">
-              {{getFieldName(fields) | fieldsName }}
+            <th v-for="fields in headings" :class="'header head_'+filterSnakeCase(getFieldName(fields))">
+              {{filterFieldsName(getFieldName(fields))}}
             </th>
           </tr>
         </thead>
@@ -35,8 +35,7 @@
         </tr>
         <tr v-if="isZeroResult()">
           <td :colspan="getTotalColumns()" class="alert-danger">
-
-            <div > No results found...</div>
+            <div> No results found...</div>
           </td>
 
         </tr>
@@ -75,9 +74,6 @@ import {EventBus} from "../helpers/event-bus";
 export default {
 
   mounted() {
-
-
-
      this.highlight();
      this.bindAction();
       if(this.showDeletePopup == "FALSE") {
@@ -175,16 +171,17 @@ export default {
               }
           });
 
-          this.fieldAsLinkCache[key] = (found == undefined) ? -1 : found;
+          this.fieldAsLinkCache[key] = (found === undefined) ? -1 : found;
 
           return this.fieldAsLinkCache[key];
       },
 
-      getFieldName(key, prop) {
+      getFieldName(key, prop, asFilterLabel) {
         prop = (prop) ? prop : 'label';
-        return (typeof key == "string") ? key : (key[prop]==undefined) ? key : key[prop];
+        return (typeof key == "string") ? key : (key[prop]===undefined) ? key : key[prop];
+        value = value.replace(/\.|_/g, " ");
+        return (asFilterLabel) ? value.charAt(0).toUpperCase() + value.slice(1) : value;
       },
-
       getFieldValue(row, key, fields) {
 
         var $this = this;
@@ -629,19 +626,14 @@ export default {
           this.isDelete = false;
           this.currentActionItem = null;
           this.$refs.deleteBox.open();
+      },
+      filterFieldsName(value) {
+        value = value.replace(/\.|_/g, " ");
+        return value.charAt(0).toUpperCase() + value.slice(1);
+      },
+      filterSnakeCase(value) {
+        return value.replace(/\s|\./g, "_").toLowerCase();
       }
-
-
-  },
-  filters: {
-    fieldsName: function (value) {
-      value = value.replace(/\.|_/g, " ");
-      return value.charAt(0).toUpperCase() + value.slice(1);
-    },
-    snakeCase: function(value) {
-        value = value.replace(/\s/g, "_");
-        return value.toLowerCase();
-    }
   }
 }
 

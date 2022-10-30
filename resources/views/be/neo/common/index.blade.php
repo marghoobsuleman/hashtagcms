@@ -20,7 +20,6 @@
                 data-modules-allowed="{{json_encode($moduleAllowed)}}"
                 data-is-admin="{{$isAdmin}}"
             >
-
             </info-boxes>
 
         </div>

@@ -2,7 +2,7 @@
   <div>
       <div class="row border-bottom">
       <div class="col-md-6">
-          <h3>{{controllerTitle | humanize}}</h3>
+          <h3>{{getTitle(controllerTitle)}}</h3>
       </div>
 
        <div class="btn-toolbar" role="toolbar">
@@ -48,8 +48,9 @@
 
 <script>
 
-  import LanguageButton from '../components/LanguageButton';
+  import LanguageButton from '../components/LanguageButton.vue';
   import {Toast} from '../helpers/Common';
+  import Humanize from "../helpers/humanize";
 
 
   export default {
@@ -124,7 +125,6 @@
                 window.location.search = searchParams.toString();
 
             }
-
          },
         getAction(val) {
 
@@ -158,6 +158,9 @@
         },
         getButtonType(row) {
             return (!row.as || row.as==="button") ? "button" : row.as;
+        },
+        getTitle: function (text) {
+          return Humanize(text);
         }
     }
   }

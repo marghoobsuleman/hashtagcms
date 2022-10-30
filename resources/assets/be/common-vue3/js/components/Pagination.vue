@@ -1,15 +1,19 @@
 <template>
-  <div class="row admin-pagination">
-      <nav aria-label="navigation">
-          <ul class="pagination" v-if="showPagination">
-              <li v-for="page in allPages" :class="getCss(page)"><a class="page-link" :href="getLink(page)" v-html="getLabel(page.label)"></a></li>
-          </ul>
-          <span class="counters" v-if="totalCount > 0">
+  <div class="row">
+    <div class="col-auto">
+        <span class="counters" v-if="totalCount > 0">
                  {{dataFirstItem}} - {{lastItem}} of {{totalCount}}
           </span>
+    </div>
+    <div class="col-auto">
+      <nav v-if="showPagination" class="shadow-sm">
+        <ul class="pagination">
+          <li v-for="page in allPages" :class="getCss(page)"><a class="page-link" :href="getLink(page)" v-html="getLabel(page.label)"></a></li>
+        </ul>
       </nav>
-      <div class="pageRow">
-        <span class="pull-right" v-if="totalCount > 0" style="margin-right:16px">
+    </div>
+    <div class="col-auto">
+      <span class="pull-right" v-if="totalCount > 0" style="margin-right:16px">
             <download-button :data-controller-name="controllerName"></download-button>
         </span>
     </div>
@@ -19,7 +23,7 @@
 <script>
 
   import {EventBus} from "../helpers/event-bus";
-  import DownloadButton from './Downlods';
+  import DownloadButton from './Downlods.vue';
   export default {
       components:{
           'download-button':DownloadButton

@@ -1,6 +1,6 @@
 <template>
   <div class="clearfix">
-      <div v-if="layoutType == 'grid'">
+      <div v-if="layoutType === 'grid'">
           <table class="table margin-top-10 table-grid" v-for="row in rows" :key="row.key" :id="'row_'+row.id">
               <tr v-for="fields in headings">
                   <td :class="'header head_'+getFieldName(fields)">

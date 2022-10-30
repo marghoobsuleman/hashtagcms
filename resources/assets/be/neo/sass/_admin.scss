@@ -8,10 +8,10 @@ nav {
   }
 }
 
-$highlight: #f5008b;
-$highlight-sub: darkpink;
-$spinnerDegree: 360;
 
+a:hover {
+  color: $highlight;
+}
 /***** Menu *********/
 .t_left {
   background: #313131;
@@ -65,7 +65,7 @@ $spinnerDegree: 360;
 
 /** Info Boxes **/
 .info-box {
-  min-width: 100px;
+  min-width: 150px;
   &:hover {
     border:1px solid #9d9d9d;
   }
@@ -468,16 +468,21 @@ $spinnerDegree: 175.6449737548828;
     transform: rotate(360deg)
   }
 }
-.table-grid {margin:10px; border: 1px solid #c3c3c3;}
-.table-grid a {border: none}
-.table-grid td {
-    padding:5px;
-    border-bottom: 1px solid #c3c3c3;
+
+
+.table-grid {
+  a, a:visited {border: none; text-decoration: none}
+
+ .list-table-row td {
+    border: 1px solid #c3c3c3;
+  }
+
+  .header {
+    background-color: #f2f2f2 !important;
+    border-bottom:3px solid #dddddd !important;
+    text-transform: uppercase;
+  }
 }
-.table-grid td.header {
-    background: #f2f2f2;
-    width:150px;
-    border-bottom: 1px solid #dddddd;
-}
+
 
 .new {font-size: 8px; background-color:deeppink; color: #fff; padding:2px; position: relative; top:-2px}

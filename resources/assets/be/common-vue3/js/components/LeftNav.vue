@@ -3,14 +3,14 @@
     <ul class="list-unstyled ps-0">
       <template v-for="current in allData">
         <li v-if="current.parent_id === 0">
-          <a :href="getHref(current)"  class="text-white" aria-expanded="true">
+          <a :href="getHref(current)"  :class="'text-white '+getActiveCss(current.controller_name, current)" aria-expanded="true">
             <i v-if="hasChild(current)" class="js_more fa fa-ellipsis-v pull-right adjustMore"></i>
             <i :class="current.icon_css" aria-hidden="true"></i>
             {{current.name}}
           </a>
           <template v-if="hasChild(current)">
             <ul class="btn-toggle-nav list-unstyled fw-normal small">
-              <li v-for="child in current.child"><a :href="getHref(child)" class="text-white">
+              <li v-for="child in current.child"><a :href="getHref(child)" :class="'text-white '+getActiveCss(current.controller_name, child)">
                 <i :class="child.icon_css" aria-hidden="true"></i>
                 {{ child.name }}
               </a></li>

@@ -231,5 +231,3 @@ export class LeftMenu {
 
     }
 }
-
-

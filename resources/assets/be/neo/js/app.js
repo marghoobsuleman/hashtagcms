@@ -25,25 +25,20 @@ import { createApp } from 'vue';
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-/*Vue.filter('humanize', function(value) {
-    if (!value) return '';
-    value = value.toString().replace(/_/g, " ");
-    return value.charAt(0).toUpperCase() + value.slice(1);
-});*/
 
 import TopNav from '../../common-vue3/js/components/TopNav.vue';
 import LeftNav from '../../common-vue3/js/components/LeftNav.vue';
 import InfoBox from '../../common-vue3/js/library/InfoBox.vue';
-import InfoxBoxes from '../../common-vue3/js/components/InfoxBoxes.vue';
-
-// import TabularView from '../../common-vue3/js/components/TabularView';
-// import SearchBar from '../../common-vue3/js/components/SearchBar';
-// import ActionBar from '../../common-vue3/js/components/ActionBar';
+import InfoBoxes from '../../common-vue3/js/components/InfoxBoxes.vue';
+import TabularView from '../../common-vue3/js/components/TabularView.vue';
+import SearchBar from '../../common-vue3/js/components/SearchBar.vue';
+import ActionBar from '../../common-vue3/js/components/ActionBar.vue';
+import Pagination from '../../common-vue3/js/components/Pagination.vue';
 // import MenuSorter from '../../common-vue3/js/components/MenuSorter';
 // import TimerButton from '../../common-vue3/js/library/TimerButton';
 // import ModalBox from '../../common-vue3/js/library/ModalBox';
 // import ToastBox from '../../common-vue3/js/library/ToastBox';
-// import Pagination from '../../common-vue3/js/components/Pagination';
+
 // import ModuleCreator from '../../common-vue3/js/components/ModuleCreator';
 // import ModulePermission from '../../common-vue3/js/components/ModulePermission';
 // import FrontEndModuleCreator from '../../common-vue3/js/components/FrontEndModuleCreator';
@@ -70,9 +65,9 @@ import InfoxBoxes from '../../common-vue3/js/components/InfoxBoxes.vue';
 
     //# Vue.component('top-nav', TopNav);
     // Vue.component('admin-modules', LeftNav);
-// Vue.component('table-view', TabularView);
-// Vue.component('search-bar', SearchBar);
-// Vue.component('action-bar', ActionBar);
+    // Vue.component('table-view', TabularView);
+    // Vue.component('search-bar', SearchBar);
+    // Vue.component('action-bar', ActionBar);
 //
 // Vue.component('menu-sorter', MenuSorter);
 //
@@ -82,7 +77,7 @@ import InfoxBoxes from '../../common-vue3/js/components/InfoxBoxes.vue';
 //
 // //Vue.component('split-button', require('../../common-vue3/js/library/SplitButton); //@todo: temp
 //
-// Vue.component('Pagination', Pagination);
+    // Vue.component('Pagination', Pagination);
 // Vue.component('module-creator', ModuleCreator);
 // Vue.component('module-permission', ModulePermission);
 // Vue.component('front-module-creator', FrontEndModuleCreator);
@@ -111,13 +106,17 @@ import InfoxBoxes from '../../common-vue3/js/components/InfoxBoxes.vue';
 //
 // Vue.component('language-copier', LanguageCopier);
 // Vue.component('site-cloner', SiteCloner);
-
+// Vue.component('Pagination', Pagination);
 createApp({
     components: {
         'top-nav':TopNav,
         'admin-modules':LeftNav,
         'info-box':InfoBox,
-        'info-boxes':InfoxBoxes
+        'info-boxes':InfoBoxes,
+        'table-view':TabularView,
+        'search-bar':SearchBar,
+        'action-bar':ActionBar,
+        'Pagination':Pagination
 
     }
 }).mount('#app');

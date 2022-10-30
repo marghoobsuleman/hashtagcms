@@ -8,7 +8,7 @@
 </template>
 
 <script>
-    import SplitButton from '../library/SplitButton';
+    import SplitButton from '../library/SplitButton.vue';
 
     export default {
 
