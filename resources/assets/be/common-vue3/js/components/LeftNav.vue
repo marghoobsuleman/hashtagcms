@@ -1,27 +1,31 @@
 <template>
-<div>
-    <div id="leftMenuPanel" class="leftMenu" @click="showHide($event)" :style="getMinHeight()">
-        <ul>
-            <li v-for="current in allData" :class="'parent '+getActiveCss(current.controller_name, current)" v-if="current.parent_id==0 && hasAccess(current.id)">
-                <h3>
-                    <a :href="getHref(current)">
-                        <i v-if="hasChild(current)" class="js_more fa fa-ellipsis-v pull-right adjustMore"></i>
-                        <i :class="current.icon_css" aria-hidden="true"></i>
-                        <span class="text">{{current.name}}</span>
-                    </a>
-                </h3>
-                <ul v-if="hasChild(current)">
-                    <li v-for="child in current.child" v-if="hasAccess(child.id)" :class="getActiveCss(child.controller_name)">
-                        <a :href="getHref(child)">
-                            <i :class="getIconCss(child)" aria-hidden="true">{{getIconLabel(child)}}</i>
-                            <span class="text">{{child.name}}</span>
-                        </a>
-                    </li>
-                </ul>
-            </li>
-        </ul>
+  <div class="d-flex flex-column flex-shrink-0 t_left">
+    <ul class="list-unstyled ps-0">
+      <template v-for="current in allData">
+        <li v-if="current.parent_id === 0">
+          <a :href="getHref(current)"  class="text-white" aria-expanded="true">
+            <i v-if="hasChild(current)" class="js_more fa fa-ellipsis-v pull-right adjustMore"></i>
+            <i :class="current.icon_css" aria-hidden="true"></i>
+            {{current.name}}
+          </a>
+          <template v-if="hasChild(current)">
+            <ul class="btn-toggle-nav list-unstyled fw-normal small">
+              <li v-for="child in current.child"><a :href="getHref(child)" class="text-white">
+                <i :class="child.icon_css" aria-hidden="true"></i>
+                {{ child.name }}
+              </a></li>
+            </ul>
+          </template>
+        </li>
+      </template>
+    </ul>
+    <hr>
+    <div class="dropdown">
+      <a title="Open HashtagCMS.org" href="https://www.hashtagcms.org/" target="_blank" class="d-flex align-items-center text-light text-decoration-none" data-bs-toggle="dropdown" aria-expanded="false">
+        <strong>v1.3.8</strong>
+      </a>
     </div>
-</div>
+  </div>
 </template>
 
 <script>
@@ -56,14 +60,14 @@ export default {
         },
         isActive(controller_name, data) {
 
-            if(this.dataControllerName == controller_name) {
+            if(this.dataControllerName === controller_name) {
                 return true;
             }
 
             if(data && data.child && data.child.length>0) {
-                var controllerName = this.dataControllerName;
+                let controllerName = this.dataControllerName;
                 return data.child.find(function(c, ) {
-                    return c.controller_name == controllerName;
+                    return c.controller_name === controllerName;
                 });
             }
         },
@@ -71,7 +75,7 @@ export default {
             return AdminConfig.admin_path(data.controller_name);
         },
         hideAll() {
-            var $this = this;
+            let $this = this;
             document.querySelectorAll(".leftMenu .parent").forEach(function(i) {
                 i.classList.remove("active", "animated", "fadeIn");
             });
@@ -86,12 +90,12 @@ export default {
             }
         },
         hasAccess(module_id) {
-            if(this.dataIsAdmin.toString() == "1") {
+            if(this.dataIsAdmin.toString() === "1") {
                 return true;
             }
             for(let i=0; i<this.modulesAllowed.length;i++) {
                 let current = this.modulesAllowed[i];
-                if(current.module_id == module_id) {
+                if(current.module_id === module_id) {
                     return true;
                 }
 
@@ -99,8 +103,7 @@ export default {
             return false;
         },
         getMinHeight() {
-            var h = window.innerHeight;
-            return `height:${h}px;`;
+            return `height:${window.innerHeight}px;`;
         }
     }
 }

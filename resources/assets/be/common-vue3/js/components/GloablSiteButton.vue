@@ -1,5 +1,5 @@
 <template>
-  <select class="form-select" name="site_combo" id="site_combo" @change="setSite" v-model="currentSite">
+  <select name="site_combo" class="form-select" id="site_combo" @change="setSite" v-model="currentSite">
       <option v-for="site in sites" :value="site.id">
           {{site.name}}
       </option>

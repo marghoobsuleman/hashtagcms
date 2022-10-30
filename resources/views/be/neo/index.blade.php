@@ -36,31 +36,24 @@
     <div id="app">
       @include(htcms_admin_get_view_path('common.topbar'))
       <div class="container-fluid">
-        <div class="row">
-          @if (Auth::guest()==false)
-            <div class="col-md-2 noLRpadding hidden-md hidden-xs" id="mainLeftContent">
-              @include(htcms_admin_get_view_path('common.sidebar'))
-            </div>
-          @endif
-          <?php
-          $css = (Auth::guest()) ? "" : "col-md-10";
-          ?>
-          <div class="{{$css}}" id="mainRightContent">
-            @yield('content')
+          <div class="row">
+              <div class="col col-lg-2">
+                  @include(htcms_admin_get_view_path('common.sidebar'))
+              </div>
+              <div class="col">
+                  @yield('content')
+              </div>
           </div>
-
-        </div>
+          <div class="row">
+              @include(htcms_admin_get_view_path('common.components'))
+          </div>
       </div>
-        @include(htcms_admin_get_view_path('common.components'))
     </div>
-
-
 
 <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
     {{ csrf_field() }}
 </form>
-
-    @vite(['resources/assets/be/neo/js/app.js'])
+@vite(['resources/assets/be/neo/js/app.js'])
 @stack('scripts')
 </body>
 </html>

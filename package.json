@@ -17,6 +17,7 @@
     },
     "dependencies": {
         "bootstrap": "^5.2.2",
+        "font-awesome": "^4.7.0",
         "pluralize": "^8.0.0",
         "secure-ls": "^1.2.6",
         "sortablejs": "^1.15.0",

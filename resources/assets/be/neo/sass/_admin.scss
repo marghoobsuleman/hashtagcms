@@ -1,3 +1,150 @@
+@use "sass:math";
+body {
+  font-size: 0.8rem;
+}
+nav {
+  select {
+    font-size: 0.8rem !important;
+  }
+}
+
+$highlight: #f5008b;
+$highlight-sub: darkpink;
+$spinnerDegree: 360;
+
+/***** Menu *********/
+.t_left {
+  background: #313131;
+  color: white;
+  padding: 0;
+  box-shadow:
+          0 5px 15px 1px rgba(0, 0, 0, 0.2),
+          0 0 200px 1px rgba(255, 255, 255, 0.2);
+
+  a{
+    color:white;
+    display: block;
+    text-decoration: none;
+    padding: 5px 10px;
+  }
+  a:hover {
+    background: $highlight;
+  }
+
+  .adjustMore {
+    font-size: 0.7rem;
+    padding:0 3px;
+    position: relative;
+    top:4px;
+  }
+
+  .active {
+    background: $highlight;
+    color:white;
+    border-bottom:0 solid #c3c3c3;
+  }
+
+  ul ul li a {
+    transition: all 0.15s;
+
+    &:hover {
+      background: $highlight;
+    }
+  }
+
+  ul ul {
+    display: none;
+  }
+  li.active ul {
+    display: block;
+  }
+  ul li ul li.active {
+    background: $highlight-sub;
+  }
+}
+
+/** Info Boxes **/
+.info-box {
+  min-width: 100px;
+  &:hover {
+    border:1px solid #9d9d9d;
+  }
+
+  .info-box-icon {
+    display: block;
+    text-align: center;
+    font-size: 37px;
+    background: #fff;
+    padding: 20px;
+  }
+
+  .info-box-number {
+    display: block;
+    font-weight: bold;
+    font-size: 18px;
+  }
+
+  .info-box-text {
+    display: block;
+    text-align: center;
+    font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-transform: uppercase;
+  }
+
+  .color-1 {
+    background: deeppink;
+    color:white;
+  }
+  .color-2 {
+    background: deepskyblue;
+    color:white;
+  }
+
+  .color-3 {
+    background: darkgreen;
+    color:white;
+  }
+  .color-4 {
+    background: coral;
+    color:white;
+  }
+  .color-5 {
+    background: darkmagenta;
+    color:white;
+  }
+
+  .color-6 {
+    background: darkblue;
+    color:white;
+  }
+
+  .color-7 {
+    background: darkcyan;
+    color:white;
+  }
+
+  .color-8 {
+    background: darkolivegreen;
+    color:white;
+  }
+
+  .color-9 {
+    background: darkgoldenrod;
+    color:white;
+  }
+
+  .color-10 {
+    background: darkslateblue;
+    color:white;
+  }
+}
+
+
+
+
 @mixin marginTop($value) {
   margin-top:$value
 }
@@ -60,98 +207,6 @@ thead th{background:#f2f2f2;}
 .pl20{padding-left: 20px}
 
 
-
-/***** Menu *********/
-.leftMenu {
-  background: #313131;
-  color: white;
-
-  box-shadow:
-          0 5px 15px 1px rgba(0, 0, 0, 0.2),
-          0 0 200px 1px rgba(255, 255, 255, 0.2);
-
-  h3 a{
-    color:white;
-    display: block;
-    text-decoration: none;
-  }
-  h3:hover {
-    background: $highlight-sub;
-  }
-
-  a span.text {
-    padding-left:5px;
-  }
-
-  h3 .adjustMore {
-    font-size: 11px;
-    line-height:30px;
-    padding:0px 3px;
-    position: relative;
-    top:4px;
-  }
-
-  .active h3 {
-    background: $highlight;
-    color:white;
-  }
-
-  .active h3 {
-    border-bottom:0px solid #c3c3c3;
-  }
-
-  h3 {
-    font-size: 12px;
-    line-height: 34px;
-    padding: 0 10px;
-    cursor: pointer;
-    /*fallback for browsers not supporting gradients*/
-    background-color: #222;
-    margin: 0 0 0 0;
-    border-bottom:1px solid #313131;
-  }
-  h3:hover {
-    text-shadow: 0 0 1px #fff;
-  }
-  h3 span {
-    font-size: 100%;
-    margin-right: 10px;
-  }
-  li:last-child {
-    border-bottom:1px solid #313131;
-  }
-  li {
-    list-style-type: none;
-  }
-
-  ul{
-    padding-left:0;
-  }
-
-  ul ul li a {
-    color: white;
-    text-decoration: none;
-    font-size: 11px;
-    line-height: 27px;
-    display: block;
-    padding: 0 15px 0 25px;
-    transition: all 0.15s;
-
-    &:hover {
-      background: $highlight;
-    }
-  }
-
-  ul ul {
-    display: none;
-  }
-  li.active ul {
-    display: block;
-  }
-  ul li ul li.active {
-    background: $highlight-sub;
-  }
-}
 
 
 .normal{font-weight: normal !important;}
@@ -356,8 +411,6 @@ $spinnerDegree: 175.6449737548828;
   background: #fff;
   z-index: 2000;
 
-  @include box-shadow(0 3px 6px rgba(0,0,0,.175));
-
   .loaderText {
     display: inline-block;
     position: relative;
@@ -402,7 +455,7 @@ $spinnerDegree: 175.6449737548828;
   }
   50% {
     stroke-dasharray: 120, 300;
-    stroke-dashoffset: -$spinnerDegree / 3;
+    stroke-dashoffset: math.div(-$spinnerDegree, 3);
   }
   100% {
     stroke-dasharray: 120, 300;

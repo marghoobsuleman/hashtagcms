@@ -1,14 +1,12 @@
 <template>
-    <div>
-
-        <div v-if="hasAccess(module.id)" class="col-sm-3 hand" v-for="(module, index) in allModules" @click="navigate(module)" :title="module.name">
+    <template v-for="(module, index) in allModules">
+        <div v-if="hasAccess(module.id)" class="col-auto hand" @click="navigate(module)" :title="module.name">
             <info-box
                     :key="module.name+index"
-                      :data-info="module">
+                    :data-info="module">
             </info-box>
-
         </div>
-    </div>
+    </template>
 </template>
 
 <script>

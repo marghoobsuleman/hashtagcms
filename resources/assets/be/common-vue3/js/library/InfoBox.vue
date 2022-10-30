@@ -1,17 +1,16 @@
 <template>
-    <div class="info-box">
-        <span :class="getColor()+' info-box-icon'"><i style="font-style: normal" :class="icon">{{getIconText()}}</i></span>
-        <div class="info-box-content">
-            <div v-if="link!=''">
-                <a :href="link" class="info-box-text">
-                    <span vclass="info-box-text" v-html="content"></span>
-                </a>
-            </div>
-            <span v-if="link==''" class="info-box-text">{{content}}</span>
-
-            <span v-if="total" class="info-box-number">{{total}}</span>
-        </div>
+  <div class="card info-box shadow">
+    <span :class="getColor()+' info-box-icon'"><i style="font-style: normal" :class="icon">{{getIconText()}}</i></span>
+    <div class="card-body">
+      <h5 class="card-title">
+        <a v-if="link!==''" :href="link" class="info-box-text"><span class="info-box-text" v-html="content"></span></a>
+        <span v-if="link==''" class="info-box-text">{{content}}</span>
+      </h5>
+      <p class="card-text">
+        <span v-if="total" class="info-box-number">{{total}}</span>
+      </p>
     </div>
+  </div>
 </template>
 
 <script>
