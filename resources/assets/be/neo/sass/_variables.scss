@@ -1,8 +1,11 @@
+$body-font-size:                    0.8rem;
+$body-color:                        #636b6f;
 $highlight:                         #f5008b;
 $highlight-sub:                     darkpink;
 $spinnerDegree:                     360;
 
-$pagination-color:                  #1f1f1f;
+$pagination-font-size:              $body-font-size;
+$pagination-color:                  $body-color;
 $pagination-focus-color:            white;
 $pagination-focus-bg:               $highlight;
 $pagination-hover-color:            white;

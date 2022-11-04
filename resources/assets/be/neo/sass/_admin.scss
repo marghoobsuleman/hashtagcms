@@ -143,6 +143,28 @@ a:hover {
 }
 
 
+.table-grid {
+  a, a:visited {border: none; text-decoration: none}
+
+  td {
+    border: 1px solid #c3c3c3;
+    padding: .5rem;
+  }
+  .header {font-weight: bold}
+
+  th {
+    background-color: #f2f2f2 !important;
+    text-transform: uppercase;
+    border: 1px solid #c3c3c3;
+  }
+}
+
+
+.new {font-size: 8px; background-color:deeppink; color: #fff; padding:2px; position: relative; top:-2px}
+
+
+
+
 
 
 @mixin marginTop($value) {
@@ -175,7 +197,7 @@ a:hover {
 
 .counters {
   position:relative;
-  top:-12px;
+  top:12px;
   padding-left: 20px;
 }
 
@@ -197,7 +219,7 @@ thead th{background:#f2f2f2;}
 
 /****** Module Creator *********/
 .fieldset{margin-bottom: 20px; border: 1px double #c3c3c3;  padding:10px;}
-.legendTitle{font-weight: bold; border: none 0px; margin-bottom: 10px}
+.legendTitle{font-weight: bold; border: none 0; margin-bottom: 10px}
 .models, .fields{padding:5px; margin-right: 15px; border:1px solid #c3c3c3; position: relative;}
 .fields, .models{background:#f7ecb5; display: inline-block; margin-bottom: 10px}
 .models:hover, .fields:hover{color:#000}
@@ -254,7 +276,6 @@ thead th{background:#f2f2f2;}
 
 
 .modules-list li {
-  list-style: none;
   list-style-type: none;
   border: 1px dotted #c3c3c3;
   padding:5px;
@@ -468,21 +489,3 @@ $spinnerDegree: 175.6449737548828;
     transform: rotate(360deg)
   }
 }
-
-
-.table-grid {
-  a, a:visited {border: none; text-decoration: none}
-
- .list-table-row td {
-    border: 1px solid #c3c3c3;
-  }
-
-  .header {
-    background-color: #f2f2f2 !important;
-    border-bottom:3px solid #dddddd !important;
-    text-transform: uppercase;
-  }
-}
-
-
-.new {font-size: 8px; background-color:deeppink; color: #fff; padding:2px; position: relative; top:-2px}

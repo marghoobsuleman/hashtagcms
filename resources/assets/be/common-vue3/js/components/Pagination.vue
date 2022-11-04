@@ -12,8 +12,8 @@
         </ul>
       </nav>
     </div>
-    <div class="col-auto">
-      <span class="pull-right" v-if="totalCount > 0" style="margin-right:16px">
+    <div class="col float-end" v-if="totalCount > 0">
+      <span class="pull-right" style="margin-right:16px">
             <download-button :data-controller-name="controllerName"></download-button>
         </span>
     </div>
@@ -24,6 +24,7 @@
 
   import {EventBus} from "../helpers/event-bus";
   import DownloadButton from './Downlods.vue';
+
   export default {
       components:{
           'download-button':DownloadButton
@@ -31,7 +32,7 @@
       mounted() {
         this.updatePageParams();
           let $this = this;
-          EventBus.$on('pagination-on-delete', function () {
+          EventBus.on('pagination-on-delete', function () {
               $this.decreaseCounter();
           });
 
@@ -77,7 +78,7 @@
               return page.url == null ? "javascript:void(0)" : page.url;
           },
           getLabel(label) {
-
+              //label is provided from view file
               if(this.pageLabel[label]) {
                   return this.pageLabel[label];
               }
@@ -91,25 +92,25 @@
               return page.active === true ? "page-item active" : "page-item";
           },
           updatePageParams() {
-            var params = window.location.search.substring(1);
+            let params = window.location.search.substring(1);
            // console.log("params "+params);
-            var hasPage = params.match(/page=\d+/gi);
+            let hasPage = params.match(/page=\d+/gi);
             if(hasPage!=null) {
                 params = params.replace(/page=\d+/, "");
             }
-            if(params!="") {
+            if(params!=="") {
 
-                params = (params.indexOf("&")==0) ? params : "&"+params;
-                var elements = document.querySelectorAll(".pagination a");
+                params = (params.indexOf("&")===0) ? params : "&"+params;
+                let elements = document.querySelectorAll(".pagination a");
                 elements.forEach(function(ele, index) {
-                  var href = ele.href;
+                  let href = ele.href;
                   href = href+""+params;
                   //remove last and double &
                   href = href.replace(/&$/, "");
                   href = href.replace(/&&/, "&");
                   ele.href = href;
                 });
-            };
+            }
         }
       }
 }

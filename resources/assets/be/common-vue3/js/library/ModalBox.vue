@@ -1,26 +1,22 @@
 <template>
-    <div :class="modelCss" tabindex="-1" role="dialog" :style="style">
-        <div class="modal-dialog" role="document" :style="modalWidth">
-            <div class="modal-content">
-                <div :class="titleCss + ' modal-header'">
-                    <button @click="sendData(0)" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title">
-                        <slot name="title">{{title}}</slot>
-                    </h4>
-                </div>
-                <div :class="contentCss + ' modal-body'">
-                    <slot name="content">{{content}}</slot>
-                </div>
-                <div :class="footerCss + ' modal-footer'" v-show="showFooter">
-
-                    <slot name="footer" v-html="footerContent">
-
-                    </slot>
-
-                </div>
-            </div>
+  <div class="modal fade" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5">
+            <slot name="header"></slot>
+          </h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
+        <div class="modal-body">
+          <slot name="content"></slot>
+        </div>
+        <div class="modal-footer">
+          <slot name="footer"></slot>
+        </div>
+      </div>
     </div>
+  </div>
 </template>
 
 <script>
@@ -37,8 +33,7 @@
         mounted() {
             if(this.visible) {
                 this.open();
-            };
-
+            }
         },
         data() {
             return {
@@ -46,7 +41,7 @@
                 titleCss:(typeof this.dataTitleCss === "undefined") ? '' : this.dataTitleCss,
                 contentCss:(typeof this.dataContentCss === "undefined") ? '' : this.dataContentCss,
                 footerCss:(typeof this.dataFooterCss === "undefined") ? '' : this.dataFooterCss,
-                visible:(this.dataShowModal !== undefined && this.dataShowModal.toString() == 'true') ? true : false,
+                visible:(this.dataShowModal !== undefined && this.dataShowModal.toString() === 'true'),
                 style:'',
                 toBeReturned:{},
                 title:"Alert",
@@ -56,10 +51,10 @@
         },
         computed: {
           showFooter() {
-            return ((typeof this.dataShowFooter !== "undefined" && this.dataShowFooter.toString() === "true") || this.footerContent != "") ? true : false
+            return ((typeof this.dataShowFooter !== "undefined" && this.dataShowFooter.toString() === "true") || this.footerContent !== "")
           },
           modalWidth() {
-            if(typeof this.dataWidth != "undefined" && this.dataWidth != "")  {
+            if(typeof this.dataWidth != "undefined" && this.dataWidth !== "")  {
                 return `width:${this.dataWidth}`;
             } else {
                 return "";
@@ -94,14 +89,14 @@
 
                     if(message.title) {
                         this.title = message.title;
-                    };
+                    }
                     if(message.content) {
                         this.content = message.content;
-                    };
+                    }
                     if(message.footerContent) {
                         this.footerContent = message.footerContent;
-                    };
-                };
+                    }
+                }
 
                 //handle position
                 if(position) {

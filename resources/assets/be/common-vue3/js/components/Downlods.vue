@@ -1,5 +1,5 @@
 <template>
-    <button @click="downloadNow()" type="button" class="btn btn-info">
+    <button @click="downloadNow()" type="button" class="btn btn-dark">
         <slot>Download</slot>
     </button>
 </template>

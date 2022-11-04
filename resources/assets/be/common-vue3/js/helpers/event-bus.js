@@ -1,3 +1,5 @@
 // import Vue from 'vue';
 // export const EventBus = new Vue();
-export const EventBus = {};
+import mitt from 'mitt';
+export const EventBus  = new mitt();
+

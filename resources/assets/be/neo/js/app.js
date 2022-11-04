@@ -8,6 +8,10 @@
 import AdminConfig from '../../common-vue3/js/helpers/AdminConfig';
 window.AdminConfig = new AdminConfig();
 
+import axios from "axios";
+window.axios = axios;
+window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+
 import {Storage, Fetcher} from '../../common-vue3/js/helpers/Common';
 window.log = console.log;
 window.Store = new Storage();
@@ -15,7 +19,6 @@ window.Fetcher = new Fetcher();
 
 
 import { createApp } from 'vue';
-
 //window.Vue = vue;
 
 //Vue.config.devtools = false;
@@ -33,7 +36,7 @@ import InfoBoxes from '../../common-vue3/js/components/InfoxBoxes.vue';
 import TabularView from '../../common-vue3/js/components/TabularView.vue';
 import SearchBar from '../../common-vue3/js/components/SearchBar.vue';
 import ActionBar from '../../common-vue3/js/components/ActionBar.vue';
-import Pagination from '../../common-vue3/js/components/Pagination.vue';
+import PaginationView from '../../common-vue3/js/components/Pagination.vue';
 // import MenuSorter from '../../common-vue3/js/components/MenuSorter';
 // import TimerButton from '../../common-vue3/js/library/TimerButton';
 // import ModalBox from '../../common-vue3/js/library/ModalBox';
@@ -107,7 +110,7 @@ import Pagination from '../../common-vue3/js/components/Pagination.vue';
 // Vue.component('language-copier', LanguageCopier);
 // Vue.component('site-cloner', SiteCloner);
 // Vue.component('Pagination', Pagination);
-createApp({
+const app = createApp({
     components: {
         'top-nav':TopNav,
         'admin-modules':LeftNav,
@@ -116,9 +119,11 @@ createApp({
         'table-view':TabularView,
         'search-bar':SearchBar,
         'action-bar':ActionBar,
-        'Pagination':Pagination
+        'pagination-view':PaginationView
 
     }
 }).mount('#app');
+window.Vue = app;
+//app.config.globalProperties.emitter = emitter;
 
 console.log("I am from app.js");

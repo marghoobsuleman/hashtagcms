@@ -20,7 +20,7 @@
 
 @if($paginator)
 
-    <table-view
+<table-view
 data-list="{{json_encode($paginator->items())}}"
 data-headers="{{json_encode($fieldsName)}}"
 data-action-fields="{{json_encode($actionFields)}}"
@@ -33,11 +33,8 @@ data-make-field-as-link="{{json_encode(htcms_admin_config('make_field_as_link'))
 data-show-delete-popup="{{((bool)htcms_admin_config('show_delete_popup')) ? 'true' : 'false'}}"
 data-min-results-needed="{{(isset($minResults) ? $minResults : -1)}}"
 data-layout-type="{{ Session::get('layout') }}"
->
-</table-view>
-
-
-
+data-no-results-found-text="<div class='alert alert-danger' role='alert'>No results found!</div>"
+></table-view>
 @include(htcms_admin_get_view_path('common.pagination'))
 
 @else
