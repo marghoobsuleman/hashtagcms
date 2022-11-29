@@ -19,7 +19,6 @@ use MarghoobSuleman\HashtagCms\Core\Providers\Admin\AdminServiceProvider;
 use MarghoobSuleman\HashtagCms\Core\Providers\FeServiceProvider;
 
 
-
 class HashtagCmsServiceProvider extends ServiceProvider
 {
     protected $groupName = 'hashtagcms';

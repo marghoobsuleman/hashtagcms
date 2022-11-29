@@ -36,11 +36,11 @@
         },
         computed: {
             content() {
-              return (this.info !== null) ? this.info.name : this.dataTitle;
+              return (this.info !== null) ? (this.info.name || this.info.title) : this.dataTitle;
             },
             icon() {
                 if((typeof this.iconCss == "undefined" || this.iconCss === "") && this.info !== null) {
-                    return this.info.icon_css;
+                    return (this.info.icon_css || this.info.iconCss);
                 } else {
                     return this.iconCss;
                 }

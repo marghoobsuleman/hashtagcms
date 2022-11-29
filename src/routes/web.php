@@ -12,11 +12,20 @@ if(HashtagCms::isInstallationRoutesEnabled()) {
     Route::post("/install/save",  config("hashtagcms.namespace")."Http\Controllers\Installer\InstallController@save");
 }
 
+use MarghoobSuleman\HashtagCms\Http\Controllers\Admin\AuthorController;
+use App\Http\Controllers\TestController;
+
+Route::get("/admin/author/test", [TestController::class, "test"])->middleware(["web"]);
+Route::post("/admin/author/test", [TestController::class, "test"])->middleware(["web", "crayonModuleInfo", "cmsInterceptor"]);
+
+
 
 //Register Admin
 Route::prefix('admin')->group(function () {
 
     Route::match(['get', 'post', 'delete'],"{controller?}/{method?}/{params?}", function (Request $request, $controller="", $method="", $params=null) {
+
+        $controller = ($controller === "") ? "dashboard" : $controller; //default page of admin
 
         $methodType = $request->method();
 
@@ -27,14 +36,16 @@ Route::prefix('admin')->group(function () {
 
         $namespace = config("hashtagcms.namespace");
         $appNamespace = app()->getNamespace();
+        //Hashtag Controller
         $callable = $namespace."Http\Controllers\\Admin\\".str_replace("-", "", Str::title($controller))."Controller";
+        //App Controller
         $callableApp = $appNamespace."Http\Controllers\\Admin\\".str_replace("-", "", Str::title($controller))."Controller";
 
         $controllerName = class_exists($callableApp) ? $callableApp : $callable;
 
         if(class_exists($controllerName)) {
 
-            $method = ($method == "" && $methodType == "GET") ? "index" : $method;
+            $method = ($method === "" && $methodType === "GET") ? "index" : $method;
 
             $callable = $controllerName . '@' . $method;
             $values     = explode('/', $params);
@@ -57,10 +68,18 @@ Route::prefix('admin')->group(function () {
 
             try {
                 //dd($callable, $values);
-                return app()->call($callable, $values);
+
+                if ($methodType === "GET") {
+                    info(" callable: [ $methodType ] ".$callable. " values: ".$callable);
+                    return app()->call($callable, $values);
+                } else  {
+                    info(" callable: [ $methodType ] ".$callable);
+                    return app()->call($callable);
+                }
+
 
             } catch (Exception $e) {
-
+                info("There is an error ".$e->getMessage());
                 return $e->getMessage();
                 //abort(404);
             }
@@ -70,7 +89,7 @@ Route::prefix('admin')->group(function () {
         }
 
     })->middleware(["web", "auth", "crayonModuleInfo", "cmsInterceptor"])->where('params', '^((?!assets/).)*?');
-}); //,
+});
 
 if (HashtagCms::isRoutesEnabled()) {
     

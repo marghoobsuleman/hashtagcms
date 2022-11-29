@@ -231,3 +231,8 @@ export class LeftMenu {
 
     }
 }
+
+function TitleCase(value) {
+    value = value.replace(/\.|_/g, " ");
+    return value.charAt(0).toUpperCase() + value.slice(1);
+}

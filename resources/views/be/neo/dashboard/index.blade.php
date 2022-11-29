@@ -23,7 +23,7 @@
             @foreach($data as $row)
                 <div class="col-auto">
                     <info-box data-title="{{$row['label']}}"
-                              data-sub-title="{{$row['total']}}"
+                              data-sub-title="{{$row['total'] === 0 ? "" : $row['total']}}"
                               data-icon-css="{{$row['icon']}}"
                               data-link="{{htcms_admin_path($row['link'])}}"
                     ></info-box>

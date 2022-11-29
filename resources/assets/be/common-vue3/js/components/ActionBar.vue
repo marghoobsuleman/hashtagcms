@@ -47,7 +47,7 @@
 </template>
 
 <script>
-
+  import CmsModuleDropdown from '../components/CmsModuleDropdown.vue';
   import LanguageButton from '../components/LanguageButton.vue';
   import {Toast} from '../helpers/Common';
   import Humanize from "../helpers/humanize";
@@ -56,6 +56,7 @@
   export default {
 
     components:{
+      'cms-module-dropdown':CmsModuleDropdown,
       'language-button':LanguageButton
     },
     mounted() {

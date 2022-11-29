@@ -150,7 +150,7 @@ export default {
       return (data.child && data.child.length > 0);
     },
     isParent(data) {
-      return data.parent_id==0;
+      return data.parent_id===0;
     },
     selectReadOnly(current) {
 
@@ -160,7 +160,7 @@ export default {
     },
     selectAll() {
 
-      var shouldSelect = (this.selectAllModule==false) ? true : false;
+      let shouldSelect = (this.selectAllModule === false);
 
       for(let i=0;i<this.form.cmsModuleData.length;i++) {
           let current = this.form.cmsModuleData[i];
@@ -171,7 +171,7 @@ export default {
     },
     selectMe(current, parentModule, forcedSelectAll=null) {
 
-      var shouldSelect = (current.selected == false) ? true : false;
+      let shouldSelect = (current.selected === false);
 
       //if forcing
       if(forcedSelectAll != null) {
@@ -196,10 +196,10 @@ export default {
       }
 
       //check if parent should be selected
-      if(parentModule && forcedSelectAll==false) {
+      if(parentModule && forcedSelectAll===false) {
 
           let isAnySelected = parentModule.child.find(function(current) {
-              return current.selected == true;
+              return current.selected === true;
           });
 
           if(shouldSelect || isAnySelected) {
@@ -209,7 +209,7 @@ export default {
       }
 
         //Check if one or more is unchecked. reset select all tab
-        if(shouldSelect==false) {
+        if(shouldSelect===false) {
             this.selectAllModule = false;
         };
 

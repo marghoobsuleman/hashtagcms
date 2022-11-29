@@ -3,12 +3,12 @@
     <div v-if="layoutType === 'grid'" class="row">
       <div class="col" v-for="row in rows" :key="row.key" :id="'row_'+row.id">
         <table class="table border shadow-sm mt-2 table-grid">
-          <tr v-for="fields in headings">
+          <tr v-for="(fields, index) in headings" :class="getCssForRow(fields, index)">
             <td :class="'header head_'+getFieldName(fields)">
-              {{ filterFieldsName(getFieldName(fields)) }}
+              {{ filterFieldsName(getFieldName(fields)) }} : {{index}}
             </td>
             <td>
-              <span v-html="getFieldValue(row, getFieldName(fields, 'key'), fields)"></span>
+              <span v-if="!isActionFieldKey(getFieldName(fields, 'key'))" v-html="getFieldValue(row, getFieldName(fields, 'key'), fields)"></span>
               <div class="actions" v-if="isActionFieldKey(getFieldName(fields, 'key'))"
                    v-html="getActionValue(row)"></div>
             </td>
@@ -623,7 +623,6 @@ export default {
             EventBus.emit('list-view-pre-edit', this);
           })
         })
-
       }
 
 
@@ -643,6 +642,12 @@ export default {
     },
     filterSnakeCase(value) {
       return value.replace(/\s|\./g, "_").toLowerCase();
+    },
+    getCssForRow: function (fields, index) {
+      if (fields.length-1 == index) {
+        return "active";
+      }
+      return "";
     }
   }
 }

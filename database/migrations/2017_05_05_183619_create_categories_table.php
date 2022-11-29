@@ -64,8 +64,8 @@ class CreateCategoriesTable extends Migration
             $table->longText('content')->nullable();
 
             $table->string('active_key', 128)->nullable();
-            $table->string('third_party_mapping_key', 128)->nullable();
-            $table->string('b2b_mapping', 128)->nullable();
+            $table->string('third_party_mapping_key', 255)->nullable();
+            $table->string('b2b_mapping', 255)->nullable();
 
             $table->tinyInteger('is_external')->nullable()->default(0);
 

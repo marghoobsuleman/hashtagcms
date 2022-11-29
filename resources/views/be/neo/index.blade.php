@@ -16,7 +16,7 @@
     <link href="https://fonts.googleapis.com/css?family=Raleway:100,600" rel="stylesheet" type="text/css">
     <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
 
-    @vite(['vendor/marghoobsuleman/hashtagcms/resources/assets/be/neo/sass/app.scss'])
+    @vite(['resources/assets/hashtagcms/be/neo/sass/app.scss'])
     <script>
         window.Laravel = {!! json_encode([
             'csrfToken' => csrf_token()
@@ -53,7 +53,7 @@
 <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
     {{ csrf_field() }}
 </form>
-@vite(['vendor/marghoobsuleman/hashtagcms/resources/assets/be/neo/js/app.js'])
+@vite(['resources/assets/hashtagcms/be/neo/js/app.js'])
 @stack('scripts')
 </body>
 </html>
