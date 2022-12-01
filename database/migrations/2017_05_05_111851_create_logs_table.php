@@ -20,8 +20,8 @@ class CreateLogsTable extends Migration
             $table->bigInteger('module_id', false, true)->nullable();
             $table->bigInteger('record_id', false, true)->nullable();
             $table->string('action_performed', 60);
-            $table->text('query')->nullable();
-            $table->text('executed_query')->nullable();
+            $table->longText('query')->nullable();
+            $table->longText('executed_query')->nullable();
 
             $table->timestamps();
         });

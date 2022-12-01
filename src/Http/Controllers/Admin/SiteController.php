@@ -302,7 +302,7 @@ class SiteController extends BaseAdminController
      * @return mixed
      */
     public function saveSettings($byPrams=null) {
-
+       //return array("message"=>"okay!");
         if(!$this->checkPolicy('edit')) {
             if(\request()->ajax()) {
                 return response()->json(Message::getWriteError(), 401);
@@ -319,13 +319,12 @@ class SiteController extends BaseAdminController
 
         $site = Site::find($site_id);
 
-        if($action == "add") {
-            return $site->attachThings($key, $ids);
+        if($action === "add") {
+            $site->attachThings($key, $ids);
+            return array("isSaved"=> 1, "ids"=>$ids);
         }
-
-        return $site->detachThings($key, $ids);
-
-
+        $site->detachThings($key, $ids);
+        return array("isSaved"=> 1, "ids"=>$ids);
     }
 
 
@@ -666,6 +665,14 @@ class SiteController extends BaseAdminController
      * @return Site[]|\Illuminate\Database\Eloquent\Collection
      */
     public function getAllSite() {
+        return Site::all();
+    }
+
+    /**
+     * Get all sites
+     * @return Site[]|\Illuminate\Database\Eloquent\Collection
+     */
+    public function allsites() {
         return Site::all();
     }
 

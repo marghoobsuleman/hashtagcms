@@ -178,7 +178,7 @@ class AuthorController extends BaseAdminController
             $savedData = array();
 
             foreach ($cmsModuleData as $cmsModule) {
-                $isReadOnly = (isset($cmsModule["readonly"]) && $cmsModule["readonly"] == 1) ? 1 : 0;
+                $isReadOnly = (isset($cmsModule["readonly"]) && $cmsModule["readonly"] === 1) ? 1 : 0;
                 $selected = $cmsModule["selected"] ?? 0;
                 if ($selected) {
                     $saveData[] = array("module_id" => $cmsModule["id"], "user_id" => $userId, "readonly" => $isReadOnly);
@@ -186,7 +186,7 @@ class AuthorController extends BaseAdminController
 
                 if (!empty($cmsModule["child"])) {
                     foreach ($cmsModule["child"] as $child) {
-                        $isReadOnly = (isset($child["readonly"]) && $child["readonly"] == 1) ? 1 : 0;
+                        $isReadOnly = (isset($child["readonly"]) && $child["readonly"] === 1) ? 1 : 0;
                         $selected = $child["selected"] ?? 0;
                         if ($selected) {
                             $saveData[] = array("module_id" => $child["id"], "user_id" => $userId, "readonly" => $isReadOnly);
@@ -210,11 +210,7 @@ class AuthorController extends BaseAdminController
 
     }
 
-    public function test() {
-        $data = request()->all();
-        $cmsModuleData = $data['cmsModuleData'];
-        return $cmsModuleData;
-    }
+
 
 
 }

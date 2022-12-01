@@ -447,7 +447,7 @@ trait AdminCrud {
         //Logging
         try{
 
-            QueryLogger::log($actionLog, $queryLog, $data, $rData['id'] ?? 0);
+            //QueryLogger::log($actionLog, $queryLog, $data, $rData['id'] ?? 0);
 
         } catch (\Exception $exception) {
 

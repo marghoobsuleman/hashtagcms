@@ -17,7 +17,7 @@ class CommentController extends BaseAdminController
 
     protected $dataWith = ['category','content'];
 
-    protected $actionFields = array("edit", "delete"); //This is last column of the row
+    protected $actionFields = array("delete"); //This is last column of the row
 
     /*protected $bindDataWithAddEdit = array("zones"=>array("dataSource"=>Zone::class, "method"=>"all"),
                                         "currencies"=>array("dataSource"=>Currency::class, "method"=>"all"));*/

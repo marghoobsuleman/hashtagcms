@@ -12,13 +12,6 @@ if(HashtagCms::isInstallationRoutesEnabled()) {
     Route::post("/install/save",  config("hashtagcms.namespace")."Http\Controllers\Installer\InstallController@save");
 }
 
-use MarghoobSuleman\HashtagCms\Http\Controllers\Admin\AuthorController;
-use App\Http\Controllers\TestController;
-
-Route::get("/admin/author/test", [TestController::class, "test"])->middleware(["web"]);
-Route::post("/admin/author/test", [TestController::class, "test"])->middleware(["web", "crayonModuleInfo", "cmsInterceptor"]);
-
-
 
 //Register Admin
 Route::prefix('admin')->group(function () {
@@ -67,16 +60,8 @@ Route::prefix('admin')->group(function () {
             $values = array_merge($args, $values);
 
             try {
-                //dd($callable, $values);
-
-                if ($methodType === "GET") {
-                    info(" callable: [ $methodType ] ".$callable. " values: ".$callable);
-                    return app()->call($callable, $values);
-                } else  {
-                    info(" callable: [ $methodType ] ".$callable);
-                    return app()->call($callable);
-                }
-
+                info("method: ". $methodType. " ::: ". $callable. " ::: ". json_encode($values));
+                return app()->call($callable, $values);
 
             } catch (Exception $e) {
                 info("There is an error ".$e->getMessage());
@@ -88,7 +73,7 @@ Route::prefix('admin')->group(function () {
             abort(404);
         }
 
-    })->middleware(["web", "auth", "crayonModuleInfo", "cmsInterceptor"])->where('params', '^((?!assets/).)*?');
+    })->middleware(["web", "auth:sanctum", "crayonModuleInfo", "cmsInterceptor"])->where('params', '^((?!assets/).)*?');
 });
 
 if (HashtagCms::isRoutesEnabled()) {
