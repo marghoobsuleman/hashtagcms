@@ -41,7 +41,7 @@
         "popper.js": "^1.16.1",
         "secure-ls": "^1.2.6",
         "sortablejs": "^1.14.0",
-        "tinymce": "^5.10.0",
+        "tinymce": "^5.10.7",
         "vue": "^2.6.14",
         "vuedraggable": "^2.24.3"
     }
