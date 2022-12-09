@@ -266,9 +266,9 @@ class HomepageController extends BaseAdminController
         $toData = $allData["toData"];
         if($fromData['platform_id'] == 0) {
             $site = Site::with('platform')->find($toData['site_id']);
-            $allTeants = $site->platform;
+            $allPlatform = $site->platform;
             $data = array("success"=>false);
-            foreach ($allTeants as $platform) {
+            foreach ($allPlatform as $platform) {
                 $fromData['platform_id'] = $platform->id;
                 $toData['platform_id'] = $platform->id;
                 $data = Module::copyData($fromData, $toData); //this will return only last

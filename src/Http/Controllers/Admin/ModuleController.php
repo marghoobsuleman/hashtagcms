@@ -108,6 +108,10 @@ class ModuleController extends BaseAdminController
         $saveData['query_statement'] = $data["query_statement"];
         $saveData['query_as'] = $data["query_as"];
 
+        $saveData['linked_module'] = $data["linked_module"];
+        $saveData['live_edit'] = $data["live_edit"];
+
+
         $saveData['site_id']		= $data['site_id'];
         $arrSaveData = array("model" => $this->dataSource, "data" => $saveData);
 
@@ -141,9 +145,10 @@ class ModuleController extends BaseAdminController
                         ['site_id' => $site['id'], 'alias' => $saveData['alias']],
                         [
                             'name' => $saveData['name'],
-                            //'linked_module' => $saveData['name'],
+                            'linked_module' => $saveData['name'],
                             'view_name' => $saveData['view_name'],
                             'data_type' => $saveData['data_type'],
+                            'linked_module' => $saveData['linked_module'],
                             'query_statement' => $saveData['query_statement'],
                             'query_as' => $saveData['query_as'],
                             'data_handler' => $saveData['data_handler'],
@@ -154,7 +159,7 @@ class ModuleController extends BaseAdminController
                             'service_params' => $saveData['service_params'],
                             'individual_cache' => $saveData['individual_cache'],
                             'cache_group' => $saveData['cache_group'],
-                            //'live_edit' => $saveData['value'],
+                            'live_edit' => $saveData['live_edit'],
                             'created_at' => htcms_get_current_date(),
                             'updated_at' => htcms_get_current_date()
                         ]
@@ -174,7 +179,7 @@ class ModuleController extends BaseAdminController
                         'site_id' => $site['id'],
                         'name' => $saveData['name'],
                         'alias' => $saveData['alias'],
-                        //'linked_module' => $saveData['name'],
+                        'linked_module' => $saveData['linked_module'],
                         'view_name' => $saveData['view_name'],
                         'data_type' => $saveData['data_type'],
                         'query_statement' => $saveData['query_statement'],
@@ -187,7 +192,7 @@ class ModuleController extends BaseAdminController
                         'service_params' => $saveData['service_params'],
                         'individual_cache' => $saveData['individual_cache'],
                         'cache_group' => $saveData['cache_group'],
-                        //'live_edit' => $saveData['value'],
+                        'live_edit' => $saveData['live_edit'],
                         'created_at' => htcms_get_current_date(),
                         'updated_at' => htcms_get_current_date()
                     ]);

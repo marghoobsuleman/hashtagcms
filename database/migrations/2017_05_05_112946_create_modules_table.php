@@ -20,7 +20,7 @@ class CreateModulesTable extends Migration
 
             $table->string('name', 60);
             $table->string('alias', 60);
-            $table->string('linked_module', 60)->nullable()->default(0);
+            $table->string('linked_module', 60)->nullable();
 
             $table->string('view_name', 200);
 
@@ -41,7 +41,7 @@ class CreateModulesTable extends Migration
             $table->string('service_params', 255)->nullable();
             $table->text("headers")->nullable();
 
-            $table->tinyInteger('individual_cache')->nullable()->default(0)->comment("If you want to cache this module on each link");
+            $table->tinyInteger('individual_cache')->nullable()->default(0)->comment("If you want to cache this module on each users");
 
             $table->string('cache_group', 100)->nullable();
             $table->tinyInteger('is_seo_module')->nullable()->default(0)->comment("Use this module for SEO. Needs to have meta fields");

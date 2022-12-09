@@ -13,7 +13,7 @@ use MarghoobSuleman\HashtagCms\Models\Category;
 use MarghoobSuleman\HashtagCms\Models\Theme;
 use MarghoobSuleman\HashtagCms\Models\Site;
 use MarghoobSuleman\HashtagCms\Core\Helpers\Message;
-
+use Mockery\Exception;
 
 
 class CategoryController extends BaseAdminController
@@ -251,7 +251,15 @@ class CategoryController extends BaseAdminController
         return htcms_admin_view("common.saveinfo", $viewData);
     }
 
+    /**
+     * Setting view
+     * @return mixed
+     */
     public function settings() {
+
+        if(!$this->checkPolicy('read')) {
+            return htcms_admin_view("common.error", Message::getReadError());
+        }
 
         $request = request()->all();
         $platform_id = $request["platform_id"] ?? 1;
@@ -272,8 +280,7 @@ class CategoryController extends BaseAdminController
         $viewData["siteThemes"] = $sites["theme"];
         $viewData["siteCategories"] = $sites["category"];
         $viewData["categories"] = $categories;
-
-        //return $viewData;
+        $viewData["userRights"] = $this->getUserRights();
 
         return htcms_admin_view('category.settings', $viewData);
     }
@@ -283,14 +290,17 @@ class CategoryController extends BaseAdminController
      * @return mixed
      */
     public function updateThemeAndEtc() {
+        if(!$this->checkPolicy('edit')) {
+            return htcms_admin_view("common.error", Message::getWriteError(), \request()->ajax());
+        }
         $request = request()->all();
         $where = $request["where"];
-        //unset microsite for now - @todo: will add in db
+        //@todo: unset microsite for now - will add in db
         unset($where["microsite_id"]);
         $where["site_id"] = htcms_get_siteId_for_admin();
         $data = $request["data"];
-
-        return $this->rawUpdate("category_site", $data, $where);
+        $rData["isSaved"] = $this->rawUpdate("category_site", $data, $where);
+        return $rData;
     }
 
     /**
@@ -298,12 +308,34 @@ class CategoryController extends BaseAdminController
      * @return mixed
      */
     public function insertCategory() {
+
+        if(!$this->checkPolicy('edit')) {
+            return htcms_admin_view("common.error", Message::getWriteError(), \request()->ajax());
+        }
+
         $request = request()->all();
         $data = $request["data"];
-        //$data["site_id"] = $data;
+        $applicableForAllPlatforms = $request["applicableForAllPlatforms"];
+        $inserted = [];
+        if ($applicableForAllPlatforms) {
+            $site = Site::with('platform')->find($data['site_id']);
+            //loop
+            $allPlatform = $site->platform;
+            foreach ($allPlatform as $platform) {
+                try {
+                    $d = $data;
+                    $d['platform_id'] = $platform->id;
+                    $inserted[] = array("isSaved"=>$this->rawInsert("category_site", $d), "platform_id"=>$platform->id);
 
-        $rData["isSaved"] = $this->rawInsert("category_site", $data);
-        return $rData;
+                } catch (Exception $exception) {
+                    $isSaved = false;
+                }
+            }
+        } else {
+            $inserted[] = array("isSaved"=>$this->rawInsert("category_site", $data), "platform_id"=>$data['platform_id']);
+        }
+
+        return $inserted;
     }
 
     /**
@@ -311,6 +343,9 @@ class CategoryController extends BaseAdminController
      * @return mixed
      */
     public function deleteCategory() {
+        if($this->checkPolicy('delete')) {
+            return htcms_admin_view("common.error", Message::getDeleteError(), \request()->ajax());
+        }
         $request = request()->all();
         $where = $request["where"];
 
@@ -326,20 +361,38 @@ class CategoryController extends BaseAdminController
      * @return mixed
      */
     public function updateIndex() {
+        if(!$this->checkPolicy('edit')) {
+            return htcms_admin_view("common.error", Message::getWriteError(), \request()->ajax());
+        }
         $request = request()->all();
         $datas = $request["data"];
         $updated = array();
-        foreach ($datas as $key=>$value) {
-            $where = $value["where"];
-            $where["site_id"] = htcms_get_siteId_for_admin();
-            $data = $value["data"];
-            $updated[] = $this->rawUpdate("category_site", $data, $where);
+        DB::beginTransaction();
+        try {
+            foreach ($datas as $key=>$value) {
+                $where = $value["where"];
+                $where["site_id"] = htcms_get_siteId_for_admin();
+                $data = $value["data"];
+                $updated[] = $this->rawUpdate("category_site", $data, $where);
+            }
+        } catch (Exception $exception) {
+            DB::rollBack();
+            return array("error"=>true, "message"=>$exception->getMessage());
         }
+
+        DB::commit();
         $rData["isSaved"] = $updated;
         return $rData;
     }
 
+    /**
+     * Update theme for all categories
+     * @return array|mixed
+     */
     public function updateThemeForAllCategories() {
+        if(!$this->checkPolicy('edit')) {
+            return htcms_admin_view("common.error", Message::getWriteError(), \request()->ajax());
+        }
         $request = request()->all();
         $data = $request["data"];
         $where = $request["where"];
@@ -352,7 +405,7 @@ class CategoryController extends BaseAdminController
         }
         DB::commit();
 
-        return [$data, $where, $updated];
+        return ["data"=>$data, "where"=>$where, "updated"=>$updated];
     }
 
 

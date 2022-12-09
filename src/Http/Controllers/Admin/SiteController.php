@@ -621,7 +621,7 @@ class SiteController extends BaseAdminController
                         break;
 
                     case "staticmodules":
-                        $inserted =  $this->saveSettingWithLangs($finalData, StaticModuleContent::class, StaticModuleContentLang::class, "static_module_content_id");
+                        $inserted =  $this->saveSettingWithLangs($finalData, StaticModuleContent::class, StaticModuleContentLang::class, "static_module_content_id", "staticmodules", $toSite);
                         break;
 
                     case "siteproperties":
@@ -780,7 +780,7 @@ class SiteController extends BaseAdminController
             $attach["site_id"] = $target_site_id;
             $attach["action"] = "add";
             $res = $this->saveSettings($attach);
-            $msg = (empty($res)) ? Str::title($item)." copied" : "Unable to copy";
+            $msg = (!empty($res) && $res['isSaved']) ? Str::title($item)." copied" : "Unable to copy $item";
             $datas[] = array("message"=>$msg, "component"=>$item);
         }
 
