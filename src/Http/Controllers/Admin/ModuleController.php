@@ -26,23 +26,6 @@ class ModuleController extends BaseAdminController
 
 
     /**
-     * @return mixed
-     */
-    public function add()
-    {
-
-        $backURL = $this->getBackURL(FALSE);
-        $data["actionPerformed"] = "add";
-        $data["backURL"] = $backURL;
-        $data["results"]["name"] = "";
-        $data["results"]["actionPerformed"] = "add";
-        $extraData = array("sites"=>array("dataSource"=>Site::class, "method"=>"all"));
-        $extra = $this->getExtraData($extraData, TRUE);
-        $data = array_merge($data, $extra);
-        return htcms_admin_view("module.add", $data);
-    }
-
-    /**
      * @param Request $request
      * @return \Illuminate\Http\RedirectResponse|mixed
      */

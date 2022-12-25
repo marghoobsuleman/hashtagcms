@@ -85,7 +85,10 @@ class CmsModule extends AdminBaseModel
      * @return mixed
      */
     public function getFieldsName($table) {
-        return Schema::getColumnListing($table);
+        $db_columns = DB::select('SHOW COLUMNS FROM '. $table);
+        return array_map(function($column) {
+            return $column->Field;
+        }, $db_columns);
     }
 
 

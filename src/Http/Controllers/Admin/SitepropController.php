@@ -13,11 +13,11 @@ use MarghoobSuleman\HashtagCms\Core\Helpers\Message;
 
 class SitepropController extends BaseAdminController
 {
-    protected $dataFields = ['id','site_id','platform_id', 'group_name', 'name','value','updated_at'];
+    protected $dataFields = ['id','name','value', 'platform.name', 'group_name', 'updated_at'];
 
     protected $dataSource = SiteProp::class;
 
-    protected $dataWith = '';
+    protected $dataWith = ['platform'];
 
     protected $actionFields = array("edit", "delete"); //This is last column of the row
 

@@ -13,7 +13,7 @@ use MarghoobSuleman\HashtagCms\Models\Platform;
 
 class ModulepropertyController extends BaseAdminController
 {
-    protected $dataFields = ['id','name','lang.value as value', 'group', 'module.alias', 'platform.name','updated_at'];
+    protected $dataFields = ['id','name','lang.value as value', 'module.alias', 'platform.name', 'group', 'updated_at'];
 
     protected $dataSource = ModuleProp::class;
 
@@ -58,11 +58,13 @@ class ModulepropertyController extends BaseAdminController
             $saveData['group'] = $data["group"];
             $saveData['name'] =  $data["name"];
             $saveData['site_id'] = $data["site_id"];
+            $saveData['updated_at'] = htcms_get_current_date();
 
             $updateInAllLanguages = (isset($data["update_in_all_language"]) && (string)$data["update_in_all_language"]==="1") ? true : false;
 
             //lang
             $langData["value"] = $data["value"];
+            $langData['updated_at'] = htcms_get_current_date();
 
             $arrLangData = array("data"=>$langData);
 
@@ -76,6 +78,9 @@ class ModulepropertyController extends BaseAdminController
                 //This is in base controller
                 $savedData = $this->saveDataWithLang($arrSaveData, $arrLangData, $where, $updateInAllLanguages);
             } else {
+
+                $saveData['created_at'] = htcms_get_current_date();
+
                 //it will always be in array
                 $allPlatforms = $data['platform_id'];
                 $allModules = $data['module_id'];

@@ -61,10 +61,10 @@ class StaticmoduleController extends BaseAdminController
         $saveData["alias"] = strtoupper($data["alias"]);
         $saveData["site_id"] = $data["site_id"];
 
-        $saveData["update_by"] = $data["insert_by"];
+        $saveData["update_by"] = $data["update_by"];
 
         if(!isset($data["id"]) || $data["id"] == 0) {
-            $saveData["insert_by"] = $data["update_by"];
+            $saveData["insert_by"] = $data["insert_by"];
         }
 
         $langData["lang_id"] = $data["lang_id"] ?? 1;

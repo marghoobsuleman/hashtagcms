@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateFestivalsTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -22,6 +22,7 @@ class CreateFestivalsTable extends Migration
 
             $table->string('image', 255)->nullable();
             $table->string('body_css', 255)->nullable();
+            $table->longText('lottie')->nullable();
             $table->string('header_css', 255)->nullable();
             $table->string('footer_css', 255)->nullable();
 
@@ -29,7 +30,6 @@ class CreateFestivalsTable extends Migration
             $table->timestamp('end_date')->nullable();
 
             $table->tinyInteger('publish_status')->nullable()->default(0);
-
             $table->timestamps();
             $table->softDeletes();
 

@@ -116,4 +116,13 @@ class Page extends AdminBaseModel
     public function category() {
         return $this->belongsTo(Category::class);
     }
+
+    /**
+     * with gallery
+     * @return void
+     */
+    public function gallery() {
+        return $this->belongsToMany(Gallery::class)->withPivot("position");
+    }
+
 }

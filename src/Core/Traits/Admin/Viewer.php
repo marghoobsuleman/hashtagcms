@@ -61,7 +61,7 @@ trait Viewer {
 
         $moduleInfo = $this->getModuleInfo($module);
 
-        info("moduleInfo: ". json_encode($moduleInfo));
+       // info("moduleInfo: ". json_encode($moduleInfo));
 
         if(!$moduleInfo['isSuperAdmin']) {
 

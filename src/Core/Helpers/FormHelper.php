@@ -91,7 +91,7 @@ class FormHelper {
      * @return string
      *
      */
-    public static function file($name='', $value="", $attributes=array(), $showPreview=FALSE, $maxHeight=NULL, $maxWidth=NULL, $innerClass="") {
+    public static function file($name='', $value="", $attributes=array(), $showPreview=FALSE, $maxHeight=NULL, $maxWidth=NULL, $innerClass="", $isDeletable=TRUE) {
 
         $html[] = self::input("file", $name, "", $attributes);
         $originalFileName = $value;
@@ -112,18 +112,27 @@ class FormHelper {
             $maxWidth = ($maxWidth==NULL) ? "" : "max-width:{$maxWidth}px;";
 
             if($isImage) {
-                $tag = "<a target='_blank' href='{$value}'><img $imgHeight $imgWidth class='card-img-top' src='$value' /></a>";
+                $tag = "<a target='_blank' href='{$value}'><img $imgHeight $imgWidth src='$value' /></a>";
             } else {
                 $tag = "<i class='fa fa-paperclip text-danger'></i>&nbsp;<a target='_blank' href='{$value}'>{$fileInfo['filename']}.{$extension}</a>";
             }
 
-            $html[] = "<div id='__hashtagcms_{$name}__' style='{$maxHeight}{$maxWidth};margin-top:10px; overflow: hidden;'>
+            $deleteIcon = "";
+
+            if ($isDeletable) {
+                $deleteIcon = "&nbsp;<i style='float:left; margin-right: 10px;' title='Delete' class='fa fa-trash-o hand' onclick='document.getElementById(\"__hashtagcms_{$name}__\").style.display=\"none\";document.getElementById(\"{$name}_deleted\").value=\"{$originalFileName}\"'></i>";
+            }
+
+
+            $html[] = "<div id='__hashtagcms_{$name}__' style='{$maxHeight}{$maxWidth};margin-top:10px;'>
                                         <div class='col-sm-9 card;{$innerClass}'>
-                                            $tag &nbsp;&nbsp;&nbsp;<i style='float:left; margin-right: 10px;' title='Delete' class='fa fa-trash-o hand' onclick='document.getElementById(\"__hashtagcms_{$name}__\").style.display=\"none\";document.getElementById(\"{$name}_deleted\").value=\"{$originalFileName}\"'></i>                                            
+                                            $tag $deleteIcon
                                         </div>
                                     </div>";
         }
+
         $html[] = "<input type='hidden' name='{$name}_deleted' id='{$name}_deleted' value='0' />";
+
         return join("", $html);
 
     }
@@ -205,6 +214,7 @@ class FormHelper {
                 $row = (is_array($row)) ? $row : $row->toArray();
 
                 $optValue = addslashes($row[$keyValue['value']]);
+
                 $parentStr = (isset($row["parent_id"]) && $row["parent_id"] > 0) ? "&nbsp;&nbsp;&nbsp;&nbsp;" : ""; //add some space for child
 
                 if(strpos($keyValue['label'], ".") > 0 ) {
@@ -221,7 +231,7 @@ class FormHelper {
             if($isMuliple==FALSE){
                 $isSelected = ($optValue==$selected && $selected!='') ? "selected='selected' " : "";
             } else {
-                $isSelected = (in_array($optValue, $selected)) ? "selected='selected' " : "";
+                $isSelected = (in_array($optValue, ($selected ?? []))) ? "selected='selected' " : "";
             }
 
 

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateHooksTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -18,7 +18,7 @@ class CreateHooksTable extends Migration
             $table->id();
             $table->string('name', 64);
             $table->string('alias', 64);
-            $table->enum('direction', ['', 'vertical', 'horizotnal'])->nullable()->default('');
+            $table->enum('direction', ['vertical', 'horizotnal'])->nullable();
             $table->text('description')->nullable();
             $table->timestamps();
             $table->softDeletes();

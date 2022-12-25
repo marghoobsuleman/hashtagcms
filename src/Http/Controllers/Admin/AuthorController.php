@@ -135,7 +135,7 @@ class AuthorController extends BaseAdminController
     {
 
         if (!$this->checkPolicy('edit')) {
-            return htcms_admin_view("common.error", Message::getReadError());
+            return htcms_admin_view("common.error", Message::getReadError(), \request()->ajax());
         }
 
         if ($user_id == 0) {
@@ -143,6 +143,7 @@ class AuthorController extends BaseAdminController
         }
 
         $allModules = CmsModule::getAdminModules();
+
 
         $userWithModules = User::with('cmsmodules')->find($user_id);
 
@@ -153,6 +154,8 @@ class AuthorController extends BaseAdminController
         $viewData["userModules"] = $userWithModules;
         $viewData["backURL"] = $this->getBackURL();
         $viewData["actionPerformed"] = "edit";
+
+
 
         return htcms_admin_view("author.permission", $viewData);
 
@@ -166,6 +169,10 @@ class AuthorController extends BaseAdminController
      */
     public function saveModulePermissions()
     {
+
+        if (!$this->checkPolicy('edit')) {
+            return htcms_admin_view("common.error", Message::getReadError());
+        }
         try {
             $data = request()->all();
 

@@ -499,7 +499,7 @@ trait AdminCrud {
     public function publish($id=0, $status=0) {
 
         if(!$this->checkPolicy('publish')) {
-            return Message::getWriteError();
+            return response()->json(Message::getWriteError(), 400);
         }
 
         QueryLogger::enableQueryLog();

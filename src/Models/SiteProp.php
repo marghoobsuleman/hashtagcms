@@ -35,4 +35,20 @@ class SiteProp extends AdminBaseModel
         return $all;
     }
 
+    /**
+     * with site
+     * @return mixed
+     */
+    public function site() {
+        return $this->belongsTo(Site::class);
+    }
+
+    /**
+     * with platform
+     * @return mixed
+     */
+    public function platform() {
+        return $this->belongsTo(Platform::class);
+    }
+
 }

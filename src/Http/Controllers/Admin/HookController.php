@@ -11,11 +11,11 @@ use MarghoobSuleman\HashtagCms\Core\Helpers\Message;
 
 class HookController extends BaseAdminController
 {
-    protected $dataFields = ['id','site.name as site_name','name','alias','description','direction','created_at','updated_at'];
+    protected $dataFields = ['id','name','alias','description','direction','created_at','updated_at'];
 
     protected $dataSource = Hook::class;
 
-    protected $dataWith = ['site'];
+    protected $dataWith = '';
 
     protected $actionFields = array("edit", "delete"); //This is last column of the row
 
@@ -53,7 +53,6 @@ class HookController extends BaseAdminController
         $saveData["alias"] = $data["alias"];
         $saveData["description"] = $data["description"];
         $saveData["direction"] = $data["direction"];
-       // $saveData["site_id"] = $data["site_id"];
 
         //date
         $saveData["updated_at"] = htcms_get_current_date();

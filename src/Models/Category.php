@@ -246,4 +246,12 @@ class Category extends AdminBaseModel
     public static function getContentReadCounts($limit=10) {
         return Page::orderBy("read_count", "DESC")->take($limit)->get(["read_count", "link_rewrite"]);
     }
+
+    /**
+     * with gallery
+     * @return void
+     */
+    public function gallery() {
+        return $this->belongsToMany(Gallery::class)->withPivot("position");
+    }
 }

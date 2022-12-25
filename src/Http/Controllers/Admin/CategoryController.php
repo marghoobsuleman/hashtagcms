@@ -343,13 +343,13 @@ class CategoryController extends BaseAdminController
      * @return mixed
      */
     public function deleteCategory() {
-        if($this->checkPolicy('delete')) {
+        if(!$this->checkPolicy('delete')) {
             return htcms_admin_view("common.error", Message::getDeleteError(), \request()->ajax());
         }
         $request = request()->all();
         $where = $request["where"];
 
-        //unset microsite for now - @todo: will add in db
+        // @todo: unset microsite for now - will add in db
         unset($where["microsite_id"]);
 
         $rData["isSaved"] = $this->rawDelete("category_site", $where);

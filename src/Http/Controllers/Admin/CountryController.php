@@ -55,8 +55,7 @@ class CountryController extends BaseAdminController
         $validator = Validator::make($request->all(), $rules);
 
         if ($validator->fails()) {
-
-            return redirect()->back()
+           return redirect()->back()
                 ->withErrors($validator)
                 ->withInput();
         }
