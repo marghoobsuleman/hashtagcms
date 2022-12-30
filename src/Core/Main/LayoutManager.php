@@ -6,6 +6,7 @@ use JetBrains\PhpStorm\ArrayShape;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Auth;
 use Mockery\Exception;
+use Illuminate\Support\Facades\Vite;
 
 
 class LayoutManager extends Results
@@ -43,6 +44,8 @@ class LayoutManager extends Results
         info("getHost ".request()->getHost());
         $assetPath = config("hashtagcms.info.assets_path");
         $assetPath = (isset($assetPath[$host])) ? $assetPath[$host] : $assetPath;
+
+        //External url (CDN) is not setup.
         if(!isset($assetPath['base_url'])) {
             $assetPath = $this->backupAssetFolder;
         }
@@ -181,6 +184,9 @@ class LayoutManager extends Results
     public function getHeaderContent():string
     {
         $html = $this->getHtmlObject();
+        $headerContent = $html['parsed']['header'];
+        //info("assets new: ".Vite::asset("resources/assets/hashtagcms/fe/basic/js/app.js"));
+        $headerContent = $headerContent; //."<script src='".Vite::asset("resources/assets/hashtagcms/fe/basic/js/app.js")."'></script>";
         return $html['parsed']['header'];
     }
 
@@ -641,8 +647,10 @@ class LayoutManager extends Results
             $replacements[1] = $this->getCssPath();
             $replacements[2] = $this->getJsPath();
             $replacements[3] = $this->getImagePath();
+            //info("asset: this->getJsPath() ".asset($this->getJsPath()) ." === ". $str);
 
-            return preg_replace($patterns, $replacements, $str);
+            $str = preg_replace($patterns, $replacements, $str);
+            return $str;
         }
         return "";
     }

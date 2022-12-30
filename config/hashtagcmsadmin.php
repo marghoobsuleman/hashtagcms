@@ -9,7 +9,6 @@ return [
         'version' => env('BE_RESOURCE_VERSION', '310120221229'),
         'theme' => 'hashtagcms::be.neo',
         'theme_assets' => 'build/assets',
-        'assets_path' => 'build/hashtagcms/assets',
         'app_url' => env("APP_URL"),
         'resource_dir' => 'be/default',
         'media_path' => '/storage/media', //media path

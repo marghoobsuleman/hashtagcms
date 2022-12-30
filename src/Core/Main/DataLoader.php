@@ -181,7 +181,7 @@ class DataLoader
             //Stop everything if lang info is not correct.
             if(empty($categorySiteInfo) || sizeof($categorySiteInfo) === 0) {
                 info("loadData: Category not found in this site.");
-                return $this->getErrorMessage("Could not find the category.", 404);
+                return $this->getErrorMessage("Could not find the category. ($category) ", 404);
             }
             $this->cacheManager->put($categoryCacheKey, $categorySiteInfo);
 

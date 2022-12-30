@@ -5277,11 +5277,6 @@ class CitiesTableSeeder extends Seeder
                 ['country_id' => '110','zone_id' => '3','name' => 'Adoni','iso_code' => '','tax_behavior' => '0','airport_name' => NULL,'airport_code' => NULL,'latitude' => NULL,'longitude' => NULL],
                 ['country_id' => '110','zone_id' => '3','name' => 'Adoor','iso_code' => '','tax_behavior' => '0','airport_name' => NULL,'airport_code' => NULL,'latitude' => NULL,'longitude' => NULL],
                 ['country_id' => '110','zone_id' => '3','name' => 'Aduthurai','iso_code' => '','tax_behavior' => '0','airport_name' => NULL,'airport_code' => NULL,'latitude' => NULL,'longitude' => NULL],
-                ['country_id' => '110','zone_id' => '3','name' => 'Agar','iso_code' => '','tax_behavior' => '0','airport_name' => NULL,'airport_code' => NULL,'latitude' => NULL,'longitude' => NULL],
-                ['country_id' => '110','zone_id' => '3','name' => 'Agra 1 Day Package','iso_code' => '','tax_behavior' => '0','airport_name' => NULL,'airport_code' => NULL,'latitude' => NULL,'longitude' => NULL],
-                ['country_id' => '110','zone_id' => '3','name' => 'Agra 1 Day Tour','iso_code' => '','tax_behavior' => '0','airport_name' => NULL,'airport_code' => NULL,'latitude' => NULL,'longitude' => NULL],
-                ['country_id' => '110','zone_id' => '3','name' => 'Agra Sight Seen','iso_code' => '','tax_behavior' => '0','airport_name' => NULL,'airport_code' => NULL,'latitude' => NULL,'longitude' => NULL],
-                ['country_id' => '110','zone_id' => '3','name' => 'Ahmedabad (Airport)','iso_code' => '','tax_behavior' => '0','airport_name' => NULL,'airport_code' => NULL,'latitude' => NULL,'longitude' => NULL],
                 ['country_id' => '110','zone_id' => '3','name' => 'Ahmedpur','iso_code' => '','tax_behavior' => '0','airport_name' => NULL,'airport_code' => NULL,'latitude' => NULL,'longitude' => NULL],
                 ['country_id' => '110','zone_id' => '3','name' => 'Ahore','iso_code' => '','tax_behavior' => '0','airport_name' => NULL,'airport_code' => NULL,'latitude' => NULL,'longitude' => NULL],
                 ['country_id' => '110','zone_id' => '3','name' => 'Airoli','iso_code' => '','tax_behavior' => '0','airport_name' => NULL,'airport_code' => NULL,'latitude' => NULL,'longitude' => NULL],
@@ -6116,7 +6111,6 @@ class CitiesTableSeeder extends Seeder
                 ['country_id' => '110','zone_id' => '3','name' => 'Jharsuguda','iso_code' => '','tax_behavior' => '0','airport_name' => NULL,'airport_code' => NULL,'latitude' => NULL,'longitude' => NULL],
                 ['country_id' => '110','zone_id' => '3','name' => 'Jhulwaniya','iso_code' => '','tax_behavior' => '0','airport_name' => NULL,'airport_code' => NULL,'latitude' => NULL,'longitude' => NULL],
                 ['country_id' => '110','zone_id' => '3','name' => 'Jhunjhunu','iso_code' => '','tax_behavior' => '0','airport_name' => NULL,'airport_code' => NULL,'latitude' => NULL,'longitude' => NULL],
-                ['country_id' => '110','zone_id' => '3','name' => 'JhunJhunu','iso_code' => '','tax_behavior' => '0','airport_name' => NULL,'airport_code' => NULL,'latitude' => NULL,'longitude' => NULL],
                 ['country_id' => '110','zone_id' => '3','name' => 'Jindal','iso_code' => '','tax_behavior' => '0','airport_name' => NULL,'airport_code' => NULL,'latitude' => NULL,'longitude' => NULL],
                 ['country_id' => '110','zone_id' => '3','name' => 'Jindal (Mundra)','iso_code' => '','tax_behavior' => '0','airport_name' => NULL,'airport_code' => NULL,'latitude' => NULL,'longitude' => NULL],
                 ['country_id' => '110','zone_id' => '3','name' => 'Jintur','iso_code' => '','tax_behavior' => '0','airport_name' => NULL,'airport_code' => NULL,'latitude' => NULL,'longitude' => NULL],
@@ -7728,7 +7722,6 @@ class CitiesTableSeeder extends Seeder
                 ['country_id' => '110','zone_id' => '3','name' => 'Vitta','iso_code' => '','tax_behavior' => '0','airport_name' => NULL,'airport_code' => NULL,'latitude' => NULL,'longitude' => NULL],
                 ['country_id' => '110','zone_id' => '3','name' => 'Vittla','iso_code' => '','tax_behavior' => '0','airport_name' => NULL,'airport_code' => NULL,'latitude' => NULL,'longitude' => NULL],
                 ['country_id' => '110','zone_id' => '3','name' => 'vizag','iso_code' => '','tax_behavior' => '0','airport_name' => NULL,'airport_code' => NULL,'latitude' => NULL,'longitude' => NULL],
-                ['country_id' => '110','zone_id' => '3','name' => 'Vizag','iso_code' => '','tax_behavior' => '0','airport_name' => NULL,'airport_code' => NULL,'latitude' => NULL,'longitude' => NULL],
                 ['country_id' => '110','zone_id' => '3','name' => 'Vuyyuru','iso_code' => '','tax_behavior' => '0','airport_name' => NULL,'airport_code' => NULL,'latitude' => NULL,'longitude' => NULL],
                 ['country_id' => '110','zone_id' => '3','name' => 'Vyara','iso_code' => '','tax_behavior' => '0','airport_name' => NULL,'airport_code' => NULL,'latitude' => NULL,'longitude' => NULL],
                 ['country_id' => '110','zone_id' => '3','name' => 'Vyas','iso_code' => '','tax_behavior' => '0','airport_name' => NULL,'airport_code' => NULL,'latitude' => NULL,'longitude' => NULL],
@@ -7779,8 +7772,7 @@ class CitiesTableSeeder extends Seeder
                 ['country_id' => '110','zone_id' => '3','name' => 'Zerophata(Nanded)','iso_code' => '','tax_behavior' => '0','airport_name' => NULL,'airport_code' => NULL,'latitude' => NULL,'longitude' => NULL],
                 ['country_id' => '110','zone_id' => '3','name' => 'Zunzunu','iso_code' => '','tax_behavior' => '0','airport_name' => NULL,'airport_code' => NULL,'latitude' => NULL,'longitude' => NULL],
                 ['country_id' => '110','zone_id' => '3','name' => 'Himachal Pradesh','iso_code' => '','tax_behavior' => '0','airport_name' => NULL,'airport_code' => NULL,'latitude' => NULL,'longitude' => NULL],
-                ['country_id' => '110','zone_id' => '3','name' => ' Manali','iso_code' => '','tax_behavior' => '0','airport_name' => NULL,'airport_code' => NULL,'latitude' => NULL,'longitude' => NULL],
-                ['country_id' => '110','zone_id' => '3','name' => ' Shimla','iso_code' => '','tax_behavior' => '0','airport_name' => NULL,'airport_code' => NULL,'latitude' => NULL,'longitude' => NULL]
+                ['country_id' => '110','zone_id' => '3','name' => ' Manali','iso_code' => '','tax_behavior' => '0','airport_name' => NULL,'airport_code' => NULL,'latitude' => NULL,'longitude' => NULL]
             ]);
 
 

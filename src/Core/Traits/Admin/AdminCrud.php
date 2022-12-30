@@ -13,6 +13,7 @@ use MarghoobSuleman\HashtagCms\Models\QueryLogger;
 use MarghoobSuleman\HashtagCms\Models\Site;
 
 use MarghoobSuleman\HashtagCms\Core\Helpers\Message;
+use Mockery\Exception;
 
 trait AdminCrud {
 
@@ -139,7 +140,7 @@ trait AdminCrud {
             return json_encode(array("id"=>$id, "success"=>0, "message"=>Message::getDeleteError()));
         }
 
-        //DB::enableQueryLog();
+        QueryLogger::enableQueryLog();
 
         $dataSource = $this->getDataSource();
         $source = new $dataSource();
@@ -149,9 +150,17 @@ trait AdminCrud {
         $isDeleted = $source->destroy($id);
         $array = array("id"=>$id, "success"=>$isDeleted, "source"=>$source);
 
-        //$query = DB::getQueryLog();
+        //Logging
+        try{
+            $queryLog = QueryLogger::getQueryLog();
+            QueryLogger::log('delete', $queryLog, $source, $id ?? 0);
 
-        //self::log('editStart', json_encode($query), json_encode($data), $id);
+        } catch (\Exception $exception) {
+
+            info($exception->getMessage());
+
+        }
+
 
         return json_encode($array);
     }

@@ -19,6 +19,36 @@ class {{controller_name}} extends BaseAdminController
 
     protected $actionFields = array("edit", "delete"); //This is last column of the row
 
+
+    // protected $minResults = 1; //this will disable delete when record count is one
+    /*
+    //This will be added after add/edit etc action fields
+    protected $moreActionFields = array(
+            array("label"=>"Show all info",
+                "css"=>"js_ajax",
+                "icon_css"=>"fa fa-info-circle",
+                "hrefAttributes"=>["data-info"=>"cmslog", "data-editable"=>false, "data-excludefields"=>["user", "module"]],
+                "action"=>"showinfo",
+                "action_append_field"=>"id"
+                ),
+                 array("label"=>"Site Settings",
+                            "icon_css"=>"fa fa-cogs",
+                            "action"=>"settings",
+                            "action_append_field"=>"id")
+        );
+    */
+
+    /*
+    //This is action bar items. (Add/Search bar)
+    protected $moreActionBarItems = array(
+            array("label"=>"Clone Site",
+                "as"=>"icon",
+                "icon_css"=>"fa fa-copy", "action"=> "site/copysite"
+            )
+        );
+    */
+
+    //Get data for editing.
     /*protected $bindDataWithAddEdit = array("zones"=>array("dataSource"=>Zone::class, "method"=>"all"),
                                         "currencies"=>array("dataSource"=>Currency::class, "method"=>"all"));
                                         */

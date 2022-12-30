@@ -17,7 +17,7 @@ return [
                         <br><span class='bigger'>CORPORATES</span>
                     </h1>",
     "hero_text_2"=>'<p>
-                        Use it as Headless CMS or Bundled, API enabled for Mobile App Development, <br />Admin Panel, Multisite, Multiplatform, Multilingual, and oAuth 2.0
+                        Use it as Headless CMS or Bundled. Choose your own frontend technology. This is API enabled for mobile app development too. This CMS has multi-tenant, multi-platform, multilingual support.
                         <br /><span class="text-info">What would you ask for more?</span> <br />The most powerful, fast,  user-friendly and secured platform.
                         <br /> <a style="margin-top: 20px" class="btn btn-primary" href="https://github.com/marghoobsuleman/hashtagcms" target="_blank">Download from Github</a>
                     </p>',

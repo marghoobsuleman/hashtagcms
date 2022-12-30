@@ -43,6 +43,13 @@ class SiteController extends BaseAdminController
 
     protected $actionFields = array("edit", "delete"); //This is last column of the row
 
+    protected $moreActionFields = array(
+        array("label"=>"Site Settings",
+            "icon_css"=>"fa fa-cogs",
+            "action"=>"settings",
+            "action_append_field"=>"id")
+    );
+
     protected $bindDataWithAddEdit = array(
                                         "languages"=>array("dataSource"=>Lang::class, "method"=>"combo"),
                                         "countries"=>array("dataSource"=>CountryLang::class, "method"=>"all")
@@ -52,12 +59,6 @@ class SiteController extends BaseAdminController
             "as"=>"icon",
             "icon_css"=>"fa fa-copy", "action"=> "site/copysite"
         )
-    );
-    protected $moreActionFields = array(
-        array("label"=>"Site Settings",
-            "icon_css"=>"fa fa-cogs",
-            "action"=>"settings",
-            "action_append_field"=>"id")
     );
 
 

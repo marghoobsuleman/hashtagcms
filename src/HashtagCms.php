@@ -10,7 +10,7 @@ class HashtagCms
     private $frontEndRouteEnabled = true;
     private $installtionRoutes = true;
 
-    private $ignoredPath = "(?!assets/)|(?!fonts/)";
+    private $ignoredPath = "(?!assets/)|(?!fonts/)|(?!build/)|(?!resources/)";
 
     /**
      * Get Header Menu as an array
