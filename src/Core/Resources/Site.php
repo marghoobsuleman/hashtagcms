@@ -54,7 +54,7 @@ class Site extends JsonResource
             "favicon"=> $this->favicon,
             "lang_count"=> $this->lang_count,
             "site_props"=> SiteProp::where('site_id','=',$this->id)->withoutGlobalScopes()->get(),
-            "default_country"=> $defaultCountry ,
+            "default_country"=> $defaultCountry,
             "default_currency"=> CurrencySite::where('site_id','=',$this->id)->with('currency')->first(),
             "supported"=>array(
                 "categories"=>Category::with('lang')->where('site_id', $this->id)->withoutGlobalScopes()->get(),

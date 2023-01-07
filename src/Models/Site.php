@@ -44,6 +44,16 @@ class Site extends AdminBaseModel
 
     }
 
+    /**
+     * With Category lang
+     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
+     */
+    public function categoryLang() {
+
+        return $this->hasMany(Category::class)->with('lang');
+
+    }
+
 
     /**
      * Theme
@@ -89,7 +99,7 @@ class Site extends AdminBaseModel
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function country() {
-        return $this->belongsToMany(Country::class);
+        return $this->belongsToMany(Country::class)->with('lang');
     }
 
     /**
@@ -283,6 +293,14 @@ class Site extends AdminBaseModel
      */
     public function siteproperty() {
         return $this->prop();
+    }
+
+    /**
+     * Suported props where
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function propWhere($where=array()) {
+        return $this->hasMany(SiteProp::class)->where($where["column"], $where["operator"], $where["value"]);
     }
 
     /**

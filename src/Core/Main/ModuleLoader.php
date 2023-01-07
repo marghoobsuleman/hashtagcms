@@ -4,11 +4,12 @@
 namespace MarghoobSuleman\HashtagCms\Core\Main;
 
 use MarghoobSuleman\HashtagCms\Models\Module;
+use MarghoobSuleman\HashtagCms\Models\ModuleProp;
 
 /**
  * Class ModuleLoader
  * @package MarghoobSuleman\HashtagCms\Core
- * @version 1.4
+ * @version 1.5
  */
 class ModuleLoader
 {
@@ -27,6 +28,7 @@ class ModuleLoader
     public function __construct()
     {
         $this->common = app()->HashtagCms;
+        //$this->infoLoader->setContextVars($key, $lr);
     }
 
     /**
@@ -197,6 +199,7 @@ class ModuleLoader
      */
     public function getModuleData($module_obj): array|string|null
     {
+        info("loading module data");
         $dataType = $module_obj->data_type;
         $dataHandler = ($module_obj->data_handler == "" || $module_obj->data_handler==null) ? "" : $module_obj->data_handler;
         $methodType = $module_obj->method_type;
@@ -280,7 +283,8 @@ class ModuleLoader
      * @return void
      */
     public function setSharedModuleData(string $alias, mixed $data):void {
-        $alias = $alias."_".htcms_get_site_id();
+        $infoLoader = app()->HashtagCms->infoLoader();
+        $alias = $alias."_".$infoLoader->getContextVars("site_id");
         $this->sharedModuleData[$alias] = $data;
     }
 
@@ -291,7 +295,8 @@ class ModuleLoader
      */
     public function getSharedModuleData(string $alias): mixed
     {
-        $alias = $alias."_".htcms_get_site_id();
+        $infoLoader = app()->HashtagCms->infoLoader();
+        $alias = $alias."_".$infoLoader->getContextVars("site_id"); //htcms_get_site_id();
         return (isset($this->sharedModuleData[$alias]) && !empty($this->sharedModuleData[$alias])) ? $this->sharedModuleData[$alias] : null;
     }
 
@@ -386,7 +391,27 @@ class ModuleLoader
         $info = $this->getModuleInfo($alias, false);
         return $this->getModuleData($info);
     }
-    
+
+    /**
+     * Get module props
+     * @param int $moduleId
+     * @param int $siteId
+     * @param int $platformId
+     * @return array
+     */
+    public function getModuleProps(int $moduleId, int $siteId, int $platformId):array {
+        $modulePropsData = ModuleProp::where(array(
+            array('site_id', '=', $siteId),
+            array('platform_id', '=', $platformId),
+            array('module_id', '=', $moduleId)
+        ))->get();
+
+        $props = array();
+        foreach ($modulePropsData as $key=>$prop) {
+            $props[$prop->name] = $prop->lang->value;
+        }
+        return $props;
+    }
 
 }
 

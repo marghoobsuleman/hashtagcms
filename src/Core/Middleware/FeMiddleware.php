@@ -35,7 +35,7 @@ class FeMiddleware
         info("================== FeMiddleware: [".$request->path()."] ====================");
         $this->process($this->request);
         info("================== End============================================");
-        
+
         return $next($this->request);
     }
 

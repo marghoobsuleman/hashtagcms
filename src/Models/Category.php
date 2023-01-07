@@ -46,11 +46,12 @@ class Category extends AdminBaseModel
 
 
     /**
+     * Not in use anywhere
      * With theme
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function theme() {
-      return $this->belongsTo(Theme::class, "id", "theme_id");
+      return $this->belongsTo(Theme::class, "category_id", "theme_id");
     }
 
 

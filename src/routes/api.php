@@ -72,6 +72,29 @@ Route::middleware('api')->prefix("api/hashtagcms")->group(function() use($callab
 
     });
 
+
+    /**** V2 *****/
+    /**
+     * Site Config: V2
+     */
+    Route::get("public/configs/v2/site-configs", function (Request $request)  use($callable) {
+
+        return app()->call($callable."ServiceControllerV2@siteConfigs");
+
+    });
+
+    /**
+     * Load data: V2
+     */
+    Route::get("public/sites/v2/load-data", function(Request $request) use($callable) {
+
+        return app()->call($callable."ServiceControllerV2@loadData");
+
+    });
+
+
+
+
 });
 
 //Authentication

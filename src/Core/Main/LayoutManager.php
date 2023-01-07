@@ -564,6 +564,10 @@ class LayoutManager extends Results
             "lang"=>$langCode, "platform"=>$platformLinkrewrite,
             "microsite"=>$micrositeId, "clearCache"=>$clearCache);
 
+        //@todo: Need to work here
+        /*$dataL = new DataLoaderV2();
+        $dataL->loadData($requestParams);*/
+
         $data = $dataLoader->loadData($requestParams);
 
         info("layoutManager: loading data completed, status: ".$data["status"]);

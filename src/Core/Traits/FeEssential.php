@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Redirect;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 
 trait FeEssential {
 
@@ -17,7 +18,7 @@ trait FeEssential {
      * @param Request $request
      */
     public function index(Request $request) {
-
+        
         $layoutManager =  app()->HashtagCms->layoutManager();
         try {
             info("============ Start loading data from request ============= ");
