@@ -2,14 +2,13 @@
 
 #v1.3.8 Changes
 #### Major Update: Please note: This updates need fresh installation.
-- Backend: Vue 2 to Vue 3 - working
+- Backend: Vue 2 to Vue 3 - done
 - Backend: Improved Smart Copy Paste - done
 - Backend: `direction` column in `hooks` table has default Null value now. - done 
 - Backend: Move Passport to Sanctum for authentication - done
 - Backend: linked module and live edit bug while adding or editing frontend module. - done
-- Frontend/Backend: Moved to vite - working
-- Frontend: Moved to API based validation. 
-- API: Added v2 api
+- Frontend: Moved to API based validation. - not started
+- API: Added v2 api - WIP
 
 #v1.3.7 Changes
 - Backend: Fixed issue while adding category
