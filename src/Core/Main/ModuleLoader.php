@@ -199,7 +199,6 @@ class ModuleLoader
      */
     public function getModuleData($module_obj): array|string|null
     {
-        info("loading module data");
         $dataType = $module_obj->data_type;
         $dataHandler = ($module_obj->data_handler == "" || $module_obj->data_handler==null) ? "" : $module_obj->data_handler;
         $methodType = $module_obj->method_type;
@@ -270,7 +269,7 @@ class ModuleLoader
 
         //Check if this is sharable
         if($is_shared == 1) {
-            info("module_obj->site_id ". json_encode($module_obj));
+            //info("module_obj->site_id ". json_encode($module_obj));
             $this->setSharedModuleData($module_obj->alias, $data);
         }
         return $data;

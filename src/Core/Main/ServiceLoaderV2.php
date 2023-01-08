@@ -1,24 +1,25 @@
 <?php
 namespace MarghoobSuleman\HashtagCms\Core\Main;
 
+use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\DB;
+
 use MarghoobSuleman\HashtagCms\Models\Category;
 use MarghoobSuleman\HashtagCms\Models\Lang;
 use MarghoobSuleman\HashtagCms\Models\Site;
 use MarghoobSuleman\HashtagCms\Models\Platform;
 use MarghoobSuleman\HashtagCms\Models\SiteProp;
-use Symfony\Component\HttpFoundation\Response;
-use Illuminate\Support\Facades\DB;
 
 /** v2 */
-use App\Http\Resources\SiteResource;
-use App\Http\Resources\SiteCollection;
-use App\Http\Resources\PlatformResource;
-use App\Http\Resources\LangResource;
-use App\Http\Resources\CurrencyResource;
-use App\Http\Resources\CategoryResource;
-use App\Http\Resources\CountryResource;
-use App\Http\Resources\ZoneResource;
-use App\Http\Resources\SitePropResource;
+use MarghoobSuleman\HashtagCms\Http\Resources\SiteResource;
+use MarghoobSuleman\HashtagCms\Http\Resources\SiteCollection;
+use MarghoobSuleman\HashtagCms\Http\Resources\PlatformResource;
+use MarghoobSuleman\HashtagCms\Http\Resources\LangResource;
+use MarghoobSuleman\HashtagCms\Http\Resources\CurrencyResource;
+use MarghoobSuleman\HashtagCms\Http\Resources\CategoryResource;
+use MarghoobSuleman\HashtagCms\Http\Resources\CountryResource;
+use MarghoobSuleman\HashtagCms\Http\Resources\ZoneResource;
+use MarghoobSuleman\HashtagCms\Http\Resources\SitePropResource;
 
 class ServiceLoaderV2 extends DataLoaderV2
 {
@@ -44,6 +45,7 @@ class ServiceLoaderV2 extends DataLoaderV2
      */
     public function allConfigs(string $context, string $lang=null, string $platform=null): array
     {
+        //return array("tested"=>"okay!");
         return parent::loadConfig($context, $lang, $platform);
     }
 

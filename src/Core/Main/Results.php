@@ -60,7 +60,7 @@ class Results
 
         $queryParams = (sizeof($byParams)==0) ? $this->findAndReplaceGlobalIds($query) : $byParams;
 
-        info(json_encode($queryParams));;
+        //info(json_encode($queryParams));;
 
         /*info("======================== query ============= ");
         info(json_encode($query));

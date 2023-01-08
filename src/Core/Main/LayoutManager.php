@@ -41,7 +41,7 @@ class LayoutManager extends Results
         $this->infoLoader = app()->HashtagCmsInfoLoader;
         $this->themeFolder = config("hashtagcms.info.theme_folder");
         $host = request()->getHost();
-        info("getHost ".request()->getHost());
+        //info("getHost ".request()->getHost());
         $assetPath = config("hashtagcms.info.assets_path");
         $assetPath = (isset($assetPath[$host])) ? $assetPath[$host] : $assetPath;
 

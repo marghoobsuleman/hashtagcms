@@ -10,10 +10,12 @@ trait LayoutHandler {
     /**
      * @param string|null $str
      * @param string|int $theme_dir
-     * @return string
+     * @return string|null
      */
-    public function parseStringForPath(?string $str="", string|int $theme_dir):string {
-
+    public function parseStringForPath(?string $str="", string|int $theme_dir):?string {
+        if (empty($str)) {
+            return $str;
+        }
         //if theme dir is an id; fetch it from Theme
         if (gettype($theme_dir) == "integer") {
             if (isset($this->themeCache[$theme_dir])) {

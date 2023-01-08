@@ -2,14 +2,15 @@
 namespace MarghoobSuleman\HashtagCms\Core\Main;
 
 use Illuminate\Support\Arr;
-use App\Http\Resources\ModuleResource;
 use JetBrains\PhpStorm\ArrayShape;
 use Illuminate\Support\Facades\DB;
+use Symfony\Component\HttpFoundation\Response;
+use PHPUnit\Framework\MockObject\Exception;
+use Illuminate\Support\Str;
+
 use MarghoobSuleman\HashtagCms\Models\Module;
 use MarghoobSuleman\HashtagCms\Models\ModuleProp;
 use MarghoobSuleman\HashtagCms\Models\ModuleSite;
-use PHPUnit\Framework\MockObject\Exception;
-use Symfony\Component\HttpFoundation\Response;
 
 use MarghoobSuleman\HashtagCms\Models\Category;
 use MarghoobSuleman\HashtagCms\Models\CategorySite;
@@ -21,19 +22,20 @@ use MarghoobSuleman\HashtagCms\Models\Theme;
 use MarghoobSuleman\HashtagCms\Models\Hook;
 
 /** v2 */
-use App\Http\Resources\SiteResource;
-use App\Http\Resources\SiteCollection;
-use App\Http\Resources\PlatformResource;
-use App\Http\Resources\LangResource;
-use App\Http\Resources\CurrencyResource;
-use App\Http\Resources\CategoryResource;
-use App\Http\Resources\CountryResource;
-use App\Http\Resources\ZoneResource;
-use App\Http\Resources\SitePropResource;
-use App\Http\Resources\CategorySiteResource;
-use App\Http\Resources\ThemeResource;
-use App\Http\Resources\HookResource;
-use App\Http\Resources\ModulePropResource;
+use MarghoobSuleman\HashtagCms\Http\Resources\SiteResource;
+use MarghoobSuleman\HashtagCms\Http\Resources\SiteCollection;
+use MarghoobSuleman\HashtagCms\Http\Resources\PlatformResource;
+use MarghoobSuleman\HashtagCms\Http\Resources\LangResource;
+use MarghoobSuleman\HashtagCms\Http\Resources\CurrencyResource;
+use MarghoobSuleman\HashtagCms\Http\Resources\CategoryResource;
+use MarghoobSuleman\HashtagCms\Http\Resources\CountryResource;
+use MarghoobSuleman\HashtagCms\Http\Resources\ZoneResource;
+use MarghoobSuleman\HashtagCms\Http\Resources\SitePropResource;
+use MarghoobSuleman\HashtagCms\Http\Resources\CategorySiteResource;
+use MarghoobSuleman\HashtagCms\Http\Resources\ThemeResource;
+use MarghoobSuleman\HashtagCms\Http\Resources\HookResource;
+use MarghoobSuleman\HashtagCms\Http\Resources\ModuleResource;
+use MarghoobSuleman\HashtagCms\Http\Resources\ModulePropResource;
 
 
 use MarghoobSuleman\HashtagCms\Core\Traits\LayoutHandler;
@@ -72,7 +74,6 @@ class DataLoaderV2
             return $this->getErrorMessage($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-
         // fetch site info from request -> context
         // fetch lang info from request -> lang
         // fetch platform info from request -> platform
@@ -90,33 +91,35 @@ class DataLoaderV2
 
         $lang_id = null;
         $platform_id = null;
-        $site = Site::where('context', '=', $context)->first();
+        $siteData = Site::where('context', '=', $context)->first();
 
-        if (empty($site)) {
+        //Send error
+        if (empty($siteData)) {
             info("ServiceLoader>allConfigs: Site not found");
             return $this->getErrorMessage("Site not found", Response::HTTP_NOT_FOUND);
         }
 
-        //if lang is not empty fetch the lang info.
+        //if lang param is not empty fetch the lang info.
         // If found use that else use default lang from the site
         if(!empty($lang)) {
-            $langInfo = Lang::where('iso_code', '=', $lang)->first();
-            if(!empty($langInfo)) {
-                $lang_id = $langInfo->id;
+            $langData = Lang::where('iso_code', '=', $lang)->first();
+            if(!empty($langData)) {
+                $lang_id = $langData->id;
             }
         }
 
-        //if platform is not empty fetch form the
+        //if platform param is not empty fetch form the db
         if(!empty($platform)) {
-            $platformInfo = Platform::where('link_rewrite', '=', $platform)->first();
-            if(!empty($platformInfo)) {
-                $platform_id = $platformInfo->id;
+            $platformData = Platform::where('link_rewrite', '=', $platform)->first();
+            if(!empty($platformData)) {
+                $platform_id = $platformData->id;
             }
         }
+
         //set default
-        $site_id = $site->id;
-        $lang_id = ($lang_id == null) ? $site->lang_id : $lang_id;
-        $platform_id = ($platform_id == null) ? $site->platform_id : $platform_id; //will use this
+        $site_id = $siteData->id;
+        $lang_id = ($lang_id == null) ? $siteData->lang_id : $lang_id; //set default lang if param is not passed
+        $platform_id = ($platform_id == null) ? $siteData->platform_id : $platform_id; //set default platform if param is not passed
 
         /** set scope lang id */
         htcms_set_language_id_for_admin($lang_id);
@@ -176,6 +179,7 @@ class DataLoaderV2
      */
     public function loadData(string $context, string $lang=null, string $platform=null, string $category=null, string $microsite=null): mixed
     {
+        info("loading started for: $category, context: $context, platform: $platform lang: $lang");
         try {
             DB::connection()->getPdo();
         } catch (\Exception $e) {
@@ -213,20 +217,31 @@ class DataLoaderV2
 
         $langData = Lang::where('iso_code', '=', $lang)->first();
 
+        //Send error
+        if ($langData === null) {
+            info("DataLoader->loadData: Lang not found");
+            return $this->getErrorMessage("Lang not found", Response::HTTP_BAD_REQUEST);
+        }
+
         //set lang scope
         htcms_set_language_id_for_admin($langData->id); // this is required for Scope
 
         //Start fetching everything now
         $siteData = Site::with('lang')->where('context', $context)->first();
 
+        //Send error
+        if (empty($siteData)) {
+            info("DataLoader->loadData: site not found");
+            return $this->getErrorMessage("Site not found", Response::HTTP_BAD_REQUEST);
+        }
+
+        info("DataLoader->loadData: Found site: {$siteData->id}, lang: {$langData->id}");
+
         //set site scope
         htcms_set_site_id_for_admin($siteData->id);
 
         //Set Context Vars: Site Id
         $this->infoLoader->setContextVars('site_id', $siteData->id);
-
-        //lang
-        $langInfo = new LangResource($langData);
 
         //platform
         $platformData = Platform::where("link_rewrite", $platform)->first();
@@ -237,10 +252,13 @@ class DataLoaderV2
         //category
         $categoryData = $filterdCategory['categoryData'];
 
+        //Send error
         if($categoryData === null) {
             info("DataLoader->loadData: Category not found");
             return $this->getErrorMessage("Category not found", Response::HTTP_NOT_FOUND);
         }
+
+        info("DataLoader->loadData: Found category: {$categoryData->id}");
 
         //Set Context Vars: Category Id
         $this->infoLoader->setContextVars('category_id', $categoryData->id);
@@ -254,9 +272,24 @@ class DataLoaderV2
          * Fetch the theme from category_site
          */
         $categorySiteData = CategorySite::where(array(array('platform_id', '=', $platformData->id), array('category_id', '=', $categoryData->id)))->first();
-        $categoryData->site = $categorySiteData;
+
+        //Send error
+        if ($categorySiteData === null) {
+            info("DataLoader->loadData: Category is not added in the site");
+            return $this->getErrorMessage("Category not found", Response::HTTP_NOT_FOUND);
+        }
+
+        $categoryData->siteWise = $categorySiteData;
+
+        info("DataLoader->loadData: Found in category_site: {$categoryData->id} for platofrm: {$platformData->id}");
 
         $themeData = Theme::find($categorySiteData->theme_id);
+
+        //Send error
+        if ($themeData === null) {
+            info("DataLoader->loadData: Theme is not defined");
+            return $this->getErrorMessage("Theme is not defined", Response::HTTP_NOT_FOUND);
+        }
 
         //props
         $propsData = SiteProp::where(array(array('site_id', '=', $siteData->id), array('platform_id', '=', $platformData->id)))->get();
@@ -270,24 +303,32 @@ class DataLoaderV2
         $this->infoLoader->setLanguageId($langData->id);
         /*** ========== end setting context ========= **/
 
+        info("loading data for: siteId: {$siteData->id}, micrositeId: {$microsite_id}, platformId: {$platformData->id}, langId: {$langData->id}, categoryId: {$categoryData->id}");
 
         //Get theme and hooks
         $parsedTheme = $this->parseThemeSkeleton($themeData->skeleton, $siteData->id, $microsite_id, $platformData->id, $langData->id, $categoryData->id);
+
+        //Send error
+        if (sizeof($parsedTheme['hooks']) === 0 && sizeof($parsedTheme['modules']) === 0) {
+            info("DataLoader->loadData: There is not hook or module in the theme");
+            return $this->getErrorMessage("There is not hook or module in the theme", Response::HTTP_NOT_FOUND);
+        }
 
         //Add hooks and modules
         $themeData->hooks = HookResource::collection($parsedTheme['hooks']);
         $themeData->modules = ModuleResource::collection($parsedTheme['modules']);
 
         //Convert for api
+        $langInfo = new LangResource($langData);
         $siteInfo = new SiteResource($siteData);
         $platformInfo = new PlatformResource($platformData);
         $categoryInfo = new CategoryResource($categoryData);
+
         $categorySiteInfo = new CategorySiteResource($categorySiteData);
         $themeInfo = new ThemeResource($themeData);
         $propsInfo = SitePropResource::collection($propsData);
 
-
-
+        //Get html meta
         $htmlMetaData = $this->getHtmlMetaData($siteData, $themeData, $categoryData);
 
         $data['html'] = $htmlMetaData['html'];
@@ -300,14 +341,14 @@ class DataLoaderV2
             "props"=>$propsInfo
             );
 
-        //$data['isLoginRequired'] = $isLoginRequired;
-        //$data['status'] = Response::HTTP_OK;
+        $data['isLoginRequired'] = $isLoginRequired = $categoryData->required_login === 1 || $this->moduleLoader->isLoginRequired();
 
         //Setting it back otherwise it will affect admin panel too.
         htcms_set_site_id_for_admin($oldSiteId);
         htcms_set_language_id_for_admin($oldLangId);
 
-        //info("loadData: Fetching completed for category: $category, context: $context, platform: $platform lang: $lang");
+        info("loading data completed for: $category ({$categoryData->id}), context: $context ({$siteData->id}), platform: $platform ({$platformData->id}) lang: $lang ({$langData->id})");
+
         return $data;
 
     }
@@ -319,7 +360,7 @@ class DataLoaderV2
      * @param int $site_id
      * @return array[]
      */
-    private function parseThemeSkeleton(string $skeleton, int $siteId, int $micrositeId=0, int $platformId, int $langId, int $categoryId) {
+    private function parseThemeSkeleton(string $skeleton, int $siteId, int $micrositeId=0, int $platformId, int $langId, int $categoryId):array {
 
             $this->infoLoader->setMultiContextVars($categoryId, $siteId, $platformId, $micrositeId);
             $this->infoLoader->setLanguageId($langId);
@@ -354,6 +395,7 @@ class DataLoaderV2
                         if ($hookData != null && sizeof($hookData->site) > 0) {
                             unset($hookData->site);
                             //get modules by hooks
+
                             $hookData->modules = $this->getModulesByHook($hookData->id, $siteId, $micrositeId, $platformId, $langId, $categoryId);
                             $allHooks[] = $hookData;
                         }
@@ -394,7 +436,7 @@ class DataLoaderV2
      * @param int $categoryId
      * @return array
      */
-    private function getModulesByHook(int $hookId, int $siteId, int $micrositeId=0, int $platformId, int $langId, int $categoryId) {
+    private function getModulesByHook(int $hookId, int $siteId, int $micrositeId=0, int $platformId, int $langId, int $categoryId):array {
         $this->infoLoader->setMultiContextVars($categoryId, $siteId, $platformId, $micrositeId);
         $this->infoLoader->setLanguageId($langId);
         //fetch site modules by site, (?microsite @todo: will handle later), platform, hook, category order by position
@@ -405,6 +447,9 @@ class DataLoaderV2
             array('platform_id', '=', $platformId),
             array('category_id', '=', $categoryId)
         );
+
+        $moduleWhere = array(array('hook_id', '=', $hookId), array('site_id', '=', $siteId), array('microsite_id', '=', $micrositeId), array('platform_id', '=', $platformId), array('category_id', '=', $categoryId));
+
         $allModules = ModuleSite::where($moduleWhere)->get();
         $modulesArr = [];
         foreach ($allModules as $module) {
@@ -435,8 +480,8 @@ class DataLoaderV2
 
         $neg = base64_decode('PG1ldGEgbmFtZT0iZ2VuZXJhdG9yIiBuYW1lPSIjQ01TIChodHRwczovL3d3dy5oYXNodGFnY21zLm9yZy8pIj4=');
 
-        $categoryHeaderContent = $this->parseStringForPath($categoryData->site->header_content, $theme_dir);
-        $categoryFooterContent = $this->parseStringForPath($categoryData->site->footer_content, $theme_dir);
+        $categoryHeaderContent = $this->parseStringForPath($categoryData->siteWise->header_content, $theme_dir);
+        $categoryFooterContent = $this->parseStringForPath($categoryData->siteWise->footer_content, $theme_dir);
 
         //theme header/footer
         $themeInfo["header_content"] = $neg.$this->parseStringForPath($themeData->header_content, $theme_dir);
@@ -561,8 +606,8 @@ class DataLoaderV2
             }
             $selectedCategory = ($selectedCategory !== null) ? $selectedCategory : $categoryData[0];
         }
-
-        return array("linkRewrite"=>$linkRewrite, "param"=>$param, "fullPath"=>$path, "categoryData"=>$selectedCategory);
+        $isParamRequired = Str::contains($selectedCategory->link_rewrite_pattern, "?") ? false : true;
+        return array("linkRewrite"=>$linkRewrite, "param"=>$param, "fullPath"=>$path, "categoryData"=>$selectedCategory, "paramRequired"=>$isParamRequired);
     }
 
 
