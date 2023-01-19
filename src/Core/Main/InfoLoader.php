@@ -1,5 +1,6 @@
 <?php
 namespace MarghoobSuleman\HashtagCms\Core\Main;
+
 use JetBrains\PhpStorm\ArrayShape;
 use MarghoobSuleman\HashtagCms\Models\Category;
 use MarghoobSuleman\HashtagCms\Models\Lang;
@@ -24,10 +25,16 @@ class InfoLoader
     protected CacheManager $cacheManager;
 
 
+    protected $dataLoader;
+
+    /** v2 */
+    private array $infoData = array();
+    private array $loadData = array();
 
     function __construct()
     {
         $this->cacheManager = app()->HashtagCms->cacheManager();
+
     }
 
     /**
@@ -560,8 +567,8 @@ class InfoLoader
             unset($obj->deleted_at);
         }
     }
-    
-    
+
+
     /**
      * Get site props
      * @param int $site_id
@@ -741,6 +748,307 @@ class InfoLoader
         return $data;
     }
 
+
+    /** v2 */
+
+    /**
+     * Set site data
+     * @param array $siteData
+     * @return void
+     */
+    public function setSiteData(array $siteData):void {
+        
+        //$this->infoLoader->setInfoKeeper("context", $siteInfo["context"]);
+        //$this->infoLoader->setInfoKeeper("siteId", $siteInfo["id"]);
+        
+        $this->infoData['site'] = $siteData;
+    }
+
+    /**
+     * Get site data
+     * @return array
+     */
+    public function getSiteData():array {
+        return $this->infoData['site'];
+    }
+
+    /**
+     * Set platform data
+     * @param array $platfomData
+     * @return void
+     */
+    public function setPlatformData(array $platfomData):void {
+        $this->infoData['platform'] = $platfomData;
+    }
+
+    /**
+     * Get platofrm data
+     * @return array
+     */
+    public function getPlatformData():array {
+        return $this->infoData['platform'];
+    }
+
+
+    /**
+     * Set lang data
+     * @param array $langData
+     * @return void
+     */
+    public function setLangData(array $langData):void {
+        $this->setLanguageId($langData['id'], $langData['isoCode']);
+        $this->infoData['lang'] = $langData;
+    }
+
+    /**
+     * Get lang data
+     * @return array
+     */
+    public function getLangData():array {
+        return $this->infoData['lang'];
+    }
+
+
+    /**
+     * Set category data
+     * @param array $categoryData
+     * @return void
+     */
+    public function setCategoryData(array $categoryData):void {
+        $this->infoData['category'] = $categoryData;
+    }
+
+    /**
+     * Get category data
+     * @return array
+     */
+    public function getCategoryData():array {
+        return $this->infoData['category'];
+    }
+
+    /**
+     * Set theme data
+     * @param array $themeData
+     * @return void
+     */
+    public function setThemeData(array $themeData):void {
+        $this->infoData['theme'] = $themeData;
+    }
+
+    /**
+     * Get theme data
+     * @return array
+     */
+    public function getThemeData():array {
+        return $this->infoData['theme'];
+    }
+
+    /**
+     * Set site props
+     * @param array $sitePropsData
+     * @return void
+     */
+    public function setSitePropsData(array $sitePropsData):void {
+        $this->infoData['props'] = $sitePropsData;
+    }
+
+    /**
+     * Get site props
+     * @return array
+     */
+    public function getSitePropsData():array {
+        return $this->infoData['props'];
+    }
+
+    /**
+     * Set header content
+     * @param array $headerContentData
+     * @return void
+     */
+    public function setHeaderContent(array $headerContentData):void {
+        $this->infoData['headerContent'] = $headerContentData[0]['html'];
+    }
+
+    /**
+     * Get header content
+     * @return string
+     */
+    public function getHeaderContent():string {
+        return $this->infoData['headerContent'];
+    }
+
+    /**
+     * Set footer content
+     * @param array $footerContent
+     * @return void
+     */
+    public function setFooterContent(array $footerContent):void {
+        $this->infoData['footerContent'] = $footerContent[0]['html'];
+    }
+
+    /**
+     * Get footer content
+     * @return string
+     */
+    public function getFooterContent():string {
+        return $this->infoData['footerContent'];
+    }
+
+    /**
+     * Set meta title
+     * @param string $metaTitle
+     * @return void
+     */
+    public function setMetaTitle(string $metaTitle):void {
+        $this->infoData['title'] = $metaTitle;
+    }
+
+    /**
+     * Get meta title
+     * @return string
+     */
+    public function getMetaTitle():string {
+        return $this->infoData['title'];
+    }
+
+    /**
+     * Set meta canonical
+     * @param string $metaCanonical
+     * @return void
+     */
+    public function setMetaCanonical(string $metaCanonical=null):void {
+        $this->infoData['metaCanonical'] = $metaCanonical;
+    }
+
+    /**
+     * Get meta canonical
+     * @return string
+     */
+    public function getMetaCanonical():string {
+        return $this->infoData['title'];
+    }
+
+    /**
+     * Set meta description
+     * @param string $metaDescription
+     * @return void
+     */
+    public function setMetaDescription(string $metaDescription=null):void {
+        $this->infoData['metaDescription'] = $metaDescription;
+    }
+
+    /**
+     * Get meta description
+     * @return string
+     */
+    public function getMetaDescription():string {
+        return $this->infoData['metaDescription'];
+    }
+
+    /**
+     * Set meta keywords
+     * @param string $metaKeywords
+     * @return void
+     */
+    public function setMetaKeywords(string $metaKeywords=null):void {
+        $this->infoData['metaKeywords'] = $metaKeywords;
+    }
+
+    /**
+     * Get meta keywords
+     * @return string
+     */
+    public function getMetaKeywords():string {
+        return $this->infoData['metaKeywords'];
+    }
+
+    /**
+     * Set meta robots
+     * @param string $metaRobots
+     * @return void
+     */
+    public function setMetaRobots(string $metaRobots):void {
+        $this->infoData['metaRobots'] = $metaRobots;
+    }
+
+    /**
+     * Get meta robots
+     * @return string
+     */
+    public function getMetaRobots():string {
+        return $this->infoData['metaRobots'];
+    }
+
+    /**
+     * Set fav icon
+     * @param string $favicon
+     * @return void
+     */
+    public function setFavIcon(string $favicon):void {
+        $this->infoData['favicon'] = $favicon;
+    }
+
+    /**
+     * Get fav icon
+     * @return string
+     */
+    public function getFavIcon():string {
+        return $this->infoData['favicon'];
+    }
+
+    /**
+     * Set theme skeleton
+     * @param string $skeleton
+     * @return void
+     */
+    public function setThemeSkeleton(string $skeleton):void {
+        $this->infoData['skeleton'] = $skeleton;
+    }
+
+    /**
+     * Get theme skeleton
+     * @return string
+     */
+    public function getThemeSkeleton():string {
+        return $this->infoData['skeleton'];
+    }
+
+    /**
+     * Set everything for later use
+     * @param array $loadDataObject
+     * @return void
+     */
+    public function setLoaloadDataObjectAndEverything(array $loadDataObject):void {
+        $this->loadData = $loadDataObject;
+
+        $meta = $loadDataObject['meta'];
+        $html = $loadDataObject['html'];
+
+        //set everything now
+        $this->setSiteData($meta['site']);
+        $this->setPlatformData($meta['platform']);
+        $this->setLangData($meta['lang']);
+        $this->setCategoryData($meta['category']);
+        $this->setThemeData($meta['theme']);
+        $this->setSitePropsData($meta['props']);
+        $this->setHeaderContent($html['head']['headerContent']);
+        $this->setFooterContent($html['body']['footer']['footerContent']);
+        $this->setMetaTitle($html['head']['title']);
+        $this->setMetaCanonical($html['head']['meta']['metaCanonical']);
+        $this->setMetaDescription($html['head']['meta']['metaDescription']);
+        $this->setMetaKeywords($html['head']['meta']['metaKeywords']);
+        $this->setMetaRobots($html['head']['meta']['metaRobots']);
+        $this->setFavIcon($html['head']['links'][0]['href']);
+        $this->setThemeSkeleton($html['body']['content']['skeleton']);
+    }
+
+    /**
+     * get load data object
+     * @return array
+     */
+    public function getLoadDataObject():array {
+        return $this->loadData;
+    }
 
 
 }

@@ -6,7 +6,8 @@ use JetBrains\PhpStorm\ArrayShape;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Auth;
 use Mockery\Exception;
-use Illuminate\Support\Facades\Vite;
+
+use MarghoobSuleman\HashtagCms\Core\Traits\LayoutHandler;
 
 
 class LayoutManager extends Results

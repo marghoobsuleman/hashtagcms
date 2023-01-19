@@ -2,6 +2,7 @@
 
 namespace MarghoobSuleman\HashtagCms\Core\Middleware\Traits;
 
+use Illuminate\Support\Facades\Http;
 use MarghoobSuleman\HashtagCms\Core\Main\CacheManager;
 use MarghoobSuleman\HashtagCms\Models\Category;
 use Illuminate\Support\Facades\DB;
@@ -26,12 +27,18 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use MarghoobSuleman\HashtagCms\Core\Main\InfoLoader;
 
+use MarghoobSuleman\HashtagCms\Core\Main\DataLoader as DataLoader;
+
 trait BaseInfo {
 
     protected string $defaultController = "frontend";
     protected string $defaultMethod = "index";
     protected InfoLoader $infoLoader;
     protected CacheManager $cacheManager;
+
+
+    protected $configData;
+
 
     /***
      * Web link could be
@@ -56,9 +63,12 @@ trait BaseInfo {
         }
 
         info("BaseInfo: Start Processing...");
+
+
         // ******************** new one ********************* //
         $this->infoLoader = app()->HashtagCms->infoLoader();
         $this->cacheManager = app()->HashtagCms->cacheManager();
+
         $this->parsePath($request);
 
     }
@@ -67,7 +77,18 @@ trait BaseInfo {
      * @throws \ReflectionException
      */
     private function parsePath($request) {
+
+        $isExternal = env('HASHTAGCMS_ENABLE_API')===true;
+
+        if ($isExternal) {
+            info("load from api");
+            $apiUrl = env('HASHTAGCMS_API_SOURCE');
+        }
+        info("externalApi: $isExternal ");
+
         $clearCache = $request->get('clearCache') ?? false;
+
+
         //Set Site Info
         //Set Lang Info
         //Set Platform Info
@@ -82,6 +103,7 @@ trait BaseInfo {
         // language and platform can be in url. if it's not there; use default one.
 
         $path = $request->path();
+        $path = str_replace("//", "/", $path); //incase of double slash
         $path_arr = explode("/", $path); //example: en/web/blog/test-blog
         $path_size = sizeof($path_arr);
 
@@ -95,211 +117,102 @@ trait BaseInfo {
         $domainList = config("hashtagcms.domains");
         $context = $domainList[$domain] ?? "";
 
-        $domainCacheKey = md5($domain);
+        //will check external load api
+        if ($isExternal) {
+            //$this->configData = $this->loadConfig($context, null, null, true);
 
-        //use cache here
-        try{
-
-            if(!$this->cacheManager->exists($domainCacheKey) || $clearCache) {
-                info("Fetching site info domain: $domain, or fetching context from config: $context");
-                //noinspection ConstantConditions
-                $siteInfo = $this->infoLoader->geSiteInfoByContextAndDomain($context, $domain, $fullDomain);
-                //Stop everything if site info is not correct.
-                if($siteInfo === null) {
-                    info("Site not found!");
-                    exit("Site has not been set up");
-                }
-                $this->cacheManager->put($domainCacheKey, $siteInfo);
-
-            } else {
-                info("From Cache ($domainCacheKey): Fetching site info domain: $domain, context: $context");
-                $siteInfo = $this->cacheManager->get($domainCacheKey);
-                //dd("siteInfo ",$siteInfo);
+            //try to fetch by config or env variable CONTEXT
+            if (empty($context)) {
+                die("Please set the context first");
             }
-
-        } catch (\Exception $e) {
-            info("Site info error: ".$e->getMessage());
-            return $e->getMessage();
-        }
-
-        // ##Setting site info
-        $siteInfo = $siteInfo->toArray();
-        //Set Site Info
-        $this->setSiteInfo($siteInfo);
-        // #Set lang info
-        $langCacheKey = md5($domain."_".$path_arr[0]."_lang");
-
-        if(!$this->cacheManager->exists($langCacheKey) || $clearCache) {
-            info("Fetching lang info: Path: $path_arr[0], lang_id: $siteInfo[lang_id]");
-            //dd("Fetching lang info: Path: $path_arr[0], lang_id: $siteInfo[lang_id]");
-            $langInfo = $this->infoLoader->getLangInfo($path_arr[0], $siteInfo['lang_id']); //index 0 is lang code or get the default lang id from site table
-            //dd($path_arr[0], $siteInfo['lang_id'], $langInfo);
-            //Stop everything if lang info is not correct.
-            if($langInfo === null) {
-                info("Lang not found!");
-                exit("Language has not been set up");
-            }
-            $this->cacheManager->put($langCacheKey, $langInfo);
 
         } else {
-            $langInfo = $this->cacheManager->get($langCacheKey);
-            info("From Cache ($langCacheKey): Fetching platform info: Path: $path_arr[0], lang_id: $siteInfo[lang_id]");
-        }
-
-        $langInfo = $langInfo->toArray();
-
-        // ##Setting Language Info
-        $this->setLanguageInfo($langInfo, $path_arr[0]);
-
-        // #Set platform info
-        $platformPlace = ($this->infoLoader->getInfoKeeper("foundLang") === true && $path_size > 1) ? 1 : 0;
-        $platformCacheKey = md5($domain."_".$path_arr[$platformPlace]."_platform");
-
-        if(!$this->cacheManager->exists($platformCacheKey) || $clearCache) {
-            info("Fetching platform info: Path: $path_arr[$platformPlace], platform_id: $siteInfo[platform_id]");
-            $platformInfo = $this->infoLoader->getPlatformInfo($path_arr[$platformPlace], $siteInfo['platform_id']); //index 1 is platform code or get the default platform id from site table
-            //dd($path_arr[1], $siteInfo['platform_id'], $platformInfo);
-            //Stop everything if platform info is not correct.
-            if($platformInfo === null) {
-                info("platform not found!");
-                exit("Platform has not been set up");
+            //means using same db etc. need this line
+            $siteData = $this->infoLoader->geSiteInfoByContextAndDomain($context, $domain, $fullDomain);
+            if ($siteData == null) {
+                die("Site not found");
             }
-            $this->cacheManager->put($platformCacheKey, $platformInfo);
+            $context = $siteData->context;
+        }
+        $this->configData = $this->loadConfig($siteData->context, null, null, false);
 
+        //check if there is an error
+        if (isset($this->configData['status']) && $this->configData['status']!=200) {
+            logger()->error($this->configData['message']);
+            abort($this->configData['status'], $this->configData['message']);
+        }
+
+        $defaultData = $this->configData['defaultData'];
+        $platformList = $this->configData['platforms'];
+        $langList = $this->configData['langs'];
+        $categoryList = $this->configData['categories'];
+
+        $defaultLang = $this->findData($langList, "id", $defaultData['langId']);
+        $defaultPlatform = $this->findData($platformList, "id", $defaultData['platformId']);
+        $defaultCategory = $this->findData($categoryList, "id", $defaultData['categoryId']);
+
+        //dd($defaultLang, $defaultPlatform, $defaultCategory);
+
+        // Setting site info
+        $siteData = $this->configData['site'];
+
+        //find lang
+        $langData = $this->findData($langList, "isoCode", $path_arr[0]);
+        $foundLang = ($langData != null);
+
+        //find platform
+        $platformIndex = ($foundLang === true && $path_size > 1) ? 1 : 0;
+        $platformData = $this->findData($platformList, "linkRewrite", $path_arr[$platformIndex]);
+        $foundPlatform = ($platformData != null);
+
+        //set default if lang not found
+        $langData = ($foundLang) ? $langData : $this->findData($langList, "id", $defaultData['langId']);
+        $platformData = ($foundPlatform) ? $platformData : $this->findData($platformList, "id", $defaultData['platformId']);
+
+        //find category
+        if ($path == "/" || $path == "") {
+            //if site has large number of categories then it would have problem here. loop will be big. will refactor this
+            $categoryData = $this->findData($categoryList, "id", $defaultData['categoryId']);
+            $categoryName = $categoryData['linkRewrite'];
         } else {
-            $platformInfo = $this->cacheManager->get($platformCacheKey);
-            info("From Cache ($platformCacheKey): Fetching platform info: Path: $path_arr[$platformPlace], lang_id: $siteInfo[platform_id]");
+            if ($foundLang) {
+                array_shift($path_arr);
+            }
+            if ($foundPlatform) {
+                array_shift($path_arr);
+            }
+            $categoryName = join("/",$path_arr);
+            $categoryName = ($categoryName === "") ? "/" : $categoryName;
+        }
+        //load data now
+        $allData =  $this->loadData($siteData['context'], $langData['isoCode'], $platformData['linkRewrite'], $categoryName, null, $isExternal);
+
+
+        //check if there is an error
+        if (isset($allData['status']) && $allData['status']!=200) {
+            logger()->error("Was trying to load category: $categoryName");
+            logger()->error($allData['message']);
+            abort($allData['status'], $allData['message']);
         }
 
-        $platformInfo = $platformInfo->toArray();
-        //dd("platformInfo", $platformInfo);
-        // ##Setting Platform Info
-        $this->setPlatformInfo($platformInfo, $path_arr[$platformPlace]);
+        //Set everything; this has to come before setting the controller info
+        $this->infoLoader->setLoaloadDataObjectAndEverything($allData);
 
-        info("path array", $path_arr);
+        $this->setControllerInfo($path_arr, $foundLang, $foundPlatform);
 
-        $this->setControllerInfo($path, $request);
+        //dd($siteData, $langData, $platformData, $categoryData ?? null, $foundLang, $foundPlatform);
+
 
     }
 
     /**
-     * Set site info
-     * @param array $siteInfo
-     */
-    private function setSiteInfo(array $siteInfo) {
-        //Site Info
-        $siteInfoForRequest = array("id"=>$siteInfo["id"],
-            "name"=>$siteInfo["name"],
-            "context"=>$siteInfo["context"],
-            "favicon"=>$siteInfo["favicon"],
-            "category_id"=>$siteInfo["category_id"],
-            "theme_id"=>$siteInfo["theme_id"],
-            "platform_id"=>$siteInfo["platform_id"],
-            "lang_id"=>$siteInfo["lang_id"],
-            "country_id"=>$siteInfo["country_id"],
-            "domain"=>$siteInfo["domain"],
-            "lang_count"=>$siteInfo["lang_count"],
-            "under_maintenance"=>$siteInfo["under_maintenance"]
-        );
-
-        if($siteInfo["under_maintenance"] === 1) {
-            exit("Site is under under maintenance.");
-            //@todo: set default controller controller
-        }
-
-        $this->infoLoader->setInfoKeeper("context", $siteInfo["context"]);
-        $this->infoLoader->setInfoKeeper("siteId", $siteInfo["id"]);
-
-
-        info("======================= setSiteInfo ================================");
-        info("setSiteInfo:siteInfo ". json_encode($siteInfoForRequest));
-        info("======================================================================");
-        $this->infoLoader->setInfoKeeper("siteInfo", $siteInfoForRequest);
-
-        //save in common too
-        $this->infoLoader->setObjInfo('site', $siteInfo);
-
-    }
-
-    /**
-     * Set language info
-     * @param array $langInfo
-     * @param string $iso_code
-     */
-    private function setLanguageInfo(array $langInfo, string $iso_code) {
-
-        $this->infoLoader->setInfoKeeper("foundLang", false);
-        if($langInfo['iso_code'] === $iso_code) {
-            $this->infoLoader->setInfoKeeper("foundLang", true);
-        }
-
-        $this->infoLoader->setObjInfo('language', $langInfo);
-        $this->infoLoader->setInfoKeeper("langId", $langInfo["id"]);
-        $this->infoLoader->setInfoKeeper("lang_iso_code", $langInfo["iso_code"]);
-        $this->infoLoader->setInfoKeeper("langInfo", array("id"=>$langInfo["id"],
-            "name"=>$langInfo["name"], "iso_code"=>$langInfo["iso_code"],
-            "language_code"=>$langInfo["language_code"], "date_format_lite"=>$langInfo["date_format_lite"],
-            "date_format_full"=>$langInfo["date_format_full"], "is_rtl"=>$langInfo["is_rtl"]));
-
-        //Set locale
-        app()->setLocale($langInfo["iso_code"]);
-        info("======================= setLanguageInfo ================================");
-        info("setLanguageInfo:langInfo ". json_encode($langInfo));
-        info("====================================================================================");
-    }
-
-
-    /**
-     * Set Platform Info
-     * @param array $platformInfo
-     * @param string $platform_code
-     */
-    private function setPlatformInfo(array $platformInfo, string $platform_code) {
-
-        $this->infoLoader->setInfoKeeper("foundPlatform", false);
-
-        if($platformInfo['link_rewrite'] === $platform_code) {
-            $this->infoLoader->setInfoKeeper("foundPlatform", true);
-        }
-
-        $this->infoLoader->setObjInfo('platform', $platformInfo);
-        $this->infoLoader->setInfoKeeper("platformId", $platformInfo["id"]);
-        $this->infoLoader->setInfoKeeper("platform_link_rewrite", $platformInfo["link_rewrite"]);
-        $this->infoLoader->setInfoKeeper("platformInfo", array("id"=>$platformInfo["id"],
-            "name"=>$platformInfo["name"], "link_rewrite"=>$platformInfo["link_rewrite"]));
-
-        //Set locale
-        info("======================= setPlatformInfo ================================");
-        info("setPlatformInfo:langInfo ". json_encode($platformInfo));
-        info("====================================================================================");
-
-    }
-
-    /**
-     * Set category info
-     * @param array $categoryInfo
-     * @return void
-     */
-    public function setCategoryInfo(array $categoryInfo)
-    {
-        $this->infoLoader->setInfoKeeper("category_id", $categoryInfo['id']);
-        $this->infoLoader->setInfoKeeper("category_link_rewrite", $categoryInfo['link_rewrite']);
-        //save in common too
-        $this->infoLoader->setObjInfo('categoryInfo', $categoryInfo);
-
-        info("======================= setCategoryInfo ================================");
-        info("setCategoryInfo:categoryInfo ". json_encode($categoryInfo));
-        info("======================================================================");
-
-    }
-
-    /**
-     * @param string $path
      * @param mixed $request
+     * @param string $path
+     * @return void
      * @throws \ReflectionException
      */
 
-    private function setControllerInfo(string $path, mixed $request) {
+    private function setControllerInfo(array $path, bool $foundLang, bool $foundPlatform) {
 
         /*
          *
@@ -309,117 +222,33 @@ trait BaseInfo {
          ***
         */
 
-        $path_arr = explode("/", $path);
+        $path_arr = $path;
         $pathLen = sizeof($path_arr);
 
-        $categoryName = "/";
-        $methodName = "index";
-
-        $foundLang = $this->infoLoader->getInfoKeeper("foundLang");
-        $foundPlatform = $this->infoLoader->getInfoKeeper("foundPlatform");
+        $controllerName = $this->defaultController;
+        $methodName = $this->defaultMethod;
 
         $paramsValues = array();
 
-        if ($path === "/" || $pathLen===1) {
-            if ($foundLang || $foundPlatform) {
-                //$categoryName = "/";
-            } else {
-                $categoryName = $path;
-            }
-        } else if ($pathLen === 2) {
-            if ($foundLang && $foundPlatform) {
-                //found lang and platform = en/web
-               // $categoryName = "/";
-            } else if (!$foundLang && !$foundPlatform) {
-                //no lang and platform fond in url = my/contact
+        if ($pathLen === 0) {
+            $categoryName = "/";
+            //will handle
+        } else if ($pathLen === 1) {
                 $categoryName = $path_arr[0];
-                $methodName = $path_arr[1];
-            } else {
-                //either lang or platform is there in url = web/example | en/example
-                $categoryName = $path_arr[1];
-            }
-        } else if ($pathLen === 3) {
-            if ($foundLang && $foundPlatform) {
-                //found lang and platform = en/web/example
-                $categoryName = $path_arr[2];
-            } else if(!$foundLang && !$foundPlatform) {
-                //no lang and platform fond in url = my/contact/page
-                $categoryName = $path_arr[0];
-                $methodName = $path_arr[1];
-                $paramsValues[] = $path_arr[2];
-            } else {
-                //either lang or platform is there in url = web/example/page | en/example/page
-                $categoryName = $path_arr[1];
-                $methodName = $path_arr[2];
-            }
-        } else if ($pathLen >= 4) {
-            if ($foundLang && $foundPlatform) {
-                //found lang and platform = en/web/example/page/extra/link
-                $categoryName = $path_arr[2];
-                $methodName = $path_arr[3];
-                $paramsValues = array_splice($path_arr, 4, $pathLen);
-            } else if(!$foundLang && !$foundPlatform) {
-                //no lang and platform fond in url = anything/category/example/page
-                $categoryName = $path_arr[0];
-                $methodName = $path_arr[1];
+                $methodName = $this->defaultMethod;
+        } else if ($pathLen > 1) {
+            $categoryName = $path_arr[0];
+            $methodName = $path_arr[1];
+
+            if ($pathLen > 2) {
                 $paramsValues = array_splice($path_arr, 2, $pathLen);
-            } else  {
-                //either lang or platform is there in url = web/category/example/page | en/category/example/page
-                $categoryName = $path_arr[1];
-                $methodName = $path_arr[2];
-                $paramsValues = array_splice($path_arr, 3, $pathLen);
             }
         }
 
-        $fullPath = $path;
-
-        if($foundLang) {
-            $lang = $this->infoLoader->getInfoKeeper('lang_iso_code');
-            $fullPath = str_replace($lang."/", "", $fullPath);
-        }
-        if($foundPlatform) {
-            $platform = $this->infoLoader->getInfoKeeper('platform_link_rewrite');
-            $fullPath = str_replace($platform."/", "", $fullPath);
-        }
-
-        //dd("foundLang: $foundLang, foundPlatform: $foundPlatform", "path: ".$path, "categoryName: ".$categoryName, "methodName: ".$methodName, "lang:".$lang, "platform: ".$platform, $params);
-
-        info("============== Setting Controller Info ==============");
-
-        $clearCache = $request->get('clearCache') ?? false;
-        $domain = $request->getHost();
-
-        $categoryCacheKey = md5($domain."_".$path."_category");
-
-        $categoryInfo = null;
-        $site_id = $this->infoLoader->getInfoKeeper("siteId");
-
-        if(!$this->cacheManager->exists($categoryCacheKey) || $clearCache) {
-            info("Fetching category info : $path");
-            $categoryInfo = $this->infoLoader->getCategoryInfo($categoryName, $fullPath, $site_id);
-
-            if($categoryInfo === null) {
-                info("$path : Category not found!");
-                // exit("$path : Category not found!");
-            }
-            if($categoryInfo !== null) {
-                $this->cacheManager->put($categoryCacheKey, $categoryInfo);
-            }
-
-        } else {
-            info("From Cache ($categoryCacheKey): Fetching category info ");
-            $categoryInfo = $this->cacheManager->get($categoryCacheKey);
-        }
-
-        if($categoryInfo !== null) {
-            $categoryName = $categoryInfo->link_rewrite;
-            $this->setCategoryInfo($categoryInfo->toArray());
-        }
-        //dd("foundLang: $foundLang, foundPlatform: $foundPlatform", "path: ".$path, "categoryName: ".$categoryName, "methodName: ".$methodName, "lang:".$lang, "platform: ".$platform, $categoryInfo);
-
-        info(json_encode($path_arr));
-
+        $categoryName = ($categoryName === "") ? "/" : $categoryName;
         $controllerName = ($categoryName == "/") ? $this->defaultController : $categoryName;
+
+        $categoryInfo = $this->infoLoader->getCategoryData();
 
         //   reality check for controller and method
         //	* if class exist controllerName (we have BlogController for blog category) else it’s frontend
@@ -443,7 +272,6 @@ trait BaseInfo {
             array_unshift($paramsValues, $callableData['methodNameParam']);
         }
 
-
         $ref = new \ReflectionMethod($callable, $methodName);
         $params = $ref->getParameters();
 
@@ -454,7 +282,7 @@ trait BaseInfo {
             preg_match('/<(required|optional)> (?:([\\\\a-z\d_]+) )?(?:\\$(\w+))(?: = (\S+))?/i', (string)$param, $matches);
 
             // assign untyped segments
-            if ($matches[2] == null) {
+            if ($matches[2] == null || $matches[2] == "") {
                 $args[$matches[3]] = array_shift($paramsValues);
             }
         }
@@ -496,11 +324,8 @@ trait BaseInfo {
                 $this->infoLoader->setContextVars($key, join("/", $valuesForContext));
             }
 
-            //dd("callable 1 ", $callable,$methodName, $values, $categoryInfo->link_rewrite_pattern);
+            //dd("callable 1 ", $callable,$methodName, $values, $categoryInfo['link_rewrite_pattern']);
         }
-        //This is for global purpose if you need it somewhere
-        $this->infoLoader->setInfoKeeper("__link_rewrite_pattern__", join("/", $values)); //This is for global use in future
-        $this->infoLoader->setContextVars("__link_rewrite_pattern__", join("/", $values)); //This is for global use in future
 
         $this->infoLoader->setInfoKeeper("callable", $callable."@".$methodName);
         $this->infoLoader->setInfoKeeper("callableValue", $values);
@@ -527,10 +352,10 @@ trait BaseInfo {
      * @param string $method_name
      * @return array
      */
-    private function getControllerName(?Category $categoryInfo, string $controller_name, string $method_name):array {
+    private function getControllerName(array $categoryInfo, string $controller_name, string $method_name):array {
 
         if($categoryInfo !== null) {
-            $controller_name = isset($categoryInfo->controller_name) ? $categoryInfo->controller_name : str_replace("-", "", Str::title($controller_name));
+            $controller_name = isset($categoryInfo['controller_name']) ? $categoryInfo['controller_name'] : str_replace("-", "", Str::title($controller_name));
             info("----- Found category controller: ".$controller_name." ------");
         } else {
             $controller_name = str_replace("-", "", Str::title($controller_name));
@@ -573,6 +398,65 @@ trait BaseInfo {
 
         return $data;
     }
+
+
+    /**
+     * Load config
+     * @param string $context
+     * @param string|null $lang
+     * @param string|null $platform
+     * @param bool $isExternal
+     * @return array|string
+     */
+    public function loadConfig(string $context, string $lang=null, string $platform=null, bool $isExternal):array {
+        if ($isExternal) {
+            $apiUrl = env('HASHTAGCMS_API_SOURCE');
+            Http::get($apiUrl."?site={$context}");
+            return "from api";
+        }
+        $dataLoader = new DataLoader();
+        $data = $dataLoader->loadConfig($context, $lang, $platform);
+        return $data;
+    }
+
+    /**
+     * @param string $context
+     * @param string $lang
+     * @param string $platform
+     * @param string $category
+     * @param string $microsite
+     * @return array|string
+     */
+    public function loadData(string $context, string $lang=null, string $platform=null, string $category=null, string $microsite=null, bool $isExternal):array {
+        if ($isExternal) {
+            $apiUrl = env('HASHTAGCMS_API_SOURCE');
+            Http::get($apiUrl."?site={$context}");
+            return "from api";
+        }
+        $dataLoader = new DataLoader();
+        $data = $dataLoader->loadData($context, $lang, $platform, $category, $microsite);
+        return $data;
+    }
+
+
+    /**
+     * @param array $arr
+     * @param string $key
+     * @param mixed $val
+     * @return array|null
+     */
+    protected function findData(array $arr, string $key, mixed $val):null|array {
+        for ($i=0;$i<sizeof($arr);$i++) {
+            $current = $arr[$i];
+            if ($current[$key] === $val) {
+                return $current;
+            }
+        }
+        return null;
+    }
+
+
+
 
 
 }

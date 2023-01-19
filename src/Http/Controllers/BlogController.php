@@ -16,19 +16,24 @@ class BlogController extends FrontendBaseController
      */
     public function index(Request $request) {
         $infoKeeper = app()->HashtagCmsInfoLoader->getInfoKeeper();
+        $infoLoader = app()->HashtagCms->infoLoader();
+        $siteData = $infoLoader->getSiteData();
+        $langData = $infoLoader->getLangData();
+        $categoryData = $infoLoader->getCategoryData();
+        dd($infoLoader);
         //check it's blog home
         if(empty($infoKeeper['callableValue'][0])) {
             $this->setModuleMandatoryCheck(false); //in base controlle
 
             $perPage = config("hashtagcms.blog_per_page");
-            $category_link_rewrite = $infoKeeper['category_link_rewrite'];
+            $categoryLinkRewrite = $categoryData['linkRewrite'];
 
             $moreCategories = config("hashtagcms.more_categories_on_blog_listing");
             if(sizeof($moreCategories) > 0) {
-                $moreCategories[] = $category_link_rewrite;
-                $results = Page::getLatestBlog($infoKeeper['siteId'], $infoKeeper['langId'], $moreCategories, $perPage);
+                $moreCategories[] = $categoryLinkRewrite; //add one more
+                $results = Page::getLatestBlog($siteData['id'], $langData['id'], $moreCategories, $perPage);
             } else {
-                $results = Page::getLatestBlog($infoKeeper['siteId'], $infoKeeper['langId'], $category_link_rewrite, $perPage);
+                $results = Page::getLatestBlog($siteData['id'], $langData['id'], $categoryLinkRewrite, $perPage);
             }
 
             $data['results'] = $results;
@@ -46,9 +51,9 @@ class BlogController extends FrontendBaseController
 
     }
 
-    public function story($path, $params)
+    public function story($arg1, $arg2)
     {
-        return $path;
+        return ["From blog contoller", $arg1, $arg2];
     }
 
 }

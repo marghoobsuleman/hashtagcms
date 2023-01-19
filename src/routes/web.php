@@ -7,6 +7,9 @@ use Illuminate\Support\Str;
 use MarghoobSuleman\HashtagCms\Facades\HashtagCms;
 use App\Http\Controllers\Controller;
 
+
+use MarghoobSuleman\HashtagCms\Core\Main\DataLoader as DataLoader;
+
 if(HashtagCms::isInstallationRoutesEnabled()) {
     Route::get("/install",  config("hashtagcms.namespace")."Http\Controllers\Installer\InstallController@index");
     Route::post("/install/save",  config("hashtagcms.namespace")."Http\Controllers\Installer\InstallController@save");
@@ -79,6 +82,17 @@ Route::prefix('admin')->group(function () {
 if (HashtagCms::isRoutesEnabled()) {
     
     Route::match(['get', 'post', 'delete'], '{all?}', function(Request $request, $all="/") {
+
+     /*  $dataLoader = new DataLoader();
+       $configData = $dataLoader->loadConfig("htcms");
+
+        //info("configData->site->themeId {$configData->site->id}");
+
+        return $configData["site"];*/
+
+
+
+
         $infoKeeper = app()->HashtagCmsInfoLoader->getInfoKeeper();
         //These are coming from FeMiddleware-> Core/BaseInfo Trait
         $callable =  isset($infoKeeper["callable"]) ? $infoKeeper["callable"] : "";

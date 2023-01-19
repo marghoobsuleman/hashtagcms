@@ -21,7 +21,7 @@ use MarghoobSuleman\HashtagCms\Http\Resources\CountryResource;
 use MarghoobSuleman\HashtagCms\Http\Resources\ZoneResource;
 use MarghoobSuleman\HashtagCms\Http\Resources\SitePropResource;
 
-class ServiceLoaderV2 extends DataLoaderV2
+class ServiceLoaderV2 extends DataLoader
 {
     protected InfoLoader $infoLoader;
     protected CacheManager $cacheManager;
@@ -45,16 +45,15 @@ class ServiceLoaderV2 extends DataLoaderV2
      */
     public function allConfigs(string $context, string $lang=null, string $platform=null): array
     {
-        //return array("tested"=>"okay!");
         return parent::loadConfig($context, $lang, $platform);
     }
 
     /**
      * Load data
      * @param array|null $params
-     * @return mixed
+     * @return array
      */
-    public function loadData(string $context, string $lang=null, string $platform=null, $category=null, $microsite=null): mixed
+    public function loadData(string $context, string $lang=null, string $platform=null, $category=null, $microsite=null): array
     {
         $this->moduleLoader::setMandatoryCheck(false);
         return parent::loadData($context, $lang, $platform, $category, $microsite);

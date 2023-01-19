@@ -2,17 +2,19 @@
 namespace MarghoobSuleman\HashtagCms\Core\Traits;
 
 use MarghoobSuleman\HashtagCms\Models\Theme;
+use MarghoobSuleman\HashtagCms\Core\Main\DataLoader;
 
 trait LayoutHandler {
     
     private array $themeCache;
+    private DataLoader $dataLoader;
 
     /**
      * @param string|null $str
      * @param string|int $theme_dir
      * @return string|null
      */
-    public function parseStringForPath(?string $str="", string|int $theme_dir):?string {
+    public function parseStringForPath(?string $str=null, string|int $theme_dir=null):?string {
         if (empty($str)) {
             return $str;
         }
@@ -21,7 +23,7 @@ trait LayoutHandler {
             if (isset($this->themeCache[$theme_dir])) {
                 $theme = $this->themeCache[$theme_dir];
             } else {
-                $this->themeCache[$theme_dir] = $theme = Theme::withoutGlobalScopes()->find($theme_dir);
+                $this->themeCache[$theme_dir] = $theme = Theme::withoutGlobalScopes()->find($theme_dir); //it's theme id when passed as an integer
             }
             $theme_dir = $theme->directory;
         }
@@ -67,5 +69,21 @@ trait LayoutHandler {
         }
         return "";
     }
+
+
+    public function parseSkeletonWithModule(string $sekeleton, array $themeData):string {
+        $infoLoader = app()->HashtagCms->infoLoader();
+        $themeData = $infoLoader->getThemeData();
+        $themeSkeleton = $themeData['skeleton'];
+        $directory = $themeData['directory'];
+        $hooks = $themeData['hooks'];
+        $themeModules = $themeData['modules'];
+
+        $resourcePath = $this->resourceDir."/".$directory;
+
+
+
+    }
+
 
 }

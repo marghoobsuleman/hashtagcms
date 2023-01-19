@@ -40,13 +40,11 @@ $ php artisan cms:install
 
 ``` bash
 use Illuminate\Foundation\Auth\User as Authenticatable
-use Laravel\Sanctum\HasApiTokens;
 ```
 
 - Add below lines in the same file (`app/Models/User.php` or `app/User.php`)
 ``` bash
 use MarghoobSuleman\HashtagCms\User as Authenticatable;
-use Laravel\Passport\HasApiTokens;
 ```
 - You might want to comment/remove below route in `routes/web.php`
 

@@ -36,24 +36,23 @@ use MarghoobSuleman\HashtagCms\Http\Resources\ThemeResource;
 use MarghoobSuleman\HashtagCms\Http\Resources\HookResource;
 use MarghoobSuleman\HashtagCms\Http\Resources\ModuleResource;
 use MarghoobSuleman\HashtagCms\Http\Resources\ModulePropResource;
+use MarghoobSuleman\HashtagCms\Http\Resources\LoadDataResource;
+use MarghoobSuleman\HashtagCms\Http\Resources\ConfigDataResource;
 
+use \stdClass;
 
 use MarghoobSuleman\HashtagCms\Core\Traits\LayoutHandler;
 
-class DataLoaderV2
+class DataLoader
 {
     use LayoutHandler;
 
-    protected InfoLoader $infoLoader;
-    protected CacheManager $cacheManager;
-    protected LayoutManager $layoutManager;
-    protected ModuleLoader $moduleLoader;
+    private InfoLoader $infoLoader;
+    private ModuleLoader $moduleLoader;
 
     function __construct()
     {
         $this->infoLoader = app()->HashtagCms->infoLoader();
-        $this->layoutManager = app()->HashtagCms->layoutManager();
-        $this->cacheManager = app()->HashtagCms->cacheManager();
         $this->moduleLoader = app()->HashtagCms->moduleLoader();
     }
 
@@ -65,12 +64,12 @@ class DataLoaderV2
      * @return array
      */
 
-    public function loadConfig(string $context, string $lang=null, string $platform=null) {
+    public function loadConfig(string $context, string $lang=null, string $platform=null):array {
 
-       try {
+        try {
             DB::connection()->getPdo();
         } catch (\Exception $e) {
-           info("DataLoader->loadConfig: Database Error: ".$e->getMessage());
+            logger()->error("DataLoader->loadConfig: Database Error: ".$e->getMessage());
             return $this->getErrorMessage($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
@@ -80,9 +79,8 @@ class DataLoaderV2
         // if lang is passed in request use that else fetch lang_id from site data
         // if platform is passed in request use that else fetch platform_id from site data
         // after that fetch all the info.
-
         if (empty($context)) {
-            info("ServiceLoader>allConfigs: Site context is missing");
+            logger()->error("ServiceLoader>allConfigs: Site context is missing");
             return $this->getErrorMessage("Site context is missing", Response::HTTP_BAD_REQUEST);
         }
 
@@ -95,7 +93,7 @@ class DataLoaderV2
 
         //Send error
         if (empty($siteData)) {
-            info("ServiceLoader>allConfigs: Site not found");
+            logger()->error("ServiceLoader>allConfigs: Site not found");
             return $this->getErrorMessage("Site not found", Response::HTTP_NOT_FOUND);
         }
 
@@ -138,17 +136,18 @@ class DataLoaderV2
         $defaultData['currencyId'] = $siteData->currency_id;
 
         //convert to resource
-        $siteInfo = new SiteResource($siteData);
-        $platformsInfo = PlatformResource::collection($siteData->platform);
-        $langsInfo = LangResource::collection($siteData->language);
-        $currenciesInfo = CurrencyResource::collection($siteData->currency);
-        $zonesInfo = ZoneResource::collection($siteData->zone);
-        $countriesInfo = CountryResource::collection($siteData->country);
-        $categoriesInfo = CategoryResource::collection($siteData->categoryLang);
-        $propsInfo = SitePropResource::collection($propsData);
+        $siteInfo = (new SiteResource($siteData))->toArray(request());
+        $platformsInfo = PlatformResource::collection($siteData->platform)->toArray(request());
+        $langsInfo = LangResource::collection($siteData->language)->toArray(request());
+        $currenciesInfo = CurrencyResource::collection($siteData->currency)->toArray(request());
+        $zonesInfo = ZoneResource::collection($siteData->zone)->toArray(request());
+        $countriesInfo = CountryResource::collection($siteData->country)->toArray(request());
+        $categoriesInfo = CategoryResource::collection($siteData->categoryLang)->toArray(request());
+        $propsInfo = SitePropResource::collection($propsData)->toArray(request());
 
+
+        //$data = new stdClass();
         $data['site'] = $siteInfo;
-
         $data['defaultData'] = $defaultData;
         $data['platforms'] = $platformsInfo;
         $data['langs'] = $langsInfo;
@@ -175,35 +174,35 @@ class DataLoaderV2
      * @param string|null $platform
      * @param string|null $category
      * @param string|null $microsite
-     * @return mixed
+     * @return array
      */
-    public function loadData(string $context, string $lang=null, string $platform=null, string $category=null, string $microsite=null): mixed
+    public function loadData(string $context, string $lang=null, string $platform=null, string $category=null, string $microsite=null): array
     {
         info("loading started for: $category, context: $context, platform: $platform lang: $lang");
         try {
             DB::connection()->getPdo();
         } catch (\Exception $e) {
-            info("DataLoader->loadData: Database Error: ".$e->getMessage());
+            logger()->error("DataLoader->loadData: Database Error: ".$e->getMessage());
             return $this->getErrorMessage($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         $params = $params ?? request()->all();
 
         if(empty($context)) {
-            info("DataLoader->loadData: Site context is missing");
+            logger()->error("DataLoader->loadData: Site context is missing");
             return $this->getErrorMessage("Site context is missing", Response::HTTP_BAD_REQUEST);
         }
 
         if(empty($lang)) {
-            info("DataLoader->loadData: Lang is missing");
+            logger()->error("DataLoader->loadData: Lang is missing");
             return $this->getErrorMessage("Lang is missing", Response::HTTP_BAD_REQUEST);
         }
         if(empty($platform)) {
-            info("DataLoader->loadData: Platform is missing");
+            logger()->error("DataLoader->loadData: Platform is missing");
             return $this->getErrorMessage("Platform is missing", Response::HTTP_BAD_REQUEST);
         }
         if(empty($category)) {
-            info("DataLoader->loadData: Category is missing");
+            logger()->error("DataLoader->loadData: Category is missing");
             return $this->getErrorMessage("Category is missing", Response::HTTP_BAD_REQUEST);
         }
 
@@ -219,7 +218,7 @@ class DataLoaderV2
 
         //Send error
         if ($langData === null) {
-            info("DataLoader->loadData: Lang not found");
+            logger()->error("DataLoader->loadData: Lang not found");
             return $this->getErrorMessage("Lang not found", Response::HTTP_BAD_REQUEST);
         }
 
@@ -231,11 +230,11 @@ class DataLoaderV2
 
         //Send error
         if (empty($siteData)) {
-            info("DataLoader->loadData: site not found");
+            logger()->error("DataLoader->loadData: site not found");
             return $this->getErrorMessage("Site not found", Response::HTTP_BAD_REQUEST);
         }
 
-        info("DataLoader->loadData: Found site: {$siteData->id}, lang: {$langData->id}");
+        logger("DataLoader->loadData: Found site: {$siteData->id}, lang: {$langData->id}");
 
         //set site scope
         htcms_set_site_id_for_admin($siteData->id);
@@ -254,11 +253,11 @@ class DataLoaderV2
 
         //Send error
         if($categoryData === null) {
-            info("DataLoader->loadData: Category not found");
+            logger("DataLoader->loadData: Category not found");
             return $this->getErrorMessage("Category not found", Response::HTTP_NOT_FOUND);
         }
 
-        info("DataLoader->loadData: Found category: {$categoryData->id}");
+        logger("DataLoader->loadData: Found category: {$categoryData->id}");
 
         //Set Context Vars: Category Id
         $this->infoLoader->setContextVars('category_id', $categoryData->id);
@@ -275,19 +274,19 @@ class DataLoaderV2
 
         //Send error
         if ($categorySiteData === null) {
-            info("DataLoader->loadData: Category is not added in the site");
+            logger()->error("DataLoader->loadData: Category is not added in the site");
             return $this->getErrorMessage("Category not found", Response::HTTP_NOT_FOUND);
         }
 
         $categoryData->siteWise = $categorySiteData;
 
-        info("DataLoader->loadData: Found in category_site: {$categoryData->id} for platofrm: {$platformData->id}");
+        logger("DataLoader->loadData: Found in category_site: {$categoryData->id} for platofrm: {$platformData->id}");
 
         $themeData = Theme::find($categorySiteData->theme_id);
 
         //Send error
         if ($themeData === null) {
-            info("DataLoader->loadData: Theme is not defined");
+            logger()->error("DataLoader->loadData: Theme is not defined");
             return $this->getErrorMessage("Theme is not defined", Response::HTTP_NOT_FOUND);
         }
 
@@ -303,51 +302,54 @@ class DataLoaderV2
         $this->infoLoader->setLanguageId($langData->id);
         /*** ========== end setting context ========= **/
 
-        info("loading data for: siteId: {$siteData->id}, micrositeId: {$microsite_id}, platformId: {$platformData->id}, langId: {$langData->id}, categoryId: {$categoryData->id}");
+        logger("loading data for: siteId: {$siteData->id}, micrositeId: {$microsite_id}, platformId: {$platformData->id}, langId: {$langData->id}, categoryId: {$categoryData->id}");
 
         //Get theme and hooks
         $parsedTheme = $this->parseThemeSkeleton($themeData->skeleton, $siteData->id, $microsite_id, $platformData->id, $langData->id, $categoryData->id);
 
         //Send error
         if (sizeof($parsedTheme['hooks']) === 0 && sizeof($parsedTheme['modules']) === 0) {
-            info("DataLoader->loadData: There is not hook or module in the theme");
+            logger()->error("DataLoader->loadData: There is not hook or module in the theme");
             return $this->getErrorMessage("There is not hook or module in the theme", Response::HTTP_NOT_FOUND);
         }
 
         //Add hooks and modules
-        $themeData->hooks = HookResource::collection($parsedTheme['hooks']);
-        $themeData->modules = ModuleResource::collection($parsedTheme['modules']);
+        $themeData->hooks = (HookResource::collection($parsedTheme['hooks']))->toArray(request());
+        $themeData->modules = (ModuleResource::collection($parsedTheme['modules']))->toArray(request());
 
         //Convert for api
-        $langInfo = new LangResource($langData);
-        $siteInfo = new SiteResource($siteData);
-        $platformInfo = new PlatformResource($platformData);
-        $categoryInfo = new CategoryResource($categoryData);
+        $langInfo = (new LangResource($langData))->toArray(request());
+        $siteInfo = (new SiteResource($siteData))->toArray(request());
+        $platformInfo = (new PlatformResource($platformData))->toArray(request());
+        $categoryInfo = (new CategoryResource($categoryData))->toArray(request());
 
-        $categorySiteInfo = new CategorySiteResource($categorySiteData);
-        $themeInfo = new ThemeResource($themeData);
-        $propsInfo = SitePropResource::collection($propsData);
+        $categorySiteInfo = (new CategorySiteResource($categorySiteData))->toArray(request());
+        $themeInfo = (new ThemeResource($themeData))->toArray(request());
+        $propsInfo = (SitePropResource::collection($propsData))->toArray(request());
 
         //Get html meta
         $htmlMetaData = $this->getHtmlMetaData($siteData, $themeData, $categoryData);
 
-        $data['html'] = $htmlMetaData['html'];
 
-        $data['meta'] = array("site"=>$siteInfo,
+        $data['isLoginRequired'] = $isLoginRequired = $categoryData->required_login === 1 || $this->moduleLoader->isLoginRequired();
+
+
+        $data['html'] = $htmlMetaData['html'];
+        $data['meta'] = array(
+            "site"=>$siteInfo,
             "platform"=>$platformInfo,
             "lang"=>$langInfo,
             "category"=>$categoryInfo,
             "theme"=>$themeInfo,
             "props"=>$propsInfo
-            );
+        );
 
-        $data['isLoginRequired'] = $isLoginRequired = $categoryData->required_login === 1 || $this->moduleLoader->isLoginRequired();
 
         //Setting it back otherwise it will affect admin panel too.
         htcms_set_site_id_for_admin($oldSiteId);
         htcms_set_language_id_for_admin($oldLangId);
 
-        info("loading data completed for: $category ({$categoryData->id}), context: $context ({$siteData->id}), platform: $platform ({$platformData->id}) lang: $lang ({$langData->id})");
+        logger("loading data completed for: $category ({$categoryData->id}), context: $context ({$siteData->id}), platform: $platform ({$platformData->id}) lang: $lang ({$langData->id})");
 
         return $data;
 
@@ -360,70 +362,70 @@ class DataLoaderV2
      * @param int $site_id
      * @return array[]
      */
-    private function parseThemeSkeleton(string $skeleton, int $siteId, int $micrositeId=0, int $platformId, int $langId, int $categoryId):array {
+    private function parseThemeSkeleton(string $skeleton, int $siteId, int $micrositeId, int $platformId, int $langId, int $categoryId):array {
 
-            $this->infoLoader->setMultiContextVars($categoryId, $siteId, $platformId, $micrositeId);
-            $this->infoLoader->setLanguageId($langId);
+        $this->infoLoader->setMultiContextVars($categoryId, $siteId, $platformId, $micrositeId);
+        $this->infoLoader->setLanguageId($langId);
 
-            $subject = $skeleton;
-            $pattern = "/\%.*?\%/";
-            preg_match_all($pattern, $subject, $matches); //PREG_OFFSET_CAPTURE
-            $allHooks = array();
-            $allModules = array();
+        $subject = $skeleton;
+        $pattern = "/\%.*?\%/";
+        preg_match_all($pattern, $subject, $matches); //PREG_OFFSET_CAPTURE
+        $allHooks = array();
+        $allModules = array();
 
-            //Parse all hooks and modules in a theme skeleton
+        //Parse all hooks and modules in a theme skeleton
 
-            if(count($matches)>0) {
-                $matches = $matches[0];
-                foreach($matches as $key=>$val) {
-                    $current = $val;
-                    $isHook = str_contains($current, "%{cms.hook.");
-                    $isModule = str_contains($current, "%{cms.module.");
+        if(count($matches)>0) {
+            $matches = $matches[0];
+            foreach($matches as $key=>$val) {
+                $current = $val;
+                $isHook = str_contains($current, "%{cms.hook.");
+                $isModule = str_contains($current, "%{cms.module.");
 
-                    if($isHook) {
-                        $patterns = array();
-                        $patterns[0] = '/%/';
-                        $patterns[1] = '/{cms.hook./';
-                        $patterns[2] = '/}/';
-                        $replacements = array();
-                        $replacements[2] = '';
-                        $replacements[1] = '';
-                        $replacements[0] = '';
-                        $name = preg_replace($patterns, $replacements, $current);
-                        $hookData = Hook::where('alias', '=', $name)->with('site', function($q) use($siteId) {$q->where('site_id', '=', $siteId);})->first();
-                        $hookData->modules = [];
-                        if ($hookData != null && sizeof($hookData->site) > 0) {
-                            unset($hookData->site);
-                            //get modules by hooks
+                if($isHook) {
+                    $patterns = array();
+                    $patterns[0] = '/%/';
+                    $patterns[1] = '/{cms.hook./';
+                    $patterns[2] = '/}/';
+                    $replacements = array();
+                    $replacements[2] = '';
+                    $replacements[1] = '';
+                    $replacements[0] = '';
+                    $name = preg_replace($patterns, $replacements, $current);
+                    $hookData = Hook::where('alias', '=', $name)->with('site', function($q) use($siteId) {$q->where('site_id', '=', $siteId);})->first();
+                    $hookData->modules = [];
+                    if ($hookData != null && sizeof($hookData->site) > 0) {
+                        unset($hookData->site);
+                        //get modules by hooks
 
-                            $hookData->modules = $this->getModulesByHook($hookData->id, $siteId, $micrositeId, $platformId, $langId, $categoryId);
-                            $allHooks[] = $hookData;
-                        }
+                        $hookData->modules = $this->getModulesByHook($hookData->id, $siteId, $micrositeId, $platformId, $langId, $categoryId);
+                        $allHooks[] = $hookData;
                     }
+                }
 
-                    //Check if there is any module in theme
-                    if($isModule) {
-                        $patterns = array();
-                        $patterns[0] = '/%/';
-                        $patterns[1] = '/{cms.module./';
-                        $patterns[2] = '/}/';
-                        $replacements = array();
-                        $replacements[2] = '';
-                        $replacements[1] = '';
-                        $replacements[0] = '';
-                        $moduleName = preg_replace($patterns, $replacements, $current);
-                        $moduleData = Module::where(array(array('alias', '=', rtrim(ltrim($moduleName))), array('site_id', '=', $siteId)))->first();
+                //Check if there is any module in theme
+                if($isModule) {
+                    $patterns = array();
+                    $patterns[0] = '/%/';
+                    $patterns[1] = '/{cms.module./';
+                    $patterns[2] = '/}/';
+                    $replacements = array();
+                    $replacements[2] = '';
+                    $replacements[1] = '';
+                    $replacements[0] = '';
+                    $moduleName = preg_replace($patterns, $replacements, $current);
+                    $moduleData = Module::where(array(array('alias', '=', rtrim(ltrim($moduleName))), array('site_id', '=', $siteId)))->first();
 
-                        if($moduleData!=null) {
-                            $moduleData->data = $this->moduleLoader->getModuleData($moduleData);
-                            $moduleData->moduleProps = $this->moduleLoader->getModuleProps($moduleData->id, $siteId, $platformId);
-                            $allModules[] = $moduleData; ///new ModuleResource(); is not required here. converting it to collection in loadData;
-                        }
+                    if($moduleData!=null) {
+                        $moduleData->data = $this->moduleLoader->getModuleData($moduleData);
+                        $moduleData->moduleProps = $this->moduleLoader->getModuleProps($moduleData->id, $siteId, $platformId);
+                        $allModules[] = $moduleData; ///new ModuleResource(); is not required here. converting it to collection in loadData;
                     }
                 }
             }
+        }
 
-            return array("hooks"=>$allHooks, "modules"=>$allModules);
+        return array("hooks"=>$allHooks, "modules"=>$allModules);
     }
 
     /**
@@ -436,7 +438,7 @@ class DataLoaderV2
      * @param int $categoryId
      * @return array
      */
-    private function getModulesByHook(int $hookId, int $siteId, int $micrositeId=0, int $platformId, int $langId, int $categoryId):array {
+    private function getModulesByHook(int $hookId, int $siteId, int $micrositeId, int $platformId, int $langId, int $categoryId):array {
         $this->infoLoader->setMultiContextVars($categoryId, $siteId, $platformId, $micrositeId);
         $this->infoLoader->setLanguageId($langId);
         //fetch site modules by site, (?microsite @todo: will handle later), platform, hook, category order by position
@@ -462,7 +464,7 @@ class DataLoaderV2
                 $moduleData->data = $moduleResultData;
             }
             $moduleData->moduleProps = $this->moduleLoader->getModuleProps($moduleData->id, $siteId, $platformId);
-            $modulesArr[] = new ModuleResource($moduleData);
+            $modulesArr[] = (new ModuleResource($moduleData))->toArray(request());
         }
         return $modulesArr;
     }
@@ -569,7 +571,7 @@ class DataLoaderV2
 
         $bodyTag = array();
         $bodyTag["content"] = array("skeleton"=> $themeInfo["skeleton"]);
-        $bodyTag["footer"] = array("footerContent"=> array("order"=>1, "html"=>$themeInfo["footer_content"].$categoryFooterContent));
+        $bodyTag["footer"]["footerContent"][] = array("order"=>1, "html"=>$themeInfo["footer_content"].$categoryFooterContent);
 
         //Set html
         $data['html']["head"] = $headTag;
@@ -596,7 +598,7 @@ class DataLoaderV2
         }
 
         $categoryData = Category::with(['lang'])->where(array(array('link_rewrite', '=', $linkRewrite), array('publish_status', '=', 1)))
-                                                ->orWhere(array(array('link_rewrite', '=', $path), array('publish_status', '=', 1)))->get();
+            ->orWhere(array(array('link_rewrite', '=', $path), array('publish_status', '=', 1)))->get();
         if($categoryData->count() > 0) {
             foreach ($categoryData as $category) {
                 if ($category->link_rewrite === $path) {
@@ -606,7 +608,7 @@ class DataLoaderV2
             }
             $selectedCategory = ($selectedCategory !== null) ? $selectedCategory : $categoryData[0];
         }
-        $isParamRequired = Str::contains($selectedCategory->link_rewrite_pattern, "?") ? false : true;
+        $isParamRequired = Str::contains($selectedCategory->link_rewrite_pattern ?? "", "?") ? false : true;
         return array("linkRewrite"=>$linkRewrite, "param"=>$param, "fullPath"=>$path, "categoryData"=>$selectedCategory, "paramRequired"=>$isParamRequired);
     }
 

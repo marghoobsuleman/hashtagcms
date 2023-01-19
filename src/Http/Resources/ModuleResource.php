@@ -16,8 +16,7 @@ class ModuleResource extends JsonResource
     {
         $isLocal = env('APP_ENV') === 'local';
 
-
-        return [
+        $data = [
             'id'=>$this->id,
             'siteId'=>$this->site_id,
             'name'=>$this->name,
@@ -26,10 +25,6 @@ class ModuleResource extends JsonResource
             'linkedModule'=>$this->linked_module,
             'viewName'=>$this->view_name,
             'dataType'=>$this->data_type,
-            'queryStatement'=>$this->when($isLocal, $this->query_statement),
-            'queryAs'=>$this->when($isLocal, $this->query_as),
-            'dataHandler'=>$this->when($isLocal, $this->data_handler),
-            'dataKeyMap'=>$this->when($isLocal, $this->data_key_map),
             'description'=>$this->description,
             'isMandatory'=>$this->is_mandatory,
             'methodType'=>$this->method_type,
@@ -39,10 +34,23 @@ class ModuleResource extends JsonResource
             'cacheGroup'=>$this->cache_group,
             'isSeoModule'=>$this->is_seo_module,
             'liveEdit'=>$this->live_edit,
-            'shared'=>$this->shared,
-            'data'=>$this->data,
-            'queryData'=>$this->when(isset($this->queryData), $this->queryData),
-            'moduleProps'=>$this->moduleProps
+            'shared'=>$this->shared
         ];
+
+        if ($isLocal) {
+            $data['queryStatement'] = $this->query_statement;
+            $data['queryAs'] = $this->query_as;
+            $data['dataHandler'] = $this->data_handler;
+            $data['dataKeyMap'] = $this->data_key_map;
+        }
+
+        if (isset($this->queryData)) {
+            $data['queryData'] = $this->queryData;
+        }
+
+        $data['data'] = $this->data;
+        $data['moduleProps'] =  $this->moduleProps;
+
+        return $data;
     }
 }

@@ -1,14 +1,20 @@
 # Changelog
 
 #v1.3.8 Changes
-#### Major Update: Please note: This updates need fresh installation.
+#### Major Update: Please note: This updates needs fresh installation.
+- Backend: Added gallery module. You can now upload files/images.
+- API: modules props are returing as key/value pair. 
 - Backend: Vue 2 to Vue 3 - done
+- Moved to bootstrap 5.0 - done
 - Backend: Improved Smart Copy Paste - done
 - Backend: `direction` column in `hooks` table has default Null value now. - done 
 - Backend: Move Passport to Sanctum for authentication - done
 - Backend: linked module and live edit bug while adding or editing frontend module. - done
 - Frontend: Moved to API based validation. - not started
-- API: Added v2 api - WIP
+- API: Added v2 resourced based api - WIP
+- Switch to external API.
+- Add redis cache support.
+- Backend: Add event listeners for backend activity such as add/edit/delete/publish
 
 #v1.3.7 Changes
 - Backend: Fixed issue while adding category
