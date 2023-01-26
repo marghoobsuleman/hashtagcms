@@ -22,7 +22,10 @@ trait FeEssential {
         $layoutManager =  app()->HashtagCms->layoutManager();
         try {
             info("============ Start loading data from request ============= ");
-            $data = $layoutManager->getHTMLData();
+            //$data = $layoutManager->getProcessedData();
+            return $layoutManager->getBodyContent();
+
+            //dd($data);
             if($data['status'] != 200) {
                 abort($data['status'], $data['message']);
             }

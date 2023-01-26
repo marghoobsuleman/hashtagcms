@@ -14,9 +14,14 @@ class LayoutManager extends Results
 {
 
     private InfoLoader $infoLoader;
+    private array $layoutData = array();
+
+
     private array $htmlData;
     private string $baseIndex = '_layout_/index';
     private string $baseServiceIndex = '_services_/index';
+
+
     private array $viewAlias = array();
     private array $viewData = array();
     private string $themeFolder;
@@ -24,6 +29,7 @@ class LayoutManager extends Results
     private string $cssPath;
     private string $jsPath;
     private string $imgPath;
+
     private string $resourcePath;
     private string $resourceDir;
     private string $resourceUrl;
@@ -40,6 +46,7 @@ class LayoutManager extends Results
         parent::__construct();
 
         $this->infoLoader = app()->HashtagCmsInfoLoader;
+
         $this->themeFolder = config("hashtagcms.info.theme_folder");
         $host = request()->getHost();
         //info("getHost ".request()->getHost());
@@ -50,14 +57,13 @@ class LayoutManager extends Results
         if(!isset($assetPath['base_url'])) {
             $assetPath = $this->backupAssetFolder;
         }
+
         $this->resourceUrl = $assetPath['base_url'];
         $this->resourceDir = $assetPath['base_path'];
         $this->jsFolder = $assetPath['js'];
         $this->cssFolder = $assetPath['css'];
         $this->imageFolder =  $assetPath['image'];
     }
-
-
 
     /**
      * Set meta and html object
@@ -157,7 +163,7 @@ class LayoutManager extends Results
      * @return void
      */
     public function setData(string $key, mixed $value):void {
-        $this->htmlData[$key] = $value;
+        $this->layoutData[$key] = $value;
     }
 
     /**
@@ -166,7 +172,7 @@ class LayoutManager extends Results
      * @return mixed
      */
     public function getData(string $key):mixed {
-       return $this->htmlData[$key] ?? null;
+       return $this->layoutData[$key] ?? null;
     }
 
     /**
@@ -309,6 +315,81 @@ class LayoutManager extends Results
 
 
     /**
+     * #New
+     * Get parsed modules
+     * @param string $sekeleton
+     * @param array $themeData
+     * @return string
+     */
+    public function parseSkeletonForView(string $sekeleton, array $themeData):string {
+        $infoLoader = app()->HashtagCms->infoLoader();
+        $themeData = $infoLoader->getThemeData();
+
+        $themeSkeleton = $themeData['skeleton'];
+        $directory = $themeData['directory'];
+        $hooks = $themeData['hooks'];
+        $themeModules = $themeData['modules'];
+
+        //Set base index
+        $this->setBaseIndex($themeData['directory']);
+
+
+        /** starts from here */
+
+        $bodyContent = $themeSkeleton;
+        $modulesInTheme = $themeModules;
+
+        $allData = array();
+        $infoKeeper = app()->HashtagCmsInfoLoader->getInfoKeeper();
+        info("parseBodyContent: 1");
+        //info(json_encode($infoKeeper));
+        try {
+            foreach ($hooks as $key=>$hook) {
+                $placeholder = $hook["placeholder"];
+                $modules = $hook["modules"];
+                //making string
+                if(!isset($allData[$placeholder])) {
+                    $allData[$placeholder] = array();
+                }
+                //dd("modules", $modules);
+                foreach ($modules as $index=>$module) {
+                    $viewData = $this->getParsedViewData($module, $infoKeeper);
+                    $allData[$placeholder][] = $viewData;
+                }
+                //info("placeholder: ".$placeholder);
+            }
+        } catch (\Exception $exception) {
+            info("errro: ". $exception->getMessage());
+        }
+
+
+        info("parseBodyContent: 2");
+
+        foreach ($modulesInTheme as $index=>$moduleT) {
+            $placeholder = $moduleT['placeholder'];
+            $viewData = $this->getParsedViewData($moduleT, $infoKeeper);
+            $allData[$placeholder][] = $viewData;
+        }
+        // info("parseBodyContent: 3");
+        //make string
+        foreach ($allData as $placeholder=>$data) {
+            $bodyContent = str_replace($placeholder, join("", $data), $bodyContent);
+        }
+        //info("parseBodyContent: 4");
+        //set in layout
+        $bodyContent = $this->getEssentialsElements().$bodyContent;
+        $this->setData("bodyContent", $bodyContent);
+
+        echo $bodyContent;
+        //info("Setting body content done...");
+        return $bodyContent;
+
+
+    }
+
+
+
+    /**
      * Parse theme skeleton
      * @param string $skeleton
      * @param int $site_id
@@ -391,7 +472,7 @@ class LayoutManager extends Results
                 }
                 //dd("modules", $modules);
                 foreach ($modules as $index=>$module) {
-                    $viewData = $this->getParsedViewData((array)$module, $infoKeeper);
+                    $viewData = $this->getParsedViewData($module, $infoKeeper);
                     $allData[$placeholder][] = $viewData;
                 }
                 //info("placeholder: ".$placeholder);
@@ -402,10 +483,10 @@ class LayoutManager extends Results
 
 
        info("parseBodyContent: 2");
-
+        //Parse module if it's is in theme
         foreach ($modulesInTheme as $index=>$moduleT) {
-            $placeholder = $moduleT->placeholder;
-            $viewData = $this->getParsedViewData((array)$moduleT, $infoKeeper);
+            $placeholder = $moduleT['placeholder'];
+            $viewData = $this->getParsedViewData($moduleT, $infoKeeper);
             $allData[$placeholder][] = $viewData;
         }
        // info("parseBodyContent: 3");
@@ -476,21 +557,26 @@ class LayoutManager extends Results
     public function getParsedViewData(array $module, array $infoKeeper=array()): mixed
     {
         $viewData = "";
-        if($module["data_type"] == "Static") {
+        if($module["dataType"] == "Static") {
             //View name is not needed for "Static" module
             $viewData = (isset($module["data"]) && isset($module["data"]["content"])) ?  $module["data"]["content"] : "";
 
         } else {
 
-            $viewName = $this->getViewName($module["view_name"]);
-            $mergeData = $this->getDataForView($module["view_name"]);
+            $viewName = $this->getViewName($module["viewName"]);
+            $mergeData = $this->getDataForView($module["viewName"]);
 
             if (View::exists($viewName)) {
                 try {
                     $moduleInfo = $module;
                     unset($moduleInfo['data']);
                     unset($moduleInfo['placeholder']);
-                    $viewData = $this->view_make($viewName, array("data"=>$module["data"], "infoKeeper"=>$infoKeeper, "moduleInfo"=>$moduleInfo), $mergeData);
+                    $moduleData = $module['data'];
+                    if ($module["dataType"] == "QueryService") {
+                        $moduleData['data'] = $module['data'];
+                        $moduleData['queryData'] = $module['queryData'];
+                    }
+                    $viewData = $this->view_make($viewName, array("data"=>$moduleData, "infoKeeper"=>$infoKeeper, "moduleInfo"=>$moduleInfo), $mergeData);
 
                 } catch (Exception $error) {
                     info("View Loading error: ".$error->getMessage());
@@ -519,9 +605,10 @@ class LayoutManager extends Results
         $viewData = view()->make($name, $data, $mergeData)->render();
 
         //check if it has another module
-        $pattern = "/\%{cms.module.+}\%/";
-        preg_match_all($pattern, $viewData, $matches); //PREG_OFFSET_CAPTURE
 
+        //@todo: We need another api here if it's external - make it data loader
+        /*$pattern = "/\%{cms.module.+}\%/";
+        preg_match_all($pattern, $viewData, $matches); //PREG_OFFSET_CAPTURE
         if(sizeof($matches[0]) > 0) {
             $ml = app()->HashtagCms->moduleLoader();
             foreach ($matches[0] as $key=>$val) {
@@ -534,7 +621,7 @@ class LayoutManager extends Results
                 $viewData = str_replace("%{cms.module.$val}%", $vData, $viewData);
 
             }
-        }
+        }*/
 
 
         return $viewData;
@@ -545,36 +632,26 @@ class LayoutManager extends Results
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    public function getHTMLData(array $mergeData=null):array
+    public function getProcessedData(array $mergeData=null):array
     {
         info("============== layoutManager: Start. ==============");
-        $infoKeeper = $this->infoLoader->getInfoKeeper();
+
+        $data = $this->infoLoader->getLoadDataObject();
 
         $mergeData = ($mergeData === null) ? array() : $mergeData;
 
-        $categoryLinkrewrite = $infoKeeper["categoryName"];
-        $siteContext = $infoKeeper["siteInfo"]["context"];
-        $platformLinkrewrite = $infoKeeper["platformInfo"]["link_rewrite"];
-        $langCode = $infoKeeper["langInfo"]["iso_code"];
-        $micrositeId = 0;
         $clearCache = request()->get("clearCache")==="true";
 
         $startTime = microtime(true);
-        $dataLoader = app()->HashtagCmsDataLoader;
-        $requestParams = array("category"=>$categoryLinkrewrite, "site"=>$siteContext,
-            "lang"=>$langCode, "platform"=>$platformLinkrewrite,
-            "microsite"=>$micrositeId, "clearCache"=>$clearCache);
 
-        //@todo: Need to work here
-        /*$dataL = new DataLoaderV2();
-        $dataL->loadData($requestParams);*/
-
-        $data = $dataLoader->loadData($requestParams);
 
         info("layoutManager: loading data completed, status: ".$data["status"]);
 
-        if($data["status"] == 200) {
-
+        if(isset($data["status"]) && $data["status"] !== 200) {
+            info("Error loading in page: status: $data[status] message: $data[message]");
+            //abort($data["status"], $data["message"]);
+            return  $data;
+        } else {
             //Set data in layout manager to access later
             info("layoutManager: setFinalObject");
             $this->setFinalObject($data);
@@ -592,11 +669,6 @@ class LayoutManager extends Results
             //update again
             $this->setFinalObject($data);
             info("layoutManager: setFinalObject again");
-
-        } else {
-            info("Error loading in page: status: $data[status] message: $data[message]");
-            //abort($data["status"], $data["message"]);
-            return  $data;
         }
         info("============ layoutManager: End. ===========");
         return $data;
@@ -851,6 +923,23 @@ class LayoutManager extends Results
         return join("", $htmlMenu);
     }
 
+    /**
+     * Set object and make everything ready for the view
+     * @param array $data
+     * @return void
+     */
+    public function setLoadDataObjectAndEverything(array $data) {
 
+        $html = $data['html'];
+        $meta = $data['meta'];
+        $this->setHtmlObject($html);;
+        $this->setMetaObject($meta);
+
+        //Set base index
+        $this->setBaseIndex($meta['theme']);
+
+        $this->parseBodyContent($meta['theme']);
+
+    }
 
 }

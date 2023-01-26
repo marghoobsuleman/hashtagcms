@@ -4,6 +4,7 @@ namespace MarghoobSuleman\HashtagCms\Core\Middleware\Traits;
 
 use Illuminate\Support\Facades\Http;
 use MarghoobSuleman\HashtagCms\Core\Main\CacheManager;
+use MarghoobSuleman\HashtagCms\Core\Main\LayoutManager;
 use MarghoobSuleman\HashtagCms\Models\Category;
 use Illuminate\Support\Facades\DB;
 
@@ -26,8 +27,7 @@ use Illuminate\Support\Facades\DB;
  */
 use Illuminate\Support\Str;
 use MarghoobSuleman\HashtagCms\Core\Main\InfoLoader;
-
-use MarghoobSuleman\HashtagCms\Core\Main\DataLoader as DataLoader;
+use MarghoobSuleman\HashtagCms\Core\Main\DataLoader;
 
 trait BaseInfo {
 
@@ -35,6 +35,7 @@ trait BaseInfo {
     protected string $defaultMethod = "index";
     protected InfoLoader $infoLoader;
     protected CacheManager $cacheManager;
+    protected LayoutManager $layoutManager;
 
 
     protected $configData;
@@ -67,6 +68,7 @@ trait BaseInfo {
 
         // ******************** new one ********************* //
         $this->infoLoader = app()->HashtagCms->infoLoader();
+        $this->layoutManager = app()->HashtagCms->layoutManager();
         $this->cacheManager = app()->HashtagCms->cacheManager();
 
         $this->parsePath($request);
@@ -196,7 +198,9 @@ trait BaseInfo {
         }
 
         //Set everything; this has to come before setting the controller info
-        $this->infoLoader->setLoaloadDataObjectAndEverything($allData);
+        $this->infoLoader->setLoadDataObjectAndEverything($allData);
+        //Set everything for the layout
+        $this->layoutManager->setLoadDataObjectAndEverything($allData);
 
         $this->setControllerInfo($path_arr, $foundLang, $foundPlatform);
 

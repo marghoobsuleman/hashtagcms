@@ -272,7 +272,7 @@ if (! function_exists('htcms_get_language_id')) {
      */
     function htcms_get_language_id():int
     {
-        return app()->HashtagCms->infoLoader()->getInfoKeeper("lang_id");
+        return app()->HashtagCms->infoLoader()->getInfoKeeper("lang_id") ?? 1;
     }
 }
 

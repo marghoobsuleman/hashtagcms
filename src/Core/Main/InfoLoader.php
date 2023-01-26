@@ -1018,11 +1018,13 @@ class InfoLoader
      * @param array $loadDataObject
      * @return void
      */
-    public function setLoaloadDataObjectAndEverything(array $loadDataObject):void {
+    public function setLoadDataObjectAndEverything(array $loadDataObject):void {
         $this->loadData = $loadDataObject;
 
         $meta = $loadDataObject['meta'];
         $html = $loadDataObject['html'];
+        $this->setObjInfo("htmlObject", $html);
+        $this->setObjInfo("metaObject", $meta);
 
         //set everything now
         $this->setSiteData($meta['site']);
