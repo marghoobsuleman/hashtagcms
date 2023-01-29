@@ -14,6 +14,51 @@ class Results
 
     }
 
+    /**
+     * Convert to array
+     * @param mixed $data
+     * @return array
+     */
+    private function makeArray(mixed $data):array {
+        return json_decode(json_encode($data), true);
+    }
+
+    /**
+     * Select one or many records
+     * @param string $query
+     * @param array $byParams
+     * @param string|null $database
+     * @param bool $selectOne
+     * @return array
+     */
+    private function selectOneOrMany(string $query, array $byParams=array(), string $database=null, bool $selectOne):array {
+
+        $queryParams = (sizeof($byParams)==0) ? $this->findAndReplaceGlobalIds($query) : $byParams;
+
+        $select = ($selectOne == true) ? "selectOne" : "select";
+
+        /*info("======================== query ============= ");
+        info(json_encode($query));
+        info(json_encode($queryParams));*/
+        try {
+            if($database === null) {
+                if(sizeof($queryParams) > 0) {
+                    return $this->makeArray(DB::{$select}($query, $queryParams));
+                }
+                return $this->makeArray(DB::{$select}($query));
+            } else {
+                if(sizeof($queryParams) > 0) {
+                    return $this->makeArray(DB::connection($database)->{$select}($query, $queryParams));
+                }
+                return $this->makeArray(DB::connection($database)->{$select}($query));
+            }
+
+
+        } catch (\Exception $e) {
+            info("dbSelect: There is an error: ".$e->getMessage());
+            return array();
+        }
+    }
 
     /**
      * Parse query and get the results
@@ -23,30 +68,28 @@ class Results
      */
     public function dbSelect(string $query, array $byParams=array(), string $database=null): ?array
     {
-        //$queryParams = $this->findAndReplaceGlobalIds($query);
-        $queryParams = (sizeof($byParams)==0) ? $this->findAndReplaceGlobalIds($query) : $byParams;
+        return $this->selectOneOrMany($query, $byParams, $database, false);
 
-        /*info("======================== query ============= ");
-        info(json_encode($query));
-        info(json_encode($queryParams));*/
+        /*$queryParams = (sizeof($byParams)==0) ? $this->findAndReplaceGlobalIds($query) : $byParams;
+
         try {
             if($database === null) {
                 if(sizeof($queryParams) > 0) {
-                    return DB::select($query, $queryParams);
+                    return makeArray(DB::select($query, $queryParams));
                 }
-                return DB::select($query);
+                return makeArray(DB::select($query));
             } else {
                 if(sizeof($queryParams) > 0) {
-                    return DB::connection($database)->select($query, $queryParams);
+                    return makeArray(DB::connection($database)->select($query, $queryParams));
                 }
-                return DB::connection($database)->select($query);
+                return makeArray(DB::connection($database)->select($query));
             }
 
 
         } catch (\Exception $e) {
             info("dbSelect: There is an error: ".$e->getMessage());
             return array();
-        }
+        }*/
 
     }
 
@@ -58,13 +101,9 @@ class Results
      */
     public function dbSelectOne(string $query, array $byParams=array(), string $database=null):?array {
 
-        $queryParams = (sizeof($byParams)==0) ? $this->findAndReplaceGlobalIds($query) : $byParams;
+        return $this->selectOneOrMany($query, $byParams, $database, true);
 
-        //info(json_encode($queryParams));;
-
-        /*info("======================== query ============= ");
-        info(json_encode($query));
-        info(json_encode($queryParams));*/
+        /*$queryParams = (sizeof($byParams)==0) ? $this->findAndReplaceGlobalIds($query) : $byParams;
 
         try {
 
@@ -83,12 +122,12 @@ class Results
                 return DB::connection($database)->selectOne($query);
             }
 
-            return  ($data !== null) ? (array)$data : array();
+            return  ($data !== null) ? json_decode(json_encode($data), true) : array();
 
         } catch (Exception $e) {
             info("dbSelectOne: There is an error: ".$e->getMessage());
             return array();
-        }
+        }*/
     }
 
     /**

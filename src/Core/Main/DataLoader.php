@@ -291,7 +291,10 @@ class DataLoader
         }
 
         //props
-        $propsData = SiteProp::where(array(array('site_id', '=', $siteData->id), array('platform_id', '=', $platformData->id)))->get();
+        $propsData = SiteProp::where(array(array('site_id', '=', $siteData->id),
+            array('platform_id', '=', $platformData->id),
+            array('is_public', '=', 1)
+            ))->get();
 
         /**
          * Set Context Vars:
@@ -323,7 +326,7 @@ class DataLoader
         $platformInfo = (new PlatformResource($platformData))->toArray(request());
         $categoryInfo = (new CategoryResource($categoryData))->toArray(request());
 
-        $categorySiteInfo = (new CategorySiteResource($categorySiteData))->toArray(request());
+        //$categorySiteInfo = (new CategorySiteResource($categorySiteData))->toArray(request());
         $themeInfo = (new ThemeResource($themeData))->toArray(request());
         $propsInfo = (SitePropResource::collection($propsData))->toArray(request());
 
@@ -340,6 +343,7 @@ class DataLoader
             "platform"=>$platformInfo,
             "lang"=>$langInfo,
             "category"=>$categoryInfo,
+            "page"=>$htmlMetaData['page'],
             "theme"=>$themeInfo,
             "props"=>$propsInfo
         );
@@ -506,6 +510,7 @@ class DataLoader
         // fetch data from that
         // else category meta info
         // else site meta info
+        $pageInfo = array("id"=>-1, "linkRewrite"=>"", "activeKey"=>"", "name"=>"");
 
         if($seoContent != null) {
             $metaDesc = ($seoContent["metaDescription"] == null) ? $categoryMetaDesc : $seoContent["metaDescription"];
@@ -521,10 +526,10 @@ class DataLoader
             $categoryFooterContent = $categoryFooterContent.$this->parseStringForPath($seoContent["footerContent"] ?? "", $theme_dir);
 
             //save it for later; might deprecate
-            $categorySiteInfo["page_active_key"] =  ($seoContent["activeKey"] == null) ? "" : $seoContent["activeKey"];
-            $categorySiteInfo["page_link_rewrite"] =  ($seoContent["link_rewrite"] == null) ? "" : $seoContent["link_rewrite"];
-            $categorySiteInfo["page_id"] =  ($seoContent["page_id"] == null) ? "" : $seoContent["page_id"];
-            $categorySiteInfo["page_name"] =  ($seoContent["page_name"] == null) ? "" : $seoContent["page_name"];
+            $pageInfo["id"] =  ($seoContent["page_id"] == null) ? "" : $seoContent["page_id"];
+            $pageInfo["linkRewrite"] =  ($seoContent["link_rewrite"] == null) ? "" : $seoContent["link_rewrite"];
+            $pageInfo["activeKey"] =  ($seoContent["activeKey"] == null) ? "" : $seoContent["activeKey"];
+            $pageInfo["name"] =  ($seoContent["page_name"] == null) ? "" : $seoContent["page_name"];
         }
 
         $metaTitle = (empty($categoryTitle)) ? $siteData->lang->title : $categoryTitle;
@@ -576,6 +581,9 @@ class DataLoader
         //Set html
         $data['html']["head"] = $headTag;
         $data['html']["body"] = $bodyTag;
+
+        $data['page'] = $pageInfo;
+
 
         return $data;
     }

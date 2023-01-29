@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Redirect;
 use JetBrains\PhpStorm\ArrayShape;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Auth;
+use MarghoobSuleman\HashtagCms\Core\Utils\LayoutKeys;
 use Mockery\Exception;
 
 use MarghoobSuleman\HashtagCms\Core\Traits\LayoutHandler;
@@ -66,6 +67,98 @@ class LayoutManager extends Results
     }
 
     /**
+     * init
+     * @return void
+     */
+    public function init() {
+
+        $dataLoader = app()->HashtagCms->dataLoader();
+        
+        $context = $this->infoLoader->getInfoKeeper(LayoutKeys::CONTEXT);
+        $lang = $this->infoLoader->getInfoKeeper(LayoutKeys::LANG_ISO_CODE);
+        $platform = $this->infoLoader->getInfoKeeper(LayoutKeys::PLATFORM_LINKREWRITE);
+        $categoryName = $this->infoLoader->getInfoKeeper(LayoutKeys::CATEGORY_NAME);
+        $microsite = $this->infoLoader->getInfoKeeper(LayoutKeys::MICROSITE);
+        $isExternal = $this->infoLoader->getInfoKeeper(LayoutKeys::IS_EXTERNAL);
+
+        //load data will be from controller
+        $allData =  $dataLoader->loadData($context, $lang, $platform, $categoryName, null, $isExternal);
+
+        //check if there is an error -- && $foundController==false
+        if (isset($allData['status']) && $allData['status']!=200) {
+            return $allData;
+        }
+
+        //Set everything; this has to come before setting the controller info and then return the data
+        $this->infoLoader->setLoadDataObjectAndEverything($allData);
+        //Set everything for the layout
+        $this->setLoadDataObjectAndEverything($allData);
+
+        return $allData;
+    }
+
+    /**
+     * Set object and make everything ready for the view
+     * @param array $data
+     * @return void
+     */
+    public function setLoadDataObjectAndEverything(array $data) {
+
+        $html = $data['html'];
+        $meta = $data['meta'];
+        $this->setHtmlObject($html);;
+        $this->setMetaObject($meta);
+
+        //Set base index
+        $this->setBaseIndex($meta['theme']);
+
+        $this->parseSkeletonForView($meta['theme']);
+
+    }
+
+
+
+
+    /**
+     * Set body content
+     * @param string $content
+     * @return void
+     */
+    public function setBodyContent(string $content):void {
+        $this->setData("bodyContent", $content);
+    }
+
+    /**
+     * get body content
+     * @return string
+     */
+    public function getBodyContent():string
+    {
+        return $this->getData("bodyContent");
+    }
+
+
+    /**
+     * get header content
+     * @return string
+     */
+    public function getHeaderContent():string
+    {
+        return $this->infoLoader->getHeaderContent();
+    }
+
+
+    /**
+     * Get footer content
+     * @return string
+     */
+    public function getFooterContent(): string
+    {
+        return $this->infoLoader->getFooterContent();
+    }
+
+
+    /**
      * Set meta and html object
      * @param array $data
      * @return void
@@ -90,14 +183,14 @@ class LayoutManager extends Results
     {
         $directory = $theme["directory"];
         $baseFolder = config("hashtagcms.info.theme_folder");
-        $viewName = $baseFolder.".".$directory."/".$this->baseIndex;
+        $viewName = $baseFolder.".".$directory."/".LayoutKeys::BASE_INDEX_FILE;
         $viewName = str_replace("/", ".", $viewName);
-        $this->setData("baseIndex", $viewName);
+        $this->setData(LayoutKeys::BASE_INDEX, $viewName);
 
         //for service
-        $viewName = $baseFolder.".".$directory."/".$this->baseServiceIndex;
+        $viewName = $baseFolder.".".$directory."/".LayoutKeys::SERVICE_BASE_INDEX_FILE;
         $viewName = str_replace("/", ".", $viewName);
-        $this->setData("baseServiceIndex", $viewName);
+        $this->setData(LayoutKeys::SERVICE_BASE_INDEX, $viewName);
     }
 
 
@@ -107,7 +200,7 @@ class LayoutManager extends Results
      */
     public function getBaseIndex():string
     {
-        return $this->getData('baseIndex');
+        return $this->getData(LayoutKeys::BASE_INDEX);
     }
 
     /**
@@ -116,7 +209,7 @@ class LayoutManager extends Results
      */
     public function getBaseServiceIndex():string
     {
-        return $this->getData('baseServiceIndex');
+        return $this->getData(LayoutKeys::SERVICE_BASE_INDEX);
     }
 
     /**
@@ -175,27 +268,6 @@ class LayoutManager extends Results
        return $this->layoutData[$key] ?? null;
     }
 
-    /**
-     * get body content
-     * @return string
-     */
-    public function getBodyContent():string
-    {
-        return $this->getData("bodyContent");
-    }
-
-    /**
-     * get header content
-     * @return string
-     */
-    public function getHeaderContent():string
-    {
-        $html = $this->getHtmlObject();
-        $headerContent = $html['parsed']['header'];
-        //info("assets new: ".Vite::asset("resources/assets/hashtagcms/fe/basic/js/app.js"));
-        $headerContent = $headerContent; //."<script src='".Vite::asset("resources/assets/hashtagcms/fe/basic/js/app.js")."'></script>";
-        return $html['parsed']['header'];
-    }
 
     /**
      * get meta content
@@ -203,8 +275,7 @@ class LayoutManager extends Results
      */
     public function getMetaContent():string
     {
-        $html = $this->getHtmlObject();
-        return $html['head']['metaContent'];
+        return $this->infoLoader->getHeaderContent();
     }
 
     /**
@@ -213,19 +284,9 @@ class LayoutManager extends Results
      */
     public function getTitle(): string
     {
-        $html = $this->getHtmlObject();
-        return $html['head']['title'];
+        return $this->infoLoader->getMetaTitle();
     }
 
-    /**
-     * Get footer content
-     * @return string
-     */
-    public function getFooterContent(): string
-    {
-        $html = $this->getHtmlObject();
-        return $html['parsed']['footer'];
-    }
 
 
     /**
@@ -313,146 +374,13 @@ class LayoutManager extends Results
 
     }
 
-
-    /**
-     * #New
-     * Get parsed modules
-     * @param string $sekeleton
-     * @param array $themeData
-     * @return string
-     */
-    public function parseSkeletonForView(string $sekeleton, array $themeData):string {
-        $infoLoader = app()->HashtagCms->infoLoader();
-        $themeData = $infoLoader->getThemeData();
-
-        $themeSkeleton = $themeData['skeleton'];
-        $directory = $themeData['directory'];
-        $hooks = $themeData['hooks'];
-        $themeModules = $themeData['modules'];
-
-        //Set base index
-        $this->setBaseIndex($themeData['directory']);
-
-
-        /** starts from here */
-
-        $bodyContent = $themeSkeleton;
-        $modulesInTheme = $themeModules;
-
-        $allData = array();
-        $infoKeeper = app()->HashtagCmsInfoLoader->getInfoKeeper();
-        info("parseBodyContent: 1");
-        //info(json_encode($infoKeeper));
-        try {
-            foreach ($hooks as $key=>$hook) {
-                $placeholder = $hook["placeholder"];
-                $modules = $hook["modules"];
-                //making string
-                if(!isset($allData[$placeholder])) {
-                    $allData[$placeholder] = array();
-                }
-                //dd("modules", $modules);
-                foreach ($modules as $index=>$module) {
-                    $viewData = $this->getParsedViewData($module, $infoKeeper);
-                    $allData[$placeholder][] = $viewData;
-                }
-                //info("placeholder: ".$placeholder);
-            }
-        } catch (\Exception $exception) {
-            info("errro: ". $exception->getMessage());
-        }
-
-
-        info("parseBodyContent: 2");
-
-        foreach ($modulesInTheme as $index=>$moduleT) {
-            $placeholder = $moduleT['placeholder'];
-            $viewData = $this->getParsedViewData($moduleT, $infoKeeper);
-            $allData[$placeholder][] = $viewData;
-        }
-        // info("parseBodyContent: 3");
-        //make string
-        foreach ($allData as $placeholder=>$data) {
-            $bodyContent = str_replace($placeholder, join("", $data), $bodyContent);
-        }
-        //info("parseBodyContent: 4");
-        //set in layout
-        $bodyContent = $this->getEssentialsElements().$bodyContent;
-        $this->setData("bodyContent", $bodyContent);
-
-        echo $bodyContent;
-        //info("Setting body content done...");
-        return $bodyContent;
-
-
-    }
-
-
-
-    /**
-     * Parse theme skeleton
-     * @param string $skeleton
-     * @param int $site_id
-     * @return array
-     */
-    #[ArrayShape(["hooks" => "array", "modules" => "array"])] public function parseSkeleton(string $skeleton, int $site_id): array
-    {
-        $subject = $skeleton;
-        $pattern = "/\%.*?\%/";
-        preg_match_all($pattern, $subject, $matches); //PREG_OFFSET_CAPTURE
-        $hooksData = array();
-        $moduleData = array();
-        if(count($matches)>0) {
-            $matches = $matches[0];
-            foreach($matches as $key=>$val) {
-                $current = $val;
-                $isHook = str_contains($current, "%{cms.hook.");
-                $isModule = str_contains($current, "%{cms.module.");
-
-                if($isHook) {
-                    $patterns = array();
-                    $patterns[0] = '/%/';
-                    $patterns[1] = '/{cms.hook./';
-                    $patterns[2] = '/}/';
-                    $replacements = array();
-                    $replacements[2] = '';
-                    $replacements[1] = '';
-                    $replacements[0] = '';
-                    $name = preg_replace($patterns, $replacements, $current);
-                    $info = $this->infoLoader->getHookInfo(trim($name), $site_id);
-                    if($info) {
-                        $hooksData[] = $info;
-                    }
-                }
-                if($isModule) {
-                    $patterns = array();
-                    $patterns[0] = '/%/';
-                    $patterns[1] = '/{cms.module./';
-                    $patterns[2] = '/}/';
-                    $replacements = array();
-                    $replacements[2] = '';
-                    $replacements[1] = '';
-                    $replacements[0] = '';
-                    $name = preg_replace($patterns, $replacements, $current);
-                    $moduleInfo = $this->infoLoader->getModuleInfo($name, $site_id);
-                    if($moduleInfo) {
-                        $moduleData[] = $moduleInfo;
-                    }
-                }
-            }
-        }
-
-        return array("hooks"=>$hooksData, "modules"=>$moduleData);
-    }
-
     /**
      * Get html content by html object (Fetch by all mdules/theme/hook)
      * @param array $theme
-     * @param array $mergeData
      * @return mixed
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
-    public function parseBodyContent(array $theme, array $mergeData=[]):string
+    public function parseSkeletonForView(array $theme):string
     {
         $bodyContent = $theme['skeleton'];
         $hooks = $theme['hooks'];
@@ -497,7 +425,7 @@ class LayoutManager extends Results
         //info("parseBodyContent: 4");
         //set in layout
         $bodyContent = $this->getEssentialsElements().$bodyContent;
-        $this->setData("bodyContent", $bodyContent);
+        $this->setBodyContent($bodyContent);
         //info("Setting body content done...");
         return $bodyContent;
     }
@@ -542,7 +470,7 @@ class LayoutManager extends Results
         //dd("modules", $modules);
         $parseData = [];
         foreach ($modules as $index=>$module) {
-            $parseData[] = $this->getParsedViewData((array)$module, $infoKeeper);
+            $parseData[] = $this->getParsedViewData($module, $infoKeeper);
         }
         return join("", $parseData);
     }
@@ -572,11 +500,12 @@ class LayoutManager extends Results
                     unset($moduleInfo['data']);
                     unset($moduleInfo['placeholder']);
                     $moduleData = $module['data'];
+                    //Handle query service
                     if ($module["dataType"] == "QueryService") {
                         $moduleData['data'] = $module['data'];
                         $moduleData['queryData'] = $module['queryData'];
                     }
-                    $viewData = $this->view_make($viewName, array("data"=>$moduleData, "infoKeeper"=>$infoKeeper, "moduleInfo"=>$moduleInfo), $mergeData);
+                    $viewData = $this->viewMake($viewName, array("data"=>$moduleData, "infoKeeper"=>$infoKeeper, "moduleInfo"=>$moduleInfo), $mergeData);
 
                 } catch (Exception $error) {
                     info("View Loading error: ".$error->getMessage());
@@ -597,7 +526,7 @@ class LayoutManager extends Results
      * @return mixed
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
-    public function view_make(string $name, array $data=array(), array $mergeData=array()):mixed {
+    public function viewMake(string $name, array $data=array(), array $mergeData=array()):mixed {
 
         $newData = array_merge($data['data'], $mergeData);
         $data['data'] = $newData;
@@ -607,7 +536,7 @@ class LayoutManager extends Results
         //check if it has another module
 
         //@todo: We need another api here if it's external - make it data loader
-        /*$pattern = "/\%{cms.module.+}\%/";
+        $pattern = "/\%{cms.module.+}\%/";
         preg_match_all($pattern, $viewData, $matches); //PREG_OFFSET_CAPTURE
         if(sizeof($matches[0]) > 0) {
             $ml = app()->HashtagCms->moduleLoader();
@@ -621,58 +550,12 @@ class LayoutManager extends Results
                 $viewData = str_replace("%{cms.module.$val}%", $vData, $viewData);
 
             }
-        }*/
+        }
 
 
         return $viewData;
     }
 
-    /**
-     * Get html data object
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
-     */
-    public function getProcessedData(array $mergeData=null):array
-    {
-        info("============== layoutManager: Start. ==============");
-
-        $data = $this->infoLoader->getLoadDataObject();
-
-        $mergeData = ($mergeData === null) ? array() : $mergeData;
-
-        $clearCache = request()->get("clearCache")==="true";
-
-        $startTime = microtime(true);
-
-
-        info("layoutManager: loading data completed, status: ".$data["status"]);
-
-        if(isset($data["status"]) && $data["status"] !== 200) {
-            info("Error loading in page: status: $data[status] message: $data[message]");
-            //abort($data["status"], $data["message"]);
-            return  $data;
-        } else {
-            //Set data in layout manager to access later
-            info("layoutManager: setFinalObject");
-            $this->setFinalObject($data);
-
-            info("layoutManager: setThemePath");
-
-            $this->setThemePath($data['meta']['theme']["directory"]);
-
-            $bodyContent = $this->parseBodyContent($data['meta']['theme']);
-            info("layoutManager: after setThemePath");
-            $data['html']['parsed'] = array("body"=>$bodyContent,
-                "header"=>$data['html']['head']['headerContent'],
-                "footer"=>$data['html']['body']['footer']['footerContent']);
-
-            //update again
-            $this->setFinalObject($data);
-            info("layoutManager: setFinalObject again");
-        }
-        info("============ layoutManager: End. ===========");
-        return $data;
-    }
 
     /**
      * @param string $view_name
@@ -681,7 +564,7 @@ class LayoutManager extends Results
      * @param int|null $status
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
-    public function view_master(string $view_name, mixed $data, mixed $merge_data, int $status=null)
+    public function viewMaster(string $view_name, mixed $data, mixed $merge_data, int $status=null)
     {
         $data = array("data"=>$data);
         return response()->view($view_name, $data, 200);
@@ -694,7 +577,7 @@ class LayoutManager extends Results
      * Set Theme Path
      * @param string $directory
      */
-    public function setThemePath(string $directory=''):void
+    public function setThemePath(string $directory):void
     {
         //set theme path
         $this->resourcePath = $this->resourceDir."/".$directory;
@@ -791,6 +674,93 @@ class LayoutManager extends Results
     }
 
 
+    /**
+     * Make menu
+     * @param array $data
+     * @param bool $withLi
+     * @param array|null $css
+     * @param bool $isChild
+     * @return string
+     */
+    private function makeMenu(array $data, bool $withLi=true, array $css=null, bool $isChild=false): string
+    {
+
+        $active = htcms_get_category_info('activeKey');
+        $active_css = ($data["active_key"] == $active) ? ' '.$css['active'] : "";
+
+        $title = $data['title'];
+
+        $link_rewrite = (isset($data["link_navigation"]) && !empty($data["link_navigation"]) && $data["link_navigation"] != null) ? $data["link_navigation"] : $data["link_rewrite"];
+        $link_rewrite = htcms_get_path($link_rewrite);
+
+        $text = $data['name'];
+
+
+        $liEnd = ($withLi == true) ? "</li>" : "";
+
+        $dataCss = ($withLi == true) ? '' : ' data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ';
+
+        $liCss = ($isChild == true) ? $css['childItem']['li'] : $css['item']['li'];
+        $aCss = ($isChild == true) ? $css['childItem']['a'] : $css['item']['a'];
+
+        if($withLi == false) {
+            $liCss = $css['itemWithChild']['li'];
+            $aCss = $css['itemWithChild']['a'];
+        }
+
+        $liCss = $liCss.$active_css;
+
+        //$liStart = ($isChild == true) ? "" : "<li class='$liCss' $dataCss>";
+        $liStart = "<li class='$liCss' $dataCss>";
+
+        return "$liStart<a class='$aCss' title='$title' href='$link_rewrite'>$text</a>$liEnd";
+    }
+
+    /**
+     * Get header Menu HTML
+     * @param int $maxLimit
+     * @param array $css
+     * @return string
+     */
+    public function getHeaderMenuHtml(array $data, int $maxLimit=-1, array $css=null):string {
+
+        $css = ($css != null) ? $css : array("item"=>array("li"=>"nav-item", "a"=>"nav-link"),
+            "childItem"=>array("li"=>"", "a"=>"dropdown-item"),
+            "itemWithChild"=>array("li"=>"nav-item dropdown", "a"=>"nav-link dropdown-toggle", "group"=>"dropdown-menu"),
+            "active"=>"active"
+        );
+
+        $menuMax = ($maxLimit == -1) ? count($data) :  $maxLimit;
+        $shouldAddMore = count($data) > $menuMax;
+        $htmlMenu = array();
+        foreach ($data as $index=>$menu) {
+            if($shouldAddMore && $index == $menuMax-1) {
+                $htmlMenu[] = "<li class='".$css['itemWithChild']['li']."'><a data-toggle='dropdown' aria-haspopup='true' aria-expanded='false' class='".$css['itemWithChild']['a']."' title='More' href='#'>More</a>";
+                $htmlMenu[] = "<ul class='".$css['itemWithChild']['group']."'>";
+            }
+            $hasChild = false;
+            if (isset($menu["child"])) {
+                $hasChild = (count($menu["child"])>0) ? true : false;
+            }
+            $htmlMenu[] = $this->makeMenu($menu, (($hasChild) ? false : true), $css, false);
+            if($hasChild) {
+                $htmlMenu[] = "<ul class='".$css['itemWithChild']['group']."'>";
+                foreach ($menu["child"] as $childMenu) {
+                    $htmlMenu[] = $this->makeMenu($childMenu, true, $css, true);
+                }
+                $htmlMenu[] = "</ul></li>";
+            }
+            if($shouldAddMore && $index == count($data)-1) {
+                $htmlMenu[] = "</ul></li>";
+            }
+
+        }
+
+        return join("", $htmlMenu);
+    }
+
+
+    /*** Unused ***/
 
     /**
      * Get Header menu
@@ -838,108 +808,6 @@ class LayoutManager extends Results
         }
 
         return $allMenu;
-    }
-
-    /**
-     * Make menu
-     * @param array $data
-     * @param bool $withLi
-     * @param array|null $css
-     * @param bool $isChild
-     * @return string
-     */
-    private function makeMenu(array $data=array(), bool $withLi=true, array $css=null, bool $isChild=false): string
-    {
-
-        $active = htcms_get_category_info('active_key');
-        $active_css = ($data["active_key"] == $active) ? ' '.$css['active'] : "";
-
-        $title = $data['title'];
-
-        $link_rewrite = (isset($data["link_navigation"]) && !empty($data["link_navigation"]) && $data["link_navigation"] != null) ? $data["link_navigation"] : $data["link_rewrite"];
-        $link_rewrite = htcms_get_path($link_rewrite);
-
-        $text = $data['name'];
-
-
-        $liEnd = ($withLi == true) ? "</li>" : "";
-
-        $dataCss = ($withLi == true) ? '' : ' data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ';
-
-        $liCss = ($isChild == true) ? $css['childItem']['li'] : $css['item']['li'];
-        $aCss = ($isChild == true) ? $css['childItem']['a'] : $css['item']['a'];
-
-        if($withLi == false) {
-            $liCss = $css['itemWithChild']['li'];
-            $aCss = $css['itemWithChild']['a'];
-        }
-
-        $liCss = $liCss.$active_css;
-
-        //$liStart = ($isChild == true) ? "" : "<li class='$liCss' $dataCss>";
-        $liStart = "<li class='$liCss' $dataCss>";
-
-        return "$liStart<a class='$aCss' title='$title' href='$link_rewrite'>$text</a>$liEnd";
-    }
-
-    /**
-     * Get header Menu HTML
-     * @param int $maxLimit
-     * @param array $css
-     * @return string
-     */
-    public function getHeaderMenuHtml(int $maxLimit=-1, array $css=null):string {
-        $data = $this->getHeaderMenu();
-
-        $css = ($css != null) ? $css : array("item"=>array("li"=>"nav-item", "a"=>"nav-link"),
-            "childItem"=>array("li"=>"", "a"=>"dropdown-item"),
-            "itemWithChild"=>array("li"=>"nav-item dropdown", "a"=>"nav-link dropdown-toggle", "group"=>"dropdown-menu"),
-            "active"=>"active"
-        );
-
-        $menuMax = ($maxLimit == -1) ? count($data) :  $maxLimit;
-        $shouldAddMore = count($data) > $menuMax;
-        $htmlMenu = array();
-        foreach ($data as $index=>$menu) {
-            if($shouldAddMore && $index == $menuMax-1) {
-                $htmlMenu[] = "<li class='".$css['itemWithChild']['li']."'><a data-toggle='dropdown' aria-haspopup='true' aria-expanded='false' class='".$css['itemWithChild']['a']."' title='More' href='#'>More</a>";
-                $htmlMenu[] = "<ul class='".$css['itemWithChild']['group']."'>";
-            }
-            $hasChild = (count($menu["child"])>0) ? true : false;
-            $htmlMenu[] = $this->makeMenu($menu, (($hasChild) ? false : true), $css, false);
-            if($hasChild) {
-                $htmlMenu[] = "<ul class='".$css['itemWithChild']['group']."'>";
-                foreach ($menu["child"] as $childMenu) {
-                    $htmlMenu[] = $this->makeMenu($childMenu, true, $css, true);
-                }
-                $htmlMenu[] = "</ul></li>";
-            }
-            if($shouldAddMore && $index == count($data)-1) {
-                $htmlMenu[] = "</ul></li>";
-            }
-
-        }
-
-        return join("", $htmlMenu);
-    }
-
-    /**
-     * Set object and make everything ready for the view
-     * @param array $data
-     * @return void
-     */
-    public function setLoadDataObjectAndEverything(array $data) {
-
-        $html = $data['html'];
-        $meta = $data['meta'];
-        $this->setHtmlObject($html);;
-        $this->setMetaObject($meta);
-
-        //Set base index
-        $this->setBaseIndex($meta['theme']);
-
-        $this->parseBodyContent($meta['theme']);
-
     }
 
 }

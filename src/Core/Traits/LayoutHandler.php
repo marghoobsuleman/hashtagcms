@@ -2,20 +2,12 @@
 namespace MarghoobSuleman\HashtagCms\Core\Traits;
 
 use MarghoobSuleman\HashtagCms\Models\Theme;
-use MarghoobSuleman\HashtagCms\Core\Main\DataLoader;
-use MarghoobSuleman\HashtagCms\Core\Enum\LayoutKeys;
 use Illuminate\Support\Facades\View;
 
 trait LayoutHandler {
     
     private array $themeCache;
-    private DataLoader $dataLoader;
-
-    private string $baseIndex = '_layout_/index';
-    private string $baseServiceIndex = '_services_/index';
-    private array $layoutData = array();
-
-
+    
     /**
      * @param string|null $str
      * @param string|int $theme_dir
@@ -76,70 +68,5 @@ trait LayoutHandler {
         }
         return "";
     }
-
-
-
-    /**
-     * Set base index
-     * @param string $directory
-     * @return void
-     */
-    public function setBaseIndex(string $directory):void
-    {
-        $baseFolder = config("hashtagcms.info.theme_folder");
-        $viewName = $baseFolder.".".$directory."/".$this->baseIndex;
-        $viewName = str_replace("/", ".", $viewName);
-        $this->setData(LayoutKeys::baseIndex, $viewName);
-
-        //for service
-        $viewName = $baseFolder.".".$directory."/".$this->baseServiceIndex;
-        $viewName = str_replace("/", ".", $viewName);
-        $this->setData(LayoutKeys::baseServiceIndex, $viewName);
-    }
-
-    /**
-     * Get base index file name
-     * @return string
-     */
-    public function getBaseIndex():string
-    {
-        return $this->getData(LayoutKeys::baseIndex);
-    }
-
-    /**
-     * Get base service index file name
-     * @return string
-     */
-    public function getBaseServiceIndex():string
-    {
-        return $this->getData(LayoutKeys::baseServiceIndex);
-    }
-
-    
-
-    /**
-     * Set layout data
-     * @param string $key
-     * @param mixed $value
-     * @return void
-     */
-    public function setData(string $key, mixed $value):void {
-        $this->layoutData[$key] = $value;
-    }
-
-    /**
-     * Get layout data
-     * @param string $key
-     * @return mixed
-     */
-    public function getData(string $key):mixed {
-        return $this->layoutData[$key] ?? null;
-    }
-
-
-
-
-
-
 
 }

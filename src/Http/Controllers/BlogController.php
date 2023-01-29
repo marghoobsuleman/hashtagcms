@@ -3,6 +3,7 @@
 namespace MarghoobSuleman\HashtagCms\Http\Controllers;
 
 use MarghoobSuleman\HashtagCms\Models\Page;
+use MarghoobSuleman\HashtagCms\Http\Resources\PageResource;
 use Illuminate\Http\Request;
 
 class BlogController extends FrontendBaseController
@@ -15,28 +16,33 @@ class BlogController extends FrontendBaseController
      * @return array|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function index(Request $request) {
-        $infoKeeper = app()->HashtagCmsInfoLoader->getInfoKeeper();
+
         $infoLoader = app()->HashtagCms->infoLoader();
-        $siteData = $infoLoader->getSiteData();
-        $langData = $infoLoader->getLangData();
-        $categoryData = $infoLoader->getCategoryData();
-        dd($infoLoader);
+        $callableValue = $infoLoader->getAppCallableValue();
+
         //check it's blog home
-        if(empty($infoKeeper['callableValue'][0])) {
+        if(empty($callableValue[0])) {
             $this->setModuleMandatoryCheck(false); //in base controlle
 
+            $siteId = $infoLoader->getSiteId();
+            $langId = $infoLoader->getLangId();
+            $categoryName = $infoLoader->getCategoryName();
+
             $perPage = config("hashtagcms.blog_per_page");
-            $categoryLinkRewrite = $categoryData['linkRewrite'];
 
             $moreCategories = config("hashtagcms.more_categories_on_blog_listing");
+            $useMore = false;
             if(sizeof($moreCategories) > 0) {
-                $moreCategories[] = $categoryLinkRewrite; //add one more
-                $results = Page::getLatestBlog($siteData['id'], $langData['id'], $moreCategories, $perPage);
-            } else {
-                $results = Page::getLatestBlog($siteData['id'], $langData['id'], $categoryLinkRewrite, $perPage);
+                $useMore = true;
+                $moreCategories[] = $categoryName; //add one more
             }
 
-            $data['results'] = $results;
+
+
+            $requestCat = ($useMore) ? $moreCategories : $categoryName;
+            $results = Page::getLatestBlog($siteId, $langId, $requestCat, $perPage);
+
+            $data['results'] = PageResource::collection($results)->toArray($request);
 
             //replace mandatory module with new module.
             $this->replaceViewWith("story", "stories", $data);

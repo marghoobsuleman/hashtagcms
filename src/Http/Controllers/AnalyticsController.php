@@ -4,7 +4,7 @@ namespace MarghoobSuleman\HashtagCms\Http\Controllers;
 use MarghoobSuleman\HashtagCms\Models\Category;
 use MarghoobSuleman\HashtagCms\Models\Page;
 
-
+//Keeping out of hahatgcms controller scope;
 class AnalyticsController extends Controller
 {
 

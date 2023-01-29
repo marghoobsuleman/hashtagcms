@@ -51,15 +51,15 @@ class Common extends Results
         return $this->layoutManager()->getHeaderMenu($active);
     }
 
-
     /**
      * Get header Menu HTML
+     * @param array $data
      * @param int $maxLimit
      * @param array|null $css
      * @return string
      */
-    public function getHeaderMenuHtml(int $maxLimit=-1, array $css=null):string {
-        return $this->layoutManager()->getHeaderMenuHtml($maxLimit, $css);
+    public function getHeaderMenuHtml(array $data, int $maxLimit=-1, array $css=null):string {
+        return $this->layoutManager()->getHeaderMenuHtml($data, $maxLimit, $css);
     }
 
 

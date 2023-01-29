@@ -11,40 +11,6 @@ use Illuminate\Support\Facades\Http;
 
 trait FeEssential {
 
-
-    /**
-     * Load data
-     * InfoKeeper already has site, category, platform, and category info (Interceptor Middleware)
-     * @param Request $request
-     */
-    public function index(Request $request) {
-        
-        $layoutManager =  app()->HashtagCms->layoutManager();
-        try {
-            info("============ Start loading data from request ============= ");
-            //$data = $layoutManager->getProcessedData();
-            return $layoutManager->getBodyContent();
-
-            //dd($data);
-            if($data['status'] != 200) {
-                abort($data['status'], $data['message']);
-            }
-            if($data["isLoginRequired"] && Auth::id() == null) {
-                $category = $layoutManager->getMetaObject("category");
-                $category = $category['link_rewrite'];
-                $reqParams = request()->all();
-                return Redirect::to("/login?redirect=/$category?".http_build_query($reqParams,'', '&'));
-            }
-
-        } catch (NotFoundExceptionInterface|ContainerExceptionInterface $e) {
-            info("Error Loading in page.");
-            info($e->getMessage());
-            exit($e->getMessage());
-        }
-        info("============ End loading data from request ============= ");
-        return $layoutManager->view_master($layoutManager->getBaseIndex(), $data, array());
-    }
-
     /**
      * Bind Data for a view
      * @param string $viewName
@@ -91,10 +57,10 @@ trait FeEssential {
         //set info
         $infoLoader->setObjInfo($info);
 
-        $infoLoader->setMultiContextVars($obj['category']->id, $obj['site']->id, $obj['platform']->id, $obj['microsite']);
-        $infoLoader->setLanguageId($obj['language']->id, $obj['language']->iso_code);
+        $infoLoader->setMultiContextVars($obj['category']['id'], $obj['site']['id'], $obj['platform']['id'], $obj['microsite']);
+        $infoLoader->setLanguageId($obj['language']['id'], $obj['language']['iso_code']);
 
-        app()->HashtagCms->setThemePath($obj['theme']->directory);
+        app()->HashtagCms->setThemePath($obj['theme']['directory']);
         app()->HashtagCms->setTheme($obj['theme']);
 
     }

@@ -68,9 +68,11 @@ class CacheManager extends Session
      */
     public function getInfoKeeper(string $key=null):mixed
     {
+        //create a blank namespace if not exists
         if(!$this->exists($this->infoKeeperKey)) {
             $this->put($this->infoKeeperKey, array());
         }
+
         $infoKeeper = $this->get($this->infoKeeperKey);
 
         if($key == null) {

@@ -83,21 +83,15 @@ if (HashtagCms::isRoutesEnabled()) {
     
     Route::match(['get', 'post', 'delete'], '{all?}', function(Request $request, $all="/") {
 
-     /*  $dataLoader = new DataLoader();
-       $configData = $dataLoader->loadConfig("htcms");
+        $infoLoader = app()->HashtagCms->infoLoader();
 
-        //info("configData->site->themeId {$configData->site->id}");
-
-        return $configData["site"];*/
-
-
-
-
-        $infoKeeper = app()->HashtagCmsInfoLoader->getInfoKeeper();
+        $infoKeeper = $infoLoader->getInfoKeeper();
         //These are coming from FeMiddleware-> Core/BaseInfo Trait
-        $callable =  isset($infoKeeper["callable"]) ? $infoKeeper["callable"] : "";
-        $values =  isset($infoKeeper["callableValue"]) ? $infoKeeper["callableValue"] : array();
-
+        //$callable =  isset($infoKeeper["callable"]) ? $infoKeeper["callable"] : "";
+        //$values =  isset($infoKeeper["callableValue"]) ? $infoKeeper["callableValue"] : array();
+        $callable = $infoLoader->getAppCallable();
+        $values =  $infoLoader->getAppCallableValue();
+        //dd($callable,$values);
         try {
 
             if($callable!="") {
@@ -118,7 +112,7 @@ if (HashtagCms::isRoutesEnabled()) {
             if (env("APP_ENV") !== "local") {
                 abort(404);
             }
-
+            dd($exception->get);
             return array("popluated" => "Error in calling controller (".$callable.")",
                 "errorMessage" => $exception->getMessage(),
                 "errorTrace" =>     $exception->getTrace()
