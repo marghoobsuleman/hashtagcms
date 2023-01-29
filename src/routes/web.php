@@ -110,9 +110,9 @@ if (HashtagCms::isRoutesEnabled()) {
 
             //show everything in local env
             if (env("APP_ENV") !== "local") {
-                abort(404);
+               abort(404, $exception->getMessage());
             }
-            dd($exception->get);
+            //report($exception->getMessage());
             return array("popluated" => "Error in calling controller (".$callable.")",
                 "errorMessage" => $exception->getMessage(),
                 "errorTrace" =>     $exception->getTrace()

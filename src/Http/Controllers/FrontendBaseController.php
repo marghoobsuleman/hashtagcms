@@ -2,9 +2,11 @@
 
 namespace MarghoobSuleman\HashtagCms\Http\Controllers;
 
-use MarghoobSuleman\HashtagCms\Core\Traits\FeEssential;
 use Illuminate\Http\Request;
-use MarghoobSuleman\HashtagCms\Core\Main\ModuleLoader;
+use Symfony\Component\HttpFoundation\Response;
+
+use MarghoobSuleman\HashtagCms\Core\Traits\FeEssential;
+use MarghoobSuleman\HashtagCms\Core\Main\LayoutManager;
 
 /****
  * Class FrontendBaseController
@@ -32,13 +34,19 @@ class FrontendBaseController extends Controller
         $layoutManager =  app()->HashtagCms->layoutManager();
         $infoLoader = app()->HashtagCms->infoLoader();
         $data = $layoutManager->init();
-        
+
+        $isContentRequired = LayoutManager::getMandatoryCheck();
 
         try {
             info("============ Start loading data from request ============= ");
             if(isset($data['status']) && $data['status']!=200) {
-                //abort($data['status'], $data['message']);
-                return $data;
+                abort($data['status'], $data['message']);
+            }
+
+            //check mandatory module
+            if ($data['isContentFound'] == false  && $isContentRequired == true) {
+                logger()->error("Content not found!");
+                abort(Response::HTTP_NOT_FOUND, "Content not found!");
             }
 
             if($data["isLoginRequired"] && Auth::id() == null) {
@@ -64,6 +72,6 @@ class FrontendBaseController extends Controller
      */
     public function setModuleMandatoryCheck(bool $value):void
     {
-        ModuleLoader::setMandatoryCheck(false); // this will check module mandatory false
+        LayoutManager::setMandatoryCheck($value); // this will check module mandatory false
     }
 }

@@ -258,8 +258,8 @@ class ModuleLoader
         }
 
         // Is there any module is required in a category?
-        // lets check it
-        if(($is_mandatory == 1 && is_array($data) && sizeof($data)===0) && self::getMandatoryCheck()) {
+        // lets check it -- && self::getMandatoryCheck()
+        if(($is_mandatory == 1 && is_array($data) && sizeof($data)===0)) {
             //dd("Mandatory content is missing");
             $this->contentFound = false;
         }

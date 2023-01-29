@@ -264,7 +264,8 @@ trait BaseInfo {
         $categoryName = ($categoryName === "") ? "/" : $categoryName;
         $controllerName = ($categoryName == "/") ? LayoutKeys::DEFAULT_CONTROLLER_NAME : $categoryName;
 
-        $categoryInfo = $this->infoLoader->getCategoryData();
+
+        $categoryInfo = $this->getCategoryData($categoryName);
 
         //   reality check for controller and method
         //	* if class exist controllerName (we have BlogController for blog category) else it’s frontend
@@ -371,7 +372,7 @@ trait BaseInfo {
     private function getControllerName(array $categoryInfo=null, string $controller_name, string $method_name):array {
 
         if($categoryInfo !== null) {
-            $controller_name = isset($categoryInfo['controller_name']) ? $categoryInfo['controller_name'] : str_replace("-", "", Str::title($controller_name));
+            $controller_name = isset($categoryInfo['controllerName']) ? $categoryInfo['controllerName'] : str_replace("-", "", Str::title($controller_name));
             info("----- Found category controller: ".$controller_name." ------");
         } else {
             $controller_name = str_replace("-", "", Str::title($controller_name));
@@ -436,6 +437,15 @@ trait BaseInfo {
     }
 
 
+    /**
+     * Get category
+     * @param string $categoryName
+     * @return array|null
+     */
+    private function getCategoryData(string $categoryName) {
+        $categoryList = $this->configData['categories'];
+        return $this->findData($categoryList, 'linkRewrite', $categoryName);
+    }
 
     /**
      * @param array $arr

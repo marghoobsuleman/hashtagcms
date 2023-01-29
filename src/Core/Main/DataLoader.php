@@ -335,7 +335,7 @@ class DataLoader
 
 
         $data['isLoginRequired'] = $isLoginRequired = $categoryData->required_login === 1 || $this->moduleLoader->isLoginRequired();
-
+        $data['isContentFound'] = $this->moduleLoader->isContentFound();
 
         $data['html'] = $htmlMetaData['html'];
         $data['meta'] = array(

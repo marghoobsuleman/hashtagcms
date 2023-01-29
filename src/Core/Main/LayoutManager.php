@@ -41,6 +41,8 @@ class LayoutManager extends Results
 
     private array $backupAssetFolder = array('base_url'=>'', 'base_path'=>'/assets/hashtagcms/fe', 'js'=>'js', 'css'=>'css', 'image'=>'img');
 
+    private static bool $mandatoryModuleCheck = true;
+
 
     function __construct()
     {
@@ -275,8 +277,33 @@ class LayoutManager extends Results
      */
     public function getMetaContent():string
     {
-        return $this->infoLoader->getHeaderContent();
+
+        $metaCanonical = $this->infoLoader->getMetaCanonical();
+        $metaDescription =  $this->infoLoader->getMetaDescription();
+        $metaKewords = $this->infoLoader->getMetaKeywords();
+        $metaRobots = $this->infoLoader->getMetaRobots();
+        $favIcon = $this->infoLoader->getFavIcon();
+
+        $metas = "";
+        if ($favIcon != null) {
+            $metas .= "<link rel='shortcut icon' href='$favIcon'>";
+        }
+        if ($metaDescription != null) {
+            $metas .= "<meta name='description' content='$metaDescription'> ";
+        }
+        if ($metaKewords != null) {
+            $metas .= "<meta name='keywords' content='$metaKewords'> ";
+        }
+        if ($metaRobots != null) {
+            $metas .= "<meta name='robots' content='$metaRobots'> ";
+        }
+        if ($metaCanonical != null) {
+            $metas .= "<link rel='canonical' href='$metaCanonical'> ";
+        }
+
+        return $metas;
     }
+
 
     /**
      * Get page title
@@ -808,6 +835,24 @@ class LayoutManager extends Results
         }
 
         return $allMenu;
+    }
+
+    /**
+     * Check module mandatory
+     * @param bool $checkMandatory
+     */
+    public static function setMandatoryCheck(bool $checkMandatory=true) {
+        self::$mandatoryModuleCheck = $checkMandatory;
+    }
+
+
+    /**
+     * Get mandatory check
+     * @return bool
+     */
+    public static function getMandatoryCheck(): bool
+    {
+        return self::$mandatoryModuleCheck;
     }
 
 }

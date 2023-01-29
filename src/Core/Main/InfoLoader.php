@@ -417,11 +417,11 @@ class InfoLoader
 
     /**
      * Get meta canonical
-     * @return string
+     * @return string|null
      */
-    public function getMetaCanonical(): string
+    public function getMetaCanonical(): string|null
     {
-        return $this->infoData['title'];
+        return $this->infoData['metaCanonical'];
     }
 
     /**
@@ -436,11 +436,11 @@ class InfoLoader
 
     /**
      * Get meta description
-     * @return string
+     * @return string|null
      */
-    public function getMetaDescription(): string
+    public function getMetaDescription(): string|null
     {
-        return $this->infoData['metaDescription'] ?? "";
+        return $this->infoData['metaDescription'];
     }
 
     /**
@@ -455,11 +455,11 @@ class InfoLoader
 
     /**
      * Get meta keywords
-     * @return string
+     * @return string|null
      */
-    public function getMetaKeywords(): string
+    public function getMetaKeywords(): string|null
     {
-        return $this->infoData['metaKeywords'] ?? "";
+        return $this->infoData['metaKeywords'];
     }
 
     /**
@@ -476,7 +476,7 @@ class InfoLoader
      * Get meta robots
      * @return string
      */
-    public function getMetaRobots(): string
+    public function getMetaRobots(): string|null
     {
         return $this->infoData['metaRobots'];
     }
@@ -493,9 +493,9 @@ class InfoLoader
 
     /**
      * Get fav icon
-     * @return string
+     * @return string|null
      */
-    public function getFavIcon(): string
+    public function getFavIcon(): string|null
     {
         return $this->infoData['favicon'];
     }
