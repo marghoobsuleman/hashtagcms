@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Session;
 /**
  * Using session for now
  */
-class CacheManager extends Session
+class SessionManager extends Session
 {
 
     private string $infoKeeperKey = "infoKeeper";

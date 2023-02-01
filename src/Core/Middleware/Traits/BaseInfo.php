@@ -3,7 +3,7 @@
 namespace MarghoobSuleman\HashtagCms\Core\Middleware\Traits;
 
 use Illuminate\Support\Facades\Http;
-use MarghoobSuleman\HashtagCms\Core\Main\CacheManager;
+use MarghoobSuleman\HashtagCms\Core\Main\SessionManager;
 use MarghoobSuleman\HashtagCms\Core\Main\LayoutManager;
 use MarghoobSuleman\HashtagCms\Models\Category;
 use Illuminate\Support\Facades\DB;
@@ -35,7 +35,7 @@ trait BaseInfo {
     protected string $defaultController = "frontend";
     protected string $defaultMethod = "index";
     protected InfoLoader $infoLoader;
-    protected CacheManager $cacheManager;
+    protected SessionManager $sessionManager;
     protected LayoutManager $layoutManager;
     protected DataLoader $dataLoader;
 
@@ -71,7 +71,7 @@ trait BaseInfo {
         // ******************** new one ********************* //
         $this->infoLoader = app()->HashtagCms->infoLoader();
         $this->layoutManager = app()->HashtagCms->layoutManager();
-        $this->cacheManager = app()->HashtagCms->cacheManager();
+        $this->sessionManager = app()->HashtagCms->sessionManager();
         $this->dataLoader = app()->HashtagCms->dataLoader();
 
         $this->parsePath($request);
@@ -372,18 +372,18 @@ trait BaseInfo {
     private function getControllerName(array $categoryInfo=null, string $controller_name, string $method_name):array {
 
         if($categoryInfo !== null) {
-            $controller_name = isset($categoryInfo['controllerName']) ? $categoryInfo['controllerName'] : str_replace("-", "", Str::title($controller_name));
+            $controller_name = isset($categoryInfo['controllerName']) ? $categoryInfo['controllerName'] : str_replace("-", "", Str::title($controller_name))."Controller";
             info("----- Found category controller: ".$controller_name." ------");
         } else {
-            $controller_name = str_replace("-", "", Str::title($controller_name));
+            $controller_name = str_replace("-", "", Str::title($controller_name))."Controller";
             info("----- Default controller: ".$controller_name." ------");
         }
 
         $namespace = config("hashtagcms.namespace");
         $appNamespace = app()->getNamespace();
-        $callable = $namespace."Http\Controllers\\".$controller_name."Controller"; //hashtag controller
+        $callable = $namespace."Http\Controllers\\".$controller_name; //hashtag controller
         $callableDefault = $namespace."Http\Controllers\FrontendController"; //hashtag default controller
-        $callableApp = $appNamespace."Http\Controllers\\".$controller_name."Controller"; // app controller
+        $callableApp = $appNamespace."Http\Controllers\\".$controller_name; // app controller
 
         $finalCallableApp = class_exists($callableApp) ? $callableApp : $callable;
 

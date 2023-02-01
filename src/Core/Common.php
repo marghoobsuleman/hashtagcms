@@ -2,7 +2,7 @@
 namespace MarghoobSuleman\HashtagCms\Core;
 
 
-use MarghoobSuleman\HashtagCms\Core\Main\CacheManager;
+use MarghoobSuleman\HashtagCms\Core\Main\SessionManager;
 use MarghoobSuleman\HashtagCms\Core\Main\InfoLoader;
 use MarghoobSuleman\HashtagCms\Core\Main\LayoutManager;
 use MarghoobSuleman\HashtagCms\Core\Main\DataLoader;
@@ -120,9 +120,9 @@ class Common extends Results
 
     /**
      * Get cache manager
-     * @return CacheManager
+     * @return SessionManager
      */
-    public function cacheManager():CacheManager
+    public function sessionManager():SessionManager
     {
         return app()->HashtagCmsCache;
     }

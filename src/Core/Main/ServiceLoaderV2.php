@@ -24,7 +24,7 @@ use MarghoobSuleman\HashtagCms\Http\Resources\SitePropResource;
 class ServiceLoaderV2 extends DataLoader
 {
     protected InfoLoader $infoLoader;
-    protected CacheManager $cacheManager;
+    protected SessionManager $sessionManager;
     protected LayoutManager $layoutManager;
     protected ModuleLoader $moduleLoader;
 

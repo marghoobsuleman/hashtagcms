@@ -6,7 +6,7 @@ use MarghoobSuleman\HashtagCms\Core\Common;
 use Illuminate\Support\ServiceProvider;
 use MarghoobSuleman\HashtagCms\Core\Main\DataLoader;
 use MarghoobSuleman\HashtagCms\Core\Main\InfoLoader;
-use MarghoobSuleman\HashtagCms\Core\Main\CacheManager;
+use MarghoobSuleman\HashtagCms\Core\Main\SessionManager;
 use MarghoobSuleman\HashtagCms\Core\Main\LayoutManager;
 use MarghoobSuleman\HashtagCms\Core\Main\ModuleLoader;
 
@@ -40,7 +40,7 @@ class FeServiceProvider extends ServiceProvider
         });
 
         $this->app->singleton("HashtagCmsCache", function() {
-            return new CacheManager();
+            return new SessionManager();
         });
 
         $this->app->singleton("HashtagCmsDataLoader", function() {

@@ -3,7 +3,7 @@
 namespace MarghoobSuleman\HashtagCms\Core\Middleware\Traits;
 
 use Illuminate\Support\Facades\Http;
-use MarghoobSuleman\HashtagCms\Core\Main\CacheManager;
+use MarghoobSuleman\HashtagCms\Core\Main\SessionManager;
 use MarghoobSuleman\HashtagCms\Models\Category;
 use Illuminate\Support\Facades\DB;
 
@@ -34,7 +34,7 @@ trait BaseInfo {
     protected string $defaultController = "frontend";
     protected string $defaultMethod = "index";
     protected InfoLoader $infoLoader;
-    protected CacheManager $cacheManager;
+    protected SessionManager $sessionManager;
 
 
     protected $configData;
@@ -67,7 +67,7 @@ trait BaseInfo {
 
         // ******************** new one ********************* //
         $this->infoLoader = app()->HashtagCms->infoLoader();
-        $this->cacheManager = app()->HashtagCms->cacheManager();
+        $this->sessionManager = app()->HashtagCms->sessionManager();
 
         $this->parsePath($request);
 
@@ -138,7 +138,7 @@ trait BaseInfo {
         //use cache here
         try{
 
-            if(!$this->cacheManager->exists($domainCacheKey) || $clearCache) {
+            if(!$this->sessionManager->exists($domainCacheKey) || $clearCache) {
                 info("Fetching site info domain: $domain, or fetching context from config: $context");
                 //noinspection ConstantConditions
                 $siteInfo = $this->infoLoader->geSiteInfoByContextAndDomain($context, $domain, $fullDomain);
@@ -147,11 +147,11 @@ trait BaseInfo {
                     info("Site not found!");
                     exit("Site has not been set up");
                 }
-                $this->cacheManager->put($domainCacheKey, $siteInfo);
+                $this->sessionManager->put($domainCacheKey, $siteInfo);
 
             } else {
                 info("From Cache ($domainCacheKey): Fetching site info domain: $domain, context: $context");
-                $siteInfo = $this->cacheManager->get($domainCacheKey);
+                $siteInfo = $this->sessionManager->get($domainCacheKey);
                 //dd("siteInfo ",$siteInfo);
             }
 
@@ -167,7 +167,7 @@ trait BaseInfo {
         // #Set lang info
         $langCacheKey = md5($domain."_".$path_arr[0]."_lang");
 
-        if(!$this->cacheManager->exists($langCacheKey) || $clearCache) {
+        if(!$this->sessionManager->exists($langCacheKey) || $clearCache) {
             info("Fetching lang info: Path: $path_arr[0], lang_id: $siteInfo[lang_id]");
             //dd("Fetching lang info: Path: $path_arr[0], lang_id: $siteInfo[lang_id]");
             $langInfo = $this->infoLoader->getLangInfo($path_arr[0], $siteInfo['lang_id']); //index 0 is lang code or get the default lang id from site table
@@ -177,10 +177,10 @@ trait BaseInfo {
                 info("Lang not found!");
                 exit("Language has not been set up");
             }
-            $this->cacheManager->put($langCacheKey, $langInfo);
+            $this->sessionManager->put($langCacheKey, $langInfo);
 
         } else {
-            $langInfo = $this->cacheManager->get($langCacheKey);
+            $langInfo = $this->sessionManager->get($langCacheKey);
             info("From Cache ($langCacheKey): Fetching platform info: Path: $path_arr[0], lang_id: $siteInfo[lang_id]");
         }
 
@@ -193,7 +193,7 @@ trait BaseInfo {
         $platformPlace = ($this->infoLoader->getInfoKeeper("foundLang") === true && $path_size > 1) ? 1 : 0;
         $platformCacheKey = md5($domain."_".$path_arr[$platformPlace]."_platform");
 
-        if(!$this->cacheManager->exists($platformCacheKey) || $clearCache) {
+        if(!$this->sessionManager->exists($platformCacheKey) || $clearCache) {
             info("Fetching platform info: Path: $path_arr[$platformPlace], platform_id: $siteInfo[platform_id]");
             $platformInfo = $this->infoLoader->getPlatformInfo($path_arr[$platformPlace], $siteInfo['platform_id']); //index 1 is platform code or get the default platform id from site table
             //dd($path_arr[1], $siteInfo['platform_id'], $platformInfo);
@@ -202,10 +202,10 @@ trait BaseInfo {
                 info("platform not found!");
                 exit("Platform has not been set up");
             }
-            $this->cacheManager->put($platformCacheKey, $platformInfo);
+            $this->sessionManager->put($platformCacheKey, $platformInfo);
 
         } else {
-            $platformInfo = $this->cacheManager->get($platformCacheKey);
+            $platformInfo = $this->sessionManager->get($platformCacheKey);
             info("From Cache ($platformCacheKey): Fetching platform info: Path: $path_arr[$platformPlace], lang_id: $siteInfo[platform_id]");
         }
 
@@ -432,7 +432,7 @@ trait BaseInfo {
         $categoryInfo = null;
         $site_id = $this->infoLoader->getInfoKeeper("siteId");
 
-        if(!$this->cacheManager->exists($categoryCacheKey) || $clearCache) {
+        if(!$this->sessionManager->exists($categoryCacheKey) || $clearCache) {
             info("Fetching category info : $path");
             $categoryInfo = $this->infoLoader->getCategoryInfo($categoryName, $fullPath, $site_id);
 
@@ -441,12 +441,12 @@ trait BaseInfo {
                 // exit("$path : Category not found!");
             }
             if($categoryInfo !== null) {
-                $this->cacheManager->put($categoryCacheKey, $categoryInfo);
+                $this->sessionManager->put($categoryCacheKey, $categoryInfo);
             }
 
         } else {
             info("From Cache ($categoryCacheKey): Fetching category info ");
-            $categoryInfo = $this->cacheManager->get($categoryCacheKey);
+            $categoryInfo = $this->sessionManager->get($categoryCacheKey);
         }
 
         if($categoryInfo !== null) {

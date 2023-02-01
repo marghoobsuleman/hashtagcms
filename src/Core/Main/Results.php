@@ -69,28 +69,6 @@ class Results
     public function dbSelect(string $query, array $byParams=array(), string $database=null): ?array
     {
         return $this->selectOneOrMany($query, $byParams, $database, false);
-
-        /*$queryParams = (sizeof($byParams)==0) ? $this->findAndReplaceGlobalIds($query) : $byParams;
-
-        try {
-            if($database === null) {
-                if(sizeof($queryParams) > 0) {
-                    return makeArray(DB::select($query, $queryParams));
-                }
-                return makeArray(DB::select($query));
-            } else {
-                if(sizeof($queryParams) > 0) {
-                    return makeArray(DB::connection($database)->select($query, $queryParams));
-                }
-                return makeArray(DB::connection($database)->select($query));
-            }
-
-
-        } catch (\Exception $e) {
-            info("dbSelect: There is an error: ".$e->getMessage());
-            return array();
-        }*/
-
     }
 
     /**
@@ -102,32 +80,7 @@ class Results
     public function dbSelectOne(string $query, array $byParams=array(), string $database=null):?array {
 
         return $this->selectOneOrMany($query, $byParams, $database, true);
-
-        /*$queryParams = (sizeof($byParams)==0) ? $this->findAndReplaceGlobalIds($query) : $byParams;
-
-        try {
-
-            if($database === null) {
-
-                if(sizeof($queryParams) > 0) {
-                    $data =  DB::selectOne($query, $queryParams);
-                } else {
-                    $data = DB::selectOne($query);
-                }
-
-            } else {
-                if(sizeof($queryParams) > 0) {
-                    return DB::connection($database)->selectOne($query, $queryParams);
-                }
-                return DB::connection($database)->selectOne($query);
-            }
-
-            return  ($data !== null) ? json_decode(json_encode($data), true) : array();
-
-        } catch (Exception $e) {
-            info("dbSelectOne: There is an error: ".$e->getMessage());
-            return array();
-        }*/
+        
     }
 
     /**

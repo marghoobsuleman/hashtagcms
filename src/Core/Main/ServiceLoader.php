@@ -9,7 +9,7 @@ use MarghoobSuleman\HashtagCms\Models\Platform;
 class ServiceLoader extends DataLoader
 {
     protected InfoLoader $infoLoader;
-    protected CacheManager $cacheManager;
+    protected SessionManager $sessionManager;
     protected LayoutManager $layoutManager;
     protected ModuleLoader $moduleLoader;
 

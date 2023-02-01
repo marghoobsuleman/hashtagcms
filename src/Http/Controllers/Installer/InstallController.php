@@ -25,6 +25,7 @@ class InstallController extends Controller
 
         if ($data["isInstalled"]===true) {
             return redirect("/")->with('__hashtagcms_message__', 'Site is already configured');
+            exit;
         }
         return  view("hashtagcms::installer/index", $data);
 

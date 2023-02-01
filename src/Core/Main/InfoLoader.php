@@ -24,7 +24,7 @@ class InfoLoader
     private array $fullInfoKeeper;
 
     private array $layoutKeeper;
-    protected CacheManager $cacheManager;
+    protected SessionManager $sessionManager;
 
 
     protected $dataLoader;
@@ -35,7 +35,7 @@ class InfoLoader
 
     function __construct()
     {
-        $this->cacheManager = app()->HashtagCms->cacheManager();
+        $this->sessionManager = app()->HashtagCms->sessionManager();
 
     }
 
@@ -64,7 +64,7 @@ class InfoLoader
      */
     public function setInfoKeeper($key, $value)
     {
-        $this->cacheManager->setInfoKeeper($key, $value);
+        $this->sessionManager->setInfoKeeper($key, $value);
     }
 
     /**
@@ -74,7 +74,7 @@ class InfoLoader
      */
     public function getInfoKeeper($key = null): mixed
     {
-        return $this->cacheManager->getInfoKeeper($key);
+        return $this->sessionManager->getInfoKeeper($key);
     }
 
     /**
