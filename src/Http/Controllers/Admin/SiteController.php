@@ -28,6 +28,8 @@ use MarghoobSuleman\HashtagCms\Models\Theme;
 use MarghoobSuleman\HashtagCms\Models\Zone;
 use MarghoobSuleman\HashtagCms\Models\Module;
 use MarghoobSuleman\HashtagCms\Core\Helpers\Message;
+use MarghoobSuleman\HashtagCms\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 
 class SiteController extends BaseAdminController
@@ -668,13 +670,43 @@ class SiteController extends BaseAdminController
     public function getAllSite() {
         return Site::all();
     }
-
     /**
      * Get all sites
      * @return Site[]|\Illuminate\Database\Eloquent\Collection
      */
     public function allsites() {
         return Site::all();
+    }
+
+    /**
+     * Get all sites for user
+     * @return Site[]|\Illuminate\Database\Eloquent\Collection
+     */
+    public function getSitesForUsers() {
+        //$user = User::find(Auth::user()->id);
+        
+        $allSites = Site::getSupportedSitesForUser(Auth::user()->id);
+
+
+        /*        $isAdmin = $user->isSuperAdmin();
+
+                $currentSiteId = htcms_get_siteId_for_admin();
+
+                $allSites = Site::all();
+                if ($isAdmin == 1) {
+                    return $allSites;
+                }
+                $supportedSites = $user->supportedSites();
+                $supportedSites = collect($supportedSites)->pluck("site_id")->toArray();
+
+                $allSites = Site::find($supportedSites);*/
+
+        //Set sites for theme
+        /*if (array_search($currentSiteId, $supportedSites) === false) {
+            htcms_set_siteId_for_admin($supportedSites[0]);
+        }*/
+
+        return $allSites;
     }
 
     /**

@@ -91,7 +91,6 @@ class LoginController extends FrontendBaseController
                 $this->bindDataForView("auth/login", array("redirect"=>$request->input("redirect")));
             }
 
-            //return $infoKeeper;
             return parent::index($request);
         }
 
@@ -208,7 +207,7 @@ class LoginController extends FrontendBaseController
      */
     protected function authenticated(Request $request, $user)
     {
-        //info("We can use some of hacks here");
+        info("We can use some of hacks here");
 
         /*if ($user->user_type == "Visitor") {
             return redirect("/");

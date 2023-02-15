@@ -10,7 +10,7 @@ class HashtagCms
     private $frontEndRouteEnabled = true;
     private $installtionRoutes = true;
 
-    private $ignoredPath = "(?!assets/)|(?!fonts/)|(?!build/)|(?!resources/)";
+    private $ignoredPath = "(?!assets/)|(?!fonts/)|(?!build/)|(?!resources/)|(?!public/)";
 
     /**
      * Get Header Menu as an array
@@ -135,5 +135,6 @@ class HashtagCms
     public function version() {
         return "1.3.8";
     }
+
 
 }

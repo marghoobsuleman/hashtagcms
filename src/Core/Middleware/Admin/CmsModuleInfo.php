@@ -6,15 +6,15 @@ use Closure;
 
 use MarghoobSuleman\HashtagCms\Models\CmsModule;
 
-class CrayonModuleInfo
+class CmsModuleInfo
 {
 
   protected $adminModule;
 
 
-  function __construct(CmsModule $admin_module_info) {
+  function __construct(CmsModule $adminModuleInfo) {
 
-      $this->adminModule = $admin_module_info;
+      $this->adminModule = $adminModuleInfo;
 
   }
 
@@ -30,12 +30,14 @@ class CrayonModuleInfo
 
         $segments = request()->segments();
 
+        //check if /admin/ has no controller next to it.
         $name = (sizeof($segments)>1) ? $segments[1] : config("hashtagcmsadmin.cmsInfo.defaultPage");
 
+        //Set in request to fetch it later
         $request->module_info = $this->adminModule::getInfoByName($name);
-
+        
         $result =  $next($request);
-        //info("crayonModuleInfo: Moving to Next middleware");
+        //info("cmsModuleInfo: Moving to Next middleware");
         return  $result;
     }
 }

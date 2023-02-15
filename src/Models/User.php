@@ -7,12 +7,13 @@ use Illuminate\Support\Facades\Hash;
 
 use MarghoobSuleman\HashtagCms\Core\Traits\Admin\Common;
 use MarghoobSuleman\HashtagCms\Core\Traits\RoleManager;
+use MarghoobSuleman\HashtagCms\Core\Traits\SiteManager;
 
 
 class User extends AdminBaseModel
 {
 
-    use Notifiable, RoleManager, Common;
+    use Notifiable, RoleManager, SiteManager, Common;
 
     protected $guarded = array();
 
@@ -29,9 +30,9 @@ class User extends AdminBaseModel
      */
     public static function getById($id=0, $with='') {
 
-        $data = parent::getById($id, ['profile', 'roles']);
+        $data = parent::getById($id, ['profile', 'roles', 'sites']);
         $data["roles"] = self::pivotToArray($data["roles"], "role_id");
-
+        $data["sites"] = self::pivotToArray($data["sites"], "site_id");
         return $data;
     }
 
@@ -61,4 +62,5 @@ class User extends AdminBaseModel
     public function profile() {
         return $this->hasOne(UserProfile::class);
     }
+
 }

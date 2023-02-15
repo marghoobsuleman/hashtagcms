@@ -24,7 +24,7 @@ class AjaxController extends BaseAdminController
 
     public function setSiteId($site_id=1) {
 
-        return htcms_set_site_id_for_admin($site_id);
+        return htcms_set_siteId_for_admin($site_id);
 
     }
 

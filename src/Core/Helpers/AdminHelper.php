@@ -199,13 +199,13 @@ if (! function_exists('htcms_get_language_id_for_admin')) {
 
 }
 
-if (! function_exists('htcms_set_site_id_for_admin')) {
+if (! function_exists('htcms_set_siteId_for_admin')) {
 
     /**
      * Set language id in session
      * @param $id
      */
-    function htcms_set_site_id_for_admin($id) {
+    function htcms_set_siteId_for_admin($id) {
         return session()->put("site_id", $id);
     }
 

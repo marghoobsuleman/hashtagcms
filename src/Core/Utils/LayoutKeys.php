@@ -17,12 +17,12 @@ class LayoutKeys {
 
     public const PLATFORM_LINKREWRITE = "platformLinkRewrite";
 
-
     public const FOUND_CONTROLLER = "foundController";
     public const FOUND_METHOD = "foundMethod";
 
     public const CONTROLLER_NAME = "controllerName";
     public const METHOD_NAME = "methodName";
+    public const METHOD_NAME_PARAM = "methodNameParam";
     public const CATEGORY_NAME = "categoryName";
 
     public const DEFAULT_CONTROLLER_NAME = "frontend";
@@ -36,6 +36,9 @@ class LayoutKeys {
 
     public const BASE_INDEX = "baseIndex";
     public const SERVICE_BASE_INDEX = "baseServiceIndex";
+
+    public const BODY_CONTENT = "bodyContent";
+
 
     public const CLEAR_CACHE_KEY = "clearCache";
 

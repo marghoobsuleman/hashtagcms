@@ -127,4 +127,27 @@ class Common extends Results
         return app()->HashtagCmsCache;
     }
 
+    /**
+     * is external api enabled
+     * @return bool
+     */
+    public function useExternalApi():bool {
+        return env('HASHTAG_CMS_ENABLE_EXTERNAL_API') === true;
+    }
+
+    /**
+     * Get config url
+     * @return string
+     */
+    public function getConfigApiSource():string {
+        return env('HASHTAG_CMS_CONFIG_API');
+    }
+
+    /**
+     * Get load data url
+     * @return string
+     */
+    public function getLoadDataApiSource():string {
+        return env('HASHTAG_CMS_DATA_API');
+    }
 }

@@ -11,6 +11,7 @@ use MarghoobSuleman\HashtagCms\Models\Platform;
 use MarghoobSuleman\HashtagCms\Models\Theme;
 use MarghoobSuleman\HashtagCms\Models\Hook;
 use MarghoobSuleman\HashtagCms\Core\Utils\LayoutKeys;
+use MarghoobSuleman\HashtagCms\Core\Utils\InfoKeys;
 
 class InfoLoader
 {
@@ -114,7 +115,7 @@ class InfoLoader
      */
     public function setLanguageId(int $lang_id = 1, $locale = null): void
     {
-        $this->setContextVars("lang_id", $lang_id);
+        $this->setContextVars(InfoKeys::LANG_ID, $lang_id);
         if ($locale != null) {
             app()->setLocale($locale);
         }
@@ -126,7 +127,7 @@ class InfoLoader
      */
     public function getLanguageId(): int
     {
-        return $this->getContextVars("lang_id");
+        return $this->getContextVars(InfoKeys::LANG_ID);
     }
 
     /**
@@ -167,10 +168,10 @@ class InfoLoader
      */
     public function setMultiContextVars(int $category_id, int $site_id, int $platform_id, int $microsite_id = 0): void
     {
-        $this->setContextVars("category_id", $category_id);
-        $this->setContextVars("site_id", $site_id);
-        $this->setContextVars("platform_id", $platform_id);
-        $this->setContextVars("microsite_id", $microsite_id);
+        $this->setContextVars(InfoKeys::CATEGORY_ID, $category_id);
+        $this->setContextVars(InfoKeys::SITE_ID, $site_id);
+        $this->setContextVars(InfoKeys::PLATFORM_ID, $platform_id);
+        $this->setContextVars(InfoKeys::MICROSITE_ID, $microsite_id);
     }
 
 
@@ -203,7 +204,7 @@ class InfoLoader
      */
     public function setSiteData(array $siteData): void
     {
-        $this->infoData['site'] = $siteData;
+        $this->infoData[InfoKeys::SITE_DATA] = $siteData;
     }
 
     /**
@@ -212,7 +213,7 @@ class InfoLoader
      */
     public function getSiteData(): array
     {
-        return $this->infoData['site'];
+        return $this->infoData[InfoKeys::SITE_DATA];
     }
 
     /**
@@ -222,7 +223,7 @@ class InfoLoader
      */
     public function setPlatformData(array $platfomData): void
     {
-        $this->infoData['platform'] = $platfomData;
+        $this->infoData[InfoKeys::PLATFORM_DATA] = $platfomData;
     }
 
     /**
@@ -231,7 +232,7 @@ class InfoLoader
      */
     public function getPlatformData(): array
     {
-        return $this->infoData['platform'];
+        return $this->infoData[InfoKeys::PLATFORM_DATA];
     }
 
 
@@ -243,7 +244,7 @@ class InfoLoader
     public function setLangData(array $langData): void
     {
         $this->setLanguageId($langData['id'], $langData['isoCode']);
-        $this->infoData['lang'] = $langData;
+        $this->infoData[InfoKeys::LANG_DATA] = $langData;
     }
 
     /**
@@ -252,7 +253,7 @@ class InfoLoader
      */
     public function getLangData(): array
     {
-        return $this->infoData['lang'];
+        return $this->infoData[InfoKeys::LANG_DATA];
     }
 
 
@@ -263,7 +264,7 @@ class InfoLoader
      */
     public function setCategoryData(array $categoryData): void
     {
-        $this->infoData['category'] = $categoryData;
+        $this->infoData[InfoKeys::CATEGORY_DATA] = $categoryData;
     }
 
     /**
@@ -272,7 +273,7 @@ class InfoLoader
      */
     public function getCategoryData(): array|null
     {
-        return $this->infoData['category'] ?? null;
+        return $this->infoData[InfoKeys::CATEGORY_DATA] ?? null;
     }
 
     /**
@@ -282,7 +283,7 @@ class InfoLoader
      */
     public function setPageData(array $pageData): void
     {
-        $this->infoData['page'] = $pageData;
+        $this->infoData[InfoKeys::PAGE_DATA] = $pageData;
     }
 
     /**
@@ -291,7 +292,7 @@ class InfoLoader
      */
     public function getPageData(): array|null
     {
-        return $this->infoData['page'] ?? null;
+        return $this->infoData[InfoKeys::PAGE_DATA] ?? null;
     }
 
 
@@ -304,7 +305,7 @@ class InfoLoader
      */
     public function setThemeData(array $themeData): void
     {
-        $this->infoData['theme'] = $themeData;
+        $this->infoData[InfoKeys::THEME_DATA] = $themeData;
     }
 
     /**
@@ -313,7 +314,7 @@ class InfoLoader
      */
     public function getThemeData(): array
     {
-        return $this->infoData['theme'];
+        return $this->infoData[InfoKeys::THEME_DATA];
     }
 
     /**
@@ -323,7 +324,7 @@ class InfoLoader
      */
     public function setSitePropsData(array $sitePropsData): void
     {
-        $this->infoData['props'] = $sitePropsData;
+        $this->infoData[InfoKeys::SITE_PROP_DATA] = $sitePropsData;
     }
 
     /**
@@ -332,7 +333,7 @@ class InfoLoader
      */
     public function getSitePropsData(): array
     {
-        return $this->infoData['props'];
+        return $this->infoData[InfoKeys::SITE_PROP_DATA];
     }
 
     /**
@@ -342,10 +343,35 @@ class InfoLoader
     public function getSitePropsDataKeyVal(): array
     {
         $props = array();
-        foreach ($this->infoData['props'] as $key=>$val) {
+        $siteProps = $this->getSitePropsData();
+        foreach ($siteProps as $key=>$val) {
             $props[$val['name']] = $val['value'];
         }
         return $props;
+    }
+
+    /**
+     * Working here
+     * @param string $content
+     * @return string
+     */
+    private function addDomainInCssAndJsPath(string $content) {
+        $regex = '/(?:href|src)=["\']([^"\']+\.css|[^"\']+\.js)["\']/i';
+        preg_match_all($regex, $content, $matches);
+
+        $isExternal = app()->HashtagCms->useExternalApi();
+        $host = request()->getHost();
+        $assetPath = config("hashtagcms.info.assets_path");
+        //get domain wise or defautl one
+        $assetPath = (isset($assetPath[$host])) ? $assetPath[$host] : $assetPath;
+        $baseUrl = $assetPath['base_url'];
+        //dd($matches[1]);
+        foreach ($matches[1] as $index=>$match) {
+            $str = $baseUrl.$match;
+            $content = str_replace($match, $str, $content);
+        }
+        info("============= ");
+        return $content;
     }
 
     /**
@@ -355,7 +381,8 @@ class InfoLoader
      */
     public function setHeaderContent(array $headerContentData): void
     {
-        $this->infoData['headerContent'] = $headerContentData[0]['html'];
+        $content = $headerContentData[0]['html'];
+        $this->infoData[InfoKeys::HEADER_CONTENT] = $this->addDomainInCssAndJsPath($content);
     }
 
     /**
@@ -364,7 +391,7 @@ class InfoLoader
      */
     public function getHeaderContent(): string
     {
-        return $this->infoData['headerContent'];
+        return $this->infoData[InfoKeys::HEADER_CONTENT];
     }
 
     /**
@@ -374,7 +401,10 @@ class InfoLoader
      */
     public function setFooterContent(array $footerContent): void
     {
-        $this->infoData['footerContent'] = $footerContent[0]['html'];
+        $content = $footerContent[0]['html'];
+        //$content .= $content;
+        //$content .= $content;
+        $this->infoData[InfoKeys::FOOTER_CONTENT] = $this->addDomainInCssAndJsPath($content);
     }
 
     /**
@@ -383,7 +413,7 @@ class InfoLoader
      */
     public function getFooterContent(): string
     {
-        return $this->infoData['footerContent'];
+        return $this->infoData[InfoKeys::FOOTER_CONTENT];
     }
 
     /**
@@ -393,7 +423,7 @@ class InfoLoader
      */
     public function setMetaTitle(string $metaTitle): void
     {
-        $this->infoData['title'] = $metaTitle;
+        $this->infoData[InfoKeys::META_TITLE] = $metaTitle;
     }
 
     /**
@@ -402,7 +432,7 @@ class InfoLoader
      */
     public function getMetaTitle(): string
     {
-        return $this->infoData['title'];
+        return $this->infoData[InfoKeys::META_TITLE];
     }
 
     /**
@@ -412,7 +442,7 @@ class InfoLoader
      */
     public function setMetaCanonical(string $metaCanonical = null): void
     {
-        $this->infoData['metaCanonical'] = $metaCanonical;
+        $this->infoData[InfoKeys::META_CANONICAL] = $metaCanonical;
     }
 
     /**
@@ -421,7 +451,7 @@ class InfoLoader
      */
     public function getMetaCanonical(): string|null
     {
-        return $this->infoData['metaCanonical'];
+        return $this->infoData[InfoKeys::META_CANONICAL];
     }
 
     /**
@@ -431,7 +461,7 @@ class InfoLoader
      */
     public function setMetaDescription(string $metaDescription = null): void
     {
-        $this->infoData['metaDescription'] = $metaDescription;
+        $this->infoData[InfoKeys::META_DESCRIPTION] = $metaDescription;
     }
 
     /**
@@ -440,7 +470,7 @@ class InfoLoader
      */
     public function getMetaDescription(): string|null
     {
-        return $this->infoData['metaDescription'];
+        return $this->infoData[InfoKeys::META_DESCRIPTION];
     }
 
     /**
@@ -450,7 +480,7 @@ class InfoLoader
      */
     public function setMetaKeywords(string $metaKeywords = null): void
     {
-        $this->infoData['metaKeywords'] = $metaKeywords;
+        $this->infoData[InfoKeys::META_KEYWORDS] = $metaKeywords;
     }
 
     /**
@@ -459,7 +489,7 @@ class InfoLoader
      */
     public function getMetaKeywords(): string|null
     {
-        return $this->infoData['metaKeywords'];
+        return $this->infoData[InfoKeys::META_KEYWORDS];
     }
 
     /**
@@ -469,7 +499,7 @@ class InfoLoader
      */
     public function setMetaRobots(string $metaRobots): void
     {
-        $this->infoData['metaRobots'] = $metaRobots;
+        $this->infoData[InfoKeys::META_ROBOTS] = $metaRobots;
     }
 
     /**
@@ -478,7 +508,7 @@ class InfoLoader
      */
     public function getMetaRobots(): string|null
     {
-        return $this->infoData['metaRobots'];
+        return $this->infoData[InfoKeys::META_ROBOTS];
     }
 
     /**
@@ -488,7 +518,7 @@ class InfoLoader
      */
     public function setFavIcon(string $favicon): void
     {
-        $this->infoData['favicon'] = $favicon;
+        $this->infoData[InfoKeys::FAV_ICON] = $favicon;
     }
 
     /**
@@ -497,7 +527,7 @@ class InfoLoader
      */
     public function getFavIcon(): string|null
     {
-        return $this->infoData['favicon'];
+        return $this->infoData[InfoKeys::FAV_ICON];
     }
 
     /**
@@ -507,7 +537,7 @@ class InfoLoader
      */
     public function setThemeSkeleton(string $skeleton): void
     {
-        $this->infoData['skeleton'] = $skeleton;
+        $this->infoData[InfoKeys::THEME_SKELETON] = $skeleton;
     }
 
     /**
@@ -516,7 +546,7 @@ class InfoLoader
      */
     public function getThemeSkeleton(): string
     {
-        return $this->infoData['skeleton'];
+        return $this->infoData[InfoKeys::THEME_SKELETON];
     }
 
     /**
@@ -530,6 +560,7 @@ class InfoLoader
 
         $meta = $loadDataObject['meta'];
         $html = $loadDataObject['html'];
+
         $this->setObjInfo("htmlObject", $html);
         $this->setObjInfo("metaObject", $meta);
 
@@ -548,7 +579,7 @@ class InfoLoader
         $this->setMetaDescription($html['head']['meta']['metaDescription']);
         $this->setMetaKeywords($html['head']['meta']['metaKeywords']);
         $this->setMetaRobots($html['head']['meta']['metaRobots']);
-        $this->setFavIcon($html['head']['links'][0]['href']);
+        $this->setFavIcon($html['head']['links'][0]['href'] ?? "");
         $this->setThemeSkeleton($html['body']['content']['skeleton']);
     }
 

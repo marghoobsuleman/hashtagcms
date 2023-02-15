@@ -7,7 +7,7 @@ use Illuminate\Routing\Router;
 
 
 use MarghoobSuleman\HashtagCms\Core\Middleware\Admin\BeMiddleware;
-use MarghoobSuleman\HashtagCms\Core\Middleware\Admin\CrayonModuleInfo;
+use MarghoobSuleman\HashtagCms\Core\Middleware\Admin\CmsModuleInfo;
 use MarghoobSuleman\HashtagCms\Core\Middleware\FeMiddleware;
 
 use MarghoobSuleman\HashtagCms\Console\Commands\CmsModuleModelCommand;
@@ -39,7 +39,7 @@ class HashtagCmsServiceProvider extends ServiceProvider
         //Middleware for Admin
         $router = $this->app->make(Router::class);
         $router->aliasMiddleware('cmsInterceptor', BeMiddleware::class);
-        $router->aliasMiddleware('crayonModuleInfo', CrayonModuleInfo::class);
+        $router->aliasMiddleware('cmsModuleInfo', CmsModuleInfo::class);
 
         //Middleware for Frontend
         $router->aliasMiddleware('interceptor', FeMiddleware::class);

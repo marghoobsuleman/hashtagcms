@@ -23,7 +23,6 @@ class ModuleLoader
     private bool $contentFound = true;
     private array $sharedModuleData = array();
 
-    private static bool $mandatoryModuleCheck = true;
 
     public function __construct()
     {
@@ -206,7 +205,7 @@ class ModuleLoader
         $is_mandatory = $module_obj->is_mandatory;
         $is_shared = $module_obj->shared;
 
-        $moduleType =  "get{$dataType}Module";
+        $moduleType =  "get{$dataType}Module"; 
         //info("dataHandler: ".$dataHandler);
         $data = match (strtolower($dataType)) {
             "query", "service", "urlservice", "queryservice", "static", "custom" => $this->{$moduleType}($module_obj),
@@ -295,7 +294,7 @@ class ModuleLoader
     public function getSharedModuleData(string $alias): mixed
     {
         $infoLoader = app()->HashtagCms->infoLoader();
-        $alias = $alias."_".$infoLoader->getContextVars("site_id"); //htcms_get_site_id();
+        $alias = $alias."_".$infoLoader->getContextVars("site_id");
         return (isset($this->sharedModuleData[$alias]) && !empty($this->sharedModuleData[$alias])) ? $this->sharedModuleData[$alias] : null;
     }
 
@@ -362,22 +361,6 @@ class ModuleLoader
         return $this->contentFound;
     }
 
-    /**
-     * Check module mandatory
-     * @param bool $checkMandatory
-     */
-    public static function setMandatoryCheck(bool $checkMandatory=true) {
-        self::$mandatoryModuleCheck = $checkMandatory;
-    }
-
-    /**
-     * Get mandatory check
-     * @return bool
-     */
-    public static function getMandatoryCheck(): bool
-    {
-        return self::$mandatoryModuleCheck;
-    }
 
 
     /**

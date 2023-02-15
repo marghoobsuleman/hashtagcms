@@ -25,7 +25,7 @@
             data-is-installed="{{$isInstalled}}"
         ></site-installer>
     </div>
-    @vite(['resources/assets/hashtagcms/js/installer.js'])
+    <script async src="/assets/installer/js/installer.js"></script>
 
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-CQNZRL6S2G"></script>

@@ -1,6 +1,7 @@
 <?php
 namespace MarghoobSuleman\HashtagCms\Core\Main;
 
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Arr;
 use JetBrains\PhpStorm\ArrayShape;
 use Illuminate\Support\Facades\DB;
@@ -160,8 +161,51 @@ class DataLoader
         /**
          * reset scopes
          */
-        htcms_set_site_id_for_admin($oldSiteId);
+        htcms_set_siteId_for_admin($oldSiteId);
         htcms_set_language_id_for_admin($oldLangId);
+
+        return $data;
+    }
+
+    /**
+     * Load config data from external api
+     * @param string $context
+     * @param string|null $lang
+     * @param string|null $platform
+     * @return array|mixed
+     */
+    public function loadConfigFromExternalApi(string $context, string $lang=null, string $platform=null) {
+        try {
+            $apiUrl = app()->HashtagCms->getConfigApiSource();
+
+            $apiSecretAndContext = $this->getApiKeyAndContext($apiUrl);
+
+            if ($apiSecretAndContext['apiSecret'] == null) {
+                dd("Unable to find api secret key in config");
+            }
+
+            $apiSecret = $apiSecretAndContext['apiSecret'];
+            $context = $apiSecretAndContext['context'];
+
+            $apiUrl = $apiUrl."?site=$context&api_secret=$apiSecret";
+            $headers['Content-Type'] = "application/json";
+            $headers['api_key'] = $apiSecret;
+
+            $http = Http::withHeaders($headers)->get($apiUrl);
+
+            if ($http->status() == 200) {
+                $data = $http->json();
+            } else {
+                $msg = $http->reason()." :from API: $apiUrl";
+                logger()->error($msg);
+                throw new \Exception($msg, $http->status());
+            }
+
+        } catch (\Exception $exception) {
+            $msg = "Error while loading config: ".$exception->getMessage();
+            logger()->error($msg);
+            $data = array("status"=>Response::HTTP_PRECONDITION_FAILED, "message"=>$msg);
+        }
 
         return $data;
     }
@@ -237,7 +281,7 @@ class DataLoader
         logger("DataLoader->loadData: Found site: {$siteData->id}, lang: {$langData->id}");
 
         //set site scope
-        htcms_set_site_id_for_admin($siteData->id);
+        htcms_set_siteId_for_admin($siteData->id);
 
         //Set Context Vars: Site Id
         $this->infoLoader->setContextVars('site_id', $siteData->id);
@@ -297,6 +341,7 @@ class DataLoader
             ))->get();
 
         /**
+         * Setting for global use
          * Set Context Vars:
          * int $category_id, int $site_id, int $platform_id, int $microsite_id=0
          */
@@ -350,13 +395,73 @@ class DataLoader
 
 
         //Setting it back otherwise it will affect admin panel too.
-        htcms_set_site_id_for_admin($oldSiteId);
+        htcms_set_siteId_for_admin($oldSiteId);
         htcms_set_language_id_for_admin($oldLangId);
 
         logger("loading data completed for: $category ({$categoryData->id}), context: $context ({$siteData->id}), platform: $platform ({$platformData->id}) lang: $lang ({$langData->id})");
 
         return $data;
 
+    }
+
+    /**
+     * load from external api
+     * @return void
+     */
+    public function loadDataFromExternalApi(string $context, string $lang=null, string $platform=null, string $category=null, string $microsite=null) {
+        try {
+            $apiUrl = app()->HashtagCms->getLoadDataApiSource();
+
+            $apiSecretAndContext = $this->getApiKeyAndContext($apiUrl);
+
+            if ($apiSecretAndContext['apiSecret'] == null) {
+                throw new \Exception("Unable to find api secret key in config", Response::HTTP_BAD_REQUEST);
+            }
+
+            $apiSecret = $apiSecretAndContext['apiSecret'];
+            $context = $apiSecretAndContext['context'];
+
+            $fullUrl = request()->fullUrl();
+            $queryParams = "";
+
+            if (strpos($fullUrl, "?") > 0) {
+                $queryParams = substr($fullUrl, strpos($fullUrl, "?")+1, strlen($fullUrl));
+            }
+
+            $apiUrl .= "?site={$context}&platform={$platform}&lang={$lang}&category={$category}&api_secret={$apiSecret}";
+
+            if ($queryParams != "") {
+                $apiUrl .= "&{$queryParams}";
+            }
+
+            $headers['Content-Type'] = "application/json";
+            $headers['api_key'] = $apiSecret;
+            $http = Http::withHeaders($headers)->get($apiUrl);
+
+
+            if ($http->status() == 200) {
+                $data = $http->json();
+
+                //Old Compatibility
+                if (!isset($data['meta']['page'])) {
+                    $data['meta']['page'] = array("id"=> -1, "linkRewrite"=> "", "activeKey"=> "", "name"=> "");
+                }
+                if (!isset($data['isLoginRequired'])) {
+                    $data['isLoginRequired'] = false;
+                }
+                if (!isset($data['isContentFound'])) {
+                    $data['isContentFound'] = true;
+                }
+
+            } else {
+                $msg = $http->reason()." :from API: $apiUrl";
+                logger()->error($msg);
+                throw new \Exception($msg, $http->status());
+            }
+        } catch (\Exception $exception) {
+            $data = array("status"=>Response::HTTP_PRECONDITION_FAILED, "message"=>$exception->getMessage());
+        }
+        return $data;
     }
 
 
@@ -620,6 +725,23 @@ class DataLoader
         return array("linkRewrite"=>$linkRewrite, "param"=>$param, "fullPath"=>$path, "categoryData"=>$selectedCategory, "paramRequired"=>$isParamRequired);
     }
 
+
+    /**
+     * Get api key
+     * @param string $url
+     * @return mixed|null
+     */
+    private function getApiKeyAndContext(string $url) {
+        $domain =  parse_url($url)['host'];
+        $domainList = config("hashtagcms.domains");
+        $context = $domainList[$domain];
+
+        $apiSecretList = config("hashtagcms.api_secrets");
+        $apiSecret = $apiSecretList[$context] ?? null;
+        $data['apiSecret'] = $apiSecret;
+        $data['context'] = $context;
+        return $data;
+    }
 
     /**
      * Get error message

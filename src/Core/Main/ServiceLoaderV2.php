@@ -55,7 +55,6 @@ class ServiceLoaderV2 extends DataLoader
      */
     public function loadData(string $context, string $lang=null, string $platform=null, $category=null, $microsite=null): array
     {
-        $this->moduleLoader::setMandatoryCheck(false);
         return parent::loadData($context, $lang, $platform, $category, $microsite);
 
     }
@@ -71,7 +70,6 @@ class ServiceLoaderV2 extends DataLoader
             return $this->getErrorMessage("Module alias is missing", 400);
         }
 
-        $this->moduleLoader::setMandatoryCheck(false);
         $data = parent::loadData($params);
         if ($data['status'] != 200) {
             return $data;
@@ -115,7 +113,6 @@ class ServiceLoaderV2 extends DataLoader
             return $this->getErrorMessage("Hook alias is missing", 400);
         }
 
-        $this->moduleLoader::setMandatoryCheck(false);
         $data = parent::loadData($params);
         if ($data['status'] != 200) {
             return $data;

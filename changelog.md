@@ -7,12 +7,13 @@
 - Backend: Vue 2 to Vue 3 - Done
 - Backend: Moved to bootstrap 5.0 - Done
 - Backend: Improved Smart Copy Paste - Done
-- Backend: `direction` column in `hooks` table has default Null value now. - Done 
-- Backend: Move Passport to Sanctum for authentication - Done
+- Backend: `direction` column in `hooks` table has default Null value now. - Done
 - Backend: linked module and live edit bug while adding or editing frontend module. - Done
+- Backend: Sitewise permission added
+- Backend: Dashboard sub-modules data fetching issue on sitewise.
+- Frontend: Move Passport to Sanctum for authentication - Done
 - Frontend: Moved to API based validation. - Done. Working on external API 
 - API: Added v2 resourced based api - Done
-- Switch to external API. WIP
 - Add redis cache support. - Pro version
 - Backend: Add event listeners for backend activity such as add/edit/delete/publish - Pro version
 

@@ -4,7 +4,7 @@ return [
     'namespace'=>'MarghoobSuleman\\HashtagCms\\',
     'context'=>env("CONTEXT", "hashtagcms"),
     'info'=> [
-        'theme_folder' => 'hashtagcms::fe',
+        'view_folder' => 'hashtagcms::fe',
         'site_name'=>'Hashtag CMS',
         'base_path' => '',
         'theme' => 'fe.default',

@@ -30,19 +30,19 @@ class DashboardController extends BaseAdminController
         $dashboardData = array(
             array(
                 "label"=>"Contacts ".$contactToday,
-                "total"=>Contact::count(),
+                "total"=>Contact::where("site_id", htcms_get_siteId_for_admin())->count(),
                 "icon"=>"fa fa-telegram",
                 "link"=>"contact"
             ),
             array(
                 "label"=>"Subscribers ".$subscriberToday,
-                "total"=>Subscriber::count(),
+                "total"=>Subscriber::where("site_id", htcms_get_siteId_for_admin())->count(),
                 "icon"=>"fa fa-handshake-o",
                 "link"=>"subscriber"
             ),
             array(
                 "label"=>"Comments ".$commentsToday,
-                "total"=>Comment::count(),
+                "total"=>Comment::where("site_id", htcms_get_siteId_for_admin())->count(),
                 "icon"=>"fa fa-comments-o",
                 "link"=>"comment"
             ),

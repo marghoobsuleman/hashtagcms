@@ -2,7 +2,7 @@
 namespace MarghoobSuleman\HashtagCms\Core\Middleware\Admin;
 
 use Closure;
-
+use MarghoobSuleman\HashtagCms\Models\Site;
 
 class BeMiddleware
 {
@@ -18,9 +18,15 @@ class BeMiddleware
     {
         $user = auth()->user();
 
-        if ($user!=null && $user->user_type == "Visitor") {
+        if ($user==null || ($user!=null && $user->user_type == "Visitor")) {
 
             abort(403);
+        }
+
+        $allSites = Site::getSupportedSitesForUser($user->id);
+
+        if($allSites->find(htcms_get_siteId_for_admin()) == null) {
+            htcms_set_siteId_for_admin($allSites->get(0)->id);
         }
 
         $result =  $next($request);

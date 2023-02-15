@@ -31,25 +31,25 @@ class FrontendBaseController extends Controller
      * @param Request $request
      */
     public function index(Request $request) {
-        $layoutManager =  app()->HashtagCms->layoutManager();
         $infoLoader = app()->HashtagCms->infoLoader();
-        $data = $layoutManager->init();
-
-        $isContentRequired = LayoutManager::getMandatoryCheck();
-
+        $layoutManager =  app()->HashtagCms->layoutManager();
         try {
+            $data = $layoutManager->init();
+            //dd($data);
+            $isContentRequired = LayoutManager::getMandatoryCheck();
+
             info("============ Start loading data from request ============= ");
             if(isset($data['status']) && $data['status']!=200) {
                 abort($data['status'], $data['message']);
             }
 
             //check mandatory module
-            if ($data['isContentFound'] == false  && $isContentRequired == true) {
+            if (isset($data['isContentFound']) && $data['isContentFound'] == false  && $isContentRequired == true) {
                 logger()->error("Content not found!");
                 abort(Response::HTTP_NOT_FOUND, "Content not found!");
             }
 
-            if($data["isLoginRequired"] && Auth::id() == null) {
+            if(isset($data['isLoginRequired']) && $data["isLoginRequired"] && auth()->user()->id == null) {
                 $category = $infoLoader->getCategoryData();
                 $category = $category['linkRewrite'];
                 $reqParams = request()->all();

@@ -16,7 +16,7 @@ class SiteResource extends JsonResource
      */
     public function toArray($request)
     {
-        logger("I am in site resource");
+       
         return [
             'id'=>$this->id,
             'name'=>$this->name,

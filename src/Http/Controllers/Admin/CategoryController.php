@@ -40,6 +40,7 @@ class CategoryController extends BaseAdminController
 
     protected $bindDataWithAddEdit = array("themes"=>array("dataSource"=>Theme::class, "method"=>"all"),
                                                   "sites"=>array("dataSource"=>Site::class, "method"=>"all"),
+                                                  "siteDefaults"=>array("dataSource"=>Site::class, "method"=>"getDefaults"),
                                                   "categories"=>array("dataSource"=>Category::class, "method"=>"parentOnly"),
                                                   "target_types"=>array("dataSource"=>Category::class, "method"=>"getTargetType"),
                                                   "relation_types"=>array("dataSource"=>Category::class, "method"=>"getLinkRelationType"),

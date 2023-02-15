@@ -59,7 +59,7 @@ class BlogController extends FrontendBaseController
 
     public function story($arg1, $arg2)
     {
-        return ["From blog contoller", $arg1, $arg2];
+        return ["From blog/story contoller", $arg1, $arg2];
     }
 
 }

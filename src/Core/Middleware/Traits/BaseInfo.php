@@ -32,8 +32,6 @@ use MarghoobSuleman\HashtagCms\Core\Utils\LayoutKeys;
 
 trait BaseInfo {
 
-    protected string $defaultController = "frontend";
-    protected string $defaultMethod = "index";
     protected InfoLoader $infoLoader;
     protected SessionManager $sessionManager;
     protected LayoutManager $layoutManager;
@@ -83,13 +81,8 @@ trait BaseInfo {
      */
     private function parsePath($request) {
 
-        $isExternal = env('HASHTAGCMS_ENABLE_API')===true;
+        $isExternal = app()->HashtagCms->useExternalApi();
         $this->infoLoader->setInfoKeeper(LayoutKeys::IS_EXTERNAL, $isExternal);
-
-        if ($isExternal) {
-            info("load from api");
-            $apiUrl = env('HASHTAGCMS_API_SOURCE');
-        }
 
         $clearCache = $request->get(LayoutKeys::CLEAR_CACHE_KEY) ?? false;
 
@@ -124,32 +117,39 @@ trait BaseInfo {
 
         //will check external load api
         if ($isExternal) {
-            //$this->configData = $this->loadConfig($context, null, null, true);
 
             //try to fetch by config or env variable CONTEXT
             if (empty($context)) {
-                die("Please set the context first");
+                logger()->error("Unable to find context in config.");
+                die("Unable to find context in config.");
+            }
+            $this->configData = $this->loadConfig($context, null, null, true);
+            if ($this->configData == null) {
+                logger()->error("was trying to loadConfig($context)");
+                die("Unable to load config from api");
             }
 
         } else {
             //means using same db etc. need this line
             $siteData = $this->infoLoader->geSiteInfoByContextAndDomain($context, $domain, $fullDomain);
             if ($siteData == null) {
+                logger()->error("was trying to load infoLoader->geSiteInfoByContextAndDomain($context, $domain, $fullDomain)");
                 die("Site not found");
             }
             $context = $siteData->context;
+            $this->configData = $this->loadConfig($context, null, null, false);
         }
-        $this->configData = $this->loadConfig($context, null, null, false);
 
         //check if there is an error
         if (isset($this->configData['status']) && $this->configData['status']!=200) {
             logger()->error($this->configData['message']);
             abort($this->configData['status'], $this->configData['message']);
         }
-
+        //dd($this->configData);
         $defaultData = $this->configData['defaultData'];
-        $platformList = $this->configData['platforms'];
-        $langList = $this->configData['langs'];
+        //platformData is only temp
+        $platformList = isset($this->configData['platformData']) ? $this->configData['platformData'] : $this->configData['platforms'];
+        $langList = isset($this->configData['lang']) ? $this->configData['lang'] : $this->configData['langs'];
         $categoryList = $this->configData['categories'];
 
         $defaultLang = $this->findData($langList, "id", $defaultData['langId']);
@@ -178,6 +178,7 @@ trait BaseInfo {
             //find default category
             //@todo: if site has large number of categories then it would have problem here. loop will be big. it should come from load config api
             $categoryData = $this->findData($categoryList, "id", $defaultData['categoryId']);
+            //dd( $categoryData, $path, $defaultData['categoryId'], $categoryList);
             $categoryName = $categoryData['linkRewrite'];
         } else {
             if ($foundLang) {
@@ -213,11 +214,18 @@ trait BaseInfo {
         $this->infoLoader->setInfoKeeper(LayoutKeys::PLATFORM_ID, $platformData["id"]);
         $this->infoLoader->setInfoKeeper(LayoutKeys::PLATFORM_LINKREWRITE, $platformData['linkRewrite']);
 
-
+        /**
+         * Setting for global use
+         * Set Context Vars:
+         * int $category_id, int $site_id, int $platform_id, int $microsite_id=0
+         */
+        $microsite_id = 0;
+        $this->infoLoader->setMultiContextVars($defaultData['categoryId'], $siteData["id"], $platformData["id"], $microsite_id);
+        //Set Context Vars: Lang
+        $this->infoLoader->setLanguageId($langData["id"]);
 
 
         //dd($siteData, $langData, $platformData, $categoryData ?? null, $foundLang, $foundPlatform);
-
 
     }
 
@@ -251,7 +259,7 @@ trait BaseInfo {
             //will handle
         } else if ($pathLen === 1) {
                 $categoryName = $path_arr[0];
-                $methodName = LayoutKeys::DEFAULT_METHOD_NAME; //$this->defaultMethod;
+                $methodName = LayoutKeys::DEFAULT_METHOD_NAME;
         } else if ($pathLen > 1) {
             $categoryName = $path_arr[0];
             $methodName = $path_arr[1];
@@ -272,10 +280,10 @@ trait BaseInfo {
         //	* if method exist (method name is story for BlogController) else it’s index;
         $callableData = $this->getControllerName($categoryInfo, $controllerName, $methodName);
         //dd("categoryName: $categoryName ", "controllerName: $controllerName, methodName: $methodName");
-        $callable = $callableData['controllerName'];
-        $methodName = $callableData['methodName'];
-        $foundController = $callableData['foundController'];
-        $foundMethod = $callableData['foundMethod'];
+        $callable = $callableData[LayoutKeys::CONTROLLER_NAME];
+        $methodName = $callableData[LayoutKeys::METHOD_NAME];
+        $foundController = $callableData[LayoutKeys::FOUND_CONTROLLER];
+        $foundMethod = $callableData[LayoutKeys::FOUND_METHOD];
 
         $this->infoLoader->setInfoKeeper(LayoutKeys::CONTROLLER_NAME, $callable);
         $this->infoLoader->setInfoKeeper(LayoutKeys::METHOD_NAME, $methodName);
@@ -283,10 +291,10 @@ trait BaseInfo {
 
         // if controller is not found. $values will ie ["support", "tnc"]. if found $values will be ["tnc"]
         if(!$foundController && $categoryInfo != null) {
-            array_unshift($paramsValues, $controllerName, $callableData['methodNameParam']);
+            array_unshift($paramsValues, $controllerName, $callableData[LayoutKeys::METHOD_NAME_PARAM]);
         }
         if($foundController && !$foundMethod) {
-            array_unshift($paramsValues, $callableData['methodNameParam']);
+            array_unshift($paramsValues, $callableData[LayoutKeys::METHOD_NAME_PARAM]);
         }
 
         $ref = new \ReflectionMethod($callable, $methodName);
@@ -392,26 +400,27 @@ trait BaseInfo {
         $foundMethod = false;
         $this->infoLoader->setInfoKeeper(LayoutKeys::FOUND_CONTROLLER, false);
         $this->infoLoader->setInfoKeeper(LayoutKeys::FOUND_METHOD, false);
-        $data['methodNameParam'] = $method_name;
+        $data[LayoutKeys::METHOD_NAME_PARAM] = $method_name;
 
         if(class_exists($finalCallableApp)) {
             $this->infoLoader->setInfoKeeper(LayoutKeys::FOUND_CONTROLLER, true);
             $foundController = true;
-            $data['controllerName'] = $finalCallableApp;
-            $data['methodName'] = LayoutKeys::DEFAULT_METHOD_NAME;
+            $data[LayoutKeys::CONTROLLER_NAME] = $finalCallableApp;
+            $data[LayoutKeys::METHOD_NAME] = LayoutKeys::DEFAULT_METHOD_NAME;
             if(method_exists($finalCallableApp, $method_name)) {
                 $this->infoLoader->setInfoKeeper(LayoutKeys::FOUND_METHOD, true);
                 $foundMethod = true;
-                $data['methodName'] = $method_name;
+                $data[LayoutKeys::METHOD_NAME] = $method_name;
             }
         } else {
             //default controller and method
-            $data['controllerName'] = $callableDefault;
-            $data['methodName'] = LayoutKeys::DEFAULT_METHOD_NAME;
+            $data[LayoutKeys::CONTROLLER_NAME] = $callableDefault;
+            $data[LayoutKeys::METHOD_NAME] = LayoutKeys::DEFAULT_METHOD_NAME;
 
         }
-        $data['foundController'] = $foundController;
-        $data['foundMethod'] = $foundMethod;
+
+        $data[LayoutKeys::FOUND_CONTROLLER] = $foundController;
+        $data[LayoutKeys::FOUND_METHOD] = $foundMethod;
 
         return $data;
     }
@@ -423,17 +432,15 @@ trait BaseInfo {
      * @param string|null $lang
      * @param string|null $platform
      * @param bool $isExternal
-     * @return array|string
+     * @return array|null
      */
-    public function loadConfig(string $context, string $lang=null, string $platform=null, bool $isExternal):array {
+    public function loadConfig(string $context, string $lang=null, string $platform=null, bool $isExternal):array|null {
+
         if ($isExternal) {
-            $apiUrl = env('HASHTAGCMS_API_SOURCE');
-            Http::get($apiUrl."?site={$context}");
-            return "from api";
+            return $this->dataLoader->loadConfigFromExternalApi($context, $lang, $platform);
         }
-        //$dataLoader = new DataLoader();
-        $data = $this->dataLoader->loadConfig($context, $lang, $platform);
-        return $data;
+
+        return $this->dataLoader->loadConfig($context, $lang, $platform);
     }
 
 

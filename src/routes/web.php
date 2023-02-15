@@ -76,7 +76,7 @@ Route::prefix('admin')->group(function () {
             abort(404);
         }
 
-    })->middleware(["web", "auth:sanctum", "crayonModuleInfo", "cmsInterceptor"])->where('params', '^((?!assets/).)*?');
+    })->middleware(["web", "auth:sanctum", "cmsModuleInfo", "cmsInterceptor"])->where('params', '^((?!assets/).)*?');
 });
 
 if (HashtagCms::isRoutesEnabled()) {
@@ -86,16 +86,13 @@ if (HashtagCms::isRoutesEnabled()) {
         $infoLoader = app()->HashtagCms->infoLoader();
 
         $infoKeeper = $infoLoader->getInfoKeeper();
-        //These are coming from FeMiddleware-> Core/BaseInfo Trait
-        //$callable =  isset($infoKeeper["callable"]) ? $infoKeeper["callable"] : "";
-        //$values =  isset($infoKeeper["callableValue"]) ? $infoKeeper["callableValue"] : array();
-        $callable = $infoLoader->getAppCallable();
-        $values =  $infoLoader->getAppCallableValue();
-        //dd($callable,$values);
+
+        $callable = $infoLoader->getAppCallable(); //Controller and method
+        $values =  $infoLoader->getAppCallableValue(); //controller params
         try {
 
             if($callable!="") {
-                return app()->call($callable, $values);
+                return app()->call($callable, $values); //FrontendController@index, []
             } else {
                 info("I don't know what to process...");
                 try {
@@ -107,16 +104,18 @@ if (HashtagCms::isRoutesEnabled()) {
             }
 
         } catch (Exception $exception) {
-
             //show everything in local env
             if (env("APP_ENV") !== "local") {
-               abort(404, $exception->getMessage());
+                abort($exception->getStatusCode(), $exception->getMessage());
+            } else {
+                dd($exception);
+                return array(
+                    "code" => $exception->getStatusCode() ?? " unknown",
+                    "message" => $exception->getMessage(),
+                    "controller" => "$callable"
+                );
             }
-            //report($exception->getMessage());
-            return array("popluated" => "Error in calling controller (".$callable.")",
-                "errorMessage" => $exception->getMessage(),
-                "errorTrace" =>     $exception->getTrace()
-            );
+
         }
 
     })->where("all", HashtagCms::getIgnoredPath())->middleware(["web", "interceptor"]);

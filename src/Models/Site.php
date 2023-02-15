@@ -321,4 +321,44 @@ class Site extends AdminBaseModel
         self::find($id)->update(array("lang_count"=>$count));
     }
 
+    /**
+     * Get defaults 
+     * @param string|null $key
+     * @return mixed
+     */
+    public function getDefaults(array|string $key=null) {
+        $site_id = htcms_get_siteId_for_admin();
+        $keys = ["category_id", "theme_id", "platform_id", "lang_id", "country_id", "currency_id"];
+        if (!empty($key)) {
+            if (is_array($key)) {
+                $keys = $key;
+            } else {
+                $key = str_replace(" ", "", $key);
+                $keys = explode(",", $key);
+            }
+
+        }
+        return $this->find($site_id, $keys);
+    }
+
+    /**
+     * Get supported site for user
+     * @param int $userId
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public static function getSupportedSitesForUser(int $userId) {
+
+        $user = User::find($userId);
+        $isAdmin = $user->isSuperAdmin();
+        $allSites = self::all();
+        if ($isAdmin == 1) {
+            return $allSites;
+        }
+
+        $supportedSites = $user->supportedSites();
+        $supportedSites = collect($supportedSites)->pluck("site_id")->toArray();
+
+        $allSites = self::find($supportedSites);
+        return $allSites;
+    }
 }

@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\View;
 trait LayoutHandler {
     
     private array $themeCache;
-    
+    private array $backupAssetFolder = array('base_url' => '', 'base_path' => '/assets/hashtagcms/fe', 'js' => 'js', 'css' => 'css', 'image' => 'img');
     /**
      * @param string|null $str
      * @param string|int $theme_dir
@@ -33,12 +33,16 @@ trait LayoutHandler {
         //Get it by domain or by config
         $assetSource = (isset($assetPath[$host])) ? $assetPath[$host] : $assetPath;
 
+        //External url (CDN) is not setup.
+        if (!isset($assetSource['base_url'])) {
+            $assetSource = $this->backupAssetFolder;
+        }
 
-        $resourceUrl = $assetSource['base_url'];
-        $resourceDir = $assetSource['base_path'];
-        $jsFolder = $assetSource['js'];
-        $cssFolder = $assetSource['css'];
-        $imageFolder =  $assetSource['image'];
+        $resourceUrl = $assetSource['base_url'] ?? "";
+        $resourceDir = $assetSource['base_path'] ?? "";
+        $jsFolder = $assetSource['js'] ?? "";
+        $cssFolder = $assetSource['css'] ?? "";
+        $imageFolder =  $assetSource['image'] ?? "";
 
 
         $resourcePath = $resourceUrl.$resourceDir."/".$theme_dir;

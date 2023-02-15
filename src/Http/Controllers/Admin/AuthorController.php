@@ -9,6 +9,7 @@ use MarghoobSuleman\HashtagCms\Models\CmsModule;
 use MarghoobSuleman\HashtagCms\Models\CmsPermission;
 use MarghoobSuleman\HashtagCms\Models\Role;
 use MarghoobSuleman\HashtagCms\Models\User;
+use MarghoobSuleman\HashtagCms\Models\Site;
 use MarghoobSuleman\HashtagCms\Core\Helpers\Message;
 
 class AuthorController extends BaseAdminController
@@ -32,7 +33,10 @@ class AuthorController extends BaseAdminController
             "action_append_field" => "id")
     );
 
-    protected $bindDataWithAddEdit = array("allRoles" => array("dataSource" => Role::class, "method" => "all"));
+    protected $bindDataWithAddEdit = array(
+        "allRoles" => array("dataSource" => Role::class, "method" => "all"),
+        "allSites" => array("dataSource" => Site::class, "method" => "all")
+        );
 
 
     /**
@@ -77,7 +81,10 @@ class AuthorController extends BaseAdminController
         $saveData["user_type"] = "Staff";
 
         $roles = $data["roles"]; //Save in user_role table
-        $updateRoles = ($data["updateRoles"] == 1) ? TRUE : FALSE;
+        $updateRoles = ($data["updateRoles"] == 1) ? true : false;
+
+        $sites = $data["sites"]; //Save in user_role table
+        $updateSites = ($data["updateSites"] == 1) ? true : false;
 
         if (!empty($data["password"])) {
             $saveData["password"] = User::makePassword($data["password"]);
@@ -106,10 +113,10 @@ class AuthorController extends BaseAdminController
             $id = $savedData["id"];
         }
 
+        $user = User::find($id);
 
         //Insert/Update Roles
-        if (!empty($roles) && $updateRoles == TRUE) {
-            $user = User::find($id);
+        if (!empty($roles) && $updateRoles == true) {
             $user->detachAllRoles(); //remove old roles
 
             //Get Roles
@@ -117,6 +124,17 @@ class AuthorController extends BaseAdminController
             $user->assignMultipleRole($allRoles); //Assign new roles
 
         }
+
+        //Insert/Update Site relation
+        if (!empty($sites) && $updateSites == true) {
+            $user->detachAllSites(); //remove old sites
+
+            //Get Sites
+            $allSites = Site::find($sites);
+            $user->assignMultipleSite($allSites); //Assign new sites
+
+        }
+
 
         $viewData["id"] = $savedData["id"];
         $viewData["saveData"] = $data;

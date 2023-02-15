@@ -38,16 +38,16 @@ class CmsModulesTableSeeder extends Seeder
             array('id' => '17','name' => 'Frontend Modules','controller_name' => 'module','display_name' => NULL,'parent_id' => '13','sub_title' => 'Manage frontend modules','icon_css' => 'fa fa-cogs','list_view_name' => NULL,'edit_view_name' => NULL,'position' => '14','created_at' => NULL,'updated_at' => $date,'deleted_at' => NULL),
             array('id' => '18','name' => 'Categories','controller_name' => 'category','display_name' => NULL,'parent_id' => '0','sub_title' => 'Manage categories','icon_css' => 'fa fa-folder-o','list_view_name' => NULL,'edit_view_name' => NULL,'position' => '17','created_at' => NULL,'updated_at' => $date,'deleted_at' => NULL),
             array('id' => '19','name' => 'Platforms','controller_name' => 'platform','display_name' => NULL,'parent_id' => '1','sub_title' => 'Manage platform','icon_css' => 'fa fa-superpowers','list_view_name' => NULL,'edit_view_name' => NULL,'position' => '10','created_at' => $date,'updated_at' => $date,'deleted_at' => NULL),
-            //1 more module space
+            //1 more module space for future use
 
             array('id' => '21','name' => 'Hooks','controller_name' => 'hook','display_name' => NULL,'parent_id' => '13','sub_title' => 'Manage hooks','icon_css' => 'fa fa-anchor','list_view_name' => NULL,'edit_view_name' => NULL,'position' => '15','created_at' => $date,'updated_at' => $date,'deleted_at' => NULL),
             array('id' => '22','name' => 'Roles Rights','controller_name' => 'rolesright','display_name' => NULL,'parent_id' => '5','sub_title' => 'Manage roles rights','icon_css' => 'fa fa-key','list_view_name' => NULL,'edit_view_name' => NULL,'position' => '24','created_at' => $date,'updated_at' => $date,'deleted_at' => NULL),
             array('id' => '23','name' => 'Static Modules','controller_name' => 'staticmodule','display_name' => NULL,'parent_id' => '13','sub_title' => 'Manage static module','icon_css' => 'fa fa-puzzle-piece','list_view_name' => NULL,'edit_view_name' => NULL,'position' => '16','created_at' => $date,'updated_at' => $date,'deleted_at' => NULL),
 
-            //9 more module space
+            //9 more module space for future use
             array('id' => '32','name' => 'Pages Manager','controller_name' => 'homepage','display_name' => 'Homepage Manager','parent_id' => '0','sub_title' => 'Page manager','icon_css' => 'fa fa-file-code-o','list_view_name' => NULL,'edit_view_name' => NULL,'position' => '20','created_at' => NULL,'updated_at' => $date,'deleted_at' => NULL),
             array('id' => '33','name' => 'Language','controller_name' => 'language','display_name' => NULL,'parent_id' => '2','sub_title' => 'Manage languages','icon_css' => 'fa fa-language','list_view_name' => NULL,'edit_view_name' => NULL,'position' => '6','created_at' => $date,'updated_at' => $date,'deleted_at' => NULL),
-            //5 more module space
+            //5 more module space for future use
             array('id' => '38','name' => 'Site Properties','controller_name' => 'siteprop','display_name' => NULL,'parent_id' => '1','sub_title' => 'Manage site properties','icon_css' => 'fa fa-cogs','list_view_name' => NULL,'edit_view_name' => NULL,'position' => '11','created_at' => $date,'updated_at' => $date,'deleted_at' => NULL),
             //Changed oAuth to gallery (v1.3.8)
             array('id' => '39','name' => 'Gallery','controller_name' => 'gallery','display_name' => NULL,'parent_id' => '0','sub_title' => 'Manage gallery and files','icon_css' => 'fa fa-picture-o','list_view_name' => NULL,'edit_view_name' => NULL,'position' => '25','created_at' => $date,'updated_at' => $date,'deleted_at' => NULL),
@@ -55,7 +55,9 @@ class CmsModulesTableSeeder extends Seeder
             array('id' => '41','name' => 'Subscribers','controller_name' => 'subscriber','display_name' => NULL,'parent_id' => '0','sub_title' => 'Manage subscribers','icon_css' => 'fa fa-handshake-o','list_view_name' => NULL,'edit_view_name' => NULL,'position' => '27','created_at' => $date,'updated_at' => $date,'deleted_at' => NULL),
             array('id' => '42','name' => 'Blogs','controller_name' => 'blog','display_name' => NULL,'parent_id' => '0','sub_title' => 'Manage blogs','icon_css' => 'fa fa-quote-right','list_view_name' => NULL,'edit_view_name' => 'page/addedit','position' => '19','created_at' => $date,'updated_at' => $date,'deleted_at' => NULL),
             array('id' => '43','name' => 'Comments','controller_name' => 'comment','display_name' => NULL,'parent_id' => '0','sub_title' => 'Manage comments','icon_css' => 'fa fa-comments-o','list_view_name' => NULL,'edit_view_name' => NULL,'position' => '29','created_at' => $date,'updated_at' => $date,'deleted_at' => NULL),
-            array('id' => '44','name' => 'Module Properties','controller_name' => 'moduleproperty','display_name' => NULL,'parent_id' => '13','sub_title' => 'Manage module properties','icon_css' => 'fa fa-cog','list_view_name' => NULL,'edit_view_name' => NULL,'position' => '30','created_at' => $date,'updated_at' => $date,'deleted_at' => NULL)
+
+            //56 more module space for future use
+            array('id' => '99','name' => 'Module Properties','controller_name' => 'moduleproperty','display_name' => NULL,'parent_id' => '13','sub_title' => 'Manage module properties','icon_css' => 'fa fa-cog','list_view_name' => NULL,'edit_view_name' => NULL,'position' => '30','created_at' => $date,'updated_at' => $date,'deleted_at' => NULL)
         );
 
         if(DB::table($table_name)->get()->count() === 0) {
