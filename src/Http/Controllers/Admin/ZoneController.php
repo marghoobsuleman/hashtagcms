@@ -49,6 +49,12 @@ class ZoneController extends BaseAdminController
 
         $saveData["name"] = $data["name"];
 
+        $saveData["updated_at"] = htcms_get_current_date();
+
+        if($data["actionPerformed"] !== "edit") {
+            $saveData["created_at"] = htcms_get_current_date();
+        }
+
         $arrSaveData = array("model"=>$this->dataSource,  "data"=>$saveData);
 
         if($data["actionPerformed"]=="edit") {

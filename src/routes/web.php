@@ -24,8 +24,7 @@ Route::prefix('admin')->group(function () {
         $controller = ($controller === "") ? "dashboard" : $controller; //default page of admin
 
         $methodType = $request->method();
-
-        //$namespace = app()->getNamespace();
+        
         $namespace = config("hashtagcms.namespace");
 
         $controller = ($controller == "") ? config("admin.cmsInfo.defaultPage") : $controller;

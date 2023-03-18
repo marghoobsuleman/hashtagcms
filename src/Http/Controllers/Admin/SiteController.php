@@ -399,6 +399,9 @@ class SiteController extends BaseAdminController
             case "moduleproperties":
                 $source = ModuleProp::class;
                 break;
+            case "themes":
+                $source = Theme::class;
+                break;
         }
 
         $rData["deleted"] = $source::withoutGlobalScopes()->find($ids)->each->forceDelete();
@@ -538,7 +541,6 @@ class SiteController extends BaseAdminController
 
             case "siteproperties":
                 $compareKey = array("name", "platform_id");
-                //$compareKey = "name";
                 $source = SiteProp::class;
                 break;
 
@@ -606,6 +608,7 @@ class SiteController extends BaseAdminController
                 unset($finalData[$key]["selected"]);
                 unset($finalData[$key]["created_at"]);
                 unset($finalData[$key]["updated_at"]);
+                unset($finalData[$key]["deleted_at"]);
 
                 $finalData[$key]["created_at"] = htcms_get_current_date();
                 $finalData[$key]["updated_at"] = htcms_get_current_date();

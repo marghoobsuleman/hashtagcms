@@ -8,11 +8,10 @@ use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
 use PHPUnit\Framework\MockObject\Exception;
 use Illuminate\Support\Str;
-
+/** Models */
 use MarghoobSuleman\HashtagCms\Models\Module;
 use MarghoobSuleman\HashtagCms\Models\ModuleProp;
 use MarghoobSuleman\HashtagCms\Models\ModuleSite;
-
 use MarghoobSuleman\HashtagCms\Models\Category;
 use MarghoobSuleman\HashtagCms\Models\CategorySite;
 use MarghoobSuleman\HashtagCms\Models\Lang;
@@ -21,8 +20,7 @@ use MarghoobSuleman\HashtagCms\Models\Platform;
 use MarghoobSuleman\HashtagCms\Models\SiteProp;
 use MarghoobSuleman\HashtagCms\Models\Theme;
 use MarghoobSuleman\HashtagCms\Models\Hook;
-
-/** v2 */
+/** Resources */
 use MarghoobSuleman\HashtagCms\Http\Resources\SiteResource;
 use MarghoobSuleman\HashtagCms\Http\Resources\SiteCollection;
 use MarghoobSuleman\HashtagCms\Http\Resources\PlatformResource;
@@ -39,9 +37,7 @@ use MarghoobSuleman\HashtagCms\Http\Resources\ModuleResource;
 use MarghoobSuleman\HashtagCms\Http\Resources\ModulePropResource;
 use MarghoobSuleman\HashtagCms\Http\Resources\LoadDataResource;
 use MarghoobSuleman\HashtagCms\Http\Resources\ConfigDataResource;
-
-use \stdClass;
-
+/** Traits */
 use MarghoobSuleman\HashtagCms\Core\Traits\LayoutHandler;
 
 class DataLoader
@@ -135,6 +131,7 @@ class DataLoader
         $defaultData['langId'] = $siteData->lang_id;
         $defaultData['countryId'] = $siteData->country_id;
         $defaultData['currencyId'] = $siteData->currency_id;
+        $defaultData['category'] = (new CategoryResource(Category::find($siteData->category_id)))->toArray(request());
 
         //convert to resource
         $siteInfo = (new SiteResource($siteData))->toArray(request());
@@ -147,7 +144,6 @@ class DataLoader
         $propsInfo = SitePropResource::collection($propsData)->toArray(request());
 
 
-        //$data = new stdClass();
         $data['site'] = $siteInfo;
         $data['defaultData'] = $defaultData;
         $data['platforms'] = $platformsInfo;
@@ -381,6 +377,7 @@ class DataLoader
 
         $data['isLoginRequired'] = $isLoginRequired = $categoryData->required_login === 1 || $this->moduleLoader->isLoginRequired();
         $data['isContentFound'] = $this->moduleLoader->isContentFound();
+        $data['totalModules'] = $this->moduleLoader->getModulesCount();
 
         $data['html'] = $htmlMetaData['html'];
         $data['meta'] = array(
@@ -561,7 +558,7 @@ class DataLoader
 
         $moduleWhere = array(array('hook_id', '=', $hookId), array('site_id', '=', $siteId), array('microsite_id', '=', $micrositeId), array('platform_id', '=', $platformId), array('category_id', '=', $categoryId));
 
-        $allModules = ModuleSite::where($moduleWhere)->get();
+        $allModules = ModuleSite::where($moduleWhere)->orderBy("position", "ASC")->get();
         $modulesArr = [];
         foreach ($allModules as $module) {
             $moduleData = Module::find($module->module_id);

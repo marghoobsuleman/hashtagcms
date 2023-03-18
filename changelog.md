@@ -3,7 +3,8 @@
 #v1.3.8 Changes
 #### Major Update: Please note: This updates needs fresh installation.
 - Backend: Added gallery module. You can now upload files/images. - Done
-- API: modules props are returing as key/value pair. - Done
+- Backend: Added gallery module with content editor. - Done
+- API: modules props are returns as key/value pair. - Done
 - Backend: Vue 2 to Vue 3 - Done
 - Backend: Moved to bootstrap 5.0 - Done
 - Backend: Improved Smart Copy Paste - Done
@@ -12,7 +13,8 @@
 - Backend: Sitewise permission added
 - Backend: Dashboard sub-modules data fetching issue on sitewise.
 - Frontend: Move Passport to Sanctum for authentication - Done
-- Frontend: Moved to API based validation. - Done. Working on external API 
+- Frontend: Moved to API based validation. - Done. 
+- Frontend: Support for API on different domain. - Done/Partially
 - API: Added v2 resourced based api - Done
 - Add redis cache support. - Pro version
 - Backend: Add event listeners for backend activity such as add/edit/delete/publish - Pro version
@@ -22,14 +24,14 @@
 - Frontend: Minor bug fixes while loading after running a test
 
 #v1.3.6 Changes
-- Backend/Frontend: Corrected folder structure for js libraries for future re-usabilty.
+- Backend/Frontend: Corrected folder structure for js libraries for future re-usability.
 - Backend: Handle multi database in query module.
 - Backend: Handle 'resultType=html' in service type. In case you need html from a service.
-- Backend: Fixed saving module in PageManager if there is only one paltform.
+- Backend: Fixed saving module in PageManager if there is only one platform.
 - Backend: Fixed minor issue on image/icon upload in site and theme 
 
 #v1.3.5 Changes
-- Major changes (Need fresh intallation)
+- Major changes (Need fresh installation)
 - 'Tenants' will be called as 'Platforms' from now on. Since this CMS is built for corporates;
   multiple feedback received for 'tenant'. In corporate world site is a tenant and tenant is a platform.
 - all tenant_id will be referred as platform_id.

@@ -10,6 +10,8 @@ use MarghoobSuleman\HashtagCms\Core\Middleware\Admin\BeMiddleware;
 use MarghoobSuleman\HashtagCms\Core\Middleware\Admin\CmsModuleInfo;
 use MarghoobSuleman\HashtagCms\Core\Middleware\FeMiddleware;
 
+use MarghoobSuleman\HashtagCms\Core\Middleware\API\ETag;
+
 use MarghoobSuleman\HashtagCms\Console\Commands\CmsModuleModelCommand;
 use MarghoobSuleman\HashtagCms\Console\Commands\CmsModuleControllerCommand;
 use MarghoobSuleman\HashtagCms\Console\Commands\CmsValidatorCommand;
@@ -43,6 +45,7 @@ class HashtagCmsServiceProvider extends ServiceProvider
 
         //Middleware for Frontend
         $router->aliasMiddleware('interceptor', FeMiddleware::class);
+        $router->aliasMiddleware('etag', ETag::class);
 
         $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'hashtagcms');
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'hashtagcms');

@@ -92,6 +92,9 @@ class LayoutManager extends Results
             if (isset($allData['status']) && $allData['status'] != 200) {
                 return $allData;
             }
+            if (isset($allData['totalModules']) && $allData['totalModules'] == 0) {
+                die(config("hashtagcms.message.zeroModuleSelected"));
+            }
 
             //Set everything; this has to come before setting the controller info and then return the data
 

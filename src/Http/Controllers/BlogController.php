@@ -37,8 +37,6 @@ class BlogController extends FrontendBaseController
                 $moreCategories[] = $categoryName; //add one more
             }
 
-
-
             $requestCat = ($useMore) ? $moreCategories : $categoryName;
             $results = Page::getLatestBlog($siteId, $langId, $requestCat, $perPage);
 

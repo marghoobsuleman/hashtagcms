@@ -26,7 +26,7 @@ trait LayoutHandler {
             }
             $theme_dir = $theme->directory;
         }
-        $host = request()->getHost();
+        $host = request()->getHost(); //env('APP_URL');
 
         $assetPath = config("hashtagcms.info.assets_path");
 

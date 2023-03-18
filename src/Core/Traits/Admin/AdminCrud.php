@@ -488,7 +488,6 @@ trait AdminCrud {
 
         $collection = collect(request()->all());
 
-
         $filtered = $collection->except(['page']);
 
         $data["searchId"] = $filtered->all();

@@ -47,8 +47,10 @@ class CmsModulesTableSeeder extends Seeder
             //9 more module space for future use
             array('id' => '32','name' => 'Pages Manager','controller_name' => 'homepage','display_name' => 'Homepage Manager','parent_id' => '0','sub_title' => 'Page manager','icon_css' => 'fa fa-file-code-o','list_view_name' => NULL,'edit_view_name' => NULL,'position' => '20','created_at' => NULL,'updated_at' => $date,'deleted_at' => NULL),
             array('id' => '33','name' => 'Language','controller_name' => 'language','display_name' => NULL,'parent_id' => '2','sub_title' => 'Manage languages','icon_css' => 'fa fa-language','list_view_name' => NULL,'edit_view_name' => NULL,'position' => '6','created_at' => $date,'updated_at' => $date,'deleted_at' => NULL),
+
             //5 more module space for future use
             array('id' => '38','name' => 'Site Properties','controller_name' => 'siteprop','display_name' => NULL,'parent_id' => '1','sub_title' => 'Manage site properties','icon_css' => 'fa fa-cogs','list_view_name' => NULL,'edit_view_name' => NULL,'position' => '11','created_at' => $date,'updated_at' => $date,'deleted_at' => NULL),
+
             //Changed oAuth to gallery (v1.3.8)
             array('id' => '39','name' => 'Gallery','controller_name' => 'gallery','display_name' => NULL,'parent_id' => '0','sub_title' => 'Manage gallery and files','icon_css' => 'fa fa-picture-o','list_view_name' => NULL,'edit_view_name' => NULL,'position' => '25','created_at' => $date,'updated_at' => $date,'deleted_at' => NULL),
             array('id' => '40','name' => 'Contacts','controller_name' => 'contact','display_name' => NULL,'parent_id' => '0','sub_title' => 'Manage contacts','icon_css' => 'fa fa-telegram','list_view_name' => NULL,'edit_view_name' => NULL,'position' => '26','created_at' => $date,'updated_at' => $date,'deleted_at' => NULL),

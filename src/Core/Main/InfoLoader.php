@@ -8,6 +8,7 @@ use MarghoobSuleman\HashtagCms\Models\Lang;
 use MarghoobSuleman\HashtagCms\Models\Module;
 use MarghoobSuleman\HashtagCms\Models\Site;
 use MarghoobSuleman\HashtagCms\Models\Platform;
+use MarghoobSuleman\HashtagCms\Models\SiteProp;
 use MarghoobSuleman\HashtagCms\Models\Theme;
 use MarghoobSuleman\HashtagCms\Models\Hook;
 use MarghoobSuleman\HashtagCms\Core\Utils\LayoutKeys;
@@ -38,6 +39,15 @@ class InfoLoader
     {
         $this->sessionManager = app()->HashtagCms->sessionManager();
 
+    }
+
+    /**
+     * Site installed
+     * @return bool
+     */
+    public function isSiteInstalled():bool {
+        $siteProp = SiteProp::where("name", "=", "site_installed")->first();
+        return $siteProp['value'] == 1;
     }
 
     /**

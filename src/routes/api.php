@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Route;
 
 $callable = config("hashtagcms.namespace")."Http\Controllers\Api\\";
 
-Route::middleware('api')->prefix("api/hashtagcms")->group(function() use($callable) {
+Route::middleware(['api', 'etag'])->prefix("api/hashtagcms")->group(function() use($callable) {
 
     /**
      * Health check
@@ -93,15 +93,13 @@ Route::middleware('api')->prefix("api/hashtagcms")->group(function() use($callab
     });
 
 
-
-
 });
 
 //Authentication
 Route::middleware('auth:api')->prefix("api/hashtagcms")->group(function() use($callable) {
 
     Route::get("user/v1/me", function (Request $request) use($callable) {
-
+        
         return app()->call($callable."AuthController@me");
 
     });

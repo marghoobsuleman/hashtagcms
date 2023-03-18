@@ -112,5 +112,57 @@ class GalleryController extends BaseAdminController
         return htcms_admin_view("common.saveinfo", $viewData);
     }
 
+    /**
+     * Get all images
+     * @return mixed
+     */
+    public function getAllImages() {
+        return $this->dataSource::orderBy("id", "desc")->with($this->dataWith)->where("type", "image")->get();
+    }
+
+    /**
+     * Search images
+     * @return mixed
+     */
+    public function searchImages($tag) {
+        return $this->dataSource::with($this->dataWith)->whereHas('tag', function($q) use ($tag) {
+            $q->where('name', 'like', '%'.$tag.'%');
+        })->get();
+    }
+
+    /**
+     * Upload images
+     * @param Request $request
+     * @return array
+     */
+    public function uploadImages(Request $request)
+    {
+        $data = $request->all();
+        $module_name = request()->module_info->controller_name;
+
+        $allFiles = request()->allFiles();//["images"];
+        $allFiles = $allFiles["images"];
+        $saveData["group"] = $data["group"] ?? NULL;
+        $saveData["site_id"] = htcms_get_site_id();
+        $saveData["type"] = "image";
+        $saveData["updated_at"] = htcms_get_current_date();
+        $saveData["created_at"] = htcms_get_current_date();
+        $ids = [];
+
+        for ($count=0; $count<sizeof($allFiles); $count++) {
+            $saveData["path"] = $this->upload($module_name, $allFiles[$count]);
+            $arrSaveData = array("model"=>$this->dataSource,  "data"=>$saveData);
+            $tags_array = explode(",", $data['tags']);
+            //This is in base controller
+            $savedData = $this->saveData($arrSaveData);
+            if (sizeof($tags_array)) {
+                (new $this->dataSource)->saveTags($savedData["id"], $tags_array);
+            }
+            $ids[] = $savedData["id"];
+        }
+        return ["status"=>true, "message"=>"Images uploaded successfully", "data"=>$this->dataSource::find($ids)];
+    }
+
+
 }
 

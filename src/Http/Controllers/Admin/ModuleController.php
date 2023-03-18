@@ -12,7 +12,7 @@ use MarghoobSuleman\HashtagCms\Core\Helpers\Message;
 
 class ModuleController extends BaseAdminController
 {
-     protected $dataFields = array( "id", "name", "alias", "view_name", "data_type", "created_at");
+     protected $dataFields = array( "id", "name", "alias", "view_name", "data_type", "updated_at");
 
      protected $dataSource = Module::class;
 

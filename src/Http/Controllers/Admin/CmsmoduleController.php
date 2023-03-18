@@ -13,7 +13,7 @@ use MarghoobSuleman\HashtagCms\Core\Helpers\Message;
 class CmsmoduleController extends BaseAdminController
 {
 
-    protected $dataFields = array("id", "name", "sub_title", "controller_name");
+    protected $dataFields = array("id", "name", "sub_title", "controller_name", "updated_at");
 
     protected $actionFields = array("edit", "delete");
 

@@ -130,6 +130,11 @@ trait BaseInfo {
             }
 
         } else {
+            $isSiteInstalled = $this->infoLoader->isSiteInstalled();
+            if (!$isSiteInstalled) {
+                //return redirect("/install");
+                die("Site is not installed");
+            }
             //means using same db etc. need this line
             $siteData = $this->infoLoader->geSiteInfoByContextAndDomain($context, $domain, $fullDomain);
             if ($siteData == null) {
@@ -145,6 +150,8 @@ trait BaseInfo {
             logger()->error($this->configData['message']);
             abort($this->configData['status'], $this->configData['message']);
         }
+
+
         //dd($this->configData);
         $defaultData = $this->configData['defaultData'];
         //platformData is only temp
@@ -175,10 +182,12 @@ trait BaseInfo {
         $platformData = ($foundPlatform) ? $platformData : $this->findData($platformList, "id", $defaultData['platformId']);
 
         if ($path == "/" || $path == "") {
-            //find default category
-            //@todo: if site has large number of categories then it would have problem here. loop will be big. it should come from load config api
-            $categoryData = $this->findData($categoryList, "id", $defaultData['categoryId']);
-            //dd( $categoryData, $path, $defaultData['categoryId'], $categoryList);
+            /**
+             * @todo: find default category
+             * Not an optimized solution if site has thousand of categories.
+             * it should come from load config api. Done in interal api. need to work in external one.
+             */
+            $categoryData = isset($defaultData['category']) ? $defaultData['category'] : $this->findData($categoryList, "id", $defaultData['categoryId']);
             $categoryName = $categoryData['linkRewrite'];
         } else {
             if ($foundLang) {
@@ -223,9 +232,6 @@ trait BaseInfo {
         $this->infoLoader->setMultiContextVars($defaultData['categoryId'], $siteData["id"], $platformData["id"], $microsite_id);
         //Set Context Vars: Lang
         $this->infoLoader->setLanguageId($langData["id"]);
-
-
-        //dd($siteData, $langData, $platformData, $categoryData ?? null, $foundLang, $foundPlatform);
 
     }
 

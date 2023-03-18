@@ -5,7 +5,7 @@
 
 
 Headless CMS, Use it as Headless CMS or Bundled, API enabled, 
-Admin Panel, multisite/multitenant, multiplatform, multilingual, and oAuth 2.0.
+Admin Panel, multisite/multi-tenant, multiplatform, multilingual with endless possibilities.
 The Most powerful, fast, user-friendly and secured platform. Made with PHP Laravel Framework.
 
 ## Installation
@@ -34,15 +34,15 @@ DB_PASSWORD=
 ```
 ###Install Command
 ``` bash
-$ php artisan cms:install
+php artisan cms:install
 ```
-- Open `app/User.php` and remove or comment below lines.
+- Open `app/Models/User.php` and remove or comment below lines.
 
 ``` bash
 use Illuminate\Foundation\Auth\User as Authenticatable
 ```
 
-- Add below lines in the same file (`app/Models/User.php` or `app/User.php`)
+- Add below lines in the same file (`app/Models/User.php`)
 ``` bash
 use MarghoobSuleman\HashtagCms\User as Authenticatable;
 ```
@@ -53,40 +53,29 @@ Route::get('/', function () {
     return view('welcome');
 });
 ```
+### Configure site on browser. Open it with the appUrl prefix
+```bash 
+http://{APP_URL}/install
+ie:
+http://www.hashtagcms.org/install
+```
+
 - You are done :)
 
-#Test
+## Test
 ```bash 
 php artisan test vendor/marghoobsuleman/hashtagcms
 ```
 
 ## Change log
+#v1.3.8 Changes
+
+
 #v1.3.7 Changes
 - Backend: Fixed issue while adding category
 - Frontend: Minor bug fixes while loading after running a test
 
-#v1.3.6 Changes
-- Backend/Frontend: Corrected folder structure for js libraries for future re-usabilty.
-- Backend: Handle multi database in query module.
-- Backend: Handle 'resultType=html' in service type. In case you need html from a service.
-- Backend: Fixed saving module in PageManager if there is only one paltform.
-- Backend: Fixed minor issue on image/icon upload in site and theme
-
-#v1.3.5 Changes
-- Major changes (Need fresh intallation)
-- 'Tenants' will be called as 'Platforms' from now on. Since this CMS is built for corporates;
-multiple feedback received for 'tenant'. In corporate world site is a tenant and tenant is a platform. 
-- all tenant_id will be referred as platform_id. 
-- some tables have been removed and added few to make sense. index and primary keys are also fixed/added.
-- shipped with two languages by default
-- fixed site's lang count issue
-- Added test cases
-```bash
-php artisan config:cache 
-php artisan test vendor/marghoobsuleman/hashtagcms
-```
-
-###Please see the [changelog](changelog.md) for more information on what has changed recently.
+### More logs [changelog](changelog.md) for more information on what has changed recently.
 
 
 ## Contributing

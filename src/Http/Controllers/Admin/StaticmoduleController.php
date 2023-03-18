@@ -62,6 +62,7 @@ class StaticmoduleController extends BaseAdminController
         $saveData["site_id"] = $data["site_id"];
 
         $saveData["update_by"] = $data["update_by"];
+        $saveData["updated_at"] = htcms_get_current_date();
 
         if(!isset($data["id"]) || $data["id"] == 0) {
             $saveData["insert_by"] = $data["insert_by"];
