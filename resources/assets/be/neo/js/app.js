@@ -1,129 +1,96 @@
-/**
- * First we will load all of this project's JavaScript dependencies which
- * includes Vue and other libraries. It is a great starting point when
- * building robust, powerful web applications using Vue and Laravel.
- */
-//require('./bootstrap');
-//import './bootstrap?raw';
-import AdminConfig from '../../common-vue3/js/helpers/AdminConfig';
+import pluralize0 from "pluralize";
+window.pluralize = pluralize0;
+
+/** Axios setup **/
+import axios from "axios";
+axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+let token = document.head.querySelector('meta[name="csrf-token"]');
+if (token) {
+    axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
+    axios.defaults.headers.common['Authorization'] = 'Bearer '+token.content;
+    axios.defaults.withCredentials = true;
+} else {
+    console.error('CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');
+}
+window.axios = axios;
+
+
+import AdminConfig from '../../common/js/helpers/adminConfig';
 window.AdminConfig = new AdminConfig();
 
-import axios from "axios";
-window.axios = axios;
-window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+import {Toast} from "../../common/js/helpers/common";
+window.ToastGloabl = Toast;
 
-import {Storage, Fetcher} from '../../common-vue3/js/helpers/Common';
+//Some Common Lib
+import {Storage, Fetcher} from '../../common/js/helpers/common';
+
+
 window.log = console.log;
 window.Store = new Storage();
 window.Fetcher = new Fetcher();
 
 
 import { createApp } from 'vue';
-//window.Vue = vue;
+import TopNav from '../../common/js/components/topNav.vue';
+import LeftNav from '../../common/js/components/leftNav.vue';
+import InfoBox from '../../common/js/library/infoBox.vue';
+import InfoBoxes from '../../common/js/components/infoxBoxes.vue';
+import TabularView from '../../common/js/components/tabularView.vue';
+import SearchBar from '../../common/js/components/searchBar.vue';
+import ActionBar from '../../common/js/components/actionBar.vue';
+import PaginationView from '../../common/js/components/pagination.vue';
+import ToastBox from '../../common/js/library/toastBox.vue';
+import Loader from '../../common/js/library/loader.vue';
+import ModalBox from '../../common/js/library/modalBox.vue';
+import ModulePermission from '../../common/js/components/modulePermission.vue';
+import MenuSorter from '../../common/js/components/menuSorter.vue';
+import SiteWiseData from '../../common/js/components/siteWiseData.vue';
+import SiteWiseCopier from '../../common/js/components/siteWiseCopier.vue';
+import TitleBar from "../../common/js/components/titleBar.vue";
+import LanguageCopier from "../../common/js/components/languageCopier.vue";
+import ModuleCreator from '../../common/js/components/moduleCreator.vue'; //will work on it
+import FrontEndModuleCreator from '../../common/js/components/frontEndModuleCreator.vue';
+import CopyPaste from '../../common/js/library/copyPaste.vue';
+import SiteCloner from "../../common/js/components/siteCloner.vue";
+import TimerButton from '../../common/js/library/timerButton.vue';
+import CategoryPlatform from '../../common/js/components/categoryPlatform.vue';
+import CategorySettings from '../../common/js/components/categorySettings.vue';
+import LeftMenuShowHide from '../../common/js/library/leftMenuShowHide.vue';
+import Homepage from '../../common/js/components/homepage.vue';
+import ImageGallery from "../../common/js/components/imageGallery.vue";
 
-//Vue.config.devtools = false;
-/**
- * Next, we will create a fresh Vue application instance and attach it to
- * the page. Then, you may begin adding components to this application
- * or customize the JavaScript scaffolding to fit your unique needs.
- */
-
-
-import TopNav from '../../common-vue3/js/components/TopNav.vue';
-import LeftNav from '../../common-vue3/js/components/LeftNav.vue';
-import InfoBox from '../../common-vue3/js/library/InfoBox.vue';
-import InfoBoxes from '../../common-vue3/js/components/InfoxBoxes.vue';
-import TabularView from '../../common-vue3/js/components/TabularView.vue';
-import SearchBar from '../../common-vue3/js/components/SearchBar.vue';
-import ActionBar from '../../common-vue3/js/components/ActionBar.vue';
-import PaginationView from '../../common-vue3/js/components/Pagination.vue';
-// import MenuSorter from '../../common-vue3/js/components/MenuSorter';
-// import TimerButton from '../../common-vue3/js/library/TimerButton';
-// import ModalBox from '../../common-vue3/js/library/ModalBox';
-// import ToastBox from '../../common-vue3/js/library/ToastBox';
-
-// import ModuleCreator from '../../common-vue3/js/components/ModuleCreator';
-// import ModulePermission from '../../common-vue3/js/components/ModulePermission';
-// import FrontEndModuleCreator from '../../common-vue3/js/components/FrontEndModuleCreator';
-// import CmsModuleDropdown from '../../common-vue3/js/components/CmsModuleDropdown';
-// import InfoBox from '../../common-vue3/js/library/InfoBox';
-// import InfoxBoxes from '../../common-vue3/js/components/InfoxBoxes';
-// import SiteWiseData from '../../common-vue3/js/components/SiteWiseData';
-// import SiteWiseCopier from '../../common-vue3/js/components/SiteWiseCopier';
-// import LeftMenuShowHide from '../../common-vue3/js/library/LeftMenuShowHide';
-// import CategoryPlatform from '../../common-vue3/js/components/CategoryPlatform';
-// import GloablSiteButton from '../../common-vue3/js/components/GloablSiteButton';
-// import Homepage from '../../common-vue3/js/components/Homepage';
-// import CategorySettings from '../../common-vue3/js/components/CategorySettings';
-// import Loader from '../../common-vue3/js/library/Loader';
-// import CopyPaste from '../../common-vue3/js/library/CopyPaste';
-// import SiteButton from '../../common-vue3/js/components/SiteButton';
-// import PlatformButton from '../../common-vue3/js/components/PlatformButton';
-// import PassportClient from '../../common-vue3/js/components/passport/Clients';
-// import PassportAuthorizedClients from '../../common-vue3/js/components/passport/AuthorizedClients';
-// import PassportPersonalAccessTokens from '../../common-vue3/js/components/passport/PersonalAccessTokens';
-// import LanguageCopier from "../../common-vue3/js/components/LanguageCopier";
-// import SiteCloner from "../../common-vue3/js/components/SiteCloner";
-
-
-    //# Vue.component('top-nav', TopNav);
-    // Vue.component('admin-modules', LeftNav);
-    // Vue.component('table-view', TabularView);
-    // Vue.component('search-bar', SearchBar);
-    // Vue.component('action-bar', ActionBar);
-//
-// Vue.component('menu-sorter', MenuSorter);
-//
-// Vue.component('timer-button', TimerButton);
-// Vue.component('modal-box', ModalBox);
-// Vue.component('toast-box', ToastBox);
-//
-// //Vue.component('split-button', require('../../common-vue3/js/library/SplitButton); //@todo: temp
-//
-    // Vue.component('Pagination', Pagination);
-// Vue.component('module-creator', ModuleCreator);
-// Vue.component('module-permission', ModulePermission);
-// Vue.component('front-module-creator', FrontEndModuleCreator);
-//
-// Vue.component('cms-module-dropdown', CmsModuleDropdown);
-//
-// Vue.component('info-box', InfoBox);
-// Vue.component('info-boxes', InfoxBoxes);
-//
-// Vue.component('site-wise', SiteWiseData);
-// Vue.component('site-wise-copier', SiteWiseCopier);
-// Vue.component('left-menu-toggle', LeftMenuShowHide);
-// Vue.component('category-platform', CategoryPlatform);
-// Vue.component('global-site-button', GloablSiteButton);
-// Vue.component('admin-homepage', Homepage);
-// Vue.component('admin-category-settings', CategorySettings);
-// Vue.component('admin-loader', Loader);
-// Vue.component('copy-paste', CopyPaste);
-// Vue.component('site-button', SiteButton);
-// Vue.component('platform-button', PlatformButton);
-//
-//
-// Vue.component('passport-clients', PassportClient);
-// Vue.component('passport-authorized-clients', PassportAuthorizedClients);
-// Vue.component('passport-personal-access-tokens',PassportPersonalAccessTokens);
-//
-// Vue.component('language-copier', LanguageCopier);
-// Vue.component('site-cloner', SiteCloner);
-// Vue.component('Pagination', Pagination);
 const app = createApp({
     components: {
         'top-nav':TopNav,
+        'title-bar':TitleBar,
         'admin-modules':LeftNav,
         'info-box':InfoBox,
         'info-boxes':InfoBoxes,
         'table-view':TabularView,
         'search-bar':SearchBar,
         'action-bar':ActionBar,
-        'pagination-view':PaginationView
+        'pagination-view':PaginationView,
+        'toast-box': ToastBox,
+        'admin-loader': Loader,
+        'modal-box': ModalBox,
+        'module-permission': ModulePermission,
+        'menu-sorter': MenuSorter,
+        'site-wise': SiteWiseData,
+        'site-wise-copier': SiteWiseCopier,
+        'site-cloner': SiteCloner,
+        'language-copier':LanguageCopier,
+        'module-creator': ModuleCreator,
+        'front-module-creator': FrontEndModuleCreator,
+        'copy-paste': CopyPaste,
+        'timer-button': TimerButton,
+        'category-platform': CategoryPlatform,
+        'category-settings': CategorySettings,
+        'left-menu-toggle': LeftMenuShowHide,
+        'page-manager': Homepage,
+        'image-gallery': ImageGallery
 
     }
 }).mount('#app');
-window.Vue = app;
-//app.config.globalProperties.emitter = emitter;
 
-console.log("I am from app.js");
+window.Vue = app;
+

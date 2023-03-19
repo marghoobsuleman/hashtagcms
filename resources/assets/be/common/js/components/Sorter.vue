@@ -23,8 +23,8 @@
 <script>
 
     import Sortable from 'sortablejs';
-    import {Toast} from '../helpers/Common';
-    import Form from '../helpers/Form';
+    import {Toast} from '../helpers/common';
+    import Form from '../helpers/form';
 
 
     export default {

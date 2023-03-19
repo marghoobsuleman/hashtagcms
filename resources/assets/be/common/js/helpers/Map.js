@@ -3,15 +3,15 @@
  */
 
 /**
- * MapQuest API
+ * MapQuest Api
  * https://developer.mapquest.com
- * Dependency: Need API
+ * Dependency: Need Api
  */
 
-const MAPQUEST_KEY = "TVArtzF8QacxSVE16JufJBt5SJXVdAZQ";
-const MAPQUEST_URL = "http://www.mapquestapi.com/geocoding/v1/";
-const MAPQUEST_JS = "https://api.mqcdn.com/sdk/mapquest-js/v1.3.0/mapquest.js";
-const MAPQUEST_CSS = "https://api.mqcdn.com/sdk/mapquest-js/v1.3.0/mapquest.css";
+const MAPQUEST_KEY = "NyRN4hQy31NOfiA0Am6VGzG5kZFOhA7z";
+const MAPQUEST_URL = "http://www.mapquestapi.com/geocoding/v2/";
+const MAPQUEST_JS = "https://api.mqcdn.com/sdk/mapquest-js/v1.3.2/mapquest.js";
+const MAPQUEST_CSS = "https://api.mqcdn.com/sdk/mapquest-js/v1.3.2/mapquest.css";
 
 
 export default class MapAPI {
@@ -23,7 +23,7 @@ export default class MapAPI {
 
     init() {
 
-        if(this.isInit==false) {
+        if(this.isInit===false) {
             let $this = this;
             let script = document.createElement("script");
             script.src = MAPQUEST_JS;
@@ -51,14 +51,14 @@ export default class MapAPI {
 
                 if(callback!=null && typeof callback == "function") {
                     callback.apply(this, arguments);
-                };
+                }
 
             }).catch(function (e) {
                 reject(e);
 
                 if(callback!=null && typeof callback == "function") {
                     callback.apply(this, e);
-                };
+                }
             })
         });
 

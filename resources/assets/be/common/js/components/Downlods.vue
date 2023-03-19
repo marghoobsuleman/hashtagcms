@@ -1,5 +1,5 @@
 <template>
-    <button @click="downloadNow()" type="button" class="btn btn-info">
+    <button @click="downloadNow()" type="button" class="btn btn-dark">
         <slot>Download</slot>
     </button>
 </template>
@@ -16,8 +16,7 @@
   ],
   methods: {
       downloadNow() {
-          let path = AdminConfig.admin_path(this.dataControllerName+"/download");
-          window.location.href = path;
+          window.location.href = AdminConfig.admin_path(this.dataControllerName+"/download");
       }
   }
 }

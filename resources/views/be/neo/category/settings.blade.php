@@ -2,16 +2,10 @@
 
 @section('content')
 
-    <action-bar
-            data-controller-title="{{request()->module_info->name}}"
-            data-controller-name="{{request()->module_info->controller_name}}"
-            data-show-add="false"
-            data-show-back="true"
-    >
-    </action-bar>
+    <title-bar data-title="{!! htcms_get_module_name(request()->module_info) !!} - Settings" data-back-url="{{htcms_admin_path('category')}}" data-show-copy="false"  data-show-paste="false"></title-bar>
 
 
-    <admin-category-settings
+    <category-settings
             data-site-id="{{htcms_get_siteId_for_admin()}}"
             data-platform-id="{{$platform_id}}"
             data-microsite-id="{{$microsite_id}}"
@@ -20,5 +14,7 @@
             data-site-themes="{{json_encode($siteThemes)}}"
             data-site-platforms="{{json_encode($sitePlatforms)}}"
             data-categories="{{json_encode($categories)}}"
-    ></admin-category-settings>
+            data-user-rights="{{json_encode($userRights)}}"
+
+    ></category-settings>
 @endsection

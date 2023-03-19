@@ -39,7 +39,7 @@ export default class Subscribe {
         }
 
         let email = document.querySelector(this.elements.form + " input[type='email']");
-        let url = "/common/subscribe";
+        let url = "/common-old/subscribe";
         let data = {email:email.value};
         axios.post(url, data)
             .then(response => {

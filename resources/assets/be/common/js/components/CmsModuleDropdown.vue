@@ -1,10 +1,10 @@
 <template>
-
         <split-button v-if="hasChild()"
                       :data-options="allModules"
                       @change="onChange"
                       :data-parser="parseData"
                       :data-selected="currentIndex"
+                      data-btn-css="btn-success"
         >
             {{selectedModule}}
         </split-button>
@@ -12,7 +12,7 @@
 </template>
 
 <script>
-    import SplitButton from '../library/SplitButton.vue';
+    import SplitButton from '../library/splitButton.vue';
 
     export default {
 

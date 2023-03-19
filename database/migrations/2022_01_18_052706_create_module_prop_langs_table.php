@@ -43,4 +43,4 @@ return new class extends Migration
     {
         Schema::dropIfExists('module_prop_langs');
     }
-}
+};

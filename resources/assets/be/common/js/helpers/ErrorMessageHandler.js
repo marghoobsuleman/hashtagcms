@@ -1,4 +1,4 @@
-import {Toast} from "./Common";
+import {Toast} from "./common";
 
 export class ErrorMessage  {
     constructor() {
@@ -26,9 +26,9 @@ export class ErrorMessage  {
         field.classList.add("is-invalid");
 
         let div = document.createElement("div");
-        div.classList.add("alert", "alert-danger", "margin-top-05");
+        div.classList.add("alert", "alert-danger", "mt-03");
 
-        if(f.indexOf("lang_") != -1) {
+        if(f.indexOf("lang_") !== -1) {
             message  = message.replace("lang ", "")
         }
         div.innerHTML = message;

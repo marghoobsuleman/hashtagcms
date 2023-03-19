@@ -1,7 +1,7 @@
 <section class="mt-5 section-our-specaility">
     <div class="container">
         <div class="row">
-            <div class="col-6 col-md-4">
+            <div class="col-lg-4">
                 <div class="card p-0 featured-card box-shadow">
                     <div class="card-header text-center design-card">
                         <span class="__icon"><i class="fa fa-star-o"></i></span>
@@ -15,7 +15,7 @@
                 </div>
             </div>
 
-            <div class="col-6 col-md-4">
+            <div class="col-lg-4">
                 <div class="card p-0 featured-card box-shadow">
                     <div class="card-header text-center design-mobile">
                         <span class="__icon"><i class="fa fa-mobile"></i></span>
@@ -29,7 +29,7 @@
                 </div>
             </div>
 
-            <div class="col-6 col-md-4">
+            <div class="col-lg-4">
                 <div class="card p-0 featured-card box-shadow">
                     <div class="card-header text-center design-fast-loading">
                         <span class="__icon"><i class="fa fa-bolt"></i></span>
@@ -44,7 +44,7 @@
             </div>
 
 
-            <div class="col-6 col-md-4">
+            <div class="col-lg-4">
                 <div class="card p-0 featured-card box-shadow">
                     <div class="card-header text-center design-user-friendly">
                         <span class="__icon"><i class="fa fa-user"></i></span>
@@ -58,7 +58,7 @@
                 </div>
             </div>
 
-            <div class="col-6 col-md-4">
+            <div class="col-lg-4">
                 <div class="card p-0 featured-card box-shadow">
                     <div class="card-header text-center design-admin-panel">
                         <span class="__icon"><i class="fa fa-cogs"></i></span>
@@ -72,7 +72,7 @@
                 </div>
             </div>
 
-            <div class="col-6 col-md-4">
+            <div class="col-lg-4">
                 <div class="card p-0 featured-card box-shadow">
                     <div class="card-header text-center design-well-documented">
                         <span class="__icon"><i class="fa fa-file-text-o"></i></span>

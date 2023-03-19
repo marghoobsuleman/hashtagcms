@@ -1,4 +1,4 @@
-<ul class="nav nav-tabs margin-top-10" style="margin-left:20px">
+<ul class="nav nav-tabs mt-3" style="margin-left:20px">
 
     @foreach($tabs as $key=>$tab)
         @php
@@ -6,16 +6,17 @@
             $activeTab = str_replace(" ", "", strtolower($activeTab));
             $href = htcms_admin_path("site/settings/{$siteInfo->id}/$currentTab");
         @endphp
-        @if($currentTab == $activeTab)
+        @if($currentTab === $activeTab)
             @php
-                $css = "active";
+                $css = "nav-link active";
             @endphp
         @else
             @php
-                $css = "";
+                $css = "nav-link";
             @endphp
         @endif
 
-        <li role="presentation" class="{{$css}}"><a href="{{$href}}">{{$tab}}</a></li>
+        <li role="presentation" class="nav-item"><a class="{{$css}}" href="{{$href}}">{{$tab}}</a></li>
     @endforeach
 </ul>
+

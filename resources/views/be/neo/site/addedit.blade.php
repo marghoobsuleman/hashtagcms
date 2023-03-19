@@ -2,14 +2,9 @@
 
 @section('content')
 
-    <div class="row border-bottom">
-        <div class="col-md-6">
-            <h3>{!! htcms_get_module_name(request()->module_info) !!}</h3>
-        </div>
-        <div class="pull-right back-link">
-            <a href="{{$backURL}}">Back</a>
-        </div>
-    </div>
+    <title-bar data-title="{!! htcms_get_module_name(request()->module_info) !!}"
+               data-back-url="{{$backURL}}"
+    ></title-bar>
 
     @php
 
@@ -58,7 +53,7 @@
                     {!! FormHelper::input('hidden', 'site_id', $site_id) !!}
                     {!! FormHelper::input('hidden', 'actionPerformed', $actionPerformed) !!}
 
-                    <div class="form-group">
+                    <div class="form-group row">
 
                         <div class="col-sm-2">
                             {!!  FormHelper::label('name', 'Site Name') !!}
@@ -70,7 +65,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group row">
 
                         <div class="col-sm-2">
                             {!!  FormHelper::label('lang_title', 'Title') !!}
@@ -82,7 +77,7 @@
 
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group row">
 
                         <div class="col-sm-2">
                             {!!  FormHelper::label('under_maintenance', 'Under Maintenance') !!}
@@ -93,7 +88,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group row">
 
                         <div class="col-sm-2">
                             {!!  FormHelper::label('domain', 'Domain') !!}
@@ -105,7 +100,7 @@
 
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group row">
 
                         <div class="col-sm-2">
                             {!!  FormHelper::label('context', 'Context') !!}
@@ -116,7 +111,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group row">
 
                         <div class="col-sm-2">
                             {!!  FormHelper::label('favicon', 'Fav Icon') !!}
@@ -130,7 +125,7 @@
                     @if($id > 0)
                     <fieldset class="fieldset">
                         <legend>Default Settings</legend>
-                        <div class="form-group">
+                        <div class="form-group row">
 
                             <div class="col-sm-2">
                                 {!!  FormHelper::label('theme_id', 'Theme') !!}
@@ -138,13 +133,13 @@
 
                             <div class="col-sm-10">
                                 <div class="col-sm-10">
-                                    {!! FormHelper::select('theme_id', $theme, array(), $theme_id, array("label"=>"name","value"=>"id")) !!}
+                                    {!! FormHelper::select('theme_id', $theme, array('class'=>'form-select select-sm'), $theme_id, array("label"=>"name","value"=>"id")) !!}
                                 </div>
                             </div>
 
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group row">
 
                             <div class="col-sm-2">
                                 {!!  FormHelper::label('category_id', 'Category') !!}
@@ -152,13 +147,13 @@
 
                             <div class="col-sm-10">
                                 <div class="col-sm-10">
-                                    {!! FormHelper::select('category_id', $category, array(), $category_id, array("label"=>"name","value"=>"category_id")) !!}
+                                    {!! FormHelper::select('category_id', $category, array('class'=>'form-select select-sm'), $category_id, array("label"=>"name","value"=>"category_id")) !!}
                                 </div>
                             </div>
 
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group row">
 
                             <div class="col-sm-2">
                                 {!!  FormHelper::label('platform_id', 'Platform') !!}
@@ -166,13 +161,13 @@
 
                             <div class="col-sm-10">
                                 <div class="col-sm-10">
-                                    {!! FormHelper::select('platform_id', $platform, array(), $platform_id) !!}
+                                    {!! FormHelper::select('platform_id', $platform, array('class'=>'form-select select-sm'), $platform_id) !!}
                                 </div>
                             </div>
 
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group row">
 
                             <div class="col-sm-2">
                                 {!!  FormHelper::label('lang_id', 'Language') !!}
@@ -180,13 +175,13 @@
 
                             <div class="col-sm-10">
                                 <div class="col-sm-10">
-                                    {!! FormHelper::select('lang_id', $languages, array(), $lang_id, array("label"=>"name","value"=>"id")) !!}
+                                    {!! FormHelper::select('lang_id', $languages, array('class'=>'form-select select-sm'), $lang_id, array("label"=>"name","value"=>"id")) !!}
                                 </div>
                             </div>
 
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group row">
 
                             <div class="col-sm-2">
                                 {!!  FormHelper::label('country_id', 'Country') !!}
@@ -194,7 +189,7 @@
 
                             <div class="col-sm-10">
                                 <div class="col-sm-10">
-                                    {!! FormHelper::select('country_id', $countries, array(), $country_id, array("label"=>"name","value"=>"country_id")) !!}
+                                    {!! FormHelper::select('country_id', $countries, array('class'=>'form-select select-sm'), $country_id, array("label"=>"name","value"=>"country_id")) !!}
                                 </div>
                             </div>
 
@@ -206,8 +201,7 @@
 
                     <div class="row">
                         <div class="form-group center-align">
-                            <input type="submit" name="submit" value="Save" class="btn btn-success" />
-                            <a href="{{$backURL ?? request()->headers->get('referer')}}" class="btn btn-default">Cancel</a>
+                            <input type="submit" name="submit" value="Save" class="btn btn-success btn-from-submit" /> <a href="{{$backURL ?? request()->headers->get('referer')}}" class="btn btn-outline-secondary">Cancel</a>
                         </div>
                     </div>
                 </form>

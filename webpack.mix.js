@@ -2,24 +2,23 @@ const mix = require('laravel-mix');
 require('dotenv').config();
 //mix.disableNotifications();
 
+let package_dir = "";
+
 //Installer
-mix.js('resources/assets/js/installer.js', 'public/assets/installer/js');
+mix.js(`resources/assets${package_dir}/js/installer.js`, 'public/assets/installer/js');
 
-
-//backend
 let themesForBackend = [
     {
-        vueOption:{ version: 2 },
-        theme:{source:'default', type:'theme'}, //folder
+        vueOption:{ version: 3 },
+        theme:{source:'neo', type:'theme'}, //folder
         assets: [
             {source:'js/app.js', target:'js', type:'js'},
+            {source:'js/dashboard.js', target:'js', type:'js'},
             {source:'js/error-handler.js', target:'js', type:'js'},
-            {source:'js/ie-polyfills.js', target:'js', type:'js'},
-            {source:'js/map.js', target:'js', type:'js'},
+            {source:'js/editor.js', target:'js', type:'js'},
             {source:'../common/js/vendors', target:'js/vendors', type:'copy'},
             {source:'sass/app.scss', target:'css', type:'css'},
-            {source:'img', target:'img', type:'copy'},
-            {source:'js/editor.js', target:'js', type:'js'}
+            {source:'img', target:'img', type:'copy'}
         ]
     }
 ];
@@ -28,7 +27,7 @@ let themesForBackend = [
 
 let themesForFrontend = [
     {
-        vueOption:{ version: 2 },
+        vueOption:{ version: 3 },
         theme:{source:'basic', type:'theme'}, //folder
         assets: [
             {source:'js/app.js', target:'js', type:'js'},
@@ -66,7 +65,7 @@ function buildNow(themes, resourceDir, targetDir) {
     }
 }
 //Backend
-buildNow(themesForBackend, "resources/assets/be", "public/assets/be");
+buildNow(themesForBackend, `resources/assets${package_dir}/be`, `public/assets${package_dir}/be`);
 
 //Frontend
-buildNow(themesForFrontend, "resources/assets/fe", "public/assets/fe");
+buildNow(themesForFrontend, `resources/assets${package_dir}/fe`, `public/assets${package_dir}/fe`);

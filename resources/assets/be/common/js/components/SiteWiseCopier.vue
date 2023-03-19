@@ -1,30 +1,31 @@
 <template>
-    <div>
-        <div class="col-md-12">
-            <div class="col-md-4">
-               Copy From: <select class="form-control select" @change="getBySite()" v-model="currentSite">
-                    <option value="">Select Site</option>
-                    <option v-for="site in allSites" :value="site.id">{{getLabel(site)}}</option>
-                </select>
-            </div>
+    <div class="col mt-2">
+        <div class="mb-2">
+            Copy From: <select class="form-select inline width-auto" @change="getBySite()" v-model="currentSite">
+            <option value="">Select Site</option>
+            <option v-for="site in allSites" :value="site.id">{{getLabel(site)}}</option>
+        </select>
         </div>
-        <site-wise ref="sitewise"
-                :data-message="dataMessage"
-                :data-site-data="JSON.stringify(siteData)"
-                :data-all-data="JSON.stringify(allData)"
-                :data-current-key="currentKey"
-                :data-site-id="siteId"
-                :data-default-action-for-save="doAction"
-                :data-alert-css="dataAlertCss"
-        >
+    </div>
+    <div class="row">
+    <site-wise ref="siteWiseComponent"
+               :data-message="dataMessage"
+               :data-site-data="JSON.stringify(siteData)"
+               :data-all-data="JSON.stringify(allData)"
+               :data-current-key="currentKey"
+               :data-site-id="siteId"
+               :data-default-action-for-save="doAction"
+               :data-alert-css="dataAlertCss"
+    >
 
-        </site-wise>
+    </site-wise>
     </div>
 </template>
 
 <script>
 
-    import {Toast} from '../helpers/Common';
+    import {Toast, Loader} from '../helpers/common';
+    import SiteWiseData from "./siteWiseData.vue";
 
     export default {
 
@@ -34,6 +35,9 @@
             //console.log(this.cuurent);
           // this.initData();
 
+        },
+        components: {
+          'site-wise': SiteWiseData
         },
         created() {
           //this.initData();
@@ -51,8 +55,8 @@
         data() {
             return {
                 allSites:(typeof this.dataAllSites === "undefined") ? [] : JSON.parse(this.dataAllSites),
-                siteData:(typeof this.dataSiteData == "undefined" || this.dataSiteData == "") ? [] : JSON.parse(this.dataSiteData),
-                allData:(typeof this.dataAllData == "undefined" || this.dataAllData == "") ? [] : JSON.parse(this.dataAllData),
+                siteData:(typeof this.dataSiteData == "undefined" || this.dataSiteData === "") ? [] : JSON.parse(this.dataSiteData),
+                allData:(typeof this.dataAllData == "undefined" || this.dataAllData === "") ? [] : JSON.parse(this.dataAllData),
                 currentKey:this.dataCurrentKey,
                 searchKey:'',
                 siteId:parseInt(this.dataSiteId),
@@ -60,6 +64,13 @@
             }
         },
         methods: {
+            showHdeLoader: function (show) {
+                if (show) {
+                    Loader.show(this, "Please wait...");
+                } else {
+                    Loader.hide(this);
+                }
+            },
             saveNow(url, data) {
                 return new Promise((resolve, reject) => {
                     axios.post(url, data)
@@ -72,7 +83,7 @@
 
             },
             getLabel(data) {
-                var label = "";
+                let label = "";
                 if(data.name || data.alias) {
                     label = data.name || data.alias;
                 } else if(data.lang) {
@@ -83,17 +94,20 @@
             },
             populateData(data) {
                 this.allData = data;
-                //console.log(data);
-                this.$refs.sitewise.setData('data', data);
+                //console.log("this.$refs.siteWiseComponent ",this.$refs.siteWiseComponent);
+                this.$refs.siteWiseComponent.setData('data', data);
             },
             getBySite() {
-                if(this.currentSite != "") {
+                if(this.currentSite !== "") {
                     let what = this.currentKey;
                     let url = AdminConfig.admin_path("site/getBySite/"+this.currentSite+"/"+what);
+                    this.showHdeLoader(true);
                     axios.get(url).then(response=> {
                         this.populateData(response.data);
                     }).catch(response => {
                         console.log(response);
+                    }).finally(()=> {
+                        this.showHdeLoader(false);
                     });
                 } else {
                     this.populateData([]);
@@ -113,13 +127,15 @@
                                 toSite:{site_id:this.siteId},
                                 type:this.currentKey
                 };
-
+                this.showHdeLoader(true);
                 let url = AdminConfig.admin_path("site/copySettings");
                 axios.post(url, postData).then(response=> {
                     console.log(response);
                     feedback(response);
                 }).catch(response => {
                     console.log(response);
+                }).finally(()=> {
+                    this.showHdeLoader(false);
                 });
 
 
@@ -128,14 +144,14 @@
                     let data = response.data;
                     //console.log("data.inserted ",data.inserted);
                     if(data.inserted === false) {
-                        Toast.show($this, data.message || "Nothing happend. I don't know the reason", 5000);
+                        Toast.show($this, data.message || "Nothing happened.", 5000);
                     } else {
                         let ignored = data.ignored;
                         let copied = data.copied;
-                        $this.$refs.sitewise.setSiteData(data.siteData);
+                        $this.$refs.siteWiseComponent.setSiteData(data.siteData);
 
                         //Showing some manners - giving feedback
-                        let msg = `${copied.length} Copied and ${ignored.length} ignored. Look at the console for details`;
+                        let msg = `${copied.length} Copied and ${ignored.length} ignored. Open console for details`;
                         Toast.show($this, msg, 7000);
                         console.info("Copied: ", copied);
                         console.info("Ignored: ", ignored);
@@ -160,10 +176,13 @@
                     };
 
                 let url = AdminConfig.admin_path("site/removeSettings");
+                this.showHdeLoader(true);
                 axios.post(url, postData).then(response=> {
                     feedback(response);
                 }).catch(response => {
                     console.log(response);
+                }).finally(()=> {
+                    this.showHdeLoader(false);
                 });
 
                 function feedback(response) {
@@ -172,16 +191,13 @@
                     if(data.deleted === 0) {
                         Toast.show($this, "Sorry!, Somehow it's not deleted.", 5000);
                     }
-                    $this.$refs.sitewise.setSiteData(data.siteData);
+                    $this.$refs.siteWiseComponent.setSiteData(data.siteData);
                 }
 
             },
             doAction(action, allData, seletedData, ids) {
 
-                if(seletedData && seletedData.length > 0) {
-                    console.log(seletedData)
-                }
-                if(action == "add") {
+                if(action === "add") {
                     this.actionAdd(allData, seletedData, ids);
                 } else {
                     this.actionRemove(allData, seletedData, ids);

@@ -2,14 +2,11 @@
 
 @section('content')
 
-    <div class="row border-bottom">
-        <div class="col-md-6">
-            <h3>{!! htcms_get_module_name(request()->module_info) !!}</h3>
-        </div>
-        <div class="pull-right back-link">
-            <a href="{{$backURL}}">Back</a>
-        </div>
-    </div>
+    <title-bar data-title="{!! htcms_get_module_name(request()->module_info) !!}"
+               data-back-url="{{$backURL}}"
+               data-show-copy="false"
+               data-show-paste="false"
+    ></title-bar>
 
     @php
 
@@ -45,7 +42,7 @@
                     {!! FormHelper::input('hidden', 'actionPerformed', $actionPerformed) !!}
 
 
-                    <div class="form-group">
+                    <div class="form-group row">
 
                         <div class="col-sm-2">
                             {!!  FormHelper::label('name', 'Name') !!}
@@ -57,7 +54,7 @@
 
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group row">
 
                         <div class="col-sm-2">
                             {!!  FormHelper::label('sub_title', 'Sub Title') !!}
@@ -68,7 +65,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group row">
 
                         <div class="col-sm-2">
                             {!!  FormHelper::label('controller_name', 'Controller Name') !!}
@@ -85,7 +82,7 @@
 
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group row">
 
                         <div class="col-sm-2">
                             {!!  FormHelper::label('parent_id', 'Parent') !!}
@@ -101,7 +98,7 @@
 
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group row">
 
                         <div class="col-sm-2">
                             {!!  FormHelper::label('icon_css', 'Icon CSS') !!}
@@ -112,7 +109,7 @@
                         </div>
 
                     </div>
-                    <div class="form-group">
+                    <div class="form-group row">
 
                         <div class="col-sm-2">
                             {!!  FormHelper::label('list_view_name', 'Listing View Name') !!}
@@ -123,7 +120,7 @@
                         </div>
 
                     </div>
-                    <div class="form-group">
+                    <div class="form-group row">
 
                         <div class="col-sm-2">
                             {!!  FormHelper::label('edit_view_name', 'Edit View Name') !!}
@@ -137,8 +134,7 @@
 
                     <div class="row">
                         <div class="form-group center-align">
-                            <input type="submit" name="submit" value="Save" class="btn btn-success" />
-                            <a href="{{$backURL ?? request()->headers->get('referer')}}" class="btn btn-default">Cancel</a>
+                            <input type="submit" name="submit" value="Save" class="btn btn-success btn-from-submit" /> <a href="{{$backURL ?? request()->headers->get('referer')}}" class="btn btn-outline-secondary">Cancel</a>
                         </div>
                     </div>
 

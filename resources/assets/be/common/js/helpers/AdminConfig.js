@@ -22,7 +22,11 @@ export default class AdminConfig {
     }
 
     admin_asset(path) {
-        return this.get("app_url")+"/"+this.get("assets_path")+"/"+path;
+        return this.get("app_url")+"/"+this.get("theme_assets")+"/"+path;
+    }
+
+    get_media(path) {
+        return this.get("media_path")+"/"+path;
     }
 };
 

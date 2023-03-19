@@ -1,16 +1,9 @@
 @extends(htcms_admin_config('theme').'.index')
 
 @section('content')
-
-    <div class="row border-bottom">
-        <div class="col-md-6">
-            <h3> {!! htcms_get_module_name(request()->module_info) !!} </h3>
-
-        </div>
-        <div class="pull-right back-link">
-            <a href="{{$backURL}}">Back</a>
-        </div>
-    </div>
+    <title-bar data-title="{!! htcms_get_module_name(request()->module_info) !!}"
+        data-back-url="{{$backURL}}"
+        ></title-bar>
 
     @php
 
@@ -24,7 +17,7 @@
 
     @endphp
         <div class="row">
-            <div class="admin-form">
+            <div class="col-auto">
                 <module-permission
 
                         data-back-url="{{$backURL}}"

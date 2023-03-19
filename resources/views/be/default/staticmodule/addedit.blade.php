@@ -65,11 +65,11 @@
                     <div class="form-group">
 
                         <div class="col-sm-2">
-                            {!!  FormHelper::label('lang_title', 'Title') !!}
+                            {!!  FormHelper::label('alias', 'Alias') !!}
                         </div>
 
                         <div class="col-sm-10">
-                            {!! FormHelper::input('text', 'lang_title', $lang["title"] , array('class'=>'form-control', 'required'=>'required')) !!}
+                            {!! FormHelper::input('text', 'alias', $alias , array('class'=>'form-control', 'required'=>'required')) !!}
                         </div>
 
                     </div>
@@ -77,11 +77,11 @@
                     <div class="form-group">
 
                         <div class="col-sm-2">
-                            {!!  FormHelper::label('alias', 'Alias') !!}
+                            {!!  FormHelper::label('lang_title', 'Title') !!}
                         </div>
 
                         <div class="col-sm-10">
-                            {!! FormHelper::input('text', 'alias', $alias , array('class'=>'form-control', 'required'=>'required')) !!}
+                            {!! FormHelper::input('text', 'lang_title', $lang["title"] , array('class'=>'form-control', 'required'=>'required')) !!}
                         </div>
 
                     </div>

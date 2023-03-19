@@ -1,14 +1,10 @@
 <template>
-    <div class="btn-group">
-        <button type="button" class="btn btn-default">
+    <div class="dropdown">
+        <a :class="'btn btn-secondary dropdown-toggle '+btnCss" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" @click="toggleMenu()">
             {{current.label}}
-        </button>
-        <button type="button" @click="toggleMenu()" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <span class="caret"></span>
-            <span class="sr-only">Toggle Dropdown</span>
-        </button>
-        <ul class="dropdown-menu" :style="display" @click="toggleMenu()" ref="dropdownMenu">
-            <li :class="isActive(item)" v-for="(item, index) in lists" @click="setCurrent(index)"><a href="javascript:void(0)">{{item.label}}</a></li>
+        </a>
+        <ul class="dropdown-menu shadow" :style="display" ref="dropdownMenu">
+            <li :class="isActive(item)" v-for="(item, index) in lists" @click="setCurrent(index)">{{item.label}}</li>
         </ul>
     </div>
 </template>
@@ -26,7 +22,8 @@
             'dataOptions',
             'dataSelected',
             'dataParser',
-            'dataOnChange'
+            'dataOnChange',
+            'dataBtnCss'
             ],
         data() {
           return {
@@ -35,13 +32,14 @@
               lists:(typeof this.dataOptions != "undefined" && typeof this.dataOptions == "string") ? JSON.parse(this.dataOptions) : this.dataOptions,
               current:{},
               selectedIndex:(typeof this.dataSelected == "undefined") ? 0 : parseInt(this.dataSelected),
-              openCSS:''
+              openCSS:'',
+              btnCss:(typeof this.dataBtnCss == "undefined") ? "" : this.dataBtnCss
           }
         },
         computed: {
           onChange() {
               let method = (typeof this.dataOnChange == "undefined") ? null : this.dataOnChange;
-              if(typeof method == "string" && method !== null) {
+              if(typeof method == "string") {
                   return eval(method);
               }
               return method;
@@ -49,17 +47,17 @@
         },
         methods: {
             toggleMenu() {
-                this.display = (this.display=="") ? "display:block" : "";
-                if(this.display!="") {
+                this.display = (this.display==="") ? "display:block" : "";
+                if(this.display!=="") {
                     //this.openCSS = 'animated slideInDown';
                     this.bindDocumentClick();
                 }
             },
             isActive(item) {
-                if(this.current.value == item.value) {
-                    return "active";
+                if(this.current.value === item.value) {
+                    return "dropdown-item active hand";
                 }
-                return "";
+                return "dropdown-item hand";
             },
             normalizeData() {
                 let formatter = this.formatter;
@@ -94,7 +92,7 @@
                 if ( (element !== target) && !element.contains(target)) {
                     this.display = "";
                     this.unBindDocumentClick();
-                };
+                }
             },
             bindDocumentClick() {
 

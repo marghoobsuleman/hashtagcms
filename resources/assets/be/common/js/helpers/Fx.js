@@ -1,106 +1,84 @@
-
-/** Effects
- * dependency: animcss
- */
-export class FX {
+import { animate,glide } from "motion";
+export class Fx {
 
     static come(div, cb) {
-        div = (typeof div == "string") ? document.getElementById(div) : div;
-        Velocity(div, "fadeIn").then(function() {
-            if(cb) {
-                cb.apply(this, arguments);
-            };
+        document.querySelectorAll(div).forEach((e)=> {
+            e.style.display = "";
         });
-    };
-
-    static out(div, cb) {
-        div = (typeof div == "string") ? document.getElementById(div) : div;
-        Velocity(div, "fadeOut").then(function() {
-            if(cb) {
-                cb.apply(this, arguments);
-            };
-        });
-    };
-
-
-    static highlight(div, cb) {
-        div = (typeof div == "string") ? document.getElementById(div) : div;
-        let backgroundColor = div.style.backgroundColor == "" ? "#fff" : div.style.backgroundColor;
-
-        Velocity(div, {opacity:0, backgroundColor:"#dcdc2a"}, {duration:500}).then(function() {
-            Velocity(div, {opacity:1, backgroundColor:backgroundColor}, {duration:500}).then(function () {
-                if(cb) {
-                    cb.apply(this, arguments);
-                }
-            });
-        });
-
-    }
-
-    static slideDown(div, cb) {
-        div = (typeof div == "string") ? document.getElementById(div) : div;
-        var oldDisplay = div.style.display;
-        if(oldDisplay=="none") {
-            Velocity(div, "slideDown").then(function(arg) {
-                div.style.display = (oldDisplay=="none") ? "" : oldDisplay;
-                if(cb) {
-                    cb.apply(this, arguments);
-                };
-            });
-        }
-    };
-
-    static slideUp(div, cb) {
-        div = (typeof div == "string") ? document.getElementById(div) : div;
-        Velocity(div, "slideUp").then(function(arg) {
+        animate(div, { opacity: [0,1] },{ duration: 1 }).finished.then(() => {
             if(cb) {
                 cb.apply(this, arguments);
             }
         });
     }
 
-    static toggleSlide(div, cb) {
-        div = (typeof div == "string") ? document.getElementById(div) : div;
-        var display = div.style.display;
-        if(display == "") {
-            this.slideUp(div, cb);
-        } else {
-            this.slideDown(div,  cb);
-        }
-    };
+    static out(div, cb) {
+        //div = (typeof div == "string") ? document.getElementById(div) : div;
+        animate(div, { opacity: [1,0] },{ duration: 1 }).finished.then(() => {
+            document.querySelectorAll(div).forEach((e)=> {
+                e.style.display = "none";
+            });
+            if(cb) {
+                cb.apply(this, arguments);
+            }
+        });
+    }
 
-    static scrollWinTo(div, cb) {
-        if(document.getElementById(div)) {
-            Velocity(document.getElementById(div), "scroll", {
-                duration: 500,
-                complete: function () {
-                    if(cb) {
-                        cb.apply(this, arguments);
-                    }
+
+    static highlight(div, cb) {
+        div = (typeof div === "string") ? document.getElementById(div) : div;
+        let backgroundColor = div.style.backgroundColor === "" ? "#fff" : div.style.backgroundColor;
+        animate(div, { backgroundColor:"#fff3cd" },{ duration: 0.5 }).finished.then(() => {
+            animate(div, { backgroundColor:backgroundColor },{ duration: 1 }).finished.then(() => {
+                if(cb) {
+                    cb.apply(this, arguments);
                 }
             });
+        });
+
+    }
+
+    static scrollWinTo(div, cb) {
+        let ele = document.querySelector(div);
+        if(ele) {
+            window.scrollTo({
+                top: ele.offsetTop,
+                behavior: 'smooth'
+            });
+            setTimeout(()=> {
+                if(cb) {
+                    cb.apply(this, arguments);
+                }
+            }, 700)
+
         }
     };
 
     static slideLeft(div, cb) {
-        div = (typeof div == "string") ? document.getElementById(div) : div;
+        div = document.querySelector(div);
         let old = div.getBoundingClientRect();
         div.oldProp = old;
-        Velocity(div, {width:0}).then(function() {
+        animate(
+            div,
+            { x: 0 },
+            { easing: glide({ velocity: - (window.outerWidth + div.getBoundingClientRect().width) }) }
+        ).finished.then(() => {
             if(cb) {
                 cb.apply(this, arguments);
-            };
-            div.style.display = "none";
+            }
         });
-    };
+    }
 
     static slideRight(div, cb) {
-        div = (typeof div == "string") ? document.getElementById(div) : div;
-        let width = (div.oldProp) ? div.oldProp.width : div.getBoundingClientRect().width;
-        Velocity(div, {width:width}).then(function() {
+        div = document.querySelector(div);
+        animate(
+            div,
+            { x: 0 },
+            { easing: glide({ velocity: (window.outerWidth + div.getBoundingClientRect().width) }) }
+        ).finished.then(() => {
             if(cb) {
                 cb.apply(this, arguments);
-            };
+            }
         });
     }
 }

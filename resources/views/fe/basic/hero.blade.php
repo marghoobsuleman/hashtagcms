@@ -4,17 +4,17 @@
 @endphp
 <section class="hero" id="hero">
     <div class="hero-inner hero-bg-{{$rnm}}">
-        <div class="container">
-            <div>
-                <div class="hero-text">
-                    {!! ____("hashtagcms::modules.hero_text_1") !!}
-                </div>
-                <div></div>
-                <div class="hero-text">
-                    {!! ____("hashtagcms::modules.hero_text_2") !!}
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-4 hero-text">
+                {!! ____("hashtagcms::modules.hero_text_1") !!}
                 </div>
             </div>
-
+            <div class="row">
+                            <div class="col-lg-4 hero-text">
+                            {!! ____("hashtagcms::modules.hero_text_2") !!}
+                            </div>
+            </div>
         </div>
     </div>
 </section>

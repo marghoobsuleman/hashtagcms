@@ -11,7 +11,7 @@
 </template>
 
 <script>
-    import SplitButton from '../library/SplitButton.vue';
+    import SplitButton from '../library/splitButton';
     import {EventBus} from "../helpers/event-bus";
 
     export default {

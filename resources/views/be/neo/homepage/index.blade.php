@@ -15,14 +15,8 @@
         $platforms = isset($siteInfo->platform) ? $siteInfo->platform : [];
 
     @endphp
-
-
-    <div class="row border-bottom">
-        <div class="col-md-6">
-            <h3><small> <left-menu-toggle data-icon-css="fa fa-bars hand" data-icon-css-off="fa fa-bars hand"></left-menu-toggle></small> {!! htcms_get_module_name(request()->module_info) !!}</h3>
-        </div>
-    </div>
-    <admin-homepage
+    <title-bar data-title="{!! htcms_get_module_name(request()->module_info) !!}" data-show-copy="false" data-show-paste="false" data-show-back="false" data-show-expand="true"></title-bar>
+    <page-manager
             data-site-id="{{$site_id}}"
             data-microsite-id="{{$microsite_id}}"
             data-platform-id="{{$platform_id}}"
@@ -42,6 +36,6 @@
             data-is-module-readonly="{{$isModuleReadonly}}"
             data-all-sites="{{json_encode($allSites)}}"
     >
-    </admin-homepage>
+    </page-manager>
 @endsection
 

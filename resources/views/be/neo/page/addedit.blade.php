@@ -2,14 +2,7 @@
 
 @section('content')
 
-    <div class="row border-bottom">
-        <div class="col-md-6">
-            <h3>{!! htcms_get_module_name(request()->module_info) !!}</h3>
-        </div>
-        <div class="pull-right back-link">
-            <a href="{{$backURL}}">Back</a>
-        </div>
-    </div>
+    <title-bar data-title="{!! htcms_get_module_name(request()->module_info) !!}" data-back-url="{{$backURL}}"></title-bar>
 
     @php
 
@@ -91,40 +84,40 @@
 
                 {!! FormHelper::input('hidden', 'site_id', $site_id) !!}
 
-                <div class="form-group hide">
+                <div class="form-group row hide">
 
                     <div class="col-sm-2">
                         {!!  FormHelper::label('content_type', 'Content Type') !!}
                     </div>
 
                     <div class="col-sm-10">
-                        {!! FormHelper::select('content_type', $contentTypes, array(), $content_type, "plain_array", "") !!}
+                        {!! FormHelper::select('content_type', $contentTypes, array('class'=>'form-select select-sm'), $content_type, "plain_array", "") !!}
                     </div>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group row">
 
                     <div class="col-sm-2">
                         {!!  FormHelper::label('category_id', 'Content Category') !!}
                     </div>
 
                     <div class="col-sm-10">
-                        {!! FormHelper::select('category_id', $contentCategories, array(), $category_id,  array("value"=>"id", "label"=>"lang.name"), "Select") !!}
+                        {!! FormHelper::select('category_id', $contentCategories, array('class'=>'form-select select-sm'), $category_id,  array("value"=>"id", "label"=>"lang.name"), "Select") !!}
                     </div>
                 </div>
 
-                <div id="parent_div" class="form-group" style="display: none">
+                <div id="parent_div" class="form-group row" style="display: none">
 
                     <div class="col-sm-2">
                         {!!  FormHelper::label('parent_id', 'Parent Category') !!}
                     </div>
 
                     <div class="col-sm-10">
-                        {!! FormHelper::select('parent_id', $contentCategories, array(), $parent_id,  array("value"=>"id", "label"=>"lang.name"), "Select") !!}
+                        {!! FormHelper::select('parent_id', $contentCategories, array('class'=>'form-select select-sm'), $parent_id,  array("value"=>"id", "label"=>"lang.name"), "Select") !!}
                     </div>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group row">
 
                     <div class="col-sm-2">
                         {!!  FormHelper::label('lang_name', 'Name') !!}
@@ -135,7 +128,7 @@
                     </div>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group row">
 
                     <div class="col-sm-2">
                         {!!  FormHelper::label('lang_title', 'Title') !!}
@@ -146,7 +139,7 @@
                     </div>
                 </div>
 
-                <div class="form-group hide">
+                <div class="form-group row hide">
 
                     <div class="col-sm-2">
                         {!!  FormHelper::label('alias', 'Alias') !!}
@@ -157,7 +150,7 @@
                     </div>
                 </div>
 
-                <div class="form-group hide">
+                <div class="form-group row hide">
 
                     <div class="col-sm-2">
                         {!!  FormHelper::label('lang_active_key', 'Active Key') !!}
@@ -168,18 +161,18 @@
                     </div>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group row">
 
                     <div class="col-sm-2">
                         {!!  FormHelper::label('platform_id', 'Platform') !!}
                     </div>
 
                     <div class="col-sm-10">
-                        {!! FormHelper::select('platform_id', $platforms, array(), $platform_id, array("label"=>"name","value"=>"id")) !!}
+                        {!! FormHelper::select('platform_id', $platforms, array('class'=>'form-select select-sm'), $platform_id, array("label"=>"name","value"=>"id")) !!}
                     </div>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group row">
 
                     <div class="col-sm-2">
                         {!!  FormHelper::label('link_rewrite', 'Url') !!}
@@ -190,7 +183,7 @@
                     </div>
 
                 </div>
-                <div class="form-group">
+                <div class="form-group row">
 
                     <div class="col-sm-2">
                         {!!  FormHelper::label('menu_placement', 'Menu Group') !!}
@@ -198,14 +191,14 @@
 
                     <div class="col-sm-10">
 
-                        {!! FormHelper::select('menu_placement', $menuPlacements, array(), $menu_placement, "plain_array") !!}
+                        {!! FormHelper::select('menu_placement', $menuPlacements, array('class'=>'form-select select-sm'), $menu_placement, "plain_array") !!}
 
                     </div>
 
                 </div>
 
 
-                <div class="form-group hide">
+                <div class="form-group row hide">
                     <div class="col-sm-2">
                         {!!  FormHelper::label('link_navigation', 'Full Url [optional]') !!}
                     </div>
@@ -216,7 +209,7 @@
                 </div>
 
 
-                <div class="form-group">
+                <div class="form-group row">
 
                     <div class="col-sm-2">
                         {!!  FormHelper::label('lang_description', 'Description') !!}
@@ -227,7 +220,7 @@
                     </div>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group row">
 
                     <div class="col-sm-2">
                         {!!  FormHelper::label('lang_page_content', 'Body') !!}
@@ -239,7 +232,7 @@
 
                 </div>
 
-                <div class="form-group">
+                <div class="form-group row">
 
                     <div class="col-sm-2">
                         {!!  FormHelper::label('header_content', 'Header Content') !!}
@@ -250,7 +243,7 @@
                     </div>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group row">
 
                     <div class="col-sm-2">
                         {!!  FormHelper::label('footer_content', 'Footer Content') !!}
@@ -262,7 +255,7 @@
 
                 </div>
 
-                <div class="form-group">
+                <div class="form-group row">
 
                     <div class="col-sm-2">
                         {!!  FormHelper::label('exclude_in_listing', 'Exclude in Listing?') !!}
@@ -274,33 +267,33 @@
 
                 </div>
 
-                <div class="form-group">
+                <div class="form-group row">
                     <fieldset class="fieldset">
                         <legend>SEO Settings</legend>
 
-                        <div class="form-group">
+                        <div class="form-group row">
 
                             <div class="col-sm-2">
                                 {!!  FormHelper::label('lang_target', 'Target') !!}
                             </div>
 
                             <div class="col-sm-10">
-                                {!! FormHelper::select('lang_target', $targetTypes, array(), $lang["target"], "plain_array") !!}
+                                {!! FormHelper::select('lang_target', $targetTypes, array('class'=>'form-select select-sm'), $lang["target"], "plain_array") !!}
                             </div>
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group row">
 
                             <div class="col-sm-2">
                                 {!!  FormHelper::label('lang_link_relation', 'Relation') !!}
                             </div>
 
                             <div class="col-sm-10">
-                                {!! FormHelper::select('lang_link_relation', $relationTypes, array(), $lang["link_relation"],"plain_array") !!}
+                                {!! FormHelper::select('lang_link_relation', $relationTypes, array('class'=>'form-select select-sm'), $lang["link_relation"],"plain_array") !!}
                             </div>
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group row">
 
                             <div class="col-sm-2">
                                 {!!  FormHelper::label('lang_meta_title', 'Page Title') !!}
@@ -311,7 +304,7 @@
                             </div>
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group row">
 
                             <div class="col-sm-2">
                                 {!!  FormHelper::label('lang_meta_keywords', 'Meta Keywords') !!}
@@ -323,7 +316,7 @@
 
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group row">
 
                             <div class="col-sm-2">
                                 {!!  FormHelper::label('lang_meta_description', 'Meta Description') !!}
@@ -334,7 +327,7 @@
                             </div>
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group row">
 
                             <div class="col-sm-2">
                                 {!!  FormHelper::label('lang_meta_robots', 'Meta Robots') !!}
@@ -345,7 +338,7 @@
                             </div>
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group row">
 
                             <div class="col-sm-2">
                                 {!!  FormHelper::label('lang_meta_canonical', 'Meta Canonical') !!}
@@ -358,7 +351,7 @@
                     </fieldset>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group row">
 
                     <div class="col-sm-2">
                         {!!  FormHelper::label('attachment', 'Attachment') !!}
@@ -369,7 +362,7 @@
                     </div>
 
                 </div>
-                <div class="form-group">
+                <div class="form-group row">
 
                     <div class="col-sm-2">
                         {!!  FormHelper::label('img', 'Image') !!}
@@ -385,10 +378,10 @@
 
                 </div>
 
-                <div class="form-group">
+                <div class="form-group row">
                     <fieldset class="fieldset">
                         <legend>Publishing Options</legend>
-                        <div class="form-group">
+                        <div class="form-group row">
 
                             <div class="col-sm-2">
                                 {!!  FormHelper::label('author', 'Author') !!}
@@ -398,7 +391,7 @@
                                 {!! FormHelper::input('text', 'author', $author, array('class'=>'form-control')) !!}
                             </div>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group row">
 
                             <div class="col-sm-2">
                                 {!!  FormHelper::label('content_source', 'Content Source') !!}
@@ -408,7 +401,7 @@
                                 {!! FormHelper::input('text', 'content_source', $content_source, array('class'=>'form-control')) !!}
                             </div>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group row">
                             <div class="col-sm-2">
                                 {!!  FormHelper::label('enable_comments', 'Enable Comments') !!}
                             </div>
@@ -416,7 +409,7 @@
                                 {!! FormHelper::checkbox('enable_comments', $enable_comments) !!}
                             </div>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group row">
                             <div class="col-sm-2">
                                 {!!  FormHelper::label('required_login', 'Required Login?') !!}
                             </div>
@@ -425,7 +418,7 @@
                             </div>
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group row">
                             <div class="col-sm-2">
                                 {!!  FormHelper::label('publish_status', 'Published') !!}
                             </div>
@@ -435,29 +428,34 @@
                         </div>
                     </fieldset>
                 </div>
-
                 <div class="row">
                     <div class="form-group center-align">
-                        <input type="submit" name="submit" value="Save" class="btn btn-success"/>
-                        <a href="{{$backURL ?? request()->headers->get('referer')}}" class="btn btn-default">Cancel</a>
+                        <input type="submit" name="submit" value="Save" class="btn btn-success btn-from-submit"/> <a href="{{$backURL ?? request()->headers->get('referer')}}" class="btn btn-outline-secondary">Cancel</a>
                     </div>
                 </div>
             </form>
-
+            <image-gallery ref="imageGallery"></image-gallery>
         </div>
     </div>
-
-
     @include(htcms_admin_get_view_path('common.validationerror-js'))
 @endsection
+
 
 @push('scripts')
     <script src="{{htcms_admin_asset('js/vendors/tinymce/tinymce.min.js')}}"></script>
     <script src="{{htcms_admin_asset('js/editor.js')}}"></script>
     <script>
-        EditorHelper.makeRichEditor("#lang_page_content");
-        EditorHelper.makeRichEditor("#lang_description", {height:300});
-        PageManager.init("<?php echo $actionPerformed; ?>", "<?php echo $content_type ?>", "<?php echo $id ?>");
+        window.addEventListener("load", function () {
+            try {
+                EditorHelper.makeRichEditor("#lang_page_content");
+                EditorHelper.makeRichEditor("#lang_description", {height:300});
+                PageManager.init("<?php echo $actionPerformed; ?>", "<?php echo $content_type ?>", "<?php echo $id ?>");
+            } catch (e) {
+                console.error(e.message, e.lineNumber);
+            }
+
+        })
+
     </script>
 
 @endpush

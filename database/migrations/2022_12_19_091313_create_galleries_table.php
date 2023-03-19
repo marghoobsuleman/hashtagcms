@@ -17,9 +17,9 @@ return new class extends Migration
             $table->id();
             $table->bigInteger("site_id", false, true);
             $table->string("path", 255);
-            $table->string("type", 50);
-            $table->string("group", 50)->nullable();
-            $table->string("key", 50)->nullable();
+            $table->string("media_type", 50);
+            $table->string("group_name", 50)->nullable();
+            $table->string("media_key", 50)->nullable();
             $table->integer("position")->nullable();
             $table->timestamps();
             $table->softDeletes();

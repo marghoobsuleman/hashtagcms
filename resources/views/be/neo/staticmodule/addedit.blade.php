@@ -2,14 +2,7 @@
 
 @section('content')
 
-    <div class="row border-bottom">
-        <div class="col-md-6">
-            <h3>{!! htcms_get_module_name(request()->module_info) !!}</h3>
-        </div>
-        <div class="pull-right back-link">
-            <a href="{{$backURL}}">Back</a>
-        </div>
-    </div>
+    <title-bar data-title="{!! htcms_get_module_name(request()->module_info) !!}" data-back-url="{{$backURL}}"></title-bar>
 
     @php
 
@@ -20,7 +13,8 @@
         $lang["lang_id"] = "";
         $lang["title"] = old('lang_title');
         $lang["content"] = old('lang_title');
-
+        $insert_by = old('insert_by', Auth()->user()->id);
+        $update_by = old('insert_by', $insert_by);
 
         $alias = old('alias');
 
@@ -58,23 +52,11 @@
 
                     {!! FormHelper::input('hidden', 'actionPerformed', $actionPerformed) !!}
 
-                    {!! FormHelper::input('hidden', 'insert_by', Auth()->user()->id) !!}
-                    {!! FormHelper::input('hidden', 'update_by', Auth()->user()->id) !!}
+                    {!! FormHelper::input('hidden', 'insert_by', $insert_by) !!}
+                    {!! FormHelper::input('hidden', 'update_by', $update_by) !!}
 
 
-                    <div class="form-group">
-
-                        <div class="col-sm-2">
-                            {!!  FormHelper::label('lang_title', 'Title') !!}
-                        </div>
-
-                        <div class="col-sm-10">
-                            {!! FormHelper::input('text', 'lang_title', $lang["title"] , array('class'=>'form-control', 'required'=>'required')) !!}
-                        </div>
-
-                    </div>
-
-                    <div class="form-group">
+                    <div class="form-group row">
 
                         <div class="col-sm-2">
                             {!!  FormHelper::label('alias', 'Alias') !!}
@@ -86,7 +68,19 @@
 
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group row">
+
+                        <div class="col-sm-2">
+                            {!!  FormHelper::label('lang_title', 'Title') !!}
+                        </div>
+
+                        <div class="col-sm-10">
+                            {!! FormHelper::input('text', 'lang_title', $lang["title"] , array('class'=>'form-control', 'required'=>'required')) !!}
+                        </div>
+
+                    </div>
+
+                    <div class="form-group row">
 
                         <div class="col-sm-2">
                             {!!  FormHelper::label('lang_content', 'Content') !!}
@@ -100,8 +94,7 @@
 
                     <div class="row">
                         <div class="form-group center-align">
-                            <input type="submit" name="submit" value="Save" class="btn btn-success" />
-                            <a href="{{$backURL ?? request()->headers->get('referer')}}" class="btn btn-default">Cancel</a>
+                            <input type="submit" name="submit" value="Save" class="btn btn-success btn-from-submit" /> <a href="{{$backURL ?? request()->headers->get('referer')}}" class="btn btn-outline-secondary">Cancel</a>
                         </div>
                     </div>
                 </form>

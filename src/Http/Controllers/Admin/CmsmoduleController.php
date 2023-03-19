@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 
 use MarghoobSuleman\HashtagCms\Models\CmsModule;
 use MarghoobSuleman\HashtagCms\Core\Helpers\Message;
+use MarghoobSuleman\HashtagCms\Models\QueryLogger;
 
 class CmsmoduleController extends BaseAdminController
 {
@@ -129,8 +130,10 @@ class CmsmoduleController extends BaseAdminController
                   $where = $posData["where"]["id"];
                   $saveData["position"] = $posData["position"];
                   $arrSaveData = array("model"=>$this->dataSource,  "data"=>$saveData);
+                  QueryLogger::setLogginStatus(false);
                   $savedData = $this->saveData($arrSaveData, $where);
                   array_push($a,$posData);
+                    QueryLogger::setLogginStatus(true);
             }
       }
       return array("indexUpdated"=>$a);

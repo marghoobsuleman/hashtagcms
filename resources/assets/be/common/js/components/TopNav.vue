@@ -1,45 +1,46 @@
 <template>
-  <nav class="navbar navbar-inverse" id="topNavBar">
+  <nav class="navbar navbar-expand-lg bg-light border-bottom">
     <div class="container-fluid">
-      <div class="navbar-header">
-
-        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" aria-expanded="false">
-          <left-menu-toggle data-icon-css="fa fa-bars hand" data-icon-css-off="fa fa-bars hand"></left-menu-toggle>
-          <span class="sr-only">Toggle navigation</span>
-        </button>
-        <a class="navbar-brand" href="/" target="_blank"><img align :src="logo" :height="logoHeight" /> {{siteName}}</a>
-      </div>
-      <div class="collapse navbar-collapse">
-        <ul class="nav navbar-nav" v-if="siteCombo">
-          <li style="padding-top: 16px"><global-site-button :data-current-site="dataCurrentSite"></global-site-button></li>
-        </ul>
-        <form class="navbar-form navbar-left hide">
-          <div class="form-group">
-            <input type="text" class="form-control" placeholder="Search">
-          </div>
-          <button type="submit" class="btn btn-default">Submit</button>
-        </form>
-        <ul class="nav navbar-nav navbar-right">
-          <li><a href="#"> Welcome {{userName}}! </a></li>
-          <li class="dropdown">
-            <a href="/logout" @click.prevent="logout">Logout</a>
+      <a class="navbar-brand" href="/" target="_blank"><img :src="logo" :height="logoHeight" /> {{siteName}} </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+              data-bs-target="#navbarScroll" aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarScroll">
+        <ul class="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll" style="--bs-scroll-height: 100px;">
+          <li class="nav-item">
+            <global-site-button :data-current-site="dataCurrentSite"
+                                :data-supported-sites="dataSupportedSites" :data-is-admin="dataIsAdmin"></global-site-button>
           </li>
         </ul>
+        <div class="d-flex">
+          Welcome &nbsp; <span class="text-success">{{ userName }}!</span>
+          <ul class="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll ms-1" style="--bs-scroll-height: 100px;">
+            <li class="nav-item">
+              <a href="/logout" @click.prevent="logout">Logout</a>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   </nav>
 </template>
 
 <script>
-
+import GlobalSiteButton from "./globalSiteButton.vue";
 export default {
+  components: {
+    'global-site-button':GlobalSiteButton
+  },
   mounted() {
     //console.log('dataCurrentSite '+this.dataCurrentSite);
   },
   props:[
     'dataUsername',
-    'dataSitename',
+    'dataSiteName',
     'dataCurrentSite',
+    'dataSupportedSites',
+    'dataIsAdmin',
     'dataSiteCombo',
     'dataLogo',
     'dataLogoHeight'
@@ -51,10 +52,10 @@ export default {
   },
   data() {
     return {
-      siteName:(this.dataSitename || "hashtagcms.org"),
+      siteName:(this.dataSiteName || "hashtagcms.org"),
       userName:(this.dataUsername),
-      isLoggedIn:(this.dataUsername && this.dataUsername != "") ? true : false,
-      siteCombo:(typeof this.dataSiteCombo === "undefined" || this.dataSiteCombo === "false") ? false : true,
+      isLoggedIn:!!(this.dataUsername && this.dataUsername !== ""),
+      siteCombo:(!(typeof this.dataSiteCombo == "undefined" || this.dataSiteCombo === "false")),
       logoHeight:(typeof this.dataLogoHeight === "undefined" || this.dataLogoHeight === "") ? 50 : this.dataLogoHeight
 
     }

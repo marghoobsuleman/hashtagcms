@@ -6,7 +6,7 @@
           Copy From:
         </div>
         <div class="col-sm-4">
-          <select class="form-control" v-model="sourceSiteId">
+          <select class="form-select" v-model="sourceSiteId">
             <option value="">Select Site</option>
             <option v-for="site in allSites" :value="site.id">{{ getLabel(site) }}</option>
           </select>
@@ -19,7 +19,7 @@
           Copy To:
         </div>
         <div class="col-sm-4">
-          <select class="form-control" v-model="targetSiteId">
+          <select class="form-select" v-model="targetSiteId">
             <option value="">Select Site</option>
             <option v-for="site in allSites" :value="site.id">{{ getLabel(site) }}</option>
           </select>
@@ -55,7 +55,7 @@
 
 <script>
 
-import {Toast} from '../helpers/Common';
+import {Toast} from '../helpers/common';
 
 export default {
 

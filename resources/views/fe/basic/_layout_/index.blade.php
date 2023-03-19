@@ -8,13 +8,13 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     {!! app()->HashtagCms->layoutManager()->getHeaderContent(); !!}
     {!! app()->HashtagCms->layoutManager()->getMetaContent(); !!}
-
     <title>{!! app()->HashtagCms->layoutManager()->getTitle(); !!}</title>
     <script>
         let _siteProps_ = <?php echo htcms_get_site_props(true); ?>;
     </script>
 </head>
 <body>
+
 {!! app()->HashtagCms->layoutManager()->getBodyContent(); !!}
 
 <form id="logout-form" action="/login/doLogout" method="POST" style="display: none;">
@@ -27,19 +27,29 @@
 
 {!! app()->HashtagCms->layoutManager()->getFooterContent(); !!}
 
-@if(env('GOOGLE_TAG_MANAGER_KEY') !== '')
+@if(env('GOOGLE_TAG_MANAGER_KEY') != '')
+    <script async src="https://www.googletagmanager.com/gtag/js?id=<?php echo env('GOOGLE_TAG_MANAGER_KEY'); ?>"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
         gtag('config', "<?php echo env('GOOGLE_TAG_MANAGER_KEY'); ?>");
+
+        gtag('event', 'pageView', {
+            'pageName': (_siteProps_.pageId === -1) ? _siteProps_.categoryName : _siteProps_.pageName
+        });
     </script>
 @endif
+
 <script>
-    (function () {
-       HashtagCms.Analytics.init(_siteProps_);
-        //HashtagCms.Analytics.trackPageView(_siteProps_.categoryName + ""+_siteProps_.pageName)
-    })()
+    window.addEventListener("load", ()=> {
+        try {
+            HashtagCms.Analytics.init(_siteProps_);
+            //HashtagCms.Analytics.trackPageView(_siteProps_.categoryName + ""+_siteProps_.pageName)
+        } catch (e) {
+            console.error(e.message, "@", e.fileName);
+        }
+    });
 </script>
 </body>
 </html>

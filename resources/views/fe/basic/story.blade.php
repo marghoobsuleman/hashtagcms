@@ -5,14 +5,14 @@
             @php
                 $data = $data[0];
                 $hasContent = true;
-                $categoryId = $data->category_id;
-                $contentId = $data->id;
+                $categoryId = $data['category_id'];
+                $contentId = $data['id'];
 
                 $storyObj = htcms_get_shared_data('MODULE_STORY');
-                $title = isset($storyObj) ? $storyObj[0]->name : htcms_get_category_info('name');
+                $title = isset($storyObj) ? $storyObj[0]['name'] : htcms_get_category_info('name');
             @endphp
             <h1>{{$title}}</h1>
-            {!! $data->page_content !!}
+            {!! $data['page_content'] !!}
         @else
             @php
                 $hasContent = false;
@@ -40,7 +40,7 @@
 
 
 @if($hasContent)
-    @if($data->enable_comments == 1)
+    @if($data['enable_comments'] == 1)
         <section class="section-comments">
             <div class="container">
                 <h2>Post Comments</h2>

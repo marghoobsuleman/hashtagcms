@@ -1,5 +1,5 @@
 <template>
-  <a href="#" @click="goBack()" class="btn btn-default"><slot>Back in </slot><span>{{totalTime - timeRemaining}} {{seconds}}</span></a>
+  <a href="#" @click="goBack()" class="btn btn-outline-secondary"><slot>Back in </slot><span>{{totalTime - timeRemaining}} {{seconds}}</span></a>
 </template>
 
 <script>

@@ -2,14 +2,10 @@
 
 @section('content')
 
-    <div class="row border-bottom">
-        <div class="col-md-6">
-            <h3>{!! htcms_get_module_name(request()->module_info) !!}</h3>
-        </div>
-        <div class="pull-right back-link">
-            <a href="{{$backURL}}">Back</a>
-        </div>
-    </div>
+    <title-bar data-title="{!! htcms_get_module_name(request()->module_info) !!}"
+               data-back-url="{{$backURL}}"
+               data-copy-paste-auto-init="true"
+    ></title-bar>
 
     @php
 
@@ -19,15 +15,20 @@
         $name = old('name');
         $value = old('value');
         $site_id = old('site_id', htcms_get_siteId_for_admin());
-        $platform_id = old('platform_id');
+        $platform_id = old('platform_id', []);
         $is_public = old('is_public', 0);
+
+        $platform_select_name = "platform_id[]";
+
 
         //print_r($results);
 
         if(isset($results)) {
             extract($results);
+            if ($id > 0) {
+               $platform_select_name = "platform_id";
+            }
         }
-
 
 
         //work around if no lang
@@ -51,23 +52,25 @@
                     {!! FormHelper::input('hidden', 'backURL', $backURL) !!}
 
                     {!! FormHelper::input('hidden', 'actionPerformed', $actionPerformed) !!}
+                    {!! FormHelper::input('hidden', 'site_id', $site_id) !!}
+
 
                     @if(sizeof($siteGroups) > 0)
-                        <div class="form-group">
+                        <div class="form-group row">
 
                             <div class="col-sm-2">
                                 {!!  FormHelper::label('siteGroups', 'Choose Existing Group') !!}
                             </div>
 
                             <div class="col-sm-10">
-                                {!! FormHelper::select('siteGroups', $siteGroups, array('class'=>'form-control', 'onChange'=>'group_name.value = this.value'), '', "plain_array") !!}
+                                {!! FormHelper::select('siteGroups', $siteGroups, array('class'=>'form-select select-sm', 'onChange'=>'group_name.value = this.value'), '', "plain_array") !!}
 
                             </div>
 
                         </div>
                     @endif
 
-                    <div class="form-group">
+                    <div class="form-group row">
 
                         <div class="col-sm-2">
                             {!!  FormHelper::label('group_name', 'Site Group') !!}
@@ -81,7 +84,7 @@
 
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group row">
 
                         <div class="col-sm-2">
                             {!!  FormHelper::label('name', 'Name') !!}
@@ -92,7 +95,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group row">
 
                         <div class="col-sm-2">
                             {!!  FormHelper::label('value', 'Value') !!}
@@ -103,45 +106,20 @@
                         </div>
                     </div>
 
-
-                    <div class="form-group">
-
-                        <div class="col-sm-2">
-                            {!!  FormHelper::label('site_id', 'Site') !!}
-                        </div>
-
-                        <div class="col-sm-10">
-                            <site-button data-sites="{{json_encode($sites)}}" data-selected="{{$site_id}}"></site-button>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
+                    <div class="form-group row">
 
                         <div class="col-sm-2">
                             {!!  FormHelper::label('platform_id', 'Platform') !!}
                         </div>
 
                         <div class="col-sm-10">
-
-                            <platform-button
-                                    data-id="platform_id"
-
-                                    data-name="{{$id > 0 ? 'platform_id' : 'platform_id[]'}}"
-
-                                    data-site-id="{{$site_id}}"
-
-                                   @if($id > 0) data-selected="{{$platform_id}}" @endif
-
-                                    data-fetch-on-init="true"
-                                    @if($id === 0) data-multiple="true" @endif
-                            ></platform-button>
-
+                            {!! FormHelper::select($platform_select_name, $platforms, array('class'=>'form-select select-sm'), $platform_id) !!}
                         </div>
                     </div>
 
                     <fieldset class="fieldset">
                         <legend>Visibility</legend>
-                        <div class="form-group">
+                        <div class="form-group row">
 
                             <div class="col-sm-2">
                                 {!!  FormHelper::label('is_public', 'Is Public?') !!}
@@ -157,8 +135,7 @@
 
                     <div class="row">
                         <div class="form-group center-align">
-                            <input type="submit" name="submit" value="Save" class="btn btn-success" />
-                            <a href="{{$backURL ?? request()->headers->get('referer')}}" class="btn btn-default">Cancel</a>
+                            <input type="submit" name="submit" value="Save" class="btn btn-success btn-from-submit" /> <a href="{{$backURL ?? request()->headers->get('referer')}}" class="btn btn-outline-secondary">Cancel</a>
                         </div>
                     </div>
                 </form>

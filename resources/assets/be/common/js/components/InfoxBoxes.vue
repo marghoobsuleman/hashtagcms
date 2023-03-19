@@ -1,26 +1,28 @@
 <template>
-    <div>
-
-        <div v-if="hasAccess(module.id)" class="col-sm-3 hand" v-for="(module, index) in allModules" @click="navigate(module)" :title="module.name">
+    <template v-for="(module, index) in allModules">
+        <div v-if="hasAccess(module.id)" class="col-auto hand" @click="navigate(module)" :title="module.name">
             <info-box
                     :key="module.name+index"
-                      :data-info="module">
+                    :data-title="module.name"
+                    :data-sub-title="module.sub_title"
+                    :data-icon-css="module.icon_css"
+                    >
             </info-box>
-
         </div>
-    </div>
+    </template>
 </template>
 
 <script>
 
-    import InfoBox from '../library/InfoBox.vue';
+    import InfoBox from '../library/infoBox.vue';
 
     export default {
         components:{
             'info-box':InfoBox
         },
         mounted() {
-            console.log(this.modulesAllowed);
+            //console.log(this.modulesAllowed);
+          //
         },
         props: [
             'dataModules',

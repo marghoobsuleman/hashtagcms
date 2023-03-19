@@ -1,6 +1,6 @@
 <section class="sample-module">
     <div class="container">
-        <h2 class="alert-success alert">{{$moduleInfo['data_type']}} Module</h2>
+        <h2 class="alert-success alert">{{$moduleInfo['dataType']}} Module</h2>
         <p>
             This is a combination of service and query module. Sometime we need data from service and query both. <br />
             In this case data has two properties. ie. serviceData, queryData
@@ -14,7 +14,7 @@
         <h3>Service Data</h3>
         <div class="row">
             @php
-                $serviceData = $data['serviceData'];
+                $serviceData = $data['data'];
                 $queryData = $data['queryData'];
             @endphp
             @foreach($serviceData as $pic)

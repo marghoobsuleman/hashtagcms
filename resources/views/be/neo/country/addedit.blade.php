@@ -2,14 +2,10 @@
 
 @section('content')
 
-    <div class="row border-bottom">
-        <div class="col-md-6">
-            <h3>{!! htcms_get_module_name(request()->module_info) !!}</h3>
-        </div>
-        <div class="pull-right back-link">
-            <a href="{{$backURL}}">Back</a>
-        </div>
-    </div>
+    <title-bar data-title="{!! htcms_get_module_name(request()->module_info) !!}"
+               data-back-url="{{$backURL}}"
+               data-copy-paste-auto-init="true"
+    ></title-bar>
 
     @php
 
@@ -59,7 +55,7 @@
                 {!! FormHelper::input('hidden', 'actionPerformed', $actionPerformed) !!}
 
 
-                <div class="form-group">
+                <div class="form-group row">
 
                     <div class="col-sm-2">
                         {!!  FormHelper::label('lang_name', 'Country name') !!}
@@ -70,7 +66,7 @@
                     </div>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group row">
 
                     <div class="col-sm-2">
                         {!!  FormHelper::label('iso_code', 'ISO Code') !!}
@@ -84,7 +80,7 @@
 
                 </div>
 
-                <div class="form-group">
+                <div class="form-group row">
 
                     <div class="col-sm-2">
                         {!!  FormHelper::label('zone_id', 'Zone') !!}
@@ -92,12 +88,12 @@
 
                     <div class="col-sm-10">
 
-                        {!! FormHelper::select('zone_id', $zones, array(), $zone_id) !!}
+                        {!! FormHelper::select('zone_id', $zones, array("class"=>"form-select select-sm"), $zone_id) !!}
 
                     </div>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group row">
 
                     <div class="col-sm-2">
                         {!!  FormHelper::label('call_prefix', 'Call prefix') !!}
@@ -110,7 +106,7 @@
                     </div>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group row">
 
                     <div class="col-sm-2">
                         {!!  FormHelper::label('currency_id', 'Currency') !!}
@@ -118,12 +114,12 @@
 
                     <div class="col-sm-10">
 
-                        {!! FormHelper::select('currency_id', $currencies, array(), $currency_id) !!}
+                        {!! FormHelper::select('currency_id', $currencies, array("class"=>"form-select select-sm"), $currency_id) !!}
 
                     </div>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group row">
 
                     <div class="col-sm-2">
                         {!!  FormHelper::label('contains_states', 'Contains States?') !!}
@@ -137,7 +133,7 @@
 
                 </div>
 
-                <div class="form-group">
+                <div class="form-group row">
 
 
                     <div class="col-sm-2">
@@ -151,7 +147,7 @@
                     </div>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group row">
 
                     <div class="col-sm-2">
                         {!!  FormHelper::label('need_zip_code', 'Need Zip Code?') !!}
@@ -164,7 +160,7 @@
                     </div>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group row">
 
                     <div class="col-sm-2">
                         {!!  FormHelper::label('zip_code_format', 'Zip code format') !!}
@@ -178,7 +174,7 @@
 
                 </div>
 
-                <div class="form-group">
+                <div class="form-group row">
 
                     <div class="col-sm-2">
                         {!!  FormHelper::label('display_tax_label', 'Display Tax Label?') !!}
@@ -193,8 +189,7 @@
 
                 <div class="row">
                     <div class="form-group center-align">
-                        <input type="submit" name="submit" value="Save" class="btn btn-success" />
-                        <a href="{{$backURL ?? request()->headers->get('referer')}}" class="btn btn-default">Cancel</a>
+                        <input type="submit" name="submit" value="Save" class="btn btn-success btn-from-submit" /> <a href="{{$backURL ?? request()->headers->get('referer')}}" class="btn btn-outline-secondary">Cancel</a>
                     </div>
                 </div>
             </form>

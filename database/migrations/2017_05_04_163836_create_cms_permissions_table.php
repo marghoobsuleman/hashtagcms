@@ -54,4 +54,4 @@ return new class extends Migration
         Schema::dropIfExists('cms_permissions');
         Schema::enableForeignKeyConstraints();
     }
-}
+};

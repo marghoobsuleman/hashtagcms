@@ -1,14 +1,15 @@
 <template>
-    <split-button v-if="hasLanguage()"
+    <split-button  v-if="hasLanguage()"
                   :data-options="dataLanguages"
                   @change="setLanguage"
                   :data-parser="parseLang"
                   :data-selected="currentIndex"
+                  data-btn-css="lang"
                     >English</split-button>
 </template>
 
 <script>
-    import SplitButton from '../library/SplitButton.vue';
+    import SplitButton from '../library/splitButton.vue';
 
     export default {
 
@@ -56,7 +57,7 @@
             setLanguage(data) {
                 //console.log("changed happend")
 
-                var ajaxController = AdminConfig.admin_path(`ajax/setLanguage/${data.value}`);
+                let ajaxController = AdminConfig.admin_path(`ajax/setLanguage/${data.value}`);
 
                 axios.get(ajaxController)
                     .then(function (response) {

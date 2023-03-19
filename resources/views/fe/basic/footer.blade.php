@@ -3,12 +3,6 @@
         <div class="footer-widgets">
             <div class="row">
                 <div class="col-6 col-md-4">
-                    <h5 class="widget-title">{{__('hashtagcms::links.links')}}</h5>
-                    <ul class="list-footer">
-                        {!! htcms_get_header_menu_html() !!}
-                    </ul>
-                </div>
-                <div class="col-6 col-md-4">
                     <h5 class="widget-title">{{__('hashtagcms::links.support')}}</h5>
                     <ul class="list-footer">
                         <li class="nav-item"><a class="nav-link" href="{{htcms_get_path('contact')}}">{{__('hashtagcms::links.contact_us')}}</a></li>

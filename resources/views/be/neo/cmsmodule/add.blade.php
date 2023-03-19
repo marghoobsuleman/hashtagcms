@@ -2,15 +2,11 @@
 
 @section('content')
 
-    <div class="row border-bottom">
-        <div class="col-md-6">
-            <h3>{!! htcms_get_module_name(request()->module_info) !!}</h3>
-        </div>
-        <div class="pull-right back-link">
-            <a href="{{$backURL}}">Back</a>
-        </div>
-    </div>
-
+    <title-bar data-title="{!! htcms_get_module_name(request()->module_info) !!}"
+               data-back-url="{{$backURL}}"
+               data-show-copy="false"
+               data-show-paste="false"
+    ></title-bar>
     @php
 
         if(isset($results)) {

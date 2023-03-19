@@ -64,4 +64,4 @@ return new class extends Migration
     {
         Schema::dropIfExists('module_props');
     }
-}
+};

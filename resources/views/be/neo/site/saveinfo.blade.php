@@ -4,6 +4,6 @@
     //allSites key is being used in GlobalSiteButton.vue component
     //It comes on top-bar when you have multiple site
     if(localStorage) {
-        localStorage.removeItem("allSites");
+        //localStorage.removeItem("allSites");
     }
 </script>

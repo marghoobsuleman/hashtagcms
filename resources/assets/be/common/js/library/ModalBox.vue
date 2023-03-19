@@ -1,65 +1,64 @@
 <template>
-    <div :class="modelCss" tabindex="-1" role="dialog" :style="style">
-        <div class="modal-dialog" role="document" :style="modalWidth">
+    <div :class="modelCss" tabindex="-1" aria-hidden="true" :style="style">
+        <div :class="'modal-dialog modal-dialog-centered modal-dialog-scrollable '+dataModalCss" :style="modalWidth">
             <div class="modal-content">
                 <div :class="titleCss + ' modal-header'">
-                    <button @click="sendData(0)" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title">
+                    <h5 class="modal-title" style="width: 100%">
                         <slot name="title">{{title}}</slot>
-                    </h4>
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="sendData(0)"></button>
                 </div>
                 <div :class="contentCss + ' modal-body'">
                     <slot name="content">{{content}}</slot>
                 </div>
                 <div :class="footerCss + ' modal-footer'" v-show="showFooter">
-
-                    <slot name="footer" v-html="footerContent">
-
-                    </slot>
-
+                    <slot name="footer">{{footerContent}}</slot>
                 </div>
             </div>
         </div>
     </div>
+    <div class="modal-backdrop fade show" :style="backDropStyle"></div>
 </template>
 
 <script>
 
     export default {
+        emits: ["onClose"],
         props: [
             'dataShowModal',
             'dataShowFooter',
             'dataTitleCss',
             'dataContentCss',
             'dataFooterCss',
+            'dataModalCss',
             'dataWidth'
         ],
         mounted() {
             if(this.visible) {
                 this.open();
-            };
-
+            }
         },
         data() {
             return {
-                modelCss:'modal',
+                modelCss:'modal modal-lg fade show',
                 titleCss:(typeof this.dataTitleCss === "undefined") ? '' : this.dataTitleCss,
                 contentCss:(typeof this.dataContentCss === "undefined") ? '' : this.dataContentCss,
                 footerCss:(typeof this.dataFooterCss === "undefined") ? '' : this.dataFooterCss,
-                visible:(this.dataShowModal !== undefined && this.dataShowModal.toString() == 'true') ? true : false,
+                visible:(this.dataShowModal !== undefined && this.dataShowModal.toString() === 'true'),
                 style:'',
                 toBeReturned:{},
                 title:"Alert",
                 content:"Modal Content",
-                footerContent:""
+                footerContent:"",
+                backDropStyle:'display:none'
             }
         },
         computed: {
           showFooter() {
-            return ((typeof this.dataShowFooter !== "undefined" && this.dataShowFooter.toString() === "true") || this.footerContent != "") ? true : false
+            return ((typeof this.dataShowFooter !== "undefined" && this.dataShowFooter.toString() === "true") || this.footerContent !== "")
           },
           modalWidth() {
-            if(typeof this.dataWidth != "undefined" && this.dataWidth != "")  {
+            if(typeof this.dataWidth != "undefined" && this.dataWidth !== "")  {
                 return `width:${this.dataWidth}`;
             } else {
                 return "";
@@ -69,13 +68,14 @@
         methods:  {
             open(toBeReturned={}) {
                 this.visible = true;
-                this.style = 'display:block';
-                this.modelCss = 'modal animated bounceInDown';
+                this.backDropStyle = this.style = 'display:block';
+                this.modelCss = 'modal modal-lg fade show animated bounceInDown';
                 this.toBeReturned = toBeReturned;
             },
             close() {
                 this.visible = false;
-                this.modelCss = 'modal animated bounceOutUp';
+                this.modelCss = 'modal modal-lg animated bounceOutUp';
+                this.backDropStyle = 'display:none';
 
                 if(typeof this.toBeReturned === "function") {
                     this.toBeReturned();
@@ -94,14 +94,14 @@
 
                     if(message.title) {
                         this.title = message.title;
-                    };
+                    }
                     if(message.content) {
                         this.content = message.content;
-                    };
+                    }
                     if(message.footerContent) {
                         this.footerContent = message.footerContent;
-                    };
-                };
+                    }
+                }
 
                 //handle position
                 if(position) {

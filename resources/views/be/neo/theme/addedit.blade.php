@@ -2,14 +2,9 @@
 
 @section('content')
 
-    <div class="row border-bottom">
-        <div class="col-md-6">
-            <h3>{!! htcms_get_module_name(request()->module_info) !!}</h3>
-        </div>
-        <div class="pull-right back-link">
-            <a href="{{$backURL}}">Back</a>
-        </div>
-    </div>
+    <title-bar data-title="{!! htcms_get_module_name(request()->module_info) !!}"
+               data-back-url="{{$backURL}}"
+    ></title-bar>
 
     @php
 
@@ -23,7 +18,7 @@
         $body_class = old('body_class');;
         $header_content = old('header_content');;
         $footer_content = old('footer_content');;
-        $site_id = old('site_id');;
+        $site_id = old('site_id', htcms_get_siteId_for_admin());;
         $img_preview = old('img_preview');
 
         //print_r($results);
@@ -48,8 +43,9 @@
 
                     {!! FormHelper::input('hidden', 'actionPerformed', $actionPerformed) !!}
 
+                    {!! FormHelper::input('hidden', 'site_id', $site_id) !!}
 
-                    <div class="form-group">
+                    <div class="form-group row">
 
                         <div class="col-sm-2">
                             {!!  FormHelper::label('name', 'Name') !!}
@@ -60,7 +56,7 @@
                         </div>
 
                     </div>
-                    <div class="form-group">
+                    <div class="form-group row">
 
                         <div class="col-sm-2">
                             {!!  FormHelper::label('alias', 'Alias') !!}
@@ -72,7 +68,7 @@
                     </div>
 
 
-                    <div class="form-group">
+                    <div class="form-group row">
 
                         <div class="col-sm-2">
                             {!!  FormHelper::label('directory', 'Directory') !!}
@@ -82,7 +78,7 @@
                             {!! FormHelper::input('text', 'directory', $directory , array('class'=>'form-control', 'required'=>'required')) !!}
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group row">
 
                         <div class="col-sm-2">
                             {!!  FormHelper::label('body_class', 'Body Class') !!}
@@ -92,7 +88,7 @@
                             {!! FormHelper::input('text', 'body_class',$body_class , array('class'=>'form-control', 'required'=>'required')) !!}
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group row">
 
                         <div class="col-sm-2">
                             {!!  FormHelper::label('skeleton', 'Skeleton') !!}
@@ -103,7 +99,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group row">
 
                         <div class="col-sm-2">
                             {!!  FormHelper::label('header_content', 'Header Content') !!}
@@ -114,7 +110,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group row">
 
                         <div class="col-sm-2">
                             {!!  FormHelper::label('footer_content', 'Footer Content') !!}
@@ -125,7 +121,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group row">
 
                         <div class="col-sm-2">
                             {!!  FormHelper::label('img_preview', 'Preview') !!}
@@ -136,21 +132,9 @@
                         </div>
                     </div>
 
-                    <div class="form-group">
-
-                        <div class="col-sm-2">
-                            {!!  FormHelper::label('site_id', 'Site Id') !!}
-                        </div>
-
-                        <div class="col-sm-10">
-                            {!! FormHelper::select('site_id', $sites, array("id"=>"site_id"), $site_id, array("value"=>"id", "label"=>"name")) !!}
-                        </div>
-                    </div>
-
                     <div class="row">
                         <div class="form-group center-align">
-                            <input type="submit" name="submit" value="Save" class="btn btn-success" />
-                            <a href="{{$backURL ?? request()->headers->get('referer')}}" class="btn btn-default">Cancel</a>
+                            <input type="submit" name="submit" value="Save" class="btn btn-success btn-from-submit" /> <a href="{{$backURL ?? request()->headers->get('referer')}}" class="btn btn-outline-secondary">Cancel</a>
                         </div>
                     </div>
                 </form>

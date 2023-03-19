@@ -3,11 +3,11 @@ try {
     //require('bootstrap-sass');
 } catch (e) {}
 
-import AdminConfig from '../../common/js/helpers/AdminConfig';
-import Velocity from '../../common/js/vendors/velocity.min';
+import AdminConfig from '../../common-old/js/helpers/AdminConfig';
+import Velocity from '../../common-old/js/vendors/velocity.min';
 window.pluralize = require('pluralize');
 window._ = require('lodash'); //used in passport
-import {Storage, Fetcher} from '../../common/js/helpers/Common';
+import {Storage, Fetcher} from '../../common-old/js/helpers/Common';
 window.axios = require('axios');
 
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
@@ -19,7 +19,7 @@ window.Store = new Storage();
 window.Fetcher = new Fetcher();
 
 /**
- * Next we will register the CSRF Token as a common header with Axios so that
+ * Next we will register the CSRF Token as a common-old header with Axios so that
  * all outgoing HTTP requests automatically have it attached. This is just
  * a simple convenience so we don't have to attach every token manually.
  */
@@ -33,7 +33,7 @@ if (token) {
 }
 
 /**
- * Echo exposes an expressive API for subscribing to channels and listening
+ * Echo exposes an expressive Api for subscribing to channels and listening
  * for events that are broadcast by Laravel. Echo and event broadcasting
  * allows your team to easily build robust real-time web applications.
  */

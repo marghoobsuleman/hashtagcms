@@ -100,7 +100,8 @@ export default class Form {
      */
     reset() {
         for (let field in this.originalData) {
-            this[field] = '';
+            let isArray = (Object.prototype.toString.call(this[field]) === "[object Array]");
+            this[field] = (isArray) ? [] : '';
         }
 
         this.errors.clear();
@@ -111,6 +112,7 @@ export default class Form {
      * Send a POST request to the given URL.
      * .
      * @param {string} url
+     * @param resetAfterSubmit
      */
     post(url, resetAfterSubmit=true) {
         return this.submit('post', url, resetAfterSubmit);
@@ -121,6 +123,7 @@ export default class Form {
      * Send a PUT request to the given URL.
      * .
      * @param {string} url
+     * @param resetAfterSubmit
      */
     put(url, resetAfterSubmit=true) {
         return this.submit('put', url, resetAfterSubmit);
@@ -131,6 +134,7 @@ export default class Form {
      * Send a PATCH request to the given URL.
      * .
      * @param {string} url
+     * @param resetAfterSubmit
      */
     patch(url, resetAfterSubmit=true) {
         return this.submit('patch', url, resetAfterSubmit);
@@ -141,6 +145,7 @@ export default class Form {
      * Send a DELETE request to the given URL.
      * .
      * @param {string} url
+     * @param resetAfterSubmit
      */
     delete(url, resetAfterSubmit=true) {
         return this.submit('delete', url, resetAfterSubmit);
@@ -152,18 +157,19 @@ export default class Form {
      *
      * @param {string} requestType
      * @param {string} url
+     * @param resetAfterSubmit
      */
     submit(requestType, url, resetAfterSubmit=true) {
         return new Promise((resolve, reject) => {
-                axios[requestType](url, this.data())
-                    .then(response => {
-                                    resolve(response.data);
-                                    this.onSuccess(response.data, resetAfterSubmit);
-                    }).catch(error => {
-                                    this.onFail(error.response.data);
-                                    reject(error.response.data);
-                    });
-                });
+            axios[requestType](url, this.data())
+                .then(response => {
+                    resolve(response.data);
+                    this.onSuccess(response.data, resetAfterSubmit);
+                }).catch(error => {
+                this.onFail(error.response.data);
+                reject(error.response.data);
+            });
+        });
     }
 
 
@@ -171,9 +177,10 @@ export default class Form {
      * Handle a successful form submission.
      *
      * @param {object} data
+     * @param resetAfterSubmit
      */
     onSuccess(data, resetAfterSubmit=true) {
-       // alert(data.message); // temporary
+        // alert(data.message); // temporary
         if(resetAfterSubmit==true) {
             this.reset();
         }

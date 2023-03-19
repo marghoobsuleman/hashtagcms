@@ -72,7 +72,7 @@
 
                     <div class="row">
                         <div class="form-group center-align">
-                            <input type="submit" name="submit" value="Save" class="btn btn-success" />
+                            <input type="submit" name="submit" value="Save" class="btn btn-success btn-from-submit" />
                             <a href="{{$backURL ?? request()->headers->get('referer')}}" class="btn btn-default">Cancel</a>
                         </div>
                     </div>

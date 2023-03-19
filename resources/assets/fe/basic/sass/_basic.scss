@@ -1,7 +1,7 @@
 @import "font-awesome/scss/font-awesome";
 
 .basic-theme {
-  margin-top: 0px;
+  margin-top: 0;
 }
 .hero-bg-1 {
   background-image: url('../img/hasshtagcms-product-1.jpg') !important;
@@ -23,7 +23,6 @@
     background-color: rgba(0, 0, 0, 0.5);
     padding: 10px;
     display: inline-block;
-    min-width: 600px;
     margin-bottom: 2px;
     font-size: 110%;
   }
@@ -31,29 +30,6 @@
     font-size: 210%;
     padding: 0 10px;
     font-weight: bold
-  }
-}
-
-
-@media screen and (max-width: 640px) {
-  .hero {
-    .hero-text {
-      min-width: 300px;
-    }
-    .bigger {
-      font-size: 105%;
-    }
-  }
-}
-
-@media screen and (max-width: 653px) {
-  .hero {
-    .hero-text {
-      min-width: 250px;
-    }
-    .bigger {
-      font-size: 89%;
-    }
   }
 }
 
@@ -106,8 +82,8 @@ nav li {
 
 }
 .shadow-common {
-  -webkit-box-shadow: 0px 10px 27px 0px rgba(154, 161, 171, 0.18);
-  box-shadow: 0px 10px 27px 0px rgba(154, 161, 171, 0.18);
+  -webkit-box-shadow: 0 10px 27px 0 rgba(154, 161, 171, 0.18);
+  box-shadow: 0 10px 27px 0 rgba(154, 161, 171, 0.18);
   -webkit-transition: all 0.2s ease-in-out;
   -moz-transition: all 0.2s ease-in-out;
   -ms-transition: all 0.2s ease-in-out;

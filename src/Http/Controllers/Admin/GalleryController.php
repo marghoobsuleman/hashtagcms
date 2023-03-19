@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Validator;
 
 use MarghoobSuleman\HashtagCms\Models\Gallery;
 use MarghoobSuleman\HashtagCms\Core\Helpers\Message;
+use MarghoobSuleman\HashtagCms\Models\QueryLogger;
 
 class GalleryController extends BaseAdminController
 {
@@ -14,9 +15,10 @@ class GalleryController extends BaseAdminController
     protected $dataFields = array(
         "id",
         array("label" => "image", "key" => "path", "isImage"=>true),
-        "type",
-        "group",
-        array("label" => "Tags", "key" => "tag.name", "showAllScopes"=>true)
+        "media_type",
+        "group_name",
+        array("label" => "Tags", "key" => "tag.name", "showAllScopes"=>true),
+        "media_key"
         );
 
     protected $dataSource = Gallery::class;
@@ -24,6 +26,10 @@ class GalleryController extends BaseAdminController
     protected $dataWith = ['tag'];
 
     protected $actionFields = array("edit", "delete");
+
+    protected $moreActionBarItems = array(array("label"=>"Sort Modules",
+                                            "as"=>"icon", "icon_css"=>"fa fa-sort",
+                                            "action"=> "gallery/sort"));
 
     protected $bindDataWithAddEdit = array("typeGroups"=>array("dataSource"=>Gallery::class, "method"=>"getTypeGroup"),
         "imageGroups"=>array("dataSource"=>Gallery::class, "method"=>"getImageGroup"));
@@ -41,9 +47,10 @@ class GalleryController extends BaseAdminController
 
         $rules = [
             "site_id" => "required",
-            "type" => "required|max:50|string",
-            "group" => "nullable|max:50|string",
-            "key" => "nullable|max:50|string"
+            "media_type" => "required|max:50|string",
+            "tags" => "required|string",
+            "group_name" => "nullable|max:50|string",
+            "media_key" => "nullable|max:50|string"
         ];
         $module_name = request()->module_info->controller_name;
 
@@ -67,9 +74,14 @@ class GalleryController extends BaseAdminController
                 ->withInput();
         }
 
-        $saveData["group"] = $data["group"] ?? NULL;
+        $saveData["group_name"] = $data["group_name"] ?? NULL;
+
+        if ($saveData["group_name"]) {
+            $saveData["group_name"] = strtolower($saveData["group_name"]);
+        }
+
         $saveData["site_id"] = $data["site_id"];
-        $saveData["type"] = $data["type"];
+        $saveData["media_type"] = strtolower($data["media_type"]);
         $saveData["updated_at"] = htcms_get_current_date();
 
         $tags_array = explode(",", $data['tags']);
@@ -117,7 +129,7 @@ class GalleryController extends BaseAdminController
      * @return mixed
      */
     public function getAllImages() {
-        return $this->dataSource::orderBy("id", "desc")->with($this->dataWith)->where("type", "image")->get();
+        return $this->dataSource::orderBy("id", "desc")->with($this->dataWith)->where("media_type", "image")->get();
     }
 
     /**
@@ -131,22 +143,32 @@ class GalleryController extends BaseAdminController
     }
 
     /**
-     * Upload images
+     * Upload files
      * @param Request $request
      * @return array
      */
-    public function uploadImages(Request $request)
+    public function uploadFiles(Request $request)
     {
         $data = $request->all();
         $module_name = request()->module_info->controller_name;
 
-        $allFiles = request()->allFiles();//["images"];
+        $allFiles = request()->allFiles();
         $allFiles = $allFiles["images"];
-        $saveData["group"] = $data["group"] ?? NULL;
+        $saveData["group_name"] = $data["groupName"] ?? NULL;
+
+        if ($saveData["group_name"]) {
+            $saveData["group_name"] = strtolower($saveData["group_name"]);
+        }
         $saveData["site_id"] = htcms_get_site_id();
-        $saveData["type"] = "image";
+        $saveData["media_type"] = $data["mediaType"];
+
+        if ($saveData["media_type"]) {
+            $saveData["media_type"] = strtolower($saveData["media_type"]);
+        }
+
         $saveData["updated_at"] = htcms_get_current_date();
         $saveData["created_at"] = htcms_get_current_date();
+
         $ids = [];
 
         for ($count=0; $count<sizeof($allFiles); $count++) {
@@ -161,6 +183,48 @@ class GalleryController extends BaseAdminController
             $ids[] = $savedData["id"];
         }
         return ["status"=>true, "message"=>"Images uploaded successfully", "data"=>$this->dataSource::find($ids)];
+    }
+
+    /**
+     * Sort Modules
+     * @param null $allModules
+     * @return mixed
+     */
+    public function sort($media_type = null, $group_name = null) {
+
+        $data = Gallery::getMedias($media_type, $group_name);
+        $viewData["backURL"] = $this->getBackURL();
+        $viewData["data"] = $data;
+        $viewData["imageGroups"] = $this->dataSource::getImageGroup();
+        $viewData["typeGroups"] = $this->dataSource::getTypeGroup();
+
+        $viewData["mediaType"] = $media_type;
+        $viewData["groupName"] = $group_name;
+
+        $viewData["fields"] = array("id"=>"id", "label"=>"path", "isImage"=>true);
+        return htcms_admin_view("gallery.sorting", $viewData);
+    }
+
+    /**
+     * Update Index
+     * @return array
+     */
+    public function updateIndex(){
+
+        $a=array();
+        $data = request()->all();
+        foreach ($data as $key=>$posData) {
+            if($posData!=null){
+                $where = $posData["where"]["id"];
+                $saveData["position"] = $posData["position"];
+                $arrSaveData = array("model"=>$this->dataSource,  "data"=>$saveData);
+                QueryLogger::setLogginStatus(false);
+                $savedData = $this->saveData($arrSaveData, $where);
+                array_push($a,$posData);
+                QueryLogger::setLogginStatus(true);
+            }
+        }
+        return array("indexUpdated"=>$a);
     }
 
 

@@ -2,19 +2,7 @@
 
 @section('content')
 
-    <div class="row border-bottom">
-        <div class="col-md-6">
-            <h3>{!! htcms_get_module_name(request()->module_info) !!}</h3>
-        </div>
-        <div class="pull-right back-link">
-            <copy-paste
-                data-form="addEditFrm"
-                class="margin-bottom-05"
-                data-back-url="{{$backURL}}"
-            ></copy-paste>
-        </div>
-    </div>
-
+<title-bar data-title="{!! htcms_get_module_name(request()->module_info) !!}" data-back-url="{{$backURL}}" data-show-copy="true" data-show-paste="false" data-copy-paste-auto-init="false"></title-bar>
     <div class="row">
         <div class="admin-form">
             <front-module-creator
@@ -26,6 +14,7 @@
                     data-action-performed="{{$actionPerformed}}"
                     data-data-types="{{json_encode($dataTypes)}}"
                     data-data-types-info="{{json_encode($dataTypesInfo)}}"
+                    data-site-id="{{htcms_get_siteId_for_admin()}}"
 
             >
           </front-module-creator>

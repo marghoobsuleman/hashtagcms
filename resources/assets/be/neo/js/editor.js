@@ -1,13 +1,13 @@
 let EditorHelper =(function() {
 
     let makeRichEditor = (selector, settings)=> {
-
+        selector = document.querySelector(selector);
         let defaultSettings = {
-            selector: selector,
+            selector: "#"+selector.id,
             height: 500,
             theme: 'silver',
             plugins: 'code print preview searchreplace autolink directionality visualblocks visualchars fullscreen image link media table charmap hr pagebreak nonbreaking anchor insertdatetime advlist lists wordcount imagetools textpattern',
-            toolbar1: 'formatselect | bold italic strikethrough forecolor backcolor | link | alignleft aligncenter alignright alignjustify  | numlist bullist | removeformat | code',
+            toolbar1: 'formatselect | bold italic strikethrough forecolor backcolor | link | alignleft aligncenter alignright alignjustify  | numlist bullist | removeformat | customGallery | image |  code ',
             image_advtab: true,
             template_popup_height: 400,
             template_popup_width: 320,
@@ -22,13 +22,13 @@ let EditorHelper =(function() {
                 '//fonts.googleapis.com/css?family=Lato:300,300i,400,400i'
             ],
             setup: function (editor) {
-                //customInsertButton |
-                editor.ui.registry.addButton('customInsertButton', {
+                editor.ui.registry.addButton('customGallery', {
                     text: 'Insert Image',
-                    icon: 'image',
                     onAction: function (_) {
-                        //tinymce.activeEditor.execCommand('mceInsertContent', false, '<p>My ' + pet +'\'s name is: <strong>' + data.catdata + '</strong></p>');
-                        //editor.insertContent('&nbsp;<strong>It\'s my button!</strong>&nbsp;');
+                        if (Vue?.$refs?.imageGallery) {
+                            Vue.$refs.imageGallery.open(editor);
+                        }
+
                     }
                 });
 
@@ -36,6 +36,7 @@ let EditorHelper =(function() {
         };
         defaultSettings = {...defaultSettings, ...settings};
         selector.editor = tinymce.init(defaultSettings);
+
     };
 
     return {makeRichEditor:makeRichEditor};
@@ -46,7 +47,7 @@ window.EditorHelper = EditorHelper;
 
 
 /** Page Manager **/
-var PageManager = {
+let PageManager = {
     action:null,
     content_type: null,
     id: null,
@@ -72,13 +73,18 @@ var PageManager = {
     },
     autoUpdateFields: function () {
         let value = this.value;
-        if (PageManager.isBlank("lang_title")) {
-            document.getElementById("lang_title").value = value[0].toUpperCase() + value.slice(1);
-            document.getElementById("alias").value = PageManager.cleanForUrl(value.toUpperCase(), "_");
-            let active_key = PageManager.cleanForUrl(value.toLowerCase(), "-");
-            document.getElementById("lang_active_key").value = active_key;
-            document.getElementById("link_rewrite").value = active_key;
+        try {
+            if (PageManager.isBlank("lang_title")) {
+                document.getElementById("lang_title").value = value[0].toUpperCase() + value.slice(1);
+                document.getElementById("alias").value = PageManager.cleanForUrl(value.toUpperCase(), "_");
+                let active_key = PageManager.cleanForUrl(value.toLowerCase(), "-");
+                document.getElementById("lang_active_key").value = active_key;
+                document.getElementById("link_rewrite").value = active_key;
+            }
+        } catch (e) {
+            console.error(e.message);
         }
+
     },
     autoUpdateUrls: function () {
         let value = this.value;

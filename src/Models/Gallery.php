@@ -25,24 +25,29 @@ class Gallery extends AdminBaseModel
      * @return array
      */
     public static function getTypeGroup() {
-        $siteGroup = self::all("type")->where("type", "!=", "")->groupBy("type")->toArray();
+
+        $defaultMediaType = ["image", "video", "audio", "document", "files", "other"];
+
+        $siteGroup = self::all("media_type")->where("media_type", "!=", "")->groupBy("media_type")->toArray();
         $all = array();
         foreach ($siteGroup as $key=>$menu) {
             $all[] = $key;
         }
-        return $all;
+
+        return array_unique(array_merge($all, $defaultMediaType));
     }
     /**
      * Get Image Group
      * @return array
      */
     public static function getImageGroup() {
-        $siteGroup = self::all("group")->where("group", "!=", "")->groupBy("group")->toArray();
+        $defaultMediaGroup = ["content"];
+        $siteGroup = self::all("group_name")->where("group_name", "!=", "")->groupBy("group_name")->toArray();
         $all = array();
         foreach ($siteGroup as $key=>$menu) {
             $all[] = $key;
         }
-        return $all;
+        return array_unique(array_merge($all, $defaultMediaGroup));
     }
 
     /**
@@ -89,4 +94,12 @@ class Gallery extends AdminBaseModel
         return $this->belongsToMany(Page::class);
     }
 
+    /**
+     * @param $media_type
+     * @param $media_group
+     * @return mixed
+     */
+    public static function getMedias($media_type=NULL, $media_group=NULL) {
+        return static::where(array(array("media_type", "=", $media_type), array("group_name", "=", $media_group)))->orderBy("position", "asc")->get();
+    }
 }

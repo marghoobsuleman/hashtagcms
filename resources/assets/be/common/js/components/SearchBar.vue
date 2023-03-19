@@ -1,25 +1,29 @@
 <template>
-  <div>
     <form :action="actionUrl" method="get" v-on:submit.prevent="searchNow" class="form-inline" role="form">
-     <div class="form-group">
-       <select name="fields" v-model="searchParams.f" class="form-control" @change="changeInputText()">
-         <option v-for="field in searchFields" :value="getFieldName(field, 'key')">{{getFieldName(field)}}</option>
-       </select>
-     </div>
-      <div class="form-group">
-        <select name="fields" v-model="searchParams.o" class="form-control">
-          <option v-for="operator in operators" :value="operator">{{operator}}</option>
-        </select>
-      </div>
-
-    <div class="input-group">
-      <input :type="inputType" v-model="searchParams.q" class="form-control" placeholder="Search for...">
-      <span class="input-group-btn"><input type="submit" name="submit" value="Search" class="btn btn-success" />
-      <input type="reset" name="reset" @click="resetForm()" value="Reset" class="btn btn-default" />
-      </span>
-    </div>
+        <div class="row searchForm justify-content-end">
+            <div class="col-auto space-between">
+                <div class="form-group">
+                    <select name="fields" v-model="searchParams.f" class="form-select" @change="changeInputText()">
+                        <option v-for="field in searchFields" :value="getFieldName(field, 'key')">{{getFieldName(field)}}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-auto space-between">
+                <select name="fields" v-model="searchParams.o" class="form-select">
+                    <option v-for="operator in operators" :value="operator">{{operator}}</option>
+                </select>
+            </div>
+            <div class="col-auto space-between">
+                <input :type="inputType" v-model="searchParams.q" class="form-control" placeholder="Search for...">
+            </div>
+            <div class="col-auto space-between">
+                <span class="input-group-btn">
+                    <input type="submit" name="submit" value="Search" class="btn btn-success space-between btn-space" />
+                    <input type="reset" name="reset" @click="resetForm()" value="Reset" class="btn btn-outline-secondary btn-space" />
+                </span>
+            </div>
+        </div>
     </form>
-  </div>
 </template>
 
 <script>

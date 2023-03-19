@@ -1,6 +1,5 @@
 <template>
     <div>
-
         <h4 v-if="showGroups">Arrange Menus
             <split-button :data-options="groups"
                           @change="arrangeAgain"
@@ -9,31 +8,35 @@
             </split-button>
         </h4>
         <ul class="sortable-list js_sortable">
-            <li data-is-parent="true" v-for="(item, index) in allData" class="item" :data-id="getId(item)" v-if="isParent(item)">
-                {{getName(item)}}
-                <div v-if="hasChild(item)" class="inline">
-                    <label :for="'item_'+index" class="accordion-header pull-right">
-                        <span class="fa fa-ellipsis-v ellipsis"></span>
-                    </label>
-                    <input :id="'item_'+index" type="checkbox" class="accordion-control">
-
-                    <ul class="child accordion-body js_sortable">
-                        <li data-is-parent="false" class="item" v-for="child in item.child" :data-id="getId(child)">
-                            {{getName(child)}}
-                        </li>
-                    </ul>
-                </div>
-            </li>
+            <template v-for="(item, index) in allData" >
+                <li data-is-parent="true" v-if="isParent(item)" class="item" :data-id="getId(item)">
+                    <span v-html="getName(item)"></span>
+                    <div v-if="hasChild(item)" class="inline">
+                        <label :for="'item_'+index" class="accordion-header pull-right">
+                            <span class="fa fa-ellipsis-v ellipsis"></span>
+                        </label>
+                        <input :id="'item_'+index" type="checkbox" class="accordion-control">
+                        <ul class="child accordion-body js_sortable">
+                            <li data-is-parent="false" class="item" v-for="child in item.child" :data-id="getId(child)">
+                                {{getName(child)}}
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+            </template>
         </ul>
+        <div class="center-align mt-3" v-if="allData.length > 1">
+            <input type="button" class="btn btn-success btn-from-submit" value="Save" @click="updateIndex()" />
+        </div>
     </div>
 </template>
 
 <script>
 
     import Sortable from 'sortablejs';
-    import {Toast} from '../helpers/Common';
+    import {Toast, Loader} from '../helpers/common';
 
-    import SplitButton from '../library/SplitButton.vue';
+    import SplitButton from '../library/splitButton.vue';
 
     export default {
 
@@ -73,6 +76,7 @@
                 fields = {};
                 fields.id = "id";
                 fields.label = "name";
+                fields.isImage = false;
               }
               return fields;
             },
@@ -109,8 +113,13 @@
                 return (data.child && data.child.length > 0);
             },
             getName(data) {
-
-                return (data[this.fields.label]) ? data[this.fields.label] : (data.lang[this.fields.label]);
+                //Added media support
+                if (this.fields.isImage === true) {
+                    let path = (data[this.fields.label]) ? AdminConfig.get_media(data[this.fields.label]) : AdminConfig.get_media(data.lang[this.fields.label]);
+                    return `<a href='${path}' target='_blank'><img height='30' src='${path}' /></a>`;
+                } else {
+                    return (data[this.fields.label]) ? data[this.fields.label] : (data.lang[this.fields.label]);
+                }
 
             },
             getId(data) {
@@ -122,12 +131,13 @@
                     let list = document.querySelectorAll(".js_sortable");
                     list.forEach(function (current) {
                         Sortable.create(current, {
-                            animation:200,
+                            animation:500,
+                            ghostClass: "text-danger",
                             onUpdate: function (/**Event*/evt) {
                                 //console.log("onUpdate ", evt.item);
-                                let item = evt.item;
-                                let isParent = (item.getAttribute("data-is-parent") === "true");
-                                $this.updateIndex(isParent);
+                                //let item = evt.item;
+                                //let isParent = (item.getAttribute("data-is-parent") === "true");
+                                //$this.updateIndex(isParent);
                             }
                         })
                     })
@@ -135,12 +145,15 @@
                 });
             },
             submit(requestType, url, data, controllerName) {
+                Loader.show(this, "Please wait. Saving sorting data...");
                 return new Promise((resolve, reject) => {
                     axios[requestType](url, data)
                         .then(response => {
                             this.onSuccess(response, controllerName);
                         }).catch(error => {
                         this.onFailure(error.response);
+                    }).finally(()=> {
+                        Loader.hide(this);
                     });
                 });
             },
@@ -195,8 +208,11 @@
                 Toast.show(this, (controllerName.toUpperCase())+" Sorted.");
             },
             onFailure(res) {
-                Toast.show(this, res.statusText);
+                Toast.show(this, res?.statusText || "There is some error! Don't know the reason", 5000);
                 console.log(res);
+            },
+            setData(data) {
+                this.allData = data;
             }
         }
     }

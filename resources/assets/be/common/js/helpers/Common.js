@@ -2,12 +2,15 @@
  * Created by marghoob.suleman on 8/23/17.
  */
 
-import {FX} from "./Fx";
+const CLIPBOARD_KEY = "htcms_cps";
+
+
+import {Fx} from "./fx";
 import {EventBus} from "./event-bus";
 
 /**
  * Toast
- * Dependecy: library/ToastBox.vue
+ * Dependecy: library/toastBox.vue
  *
  */
 export class Toast {
@@ -22,7 +25,7 @@ export class Toast {
 
 /**
  * Loader
- * Dependecy: library/Loader.vue
+ * Dependecy: library/loader.vue
  *
  */
 export class Loader {
@@ -39,7 +42,7 @@ export class Loader {
 
 /**
  * Modal
- * Dependecy: library/ModalBox.vue
+ * Dependency: library/modalBox.vue
  *
  */
 export class Modal {
@@ -50,14 +53,14 @@ export class Modal {
     static hide(vm) {
         vm.$root.$refs.globalModalBox.hide();
     }
-    static open(vm=null, modelref=null, callback=null) {
-        if(vm != null && modelref != null) {
-            vm.$refs[modelref].open(callback);
+    static open(vm=null, modalRef=null, callback=null) {
+        if(vm != null && modalRef != null) {
+            vm.$refs[modalRef].open(callback);
         }
     }
-    static close(vm=null, modelref=null) {
-        if(vm != null && modelref != null) {
-            vm.$refs[modelref].hide();
+    static close(vm=null, modalRef=null) {
+        if(vm != null && modalRef != null) {
+            vm.$refs[modalRef].hide();
         }
     }
 
@@ -79,23 +82,23 @@ export class queryBuilder {
 
         if (this.cache[param]) {
             return this.cache[param];
-        };
-        var query = (typeof (custom) == "undefined") ? window.location.search.substring(1) : custom;
-        var query_arr = query.split("&");
-        var all = {};
-        for (var i = 0; i < query_arr.length; i++) {
+        }
+        let query = (typeof (custom) == "undefined") ? window.location.search.substring(1) : custom;
+        let query_arr = query.split("&");
+        let all = {};
+        for (let i = 0; i < query_arr.length; i++) {
 
-            var current = query_arr[i].split("=");
-            var key = current[0];
-            var value = current[1];
+            let current = query_arr[i].split("=");
+            let key = current[0];
+            let value = current[1];
             if(current.length>2) {
                 current.shift();
                 value = current.join("=");
-            };
+            }
             all[key] = value;
 
-            if (key == param) {
-                var val = decodeURIComponent(value);
+            if (key === param) {
+                let val = decodeURIComponent(value);
                 this.cache[param] = val;
                 return val;
             }
@@ -140,19 +143,19 @@ export class Utils {
 
     serializeFormArray(form) {
         form = (typeof form == 'string') ? document.getElementById(form) : form;
-        var field, l, s = [];
-        if (typeof form == 'object' && form.nodeName == "FORM") {
-            var len = form.elements.length;
-            for (var i=0; i<len; i++) {
+        let field, l, s = [];
+        if (typeof form == 'object' && form.nodeName === "FORM") {
+            let len = form.elements.length;
+            for (let i=0; i<len; i++) {
                 field = form.elements[i];
-                if (field.name && !field.disabled && field.type != 'file' && field.type != 'reset' && field.type != 'submit' && field.type != 'button') {
-                    if (field.type == 'select-multiple') {
+                if (field.name && !field.disabled && field.type !== 'file' && field.type !== 'reset' && field.type !== 'submit' && field.type !== 'button') {
+                    if (field.type === 'select-multiple') {
                         l = form.elements[i].options.length;
                         for (j=0; j<l; j++) {
                             if(field.options[j].selected)
                                 s[s.length] = { name: field.name, value: field.options[j].value };
                         }
-                    } else if ((field.type != 'checkbox' && field.type != 'radio') || field.checked) {
+                    } else if ((field.type !== 'checkbox' && field.type !== 'radio') || field.checked) {
                         s[s.length] = { name: field.name, value: field.value };
                     }
                 }
@@ -178,14 +181,14 @@ export class LeftMenu {
     }
     static init() {
 
-        let leftElem = document.getElementById("mainLeftContent");
+        let leftElem = document.querySelector(".js_left_panel");
         let display = leftElem.style.display;
 
-        if(display == "" || display == "inline-block") {
-            EventBus.$emit('left-menu-on-show');
+        if(display === "" || display === "inline-block") {
+            EventBus.emit('left-menu-on-show');
             this.visible = true;
         } else {
-            EventBus.$emit('left-menu-on-hide');
+            EventBus.emit('left-menu-on-hide');
             this.visible = false;
         }
     }
@@ -195,41 +198,92 @@ export class LeftMenu {
     static toggleShow(show) {
 
         let css = ["hidden-md", "hidden-xs"];
-        let leftElem = document.getElementById("mainLeftContent");
-        let rightElem = document.getElementById("mainRightContent");
+        let leftElem = document.querySelector(".js_left_panel");
+        let rightElem = document.querySelector(".js_right_panel");
 
         let display = leftElem.style.display;
         let width = leftElem.clientWidth;
 
         //if it's visible then hide it.
-        if((display == "" || display == "inline-block") && width !== 0) {
+        if((display === "" || display === "inline-block") && width !== 0) {
             this.visible = false;
-            this.oldWidth = leftElem.style.width;
-            FX.slideLeft("mainLeftContent", function () {
-                leftElem.classList.remove(...css);
-                //set right side 100%
-                rightElem.classList.remove("col-md-10");
-                rightElem.classList.add("col-md-12");
-            });
-            EventBus.$emit('left-menu-on-hide');
+            leftElem.style.display = "none";
+            EventBus.emit('left-menu-on-hide');
 
         } else {
             this.visible = true;
-            rightElem.classList.remove("col-md-12");
-
-            //back to normal size of right side
-            rightElem.classList.add("col-md-10");
-
-            leftElem.style.display = "inline-block";
-            //leftElem.style.width = "16.66666667%";
-            leftElem.classList.remove(...css);
-            if(this.oldWidth != null) {
-                leftElem.style.width = this.oldWidth;
-            }
-            EventBus.$emit('left-menu-on-show');
+            leftElem.style.display = "";
+            EventBus.emit('left-menu-on-show');
         }
 
     }
 }
 
+function TitleCase(value) {
+    value = value.replace(/\.|_/g, " ");
+    return value.charAt(0).toUpperCase() + value.slice(1);
+}
 
+
+/**
+ * Copy to clipboard
+ * @param text
+ * @constructor
+ */
+export function CopyToClipboard(text) {
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(text);
+    } else {
+        window.localStorage.setItem(CLIPBOARD_KEY, text);
+        const el = document.createElement('textarea');
+        el.value = text;
+        el.style.position = 'absolute';
+        el.style.left = '-99999px';
+        el.style.top = '-99999px';
+        document.body.appendChild(el);
+        el.select();
+        document.execCommand('copy');
+        document.body.removeChild(el);
+    }
+}
+
+/**
+ * Paste from clipboard
+ * @returns {Promise<unknown>}
+ * @constructor
+ */
+export async function PasteFromClipboard() {
+    try {
+        const permission = await navigator.permissions.query({ name: 'clipboard-read' });
+        if (permission.state === 'denied') {
+            throw new Error('Not allowed to read clipboard.');
+        }
+        return navigator.clipboard.read();
+    }
+    catch (error) {
+        return new Promise((resolve, reject) => {
+            if (window.localStorage.getItem(CLIPBOARD_KEY)) {
+                let data = window.localStorage.getItem(CLIPBOARD_KEY);
+                resolve(data);
+            } else {
+                reject(null);
+            }
+
+        });
+    }
+}
+
+/**
+ * Check if string is a json
+ * @param str
+ * @returns {boolean}
+ * @constructor
+ */
+export function IsJson(str) {
+    try {
+        JSON.parse(str);
+    } catch (e) {
+        return false;
+    }
+    return true;
+}

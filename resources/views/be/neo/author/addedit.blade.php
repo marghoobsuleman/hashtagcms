@@ -1,15 +1,9 @@
 @extends(htcms_admin_config('theme').'.index')
 
 @section('content')
-
-    <div class="row border-bottom">
-        <div class="col-md-6">
-            <h3>{!! htcms_get_module_name(request()->module_info) !!}</h3>
-        </div>
-        <div class="pull-right back-link">
-            <a href="{{$backURL}}">Back</a>
-        </div>
-    </div>
+    <title-bar data-title="{!! htcms_get_module_name(request()->module_info) !!}"
+               data-back-url="{{$backURL}}"
+    ></title-bar>
 
     @php
 
@@ -20,7 +14,8 @@
         $name = old('name');
         $password = "";
         $email = old('email');
-        $roles = old('roles') ?? [];
+        $roles = old('roles', []);
+        $sites = old('sites', []);
 
 
         if(isset($results)) {
@@ -43,7 +38,7 @@
 
                     {!! FormHelper::input('hidden', 'actionPerformed', $actionPerformed) !!}
 
-                    <div class="form-group">
+                    <div class="form-group row">
 
                         <div class="col-sm-2">
                             {!!  FormHelper::label('name', 'Name') !!}
@@ -56,7 +51,7 @@
 
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group row">
 
                         <div  class="col-sm-2">
                             {!! FormHelper::label('email', 'Email') !!}
@@ -68,7 +63,7 @@
 
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group row">
 
                         <div  class="col-sm-2">
                             {!! FormHelper::label('roles', 'Choose Roles') !!}
@@ -81,8 +76,21 @@
                         </div>
                     </div>
 
+                    <div class="form-group row">
 
-                    <div class="form-group">
+                        <div  class="col-sm-2">
+                            {!! FormHelper::label('Sites', 'Choose Sites') !!}
+                        </div>
+
+                        <div class="col-sm-5">
+                            <input type="hidden" value="0" name="updateSites" id="updateSites" />
+                            {!! FormHelper::select('sites[]', $allSites, array('class'=>'form-control', 'required'=>'required', 'onChange'=>'document.getElementById("updateSites").value = 1'), $sites) !!}
+
+                        </div>
+                    </div>
+
+
+                    <div class="form-group row">
                         <label for="lang.name" class="col-sm-2">Password</label>
                         <div class="col-sm-10">
                             @if($id == 0)
@@ -95,8 +103,7 @@
 
                     <div class="row">
                         <div class="form-group center-align">
-                            <input type="submit" name="submit" value="Save" class="btn btn-success" />
-                            <a href="{{$backURL ?? request()->headers->get('referer')}}" class="btn btn-default">Cancel</a>
+                            <input type="submit" name="submit" value="Save" class="btn btn-success btn-from-submit" /> <a href="{{$backURL ?? request()->headers->get('referer')}}" class="btn btn-outline-secondary">Cancel</a>
                         </div>
                     </div>
                 </form>

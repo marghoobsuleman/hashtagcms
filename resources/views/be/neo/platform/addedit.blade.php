@@ -2,14 +2,9 @@
 
 @section('content')
 
-    <div class="row border-bottom">
-        <div class="col-md-6">
-            <h3>{!! htcms_get_module_name(request()->module_info) !!}</h3>
-        </div>
-        <div class="pull-right back-link">
-            <a href="{{$backURL}}">Back</a>
-        </div>
-    </div>
+    <title-bar data-title="{!! htcms_get_module_name(request()->module_info) !!}"
+               data-back-url="{{$backURL}}"
+    ></title-bar>
 
     @php
 
@@ -41,14 +36,14 @@
                     {!! FormHelper::input('hidden', 'site_id', $site_id) !!}
 
 
-                    <div class="form-group">
+                    <div class="form-group row">
                         <label for="name" class="col-sm-2">Name</label>
                         <div class="col-sm-10">
                             {!! FormHelper::input('text', 'name', $name , array('class'=>'form-control', 'required'=>'required')) !!}
                         </div>
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group row">
                         <label for="link_rewrite" class="col-sm-2">Link Rewrite</label>
                         <div class="col-sm-10">
                             {!! FormHelper::input('text', 'link_rewrite', $link_rewrite , array('class'=>'form-control', 'required'=>'required')) !!}
@@ -57,8 +52,7 @@
 
                     <div class="row">
                         <div class="form-group center-align">
-                            <input type="submit" name="submit" value="Save" class="btn btn-success" />
-                            <a href="{{$backURL ?? request()->headers->get('referer')}}" class="btn btn-default">Cancel</a>
+                            <input type="submit" name="submit" value="Save" class="btn btn-success btn-from-submit" /> <a href="{{$backURL ?? request()->headers->get('referer')}}" class="btn btn-outline-secondary">Cancel</a>
                         </div>
                     </div>
                 </form>

@@ -38,7 +38,7 @@ export default class Analytics {
             //very very old ga
             _gaq.push(['_trackEvent', category, action, value]);
         } catch(e) {
-        };
+        }
         if ( typeof ga != "undefined") {
             try {
                 ga('send', {
@@ -48,11 +48,11 @@ export default class Analytics {
                     eventLabel : value
                 });
             } catch(e) {
-            };
-        };
+            }
+        }
         if (cb) {
             cb.apply(this, arguments);
-        };
+        }
     }
 
     /**
@@ -65,7 +65,7 @@ export default class Analytics {
             //Very very old ga
             _gaq.push(['_trackPageview', value]);
         } catch(e) {
-        };
+        }
 
         if ( typeof ga != "undefined") {
             try {
@@ -73,12 +73,12 @@ export default class Analytics {
                     {hitType: 'pageview',
                         page: value
                     });
-            } catch(e) {};
-        };
+            } catch(e) {}
+        }
 
         if (cb) {
             cb.apply(this, arguments);
-        };
+        }
     }
 
 }

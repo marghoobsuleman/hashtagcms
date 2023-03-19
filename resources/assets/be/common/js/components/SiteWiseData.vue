@@ -1,48 +1,44 @@
 <template>
-    <div>
-        <div class="col-md-12">
-            <div class="col-md-5">
-                <div class="panel panel-info margin-top-20">
-                    <div class="panel-heading"><label class="normal">
-                        <input type="checkbox" @click="selectAllData('table', $event.target)"  />
-                        Choose {{title}} for the site - <span class="badge">{{total}}</span></label>
-                        <button title="Add Selected" @click="doAction('add')" class="hand pull-right btn btn-sm btn-default">Add Selected</button>
-
-                    </div>
-                    <div class="panel-sub-heading" style="padding:4px" v-if="showSearch">
-                        <div class="input-group">
-                            <span class="input-group-addon" id="basic-addon3">Search</span>
-                            <input type="text"  class="form-control" aria-describedby="basic-addon3" v-model="searchKey">
-                        </div>
-                    </div>
-                    <ul class="list-group">
-
-                        <li v-for="(data, index) in filterData()" class="list-group-item"><label class="normal">
-                            <input type="checkbox"  v-model="data.selected" />  {{getLabel(data)}} </label>
-                        </li>
-
-                    </ul>
-                </div>
+    <div class="col col-4">
+        <div class="card border-0">
+            <div class="card-header">
+                <h5 class="card-title m-0" style="line-height: inherit">Available {{title}} <span class="badge text-bg-secondary">{{total}}</span>
+                    <button type="button" title="Add Selected" @click="doAction('add')" class="hand pull-right btn btn-sm btn-primary">Add Selected</button>
+                </h5>
             </div>
-
-            <div class="col-md-4">
-                <small :class="alertCss" v-if="message.length > 0" v-html="message" style="display:block">
-
-                </small>
-                <div class="panel panel-success margin-top-20">
-                    <div class="panel-heading">
-                        <label class="normal">
-                            <input type="checkbox" @click="selectAllData('sitewise', $event.target)" />
-                        {{title}} <span class="badge">{{selectedTotal}}</span>
-                        </label>
-                        <button title="Remove Selected" @click="doAction('remove')" class="btn btn-sm btn-danger pull-right">Remove Selected</button>
-                    </div>
-                    <ul class="list-group">
-
-                        <li v-for="(data, index) in siteData" class="list-group-item"><label class="normal"> <input type="checkbox" v-model="data.selected" /> {{getLabelForSite(data)}} </label></li>
-
-                    </ul>
+            <div class="card-body p-2">
+                <div class="card-subtitle mb-2 text-muted" v-if="total > 0">
+                    <label class="inline"><input type="checkbox" @click="selectAllData('table', $event.target)"  /> Select All</label>
                 </div>
+                <div class="panel-sub-heading" style="padding:4px" v-if="showSearch">
+                    <div class="input-group">
+                        <input type="text" placeholder="Search"  class="form-control" aria-describedby="basic-addon3" v-model="searchKey">
+                    </div>
+                </div>
+                <ul class="list-group">
+                    <li v-for="(data, index) in filterData()" class="list-group-item"><label class="normal">
+                        <input type="checkbox"  v-model="data.selected" />  {{getLabel(data)}} </label>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="col col-4">
+        <div class="card border-0">
+            <div class="card-body p-0" v-if="message.length > 0">
+                <small :class="alertCss" v-html="message" style="display:block"></small>
+            </div>
+            <div class="card-header">
+                <h5 class="card-title text-success m-0" style="line-height: inherit">
+                    Added {{title}} <span class="badge text-bg-secondary">{{selectedTotal}}</span> <button title="Remove Selected" @click="doAction('remove')" class="btn btn-sm btn-danger pull-right">Remove Selected</button>
+                </h5>
+            </div>
+            <div class="card-body">
+                <div v-if="selectedTotal > 0" class="card-subtitle mb-2 text-muted"><label class="inline"><input type="checkbox" @click="selectAllData('sitewise', $event.target)" /> Select All</label></div>
+                <ul class="list-group">
+                    <li v-for="(data, index) in siteData" class="list-group-item"><label class="normal"> <input type="checkbox" v-model="data.selected" /> {{getLabelForSite(data)}} </label></li>
+                </ul>
             </div>
         </div>
     </div>
@@ -50,7 +46,7 @@
 
 <script>
 
-    import {Toast} from '../helpers/Common';
+import {Loader, Toast} from '../helpers/common';
 
 
     export default {
@@ -77,14 +73,14 @@
         ],
         data() {
             return {
-                siteData:(typeof this.dataSiteData == "undefined" || this.dataSiteData == "") ? [] : JSON.parse(this.dataSiteData),
-                allData:(typeof this.dataAllData == "undefined" || this.dataAllData == "") ? [] : JSON.parse(this.dataAllData),
+                siteData:(typeof this.dataSiteData == "undefined" || this.dataSiteData === "") ? [] : JSON.parse(this.dataSiteData),
+                allData:(typeof this.dataAllData == "undefined" || this.dataAllData === "") ? [] : JSON.parse(this.dataAllData),
                 currentKey:this.dataCurrentKey,
                 searchKey:'',
                 siteId:parseInt(this.dataSiteId),
                 message:(typeof this.dataMessage == "undefined") ? '' : this.dataMessage,
                 defaultActionForSave:(typeof this.dataDefaultActionForSave === "undefined") ? "saveSettings" : this.dataDefaultActionForSave,
-                alertCss:(typeof this.dataAlertCss == "undefined" || this.dataAlertCss == "") ? 'alert alert-info' : this.dataAlertCss,
+                alertCss:(typeof this.dataAlertCss == "undefined" || this.dataAlertCss === "") ? 'alert alert-info' : this.dataAlertCss,
             }
         },
         computed: {
@@ -99,31 +95,34 @@
             },
             showSearch() {
                 //return true;
-                return (this.allData.data && this.allData.data.length > 10) ? true : false;
+                return (this.allData.data && this.allData.data.length > 10);
             }
         },
         methods: {
             saveNow(url, data) {
+                Loader.show(this, "Please wait. Making Changes...");
                 return new Promise((resolve, reject) => {
                     axios.post(url, data)
                         .then(response => {
                             resolve(response);
                         }).catch(error => {
                         reject(error.response);
+                    }).finally(()=> {
+                        Loader.hide(this);
                     });
                 });
 
             },
             doAction(action="add") {
-                var $this = this;
+                let $this = this;
                 //if action is add use left data to copy/reference to the right side
-                var currentData = (action == "add") ? this.allData.data : this.siteData;
-                var ids = [];
-                var selectedArr = [];
+                let currentData = (action === "add") ? this.allData.data : this.siteData;
+                let ids = [];
+                let selectedArr = [];
 
                 if(currentData && currentData.length >0) {
                     currentData.forEach(function (current) {
-                        if(current.selected == true) {
+                        if(current.selected === true) {
                             ids.push(current.id);
                             selectedArr.push(current);
                         }
@@ -133,7 +132,7 @@
                     if(typeof this.defaultActionForSave === "function")  {
                         this.defaultActionForSave(action, currentData, selectedArr, ids);
                         return false;
-                    };
+                    }
 
                     if(ids.length > 0) {
                         let postParams = {};
@@ -146,29 +145,29 @@
                             feedback(res);
 
                         }).catch(function(res) {
-                          console.error("error: ", res.data.message);
-                          Toast.show($this, res.data.message, 5000);
+                          console.error("error: ", res);
+                          Toast.show($this, res?.data?.message || "I don't know what went wrong.", 5000);
                         });
                     }
                 }
 
                 function hasInArr(element, onwhat, value) {
-                    return element[onwhat] == value;
+                    return element[onwhat] === value;
                 }
                 //console.log(ids);
                 function feedback(res) {
                     console.log(res);
-                    if(action == "add") {
+                    if(action === "add") {
                         //console.log("adding");
                         //console.log(selectedArr);
                         selectedArr.forEach(function(current) {
                             let id = current.id;
 
                             let found = $this.siteData.findIndex(function (c) {
-                                return c.id == id;
+                                return c.id === id;
                             });
 
-                            if(found == -1) {
+                            if(found === -1) {
                                 $this.siteData.push(current);
                             }
 
@@ -180,7 +179,7 @@
                             let id = current.id;
 
                             let found = $this.siteData.findIndex(function (c) {
-                                return c.id == id;
+                                return c.id === id;
                             });
 
                             if(found !== -1) {
@@ -194,19 +193,20 @@
             },
             selectAllData(dataType, holder) {
 
-                var $this = this;
-                var currentData = (dataType == "table") ? this.allData.data : this.siteData;
-                var selected = holder.checked;
+                let $this = this;
+                let currentData = (dataType === "table") ? this.allData.data : this.siteData;
+                let selected = holder.checked;
                 if(currentData && currentData.length > 0) {
                     currentData.forEach(function (current) {
-                        $this.$set(current, "selected", selected);
+                        //$this.$set(current, "selected", selected);
+                        current.selected = selected;
                     });
                 }
 
 
             },
             getLabel(data) {
-                var label = "";
+                let label = "";
                 if(data.lang) {
                     label = (typeof data.lang.name == "undefined") ? "" : data.lang.name;
                 } else {
@@ -236,10 +236,10 @@
 
                         let index = this.allData.data.findIndex(function(current) {
 
-                            return (current.id == data.id) || (typeof data.link_rewrite != "undefined" && data.link_rewrite == current.link_rewrite);
+                            return (current.id === data.id) || (typeof data.link_rewrite != "undefined" && data.link_rewrite === current.link_rewrite);
                         });
 
-                        return (index == -1) ? "" : this.getLabel(this.allData.data[index]);
+                        return (index === -1) ? "" : this.getLabel(this.allData.data[index]);
 
                 }
 
@@ -247,23 +247,22 @@
 
             },
             filterData() {
-                var $this = this;
+                let $this = this;
 
-                var data = [];
+                let data = [];
 
-                var key = this.searchKey;
+                let key = this.searchKey;
 
-                if(key != "" && key != null) {
+                if(key !== "" && key != null) {
 
                     key = key.toLowerCase();
 
-                    var filterdData =  this.allData.data.filter(function(current) {
+                    return this.allData.data.filter(function(current) {
 
-                        return ($this.getLabel(current).toLowerCase().includes(key) || current.id == key) ;
+                        return ($this.getLabel(current).toLowerCase().includes(key) || current.id === key) ;
 
                     });
 
-                    return filterdData;
 
                 } else {
                    //console.log("data ", this.allData.data);
@@ -272,11 +271,15 @@
             },
             setData(key, data) {
                 //this.allData[key] = data;
-                this.$set(this.allData, key, data);
+                //console.log(key, data);
+                this.allData[key] = data;
+                //this.$set(this.allData, key, data);
             },
             setSiteData(data) {
                 //this.allData[key] = data;
-                this.$set(this, 'siteData', data);
+                this.siteData = {};
+                this.siteData = data;
+                //this.$set(this, 'siteData', data);
             }
         }
     }

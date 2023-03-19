@@ -14,6 +14,7 @@ class QueryLogger extends AdminBaseModel
 
     protected $guarded = array();
 
+    protected static $queryLogging = true;
 
 
     /**
@@ -49,7 +50,9 @@ class QueryLogger extends AdminBaseModel
      * Enable Query Log
      */
     protected static function enableQueryLog() {
-        DB::enableQueryLog();
+        if (self::$queryLogging == true) {
+            DB::enableQueryLog();
+        }
     }
 
     /**
@@ -58,5 +61,13 @@ class QueryLogger extends AdminBaseModel
      */
     protected static function getQueryLog() {
         return DB::getQueryLog();
+    }
+
+    /**
+     * @param $enable
+     * @return void
+     */
+    public static function setLogginStatus($enable) {
+        self::$queryLogging = $enable;
     }
 }

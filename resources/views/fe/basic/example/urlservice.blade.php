@@ -1,6 +1,6 @@
 <section class="sample-module">
     <div class="container">
-        <h2 class="alert-success alert">{{$moduleInfo['data_type']}} Module</h2>
+        <h2 class="alert-success alert">{{$moduleInfo['dataType']}} Module</h2>
         <p>
             This is a UrlSerivce module. Sometime you need to call a service based on query parameter. Below URL will be called with your limit param.
         </p>

@@ -2,8 +2,6 @@
 
 @section('content')
 <h1>{{request()->module_info->name}}</h1>
-
-
 <div class="row">
 
     @foreach($widgets as $widget)

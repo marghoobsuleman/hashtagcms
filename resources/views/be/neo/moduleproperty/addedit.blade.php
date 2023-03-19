@@ -2,14 +2,7 @@
 
 @section('content')
 
-    <div class="row border-bottom">
-        <div class="col-md-6">
-            <h3>{!! htcms_get_module_name(request()->module_info) !!}</h3>
-        </div>
-        <div class="pull-right back-link">
-            <a href="{{$backURL}}">Back</a>
-        </div>
-    </div>
+    <title-bar data-title="{!! htcms_get_module_name(request()->module_info) !!}" data-back-url="{{$backURL}}"></title-bar>
 
     @php
 
@@ -17,7 +10,7 @@
         $id = 0;
         $module_id = old('module_id',);
         $name = old('name');
-        $group = old('group');
+        $group_name = old('group_name');
         $site_id = old('site_id', htcms_get_siteId_for_admin());
 
         $update_in_all_language = old('update_in_all_language', 1);
@@ -68,7 +61,7 @@
 
                 {!! FormHelper::input('hidden', 'site_id', $site_id) !!}
 
-                <div class="form-group">
+                <div class="form-group row">
 
                     <div class="col-sm-2">
                         {!!  FormHelper::label('module_id', 'Choose Modules') !!}
@@ -80,7 +73,7 @@
 
                 </div>
 
-                <div class="form-group">
+                <div class="form-group row">
                     <div class="col-sm-2">
                         {!!  FormHelper::label('platform_id', 'Choose Platforms') !!}
                     </div>
@@ -89,18 +82,18 @@
                     </div>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group row">
 
                     <div class="col-sm-2">
-                        {!!  FormHelper::label('group', 'Group') !!}
+                        {!!  FormHelper::label('group_name', 'Group') !!}
                     </div>
 
                     <div class="col-sm-10">
-                        {!! FormHelper::input('text', 'group', $group, array('class'=>'form-control')) !!}
+                        {!! FormHelper::input('text', 'group_name', $group_name, array('class'=>'form-control')) !!}
                     </div>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group row">
 
                     <div class="col-sm-2">
                         {!!  FormHelper::label('name', 'Name') !!}
@@ -111,7 +104,7 @@
                     </div>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group row">
 
                     <div class="col-sm-2">
                         {!!  FormHelper::label('value', 'Value') !!}
@@ -124,7 +117,7 @@
                 @if($actionPerformed === "edit")
                     <fieldset class="fieldset">
                         <legend>Additional Options</legend>
-                        <div class="form-group">
+                        <div class="form-group row">
                             <div class="col-sm-2">
                                 {!!  FormHelper::label('update_in_all_language', 'Update in all languages') !!}
                             </div>
@@ -137,8 +130,7 @@
 
                 <div class="row">
                     <div class="form-group center-align">
-                        <input type="submit" name="submit" value="Save" class="btn btn-success" />
-                        <a href="{{$backURL ?? request()->headers->get('referer')}}" class="btn btn-default">Cancel</a>
+                        <input type="submit" name="submit" value="Save" class="btn btn-success btn-from-submit" /> <a href="{{$backURL ?? request()->headers->get('referer')}}" class="btn btn-outline-secondary">Cancel</a>
                     </div>
                 </div>
             </form>
