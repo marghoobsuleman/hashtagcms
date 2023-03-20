@@ -53,10 +53,9 @@ return [
         /**
          * Do not forget the change this key when you go in production
          * This is a combination of context and random key.
-         * will be used in external ie /api/hashtagcms/public/configs/v2/site-configs?site=htcmsctx&api_secret=61d2aeb489bb8df385
+         * will be used in api ie /api/hashtagcms/public/configs/v1/site-configs?site=htcmsctx&api_secret=61d2aeb489bb8df385
          * api_key as header will be set with the same value
          */
-        "htcms"=>"61c58507bbac1",
-        "jflcms"=>"d2aeb489bb8df385"
+        "htcms"=>env('API_SECRET', "61c58507bbac1")
     )
 ];

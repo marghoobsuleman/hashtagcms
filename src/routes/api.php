@@ -15,38 +15,41 @@ Route::middleware(['api', 'etag'])->prefix("api/hashtagcms")->group(function() u
         return array("result"=>"okay");
     });
 
+    /**
+     * Registration: V1
+     */
     Route::post('public/user/v1/register', function (Request $request) use($callable)  {
-
         return app()->call($callable."AuthController@register");
-
     });
 
+    /**
+     * Login: V1
+     */
     Route::post('public/user/v1/login', function (Request $request) use($callable) {
-
         return app()->call($callable."AuthController@login");
+    });
+
+    /**
+     * Site config
+     */
+    Route::get("public/configs/v1/site-configs", function (Request $request)  use($callable) {
+
+        return app()->call($callable."ServiceControllerV2@siteConfigs");
 
     });
 
     /**
-     * Mobile Splash Screen
-     * Used for config
+     * Load data
      */
-    Route::get("public/configs/v1/site-configs", function (Request $request)  use($callable) {
-        return array("tested"=>"okay!");
-        return app()->call($callable."ServiceController@siteConfigs");
-
-    });
-
-
-    //Load category data
     Route::get("public/sites/v1/load-data", function(Request $request) use($callable) {
 
-        return app()->call($callable."ServiceController@loadData");
+        return app()->call($callable."ServiceControllerV2@loadData");
 
     });
 
     /**
      * Load a module
+     * @deprecated
      */
     Route::get("public/service/v1/load-module", function(Request $request) use($callable) {
 
@@ -55,7 +58,8 @@ Route::middleware(['api', 'etag'])->prefix("api/hashtagcms")->group(function() u
     });
 
     /**
-     * Load a module
+     * Load a hook
+     * @deprecated
      */
     Route::get("public/service/v1/load-hook", function(Request $request) use($callable) {
 
@@ -63,34 +67,6 @@ Route::middleware(['api', 'etag'])->prefix("api/hashtagcms")->group(function() u
 
     });
 
-    /**
-     * Load a module
-     */
-    Route::get("public/service/v1/test", function(Request $request) use($callable) {
-
-        return app()->call($callable."ServiceController@test");
-
-    });
-
-
-    /**** V2 *****/
-    /**
-     * Site Config: V2
-     */
-    Route::get("public/configs/v2/site-configs", function (Request $request)  use($callable) {
-
-        return app()->call($callable."ServiceControllerV2@siteConfigs");
-
-    });
-
-    /**
-     * Load data: V2
-     */
-    Route::get("public/sites/v2/load-data", function(Request $request) use($callable) {
-
-        return app()->call($callable."ServiceControllerV2@loadData");
-
-    });
 
 
 });

@@ -5,7 +5,7 @@ namespace MarghoobSuleman\HashtagCms\Http\Controllers\Api;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use Laravel\Passport\HasApiTokens;
+use Laravel\Sanctum\HasApiTokens;
 
 use MarghoobSuleman\HashtagCms\Core\Traits\RoleManager;
 use MarghoobSuleman\HashtagCms\Models\UserProfile;
@@ -58,6 +58,7 @@ class AuthController extends ApiBaseController
      * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response|object
      */
     public function login(Request $request) {
+
 
         $rules = [
             'email' => 'required|string|email|max:255',

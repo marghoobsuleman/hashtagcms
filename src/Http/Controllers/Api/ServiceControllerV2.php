@@ -24,7 +24,11 @@ class ServiceControllerV2 extends ApiBaseController
 
         //Basic level of api check -
         // site context and api secret should be there in config/hashtagcms.php
-        $api_secret = $query['api_secret'];
+        $api_secret = $query['api_secret'] ?? null;
+        if(empty($api_secret)) {
+            return response()->json(array("message"=>"Api key is missing.", "status"=>Response::HTTP_BAD_REQUEST), Response::HTTP_BAD_REQUEST);
+        }
+
         $secrets = config("hashtagcms.api_secrets");
         $foundSecret = false;
         foreach ($secrets as $key=>$secret) {
