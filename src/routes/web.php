@@ -24,7 +24,7 @@ Route::prefix('admin')->group(function () {
         $controller = ($controller === "") ? "dashboard" : $controller; //default page of admin
 
         $methodType = $request->method();
-        
+
         $namespace = config("hashtagcms.namespace");
 
         $controller = ($controller == "") ? config("admin.cmsInfo.defaultPage") : $controller;
@@ -79,7 +79,7 @@ Route::prefix('admin')->group(function () {
 });
 
 if (HashtagCms::isRoutesEnabled()) {
-    
+
     Route::match(['get', 'post', 'delete'], '{all?}', function(Request $request, $all="/") {
 
         $infoLoader = app()->HashtagCms->infoLoader();

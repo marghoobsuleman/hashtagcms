@@ -2,6 +2,7 @@
 
 #v1.3.8 Changes
 #### Major Update: Please note: This updates needs fresh installation.
+- General: Compatible with laravel/framework": "^10.0"
 - Backend: Moved from Vue 2 to Vue 3
 - Backend: Added gallery module. You can now upload files/images.
 - Backend: Added gallery module support with content editor

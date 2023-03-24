@@ -8,8 +8,9 @@ use Illuminate\Support\Facades\Validator;
 use Laravel\Sanctum\HasApiTokens;
 
 use MarghoobSuleman\HashtagCms\Core\Traits\RoleManager;
-use MarghoobSuleman\HashtagCms\Models\UserProfile;
 use MarghoobSuleman\HashtagCms\User;
+
+use MarghoobSuleman\HashtagCms\Http\Resources\UserResource;
 
 class AuthController extends ApiBaseController
 {
@@ -24,7 +25,7 @@ class AuthController extends ApiBaseController
         $rules = [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6|confirmed',
+            'password' => 'required|string|min:6',
         ];
 
         $data = $request->all();
@@ -37,7 +38,7 @@ class AuthController extends ApiBaseController
                 ->setStatusCode(422);
 
         }
-        $data["user_type"] = $data["user_type"] ?? "Visitor";
+        $data["user_type"] = "Visitor";
 
         $user = User::create([
             'name' => $data['name'],
@@ -46,7 +47,7 @@ class AuthController extends ApiBaseController
             'user_type'=>$data["user_type"]
         ]);
 
-        $token = $this->getAccessToken($user);
+        $token = $this->createAccessToken($user);
 
         return response(["user"=>$user, "token"=>$token])
             ->setStatusCode(200);
@@ -58,7 +59,6 @@ class AuthController extends ApiBaseController
      * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response|object
      */
     public function login(Request $request) {
-
 
         $rules = [
             'email' => 'required|string|email|max:255',
@@ -78,17 +78,15 @@ class AuthController extends ApiBaseController
         $loginData["email"] = $data["email"];
         $loginData["password"] = $data["password"];
 
-        //return $loginData;
-
         if(!auth()->attempt($loginData)) {
             return response(["message"=>"Email or password is incorrect."])
                 ->setStatusCode(422);
         }
 
         $user = auth()->user();
-        $token = $this->getAccessToken($user);
+        $token = $this->createAccessToken($user);
 
-        return response(["user"=>$user, "token"=>$token])
+        return response(["user"=>new UserResource($user), "token"=>$token])
             ->setStatusCode(200);
     }
 
@@ -96,13 +94,15 @@ class AuthController extends ApiBaseController
      * Get current access token
      * @return mixed
      */
-    private function getAccessToken($user) {
+    private function createAccessToken($user) {
 
         $tokenName = $this->getTokenName($user);
 
         $tokens = $user->createToken($tokenName);
 
-        return array("access_token"=>$tokens->accessToken, "scope"=>$tokens->token->scope, "expires_at"=>$tokens->token->expires_at);
+        return array("access_token"=>$tokens->plainTextToken,
+            "scope"=>$tokens->accessToken->abilities,
+            "expires_at"=>$tokens->accessToken->expires_at);
     }
 
     /**
@@ -120,9 +120,10 @@ class AuthController extends ApiBaseController
      * @return mixed
      */
     public function me(Request $request) {
+
         $user = $request->user();
-        $user->profile = isset($user->profile) ? $user->profile() : array();
-        return $user;
+        return new UserResource($user);
     }
+
 
 }

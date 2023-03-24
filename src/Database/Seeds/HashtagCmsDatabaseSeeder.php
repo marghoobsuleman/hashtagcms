@@ -90,8 +90,6 @@ class HashtagCmsDatabaseSeeder extends Seeder
         //Logs
         //$this->call(LogsTableSeeder::class);
 
-        //Medias
-        $this->call(MediasTableSeeder::class);
 
         //Microsites
         $this->call(MicrositesTableSeeder::class);

@@ -88,6 +88,37 @@ class ServiceControllerV2 extends ApiBaseController
 
 
     /**
+     * Load data mobile
+     * @queryParam $lang language code
+     * @queryParam $platform Platform link rewrite
+     * @queryParam $category Category link rewrite or id
+     * @param Request $request
+     * @return array|string
+     */
+    public function loadDataMobile(Request $request):array|string {
+
+        $query = $request->all();
+        $context = $query['site'];
+        $lang = $query['lang'] ?? null;
+        $platform = $query['platform'] ?? null;
+        $category = $query['category'] ?? null;
+        $microsite = $query['microsite'] ?? null;
+
+        $loader = new ServiceLoader();
+        try {
+            $result = $loader->loadData($context, $lang, $platform, $category, $microsite);
+            if (isset($result['status']) && $result['status']!=200) {
+                return response()->json($result, $result['status'] ?? Response::HTTP_INTERNAL_SERVER_ERROR);
+            }
+        } catch (Exception $exception) {
+            return response()->json($exception->getMessage(), $exception->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+        unset($result['html']);
+        return $result;
+    }
+
+
+    /**
      * Load Module
      * @queryParam $name - Module Alias
      * @queryParam $json - return type as json or html

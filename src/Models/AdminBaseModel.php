@@ -188,16 +188,16 @@ abstract class AdminBaseModel extends Model
 
     /**
      * Get Enum Values from any table
-     * @param string $table
-     * @param string $field
+     * @param string|null $table
+     * @param string|null $field
      * @return array
      */
-    public static function getEnumValues($table='', $field='') {
+    public static function getEnumValues(string $table=null, string $field=null):array {
 
         $enum = array();
         if($table != '' && $field != '') {
-            $type = DB::select(DB::raw("SHOW COLUMNS FROM {$table} WHERE Field = '{$field}'"));
-            if(sizeof($type) > 0 ){
+            $type = DB::select("SHOW COLUMNS FROM {$table} WHERE Field = '{$field}'");
+            if(sizeof($type) > 0){
                 $type = $type[0]->Type;
                 preg_match('/^enum\((.*)\)$/', $type, $matches);
                 foreach( explode(',', $matches[1]) as $value ) {

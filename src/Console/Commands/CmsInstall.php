@@ -54,16 +54,6 @@ class CmsInstall extends Command
 
                     $this->installNow("migrate");
 
-                    $this->info("> Generating key");
-                    Artisan::call("key:generate");
-
-                    $this->info("> Generating passport key");
-                    Artisan::call("passport:keys");
-
-                    $this->info("> Initiating passport install");
-                    Artisan::call("passport:install");
-
-
                     //export some js too
                     Artisan::call("vendor:publish", [
                         '--tag'=>'hashtagcms.assets'

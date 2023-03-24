@@ -175,7 +175,7 @@ trait Common {
 
         $isLang = ($lang == "") ? FALSE : TRUE;
 
-        $data = DB::select(DB::raw("SHOW COLUMNS FROM ".Str::plural($table_name)));
+        $data = DB::select("SHOW COLUMNS FROM ".Str::plural($table_name));
 
         $allFields = [];
 

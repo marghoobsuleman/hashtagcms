@@ -1,6 +1,6 @@
 {
     "name": "marghoobsuleman/hashtagcms",
-    "description": "Headless CMS, Use it as Headless CMS or Bundled, API enabled, Admin Panel, Multisite, Multitenant, Multilingual, and oAuth 2.0.\nThe Most powerful, fast and user-friendly platform. Made with PHP Laravel Framework.",
+    "description": "Headless CMS, Use it as Headless CMS or Bundled, API enabled, Admin Panel, Multisite, Multi-platform, Multilingual.\nThe Most powerful, fast and user-friendly platform. Made with PHP Laravel Framework.",
     "license": "MIT",
     "authors": [
         {
@@ -12,15 +12,17 @@
     "homepage": "https://github.com/marghoobsuleman/hashtagcms",
     "keywords": ["Laravel", "HashtagCms", "Marghoob Suleman", "Headless CMS", "CMS", "Mobile Api Supported CMS", "Hashtag Cms"],
     "require": {
-        "laravel/ui": "^3.0",
-        "laravel/passport": "^10.0",
-        "laravel/socialite": "^5.0",
-        "usmanhalalit/laracsv": "^2.1",
-        "intervention/image": "^2.6"
+        "php": "^8.1",
+        "guzzlehttp/guzzle": "^7.2",
+        "laravel/framework": "^10.0",
+        "laravel/sanctum": "^3.2",
+        "laravel/tinker": "^2.8",
+        "laravel/ui": "^4.2",
+        "usmanhalalit/laracsv": "^2.1"
     },
     "require-dev": {
-        "phpunit/phpunit": "^8.0",
-        "mockery/mockery": "^1.1",
+        "phpunit/phpunit": "^10.0",
+        "mockery/mockery": "^1.4.4",
         "orchestra/testbench": "~3|~4",
         "sempro/phpunit-pretty-print": "^1.0"
     },
@@ -41,6 +43,9 @@
     },
     "extra": {
         "laravel": {
+            "providers": [
+                "MarghoobSuleman\\HashtagCms\\HashtagCmsServiceProvider"
+            ],
             "aliases": {
                 "HashtagCms": "MarghoobSuleman\\HashtagCms\\Facades\\HashtagCms"
             }

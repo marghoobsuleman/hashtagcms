@@ -129,12 +129,5 @@ class HashtagCms
         $this->ignoredPath = $this->ignoredPath."|(?!$path/)";
     }
 
-    /**
-     * @return string
-     */
-    public function version() {
-        return "1.3.8";
-    }
-
 
 }

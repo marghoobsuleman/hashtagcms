@@ -36,7 +36,7 @@ return [
         'error_close_text'=>''
     ],
     "blog_per_page"=>10,
-    "more_categories_on_blog_listing"=>array("support"), //"support"
+    "more_categories_on_blog_listing"=>array(), //array("support")
 
     /**
      * This is needed to run same site on multiple domain

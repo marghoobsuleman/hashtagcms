@@ -20,7 +20,10 @@ class ZoneController extends BaseAdminController
 
     protected $dataSource = Zone::class;
 
-    protected $actionFields = array("edit");
+    protected $actionFields = array("edit", "delete");
+
+    protected $minResults = 7;
+
 
     /**
      * @param Request $request
