@@ -2,13 +2,20 @@
 
 namespace MarghoobSuleman\HashtagCms\Core\Traits\Admin;
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 trait BlogPageCommon {
 
 
-    protected function getRulesArray() {
-        return [
+    /**
+     * @param Request $request
+     * @return array
+     */
+    protected function getRulesArray(Request $request):array {
+
+        $rules = [
             "category_id" => "nullable|numeric",
             "parent_id" => "nullable|numeric",
             "site_id" => "required|numeric",
@@ -18,7 +25,16 @@ trait BlogPageCommon {
             "exclude_in_listing" => "nullable|integer",
             "content_type" => "required",
             "position" => "nullable|integer",
-            "link_rewrite" => "required|max:255|string",
+            /*"link_rewrite" => "required|max:255|string|unique:pages,link_rewrite",*/
+            "link_rewrite" => [
+                'required',
+                'max:255',
+                'string',
+                Rule::unique('pages')->where(function ($query) use ($request) {
+                    $query->where('site_id', $request->input("site_id"))
+                        ->where('link_rewrite', $request->input("link_rewrite"));
+                })
+            ],
             "link_navigation" => "nullable|max:255|string",
             "menu_placement" => "nullable|max:100|string",
             "insert_by" => "required|numeric",
@@ -38,6 +54,19 @@ trait BlogPageCommon {
             "author" => "nullable|max:255|string",
             "content_source" => "nullable|max:255|string"
         ];
+        if ($request->input("id") > 0) {
+            $rules['link_rewrite'] = [
+                'required',
+                'max:255',
+                'string',
+                Rule::unique('pages')->where(function ($query) use ($request) {
+                    $query->where('site_id', $request->input("site_id"))
+                        ->where('link_rewrite', $request->input("link_rewrite"))
+                        ->where('id', '<>', $request->input("id"));
+                })
+            ];
+        }
+        return $rules;
     }
 
     /**

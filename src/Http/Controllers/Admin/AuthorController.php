@@ -63,8 +63,9 @@ class AuthorController extends BaseAdminController
         ];
 
         if ($request->input("id") > 0) {
-            $rules['email'] = 'required|email|max:255';
+            $rules['email'] = 'required|email|max:255|unique:users,email,' . $request->input("id");
         }
+
 
         $validator = Validator::make($request->all(), $rules);
 

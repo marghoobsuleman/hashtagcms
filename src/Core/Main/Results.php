@@ -31,11 +31,11 @@ class Results
      * @param bool $selectOne
      * @return array
      */
-    private function selectOneOrMany(string $query, array $byParams=array(), string $database=null, bool $selectOne):array {
+    private function selectOneOrMany(string $query, array $byParams=array(), string $database=null, bool $selectOne=null):array {
 
         $queryParams = (sizeof($byParams)==0) ? $this->findAndReplaceGlobalIds($query) : $byParams;
 
-        $select = ($selectOne == true) ? "selectOne" : "select";
+        $select = ($selectOne === true) ? "selectOne" : "select";
 
         /*info("======================== query ============= ");
         info(json_encode($query));

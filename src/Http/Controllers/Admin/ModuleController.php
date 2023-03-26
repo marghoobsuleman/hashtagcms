@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
+use Illuminate\Validation\Rule;
 use MarghoobSuleman\HashtagCms\Models\Module;
 use MarghoobSuleman\HashtagCms\Models\Site;
 use MarghoobSuleman\HashtagCms\Core\Helpers\Message;
@@ -34,11 +35,21 @@ class ModuleController extends BaseAdminController
         if(!$this->checkPolicy('edit')) {
             return htcms_admin_view("common.error", Message::getWriteError());
         }
+        //
+        $data = $request->all();
 
         $rules = [
             "site_id" => "required|numeric",
             "name" => "required|max:60|string",
-            "alias" => "required|max:60|string",
+            "alias" => [
+                'required',
+                'max:60',
+                'string',
+                Rule::unique('modules')->where(function ($query) use ($request) {
+                    $query->where('site_id', $request->input("site_id"))
+                        ->where('alias', $request->input("alias"));
+                })
+            ],
             "linked_module" => "nullable|max:60|string",
             "view_name" => "required|max:200|string",
             "data_type" => "required",
@@ -48,6 +59,19 @@ class ModuleController extends BaseAdminController
             "cache_group" => "nullable|max:100|string",
             "live_edit" => "nullable|integer"
         ];
+
+        if ($request->input("id") > 0) {
+            $rules['alias'] = [
+                'required',
+                'max:60',
+                'string',
+                Rule::unique('modules')->where(function ($query) use ($request) {
+                    $query->where('site_id', $request->input("site_id"))
+                        ->where('alias', $request->input("alias"))
+                        ->where('id', '<>', $request->input("id"));
+                })
+            ];
+        }
 
         $validator = Validator::make($request->all(), $rules);
 
@@ -93,9 +117,14 @@ class ModuleController extends BaseAdminController
 
         $saveData['linked_module'] = $data["linked_module"];
         $saveData['live_edit'] = $data["live_edit"];
+        $saveData['site_id']   = $data['site_id'];
 
+        if($data["actionPerformed"]!=="edit") {
+            $saveData['created_at'] = htcms_get_current_date();
+        }
 
-        $saveData['site_id']		= $data['site_id'];
+        $saveData['updated_at']	= htcms_get_current_date();
+
         $arrSaveData = array("model" => $this->dataSource, "data" => $saveData);
 
         //For getting all available sites
@@ -128,7 +157,6 @@ class ModuleController extends BaseAdminController
                         ['site_id' => $site['id'], 'alias' => $saveData['alias']],
                         [
                             'name' => $saveData['name'],
-                            'linked_module' => $saveData['name'],
                             'view_name' => $saveData['view_name'],
                             'data_type' => $saveData['data_type'],
                             'linked_module' => $saveData['linked_module'],

@@ -44,8 +44,7 @@ return [
      * domain and context key combination here to run the site.
      */
     "domains" => array(
-        "dev.hashtagcms.com"=>env('CONTEXT', 'jflcms'),
-        "api.dominos.co.in"=>'jflcms',
+        "dev.hashtagcms.com"=>env('CONTEXT', 'htcms'),
         "api.hashtagcms.com"=>'htcms'
 
     ),

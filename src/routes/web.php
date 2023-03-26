@@ -97,6 +97,7 @@ if (HashtagCms::isRoutesEnabled()) {
                 try {
                     DB::connection()->getPdo();
                 } catch (\Exception $e) {
+                    info("Could not connect to the database.  Please check your configuration. Error: ".$e->getMessage());
                     die("Could not connect to the database.  Please check your configuration. Error: ".$e->getMessage());
                 }
                 return "RouteError: I don't know what to process...";
@@ -107,7 +108,6 @@ if (HashtagCms::isRoutesEnabled()) {
             if (env("APP_ENV") !== "local") {
                 abort($exception->getStatusCode(), $exception->getMessage());
             } else {
-                dd($exception);
                 return array(
                     "code" => $exception->getStatusCode() ?? " unknown",
                     "message" => $exception->getMessage(),

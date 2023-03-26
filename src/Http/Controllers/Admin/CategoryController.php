@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
+use Illuminate\Validation\Rule;
 use MarghoobSuleman\HashtagCms\Models\CategorySite;
 use MarghoobSuleman\HashtagCms\Models\Platform;
 use MarghoobSuleman\HashtagCms\Models\Category;
@@ -86,7 +87,15 @@ class CategoryController extends BaseAdminController
             "position" => "nullable|numeric",
             "has_wap" => "nullable|integer",
             "wap_url" => "nullable|max:255|string",
-            "link_rewrite" => "required|max:255|string",
+            "link_rewrite" => [
+              'required',
+                'max:255',
+                'string',
+                Rule::unique('categories')->where(function ($query) use ($request) {
+                    $query->where('site_id', $request->input("site_id"))
+                        ->where('link_rewrite', $request->input("link_rewrite"));
+                })
+            ],
             "link_rewrite_pattern" => "nullable|max:255|string",
             "link_navigation" => "nullable|max:255|string",
             "exclude_in_listing" => "nullable|integer",
@@ -109,8 +118,20 @@ class CategoryController extends BaseAdminController
             "lang_meta_description" => "nullable|max:255|string",
             "lang_meta_robots" => "nullable|max:255|string",
             "lang_meta_canonical" => "nullable|max:255|string"
-
         ];
+
+        if ($request->input("id") > 0) {
+            $rules["link_rewrite"] = [
+                'required',
+                'max:255',
+                'string',
+                Rule::unique('categories')->where(function ($query) use ($request) {
+                    $query->where('site_id', $request->input("site_id"))
+                        ->where('link_rewrite', $request->input("link_rewrite"))
+                        ->where('id', '!=', $request->input("id"));
+                })
+            ];
+        }
 
         $validator = Validator::make($request->all(), $rules);
 

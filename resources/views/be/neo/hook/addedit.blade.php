@@ -75,7 +75,7 @@
                         </div>
 
                         <div class="col-sm-10">
-                            {!! FormHelper::select('direction', $directions, array("class"=>"form-select select-sm"), $direction, "plain_array","Select") !!}
+                            {!! FormHelper::select('direction', $directions, array("class"=>"form-select select-sm"), $direction, "plain_array","") !!}
                         </div>
 
                     </div>

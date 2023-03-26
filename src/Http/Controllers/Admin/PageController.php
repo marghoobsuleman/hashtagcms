@@ -51,7 +51,7 @@ class PageController extends BaseAdminController
             return htcms_admin_view("common.error", Message::getWriteError());
         }
 
-        $rules = $this->getRulesArray();
+        $rules = $this->getRulesArray($request);
 
         $validator = Validator::make($request->all(), $rules);
 

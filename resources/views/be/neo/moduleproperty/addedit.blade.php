@@ -10,7 +10,7 @@
         $id = 0;
         $module_id = old('module_id',);
         $name = old('name');
-        $group_name = old('group_name');
+        $group = old('group');
         $site_id = old('site_id', htcms_get_siteId_for_admin());
 
         $update_in_all_language = old('update_in_all_language', 1);
@@ -85,11 +85,11 @@
                 <div class="form-group row">
 
                     <div class="col-sm-2">
-                        {!!  FormHelper::label('group_name', 'Group') !!}
+                        {!!  FormHelper::label('group', 'Group') !!}
                     </div>
 
                     <div class="col-sm-10">
-                        {!! FormHelper::input('text', 'group_name', $group_name, array('class'=>'form-control')) !!}
+                        {!! FormHelper::input('text', 'group', $group, array('class'=>'form-control')) !!}
                     </div>
                 </div>
 

@@ -39,13 +39,16 @@ class PlatformController extends BaseAdminController
             "link_rewrite" => array("required",
                 "max:100",
                 "string",
-                "regex:/^\w{1,}$/")
+                "regex:/^\w{1,}$/",
+                "unique:platforms,link_rewrite")
         ];
 
-        if($request->input("id")==0) {
-
-            array_push($rules["link_rewrite"], "unique:platforms,link_rewrite");
-
+        if ($request->input("id") > 0) {
+            $rules['link_rewrite'] = array("required",
+                "max:100",
+                "string",
+                "regex:/^\w{1,}$/",
+                "unique:platforms,link_rewrite,".$request->input("id"));
         }
 
         $validator = Validator::make($request->all(), $rules);
@@ -61,6 +64,11 @@ class PlatformController extends BaseAdminController
 
         $saveData["name"] = $data["name"];
         $saveData["link_rewrite"] = strtolower($data["link_rewrite"]);
+        $saveData["updated_at"] = htcms_get_current_date();
+
+        if ($data["actionPerformed"] !== "edit") {
+            $saveData["created_at"] = htcms_get_current_date();
+        }
 
         $arrSaveData = array("model"=>$this->dataSource,  "data"=>$saveData);
         if($data["actionPerformed"]=="edit") {

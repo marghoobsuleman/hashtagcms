@@ -51,6 +51,10 @@ class LanguageController extends BaseAdminController
             "date_format_full" => "nullable|max:32|string",
             "is_rtl" => "nullable|integer"];
 
+
+
+
+
         $validator = Validator::make($request->all(), $rules);
 
         if ($validator->fails()) {

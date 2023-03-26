@@ -178,12 +178,12 @@ trait AdminCrud {
      * @return mixed
      */
 
-    protected function saveDataWithLang($saveData=array(), $langData=array(), $where=NULL, $upateInAllLangs=false) {
+    protected function saveDataWithLang($saveData=array(), $langData=array(), $where=NULL, $updateInAllLangs=false) {
 
         $data["saveData"] = $saveData;
         $data["langData"] = $langData;
 
-        return $this->saveAllData($data, $where, $upateInAllLangs);
+        return $this->saveAllData($data, $where, $updateInAllLangs);
     }
 
     /**
@@ -195,24 +195,24 @@ trait AdminCrud {
      * @return mixed
      */
     //working
-    protected function saveDataWithLangAndSite($saveData=array(), $langData=array(), $siteData=array(), $where=NULL, $upateInAllLangs=false) {
+    protected function saveDataWithLangAndSite($saveData=array(), $langData=array(), $siteData=array(), $where=NULL, $updateInAllLangs=false) {
 
         $data["saveData"] = $saveData;
         $data["langData"] = $langData;
 
         $data["siteData"] = $siteData;
 
-        return $this->saveAllData($data, $where, $upateInAllLangs);
+        return $this->saveAllData($data, $where, $updateInAllLangs);
     }
 
-    protected function saveDataWithLangAndPlatform($saveData=array(), $langData=array(), $platformData=array(), $where=NULL, $upateInAllLangs=false) {
+    protected function saveDataWithLangAndPlatform($saveData=array(), $langData=array(), $platformData=array(), $where=NULL, $updateInAllLangs=false) {
 
         $data["saveData"] = $saveData;
         $data["langData"] = $langData;
 
         $data["platformData"] = $platformData;
 
-        return $this->saveAllData($data, $where, $upateInAllLangs);
+        return $this->saveAllData($data, $where, $updateInAllLangs);
     }
 
     /**
@@ -221,21 +221,21 @@ trait AdminCrud {
      * @param null $where
      * @return mixed
      */
-    protected function saveData($saveData=array(), $where=NULL, $upateInAllLangs=false) {
+    protected function saveData($saveData=array(), $where=NULL, $updateInAllLangs=false) {
 
         $data["saveData"] = $saveData;
 
-        return $this->saveAllData($data, $where, $upateInAllLangs);
+        return $this->saveAllData($data, $where, $updateInAllLangs);
 
     }
 
     /**
      * Save All Data
-     * @param $data - mainData, langData, siteData,
+     * @param $data - saveData, langData, siteData, platformData
      * @param null $where
      * @return mixed
      */
-    private function saveAllData($data, $where=NULL, $upateInAllLangs=false) {
+    private function saveAllData($data, $where=NULL, $updateInAllLangs=false) {
 
         //Better to be safe
         if(!$this->checkPolicy('edit')) {
@@ -253,7 +253,7 @@ trait AdminCrud {
         $langData = NULL;
         $siteData = NULL;
 
-
+        $supportedSiteLangs = array();
         //Lang Data
         if(isset($data["langData"])) {
             $langData = $data["langData"]["data"];
@@ -289,7 +289,7 @@ trait AdminCrud {
             //$rData["isSaved"] = $mainModel->save();
 
             try {
-                //Sometime there is no id field
+                //Sometimes there is no id field
                 $rData["id"] = DB::getPdo()->lastInsertId();
 
             } catch (Exception $e) {
@@ -374,7 +374,7 @@ trait AdminCrud {
             if($langData!=NULL) {
                 $langMethod = 'lang';
                 $foundLangMethod = true;
-                if($upateInAllLangs === true) {
+                if($updateInAllLangs === true) {
                     $langMethod = 'langs';
                 }
 
@@ -407,7 +407,7 @@ trait AdminCrud {
                 $langData["lang_id"] = (isset($langData["lang_id"])) ? $langData["lang_id"] : htcms_get_language_id_for_admin();
                 //
                 //dd($mainModel, $langData);
-                if ($upateInAllLangs===true) {
+                if ($updateInAllLangs===true) {
                     // in all langs
                     $mainTable =  Str::singular($mainModel->getTable());
                     $primaryKey = $mainTable."_".$mainModel->getKeyName();

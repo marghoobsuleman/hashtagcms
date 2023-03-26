@@ -12,7 +12,7 @@
         </ul>
       </nav>
     </div>
-    <div class="col float-end" v-if="totalCount > 0">
+    <div class="col float-end" v-if="totalCount > 0 && showDownload">
       <span class="pull-right" style="margin-right:16px">
             <download-button :data-controller-name="controllerName"></download-button>
         </span>
@@ -44,7 +44,9 @@
           'dataTotal',
           'dataControllerName',
           'dataNextLabel',
-          'dataPreviousLabel'
+          'dataPreviousLabel',
+          'dataShowDownload'
+
       ],
       data() {
         return {
@@ -55,7 +57,8 @@
             pageLabel:{
                 "pagination.next": (this.dataNextLabel),
                 "pagination.previous": (this.dataPreviousLabel)
-            }
+            },
+            showDownload: (this.dataShowDownload === "true" || this.dataShowDownload === "1")
         }
       },
       computed: {

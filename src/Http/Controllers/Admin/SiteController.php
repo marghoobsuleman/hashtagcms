@@ -35,7 +35,7 @@ use Illuminate\Support\Facades\Auth;
 class SiteController extends BaseAdminController
 {
 
-    protected $dataFields = array("id", "name", "lang.title as title", "context", "logo");
+    protected $dataFields = array("id", "name", "lang.title as title", "domain", "context");
 
     protected $dataSource = Site::class;
 
@@ -80,14 +80,20 @@ class SiteController extends BaseAdminController
             "theme_id" => "nullable|numeric",
             "lang_id" => "nullable|numeric",
             "under_maintenance" => "nullable|integer",
-            "domain" => "required|max:255|string",
-            "context" => "required|max:40|string",
+            "domain" => "required|max:255|string|unique:sites,domain",
+            "context" => "required|max:40|string|unique:sites,context",
             "favicon" => "nullable|file",
             "lang_count" => "nullable|numeric",
             "lang_title" => "required|max:255|string"
         ];
 
+        if ($request->input("id") > 0) {
+            $rules['domain'] = 'required|max:255|string|unique:sites,domain,' . $request->input("id");
+            $rules['context'] = 'required|max:40|string|unique:sites,context,' . $request->input("id");
+        }
+
         $validator = Validator::make($request->all(), $rules);
+
 
         if ($validator->fails()) {
 
@@ -412,20 +418,22 @@ class SiteController extends BaseAdminController
     }
 
     /**
-     * @param array $data
+     * @param $data
      * @param $source
      * @param $langSource
-     * @param string $idField
+     * @param $idField
      * @param null $tabs
      * @return bool
      */
-    private function saveSettingWithLangs($data=array(), $source, $langSource, $idField='', $tabs=null, $toSite=null) {
+    private function saveSettingWithLangs($data, $source, $langSource, $idField=null, $tabs=null, $toSite=null) {
 
         $inserted = FALSE;
 
         //info(json_encode($data));
         //return false;
         $toSiteId = $toSite['site_id'];
+        $idField = ($idField === null) ? "" : $idField;
+        $data = ($data === null) ? array() : $data;
 
         DB::beginTransaction();
 
@@ -438,7 +446,6 @@ class SiteController extends BaseAdminController
 
             unset($val["id"]);
             unset($val["lang"]); //if exists
-
 
             $content = new $source;
             foreach ($val as $k=>$v) {

@@ -13,7 +13,7 @@ use MarghoobSuleman\HashtagCms\Models\Platform;
 
 class ModulepropertyController extends BaseAdminController
 {
-    protected $dataFields = ['id','name','lang.value as value', 'group_name', 'module.alias', 'platform.name', 'updated_at'];
+    protected $dataFields = ['id','name','lang.value as value', 'group', 'module.alias', 'platform.name', 'updated_at'];
 
     protected $dataSource = ModuleProp::class;
 
@@ -38,7 +38,7 @@ class ModulepropertyController extends BaseAdminController
                          "site_id" => "required",
                          "platform_id" => "required",
                          "name" => "required|max:100|string",
-                         "group_name" => "nullable|max:100|string",
+                         "group" => "nullable|max:100|string",
                          "value" => "required|max:500|string"
                     ];
 
@@ -55,7 +55,7 @@ class ModulepropertyController extends BaseAdminController
 
             $data = $request->all();
 
-            $saveData['group_name'] = $data["group_name"];
+            $saveData['group'] = $data["group"];
             $saveData['name'] =  $data["name"];
             $saveData['site_id'] = $data["site_id"];
             $saveData['updated_at'] = htcms_get_current_date();

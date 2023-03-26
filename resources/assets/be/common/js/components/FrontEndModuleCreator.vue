@@ -337,14 +337,19 @@ export default {
             let data_length = Object.keys(data).length;
             let form = document.querySelector("#addEditFrm");
             for (let a in data) {
+              //setting document values
                 let val = data[a];
                 //setting form values;
-                this.form[a] = val;
-                //setting document values
+                if (typeof this.form[a] !== "undefined" && typeof this.form[a] !== "function") {
+                    this.form[a] = val;
+                }
+
                 let ele = form[a] || document.getElementById(a);
+
                 if (ele) {
+                    let eleType = ele.type;
                     // to make it visible for checkbox and radio
-                    if(ele.type === "checkbox" || ele.type === "radio") {
+                    if((eleType === "checkbox" || eleType === "radio") && eleType !== "submit") {
                         this.form[a] = (val === 1);
                     }
                 }

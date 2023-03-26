@@ -20889,14 +20889,17 @@ __webpack_require__.r(__webpack_exports__);
       var data_length = Object.keys(data).length;
       var form = document.querySelector("#addEditFrm");
       for (var a in data) {
+        //setting document values
         var val = data[a];
         //setting form values;
-        this.form[a] = val;
-        //setting document values
+        if (typeof this.form[a] !== "undefined" && typeof this.form[a] !== "function") {
+          this.form[a] = val;
+        }
         var ele = form[a] || document.getElementById(a);
         if (ele) {
+          var eleType = ele.type;
           // to make it visible for checkbox and radio
-          if (ele.type === "checkbox" || ele.type === "radio") {
+          if ((eleType === "checkbox" || eleType === "radio") && eleType !== "submit") {
             this.form[a] = val === 1;
           }
         }
@@ -22967,7 +22970,7 @@ __webpack_require__.r(__webpack_exports__);
       $this.decreaseCounter();
     });
   },
-  props: ['dataPaginator', 'dataFirstItem', 'dataLastItem', 'dataTotal', 'dataControllerName', 'dataNextLabel', 'dataPreviousLabel'],
+  props: ['dataPaginator', 'dataFirstItem', 'dataLastItem', 'dataTotal', 'dataControllerName', 'dataNextLabel', 'dataPreviousLabel', 'dataShowDownload'],
   data: function data() {
     return {
       totalCount: parseInt(this.dataTotal),
@@ -22977,7 +22980,8 @@ __webpack_require__.r(__webpack_exports__);
       pageLabel: {
         "pagination.next": this.dataNextLabel,
         "pagination.previous": this.dataPreviousLabel
-      }
+      },
+      showDownload: this.dataShowDownload === "true" || this.dataShowDownload === "1"
     };
   },
   computed: {
@@ -27761,7 +27765,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       href: $options.getLink(page),
       innerHTML: $options.getLabel(page.label)
     }, null, 8 /* PROPS */, _hoisted_7)], 2 /* CLASS */);
-  }), 256 /* UNKEYED_FRAGMENT */))])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]), $data.totalCount > 0 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_8, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_9, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_download_button, {
+  }), 256 /* UNKEYED_FRAGMENT */))])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]), $data.totalCount > 0 && $data.showDownload ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_8, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_9, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_download_button, {
     "data-controller-name": $data.controllerName
   }, null, 8 /* PROPS */, ["data-controller-name"])])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]);
 }

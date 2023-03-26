@@ -12,6 +12,7 @@ return [
         'resource_dir' => 'be/neo',
         'media_path' => '/storage/media', //media path
         'show_delete_popup' => false,
+        'show_download_button' => true,
         'records_per_page' => 20,
         'action_field_title' => array("label"=>"Action", "key"=>"action"),
         'action_as_ajax' => array('delete', 'approve', 'publish_status'),
@@ -32,5 +33,4 @@ return [
     ],
     "imageSupportedByBrowsers" => array("apng", "avif", "gif", "jpg","jpeg", "jfif", "pjpeg", "pjp", "png", "svg", "webp", "bmp", "ico", "cur", "tif", "tiff"),
     "chartPages"=>10
-
 ];

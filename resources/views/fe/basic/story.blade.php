@@ -80,7 +80,7 @@
 
                         </div>
                         <div class="col-sm-10 text-center">
-                            <button class="btn btn-lg btn-info mb-1" type="submit">Submit</button>
+                            <button class="btn btn-lg btn-outline-secondary mb-1" type="submit">Submit</button>
                             <div class="alert text-success">
                                 {{$successMessage}}
                             </div>

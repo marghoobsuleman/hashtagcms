@@ -51,9 +51,10 @@ class CityController extends BaseAdminController
             "tax_behavior" => "nullable|integer",
             "airport_name" => "nullable|max:256|string",
             "airport_code" => "nullable|max:20|string",
-            "latitude" => "nullable|numeric",
-            "longitude" => "nullable|numeric"
+            "latitude" => "nullable|numeric|between:-90,90",
+            "longitude" => "nullable|numeric|between:-180,180"
         ];
+
 
         $validator = Validator::make($request->all(), $rules);
 

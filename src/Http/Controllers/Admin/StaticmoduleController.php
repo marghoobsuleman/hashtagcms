@@ -5,6 +5,7 @@ namespace MarghoobSuleman\HashtagCms\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
+use Illuminate\Validation\Rule;
 use MarghoobSuleman\HashtagCms\Models\StaticModuleContent;
 use MarghoobSuleman\HashtagCms\Models\Site;
 use MarghoobSuleman\HashtagCms\Core\Helpers\Message;
@@ -31,14 +32,45 @@ class StaticmoduleController extends BaseAdminController
         if(!$this->checkPolicy('edit')) {
             return htcms_admin_view("common.error", Message::getWriteError());
         }
+        /*
+         *  "alias" => [
+                'required',
+                'max:60',
+                'string',
+                Rule::unique('modules')->where(function ($query) use ($request) {
+                    $query->where('site_id', $request->input("site_id"))
+                        ->where('alias', $request->input("alias"));
+                })
+            ],
+         */
 
         $rules = [
             "site_id" => "required|numeric",
-            "alias" => "required|max:60|string",
+            "alias"=> ["required",
+                "max:60",
+                "string",
+                Rule::unique('static_module_contents')->where(function ($query) use ($request) {
+                $query->where('site_id', $request->input("site_id"))
+                    ->where('alias', $request->input("alias"));
+            })],
+            /*"alias" => "required|max:60|string",*/
             "update_by" => "required|numeric",
             "lang_title" => "required|max:255|string",
             "lang_content" => "required"
         ];
+
+        if ($request->input("id") > 0) {
+            $rules["alias"] = ["required",
+                "max:60",
+                "string",
+                Rule::unique('static_module_contents')->where(function ($query) use ($request) {
+                    $query->where('site_id', $request->input("site_id"))
+                        ->where('alias', $request->input("alias"))
+                        ->where('id', '<>', $request->input("id"));
+                })];
+        }
+
+
 
         if($request->input("id")==0) {
 

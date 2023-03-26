@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 
+use Illuminate\Validation\Rule;
 use MarghoobSuleman\HashtagCms\Models\Theme;
 use MarghoobSuleman\HashtagCms\Models\Site;
 use MarghoobSuleman\HashtagCms\Core\Helpers\Message;
@@ -44,12 +45,25 @@ class ThemeController extends BaseAdminController
         $rules = [
             "site_id" => "required|numeric",
             "name" => "required|max:60|string",
-            "alias" => "required|max:60|string",
+            "alias"=> ["required", "max:60", "string",
+                Rule::unique('themes')->where(function ($query) use ($request) {
+                    $query->where('site_id', $request->input("site_id"))
+                        ->where('alias', $request->input("alias"));
+                })],
             "directory" => "required|max:60|string",
             "body_class" => "nullable|max:255|string",
             "img_preview" => "nullable|file",
             "skeleton" => "required"
         ];
+
+
+        if ($request->input("id") > 0) {
+            $rules["alias"] = Rule::unique('themes')->where(function ($query) use ($request) {
+                $query->where('site_id', $request->input("site_id"))
+                    ->where('alias', $request->input("alias"))
+                    ->where('id', '<>', $request->input("id"));
+            });
+        }
 
         $validator = Validator::make($request->all(), $rules);
 

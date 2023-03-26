@@ -6,4 +6,5 @@
         data-controller-name="{{request()->module_info->controller_name}}"
         data-next-label="<span aria-hidden='true'>&raquo;</span>"
         data-previous-label="<span aria-hidden='true'>&laquo;</span>"
+        data-show-download="{{htcms_admin_config('show_download_button')}}"
 ></pagination-view>
