@@ -69,11 +69,22 @@ php artisan test vendor/marghoobsuleman/hashtagcms
 
 ## Change log
 #v1.3.8 Changes
-
-
-#v1.3.7 Changes
-- Backend: Fixed issue while adding category
-- Frontend: Minor bug fixes while loading after running a test
+#### Major Update: Please note: This updates needs fresh installation.
+- General: Compatible with laravel/framework": "^10.0"
+- Backend: Moved from Vue 2 to Vue 3
+- Backend: Added gallery module. You can now upload files/images.
+- Backend: Added gallery module support with content editor
+- Backend: Moved to bootstrap 5.0
+- Backend: Improved Smart Copy Paste
+- Backend: `direction` column in `hooks` table has default Null value now
+- Backend: linked module and live edit bug while adding or editing frontend module
+- Backend: Sitewise permission added
+- Backend: Dashboard sub-modules data fetching issue on sitewise
+- API: Refoctored API. Used Resource to make key camelCase.
+- API: modules props are returns as key/value pair
+- General: Move Passport to Sanctum for authentication
+- Frontend: Frontend can partially work with API. Usefull for microservices architecture.
+- Frontend: Moved to bootstrap 5.0
 
 ### More logs [changelog](changelog.md) for more information on what has changed recently.
 
