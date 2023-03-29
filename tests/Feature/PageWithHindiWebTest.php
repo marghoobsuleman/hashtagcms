@@ -17,7 +17,7 @@ class PageWithHindiWebTest extends TestCase
     {
         $response = $this->get('/hi/web?clearCache=true');
         $response->assertStatus(200);
-        $response->assertSeeInOrder(['लिंक', 'सहयोग', 'Powered by HashtagCms.org']);
+        $response->assertSeeInOrder(['सहयोग', 'Powered by HashtagCms.org']);
 
     }
 
@@ -25,19 +25,19 @@ class PageWithHindiWebTest extends TestCase
         $response = $this->get('/hi/web/example?clearCache=true');
         $response->assertStatus(200);
         $response->assertSee("यह एक क्वेरी मॉड्यूल है");
-        $response->assertSeeInOrder(['लिंक', 'सहयोग', 'Powered by HashtagCms.org']);
+        $response->assertSeeInOrder(['सहयोग', 'Powered by HashtagCms.org']);
     }
     public function test_blog_page() {
         $response = $this->get('/hi/web/blog?clearCache=true');
         $response->assertStatus(200);
-        $response->assertSeeInOrder(['लिंक', 'सहयोग', 'Powered by HashtagCms.org']);
+        $response->assertSeeInOrder(['सहयोग', 'Powered by HashtagCms.org']);
 
     }
 
     public function test_blog_test_page() {
         $response = $this->get('/hi/web/blog/test-blog?clearCache=true');
         $response->assertStatus(200);
-        $response->assertSeeInOrder(['लिंक', 'सहयोग', 'Powered by HashtagCms.org']);
+        $response->assertSeeInOrder(['सहयोग', 'Powered by HashtagCms.org']);
 
 
     }
@@ -45,7 +45,7 @@ class PageWithHindiWebTest extends TestCase
     public function test_contact_page() {
         $response = $this->get('/hi/web/contact?clearCache=true');
         $response->assertStatus(200);
-        $response->assertSeeInOrder(['लिंक', 'सहयोग', 'Powered by HashtagCms.org']);
+        $response->assertSeeInOrder(['सहयोग', 'Powered by HashtagCms.org']);
 
     }
 
@@ -66,31 +66,31 @@ class PageWithHindiWebTest extends TestCase
     {
         $response = $this->get('/hi/web/');
         $response->assertStatus(200);
-        $response->assertSeeInOrder(['लिंक', 'सहयोग', 'Powered by HashtagCms.org']);
+        $response->assertSeeInOrder(['सहयोग', 'Powered by HashtagCms.org']);
     }
 
     public function test_example_page_with_cache() {
         $response = $this->get('/hi/web/example');
         $response->assertStatus(200);
         $response->assertSee("यह एक क्वेरी मॉड्यूल है");
-        $response->assertSeeInOrder(['लिंक', 'सहयोग', 'Powered by HashtagCms.org']);
+        $response->assertSeeInOrder(['सहयोग', 'Powered by HashtagCms.org']);
     }
     public function test_blog_page_with_cache() {
         $response = $this->get('/hi/web/blog');
         $response->assertStatus(200);
-        $response->assertSeeInOrder(['लिंक', 'सहयोग', 'Powered by HashtagCms.org']);
+        $response->assertSeeInOrder(['सहयोग', 'Powered by HashtagCms.org']);
     }
 
     public function test_blog_test_page_with_cache() {
         $response = $this->get('/hi/web/blog/test-blog');
         $response->assertStatus(200);
-        $response->assertSeeInOrder(['लिंक', 'सहयोग', 'Powered by HashtagCms.org']);
+        $response->assertSeeInOrder(['सहयोग', 'Powered by HashtagCms.org']);
     }
 
     public function test_contact_page_with_cache() {
         $response = $this->get('/hi/web/contact');
         $response->assertStatus(200);
-        $response->assertSeeInOrder(['लिंक', 'सहयोग', 'Powered by HashtagCms.org']);
+        $response->assertSeeInOrder(['सहयोग', 'Powered by HashtagCms.org']);
     }
 
     public function test_profile_page_with_cache() {

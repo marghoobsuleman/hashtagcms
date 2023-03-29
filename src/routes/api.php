@@ -36,7 +36,7 @@ Route::middleware(['api', 'etag'])->prefix("api/hashtagcms/public")->group(funct
      */
     Route::get("configs/v1/site-configs", function (Request $request)  use($callable) {
 
-        return app()->call($callable."ServiceControllerV2@siteConfigs");
+        return app()->call($callable."ServiceController@siteConfigs");
 
     });
 
@@ -45,7 +45,7 @@ Route::middleware(['api', 'etag'])->prefix("api/hashtagcms/public")->group(funct
      */
     Route::get("sites/v1/load-data", function(Request $request) use($callable) {
 
-        return app()->call($callable."ServiceControllerV2@loadData");
+        return app()->call($callable."ServiceController@loadData");
 
     });
 
@@ -54,7 +54,7 @@ Route::middleware(['api', 'etag'])->prefix("api/hashtagcms/public")->group(funct
      */
     Route::get("sites/v1/load-data-mobile", function(Request $request) use($callable) {
 
-        return app()->call($callable."ServiceControllerV2@loadDataMobile");
+        return app()->call($callable."ServiceController@loadDataMobile");
 
     });
 
@@ -63,7 +63,7 @@ Route::middleware(['api', 'etag'])->prefix("api/hashtagcms/public")->group(funct
      */
     Route::get("service/v1/load-module", function(Request $request) use($callable) {
 
-        return app()->call($callable."ServiceController@loadModule");
+        return array("result"=>"will be available in next version");
 
     });
 
@@ -72,7 +72,7 @@ Route::middleware(['api', 'etag'])->prefix("api/hashtagcms/public")->group(funct
      */
     Route::get("service/v1/load-hook", function(Request $request) use($callable) {
 
-        return app()->call($callable."ServiceController@loadHook");
+        return array("result"=>"will be available in next version");
 
     });
 

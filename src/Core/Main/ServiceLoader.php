@@ -1,10 +1,25 @@
 <?php
 namespace MarghoobSuleman\HashtagCms\Core\Main;
 
+use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\DB;
+
 use MarghoobSuleman\HashtagCms\Models\Category;
 use MarghoobSuleman\HashtagCms\Models\Lang;
 use MarghoobSuleman\HashtagCms\Models\Site;
 use MarghoobSuleman\HashtagCms\Models\Platform;
+use MarghoobSuleman\HashtagCms\Models\SiteProp;
+
+/** v2 */
+use MarghoobSuleman\HashtagCms\Http\Resources\SiteResource;
+use MarghoobSuleman\HashtagCms\Http\Resources\SiteCollection;
+use MarghoobSuleman\HashtagCms\Http\Resources\PlatformResource;
+use MarghoobSuleman\HashtagCms\Http\Resources\LangResource;
+use MarghoobSuleman\HashtagCms\Http\Resources\CurrencyResource;
+use MarghoobSuleman\HashtagCms\Http\Resources\CategoryResource;
+use MarghoobSuleman\HashtagCms\Http\Resources\CountryResource;
+use MarghoobSuleman\HashtagCms\Http\Resources\ZoneResource;
+use MarghoobSuleman\HashtagCms\Http\Resources\SitePropResource;
 
 class ServiceLoader extends DataLoader
 {
@@ -30,78 +45,17 @@ class ServiceLoader extends DataLoader
      */
     public function allConfigs(string $context, string $lang=null, string $platform=null): array
     {
-        // fetch site info from request -> context
-        // fetch lang info from request -> lang
-        // fetch platform info from request -> platform
-        // if lang is passed in request use that else fetch lang_id from site info
-        // if platform is passed in request use that else fetch platform_id from site info
-        // after that fetch all the info.
-
-        if (empty($context)) {
-            return $this->getErrorMessage("Site context is missing", 400);
-        }
-        $lang_id = null;
-        $platform_id = null;
-        //@todo: Default currency id is missing
-        $site = Site::where('context', '=', $context)->first();
-
-        if (empty($site)) {
-            return $this->getErrorMessage("Site not found", 404);
-        }
-
-        if(!empty($lang)) {
-            $langInfo = Lang::where('iso_code', '=', $lang)->first();
-            if(!empty($langInfo)) {
-                $lang_id = $langInfo->id;
-            }
-        }
-        if(!empty($platform)) {
-            $platformInfo = Platform::where('link_rewrite', '=', $platform)->first();
-            if(!empty($platformInfo)) {
-                $platform_id = $platformInfo->id;
-            }
-        }
-
-        $site_id = $site->id;
-        $lang_id = ($lang_id == null) ? $site->lang_id : $lang_id;
-        $platform_id = ($platform_id == null) ? $site->platform_id : $platform_id; //will use this
-
-        $siteInfo = $this->infoLoader->getSiteInfo($context, $lang_id);
-        $platforms = $this->infoLoader->getAllSupportedPlatforms($site_id);
-        $langs = $this->infoLoader->getAllSupportedLangs($site_id);
-        $currencies = $this->infoLoader->getAllSupportedCurrencies($site_id);
-        $zones = $this->infoLoader->getAllSupportedZones($site_id);
-        $categories = $this->infoLoader->getAllSupportedCategories($site_id, $lang_id, $platform_id);
-        $countries = $this->infoLoader->getAllSupportedCountries($site_id, $lang_id);
-        $props = $this->infoLoader->getSitePropsInfo($site_id, $platform_id);
-
-        $data['site'] = $siteInfo;
-        $data["defaults"] = array("category_id"=>$site->category_id,
-            "lang_id"=>$site->lang_id,
-            "country_id"=>$site->country_id,
-            "platform_id"=>$site->platform_id,
-            "currency_id"=>$site->currency_id ?? 1);
-        $data['platforms'] = $platforms;
-        $data['langs'] = $langs;
-        $data['categories'] = $categories;
-        $data['currencies'] = $currencies;
-        $data['zones'] = $zones;
-        $data['counties'] = $countries;
-        $data['props'] = $props;
-
-        return array("data"=>$data, "status"=>200);;
+        return parent::loadConfig($context, $lang, $platform);
     }
 
     /**
      * Load data
      * @param array|null $params
-     * @return mixed
+     * @return array
      */
-    public function loadData(array $params=null): mixed
+    public function loadData(string $context, string $lang=null, string $platform=null, $category=null, $microsite=null): array
     {
-
-        $this->moduleLoader::setMandatoryCheck(false);
-        return parent::loadData($params);
+        return parent::loadData($context, $lang, $platform, $category, $microsite);
 
     }
 
@@ -116,7 +70,6 @@ class ServiceLoader extends DataLoader
             return $this->getErrorMessage("Module alias is missing", 400);
         }
 
-        $this->moduleLoader::setMandatoryCheck(false);
         $data = parent::loadData($params);
         if ($data['status'] != 200) {
             return $data;
@@ -160,7 +113,6 @@ class ServiceLoader extends DataLoader
             return $this->getErrorMessage("Hook alias is missing", 400);
         }
 
-        $this->moduleLoader::setMandatoryCheck(false);
         $data = parent::loadData($params);
         if ($data['status'] != 200) {
             return $data;

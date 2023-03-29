@@ -3,11 +3,11 @@
 namespace MarghoobSuleman\HashtagCms\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
-use MarghoobSuleman\HashtagCms\Core\Main\ServiceLoaderV2 as ServiceLoader;
+use MarghoobSuleman\HashtagCms\Core\Main\ServiceLoader;
 use MarghoobSuleman\HashtagCms\Core\Traits\FeEssential;
 use Symfony\Component\HttpFoundation\Response;
 
-class ServiceControllerV2 extends ApiBaseController
+class ServiceController extends ApiBaseController
 {
     use FeEssential;
 
@@ -48,7 +48,7 @@ class ServiceControllerV2 extends ApiBaseController
             if (isset($result['status']) && $result['status']!=200) {
                 return response()->json($result, $result['status'] ?? Response::HTTP_INTERNAL_SERVER_ERROR);
             }
-        } catch (Exception $exception) {
+        } catch (\Exception $exception) {
             return response()->json($exception->getMessage(), $exception->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
@@ -79,7 +79,7 @@ class ServiceControllerV2 extends ApiBaseController
             if (isset($result['status']) && $result['status']!=200) {
                 return response()->json($result, $result['status'] ?? Response::HTTP_INTERNAL_SERVER_ERROR);
             }
-        } catch (Exception $exception) {
+        } catch (\Exception $exception) {
             return response()->json($exception->getMessage(), $exception->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
@@ -110,79 +110,12 @@ class ServiceControllerV2 extends ApiBaseController
             if (isset($result['status']) && $result['status']!=200) {
                 return response()->json($result, $result['status'] ?? Response::HTTP_INTERNAL_SERVER_ERROR);
             }
-        } catch (Exception $exception) {
+        } catch (\Exception $exception) {
             return response()->json($exception->getMessage(), $exception->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
         }
         unset($result['html']);
         return $result;
     }
 
-
-    /**
-     * Load Module
-     * @queryParam $name - Module Alias
-     * @queryParam $json - return type as json or html
-     * @queryParam $lang - language code
-     * @queryParam $platform - platform link rewrite - web|android
-     * @queryParam $site - site context
-     * @queryParam $category - category link rewrite
-     * @queryParam $microsite - microsite id
-     * @param Request $request
-     * @return array|string
-     */
-    public function loadModule(Request $request): array|string
-    {
-        $query = $request->all();
-        $loader = new ServiceLoader();
-        $data = $loader->loadModule($query);
-        if($data["status"] != 200) {
-            return response()->json($data, $data["status"]);
-        }
-        if(!empty($query['json']) && (string)$query['json'] === "true") {
-            return $data;
-        }
-
-        $layoutManager = app()->HashtagCms->layoutManager();
-        $infoKeeper = app()->HashtagCmsInfoLoader->getInfoKeeper();
-        $parsedData = $layoutManager->getParsedViewData((array)$data['module'], $infoKeeper);
-        $withJs = $query['withJs'] ?? false;
-        $withCss = $query['withCss'] ?? false;
-        return view($layoutManager->getBaseServiceIndex(), array("data"=>$parsedData, "withCss"=>$withCss, "withJs"=>$withJs));
-
-    }
-
-    /**
-     * @queryParam $name - Hook Alias
-     * @queryParam $json - return type as json or html
-     * @queryParam $lang - language code
-     * @queryParam $platform - platform link rewrite - web|android
-     * @queryParam $site - site context
-     * @queryParam $category - category link rewrite
-     * @queryParam $microsite - microsite id
-     * @param Request $request
-     * @return array|mixed|string
-     */
-    public function loadHook(Request $request): array|string
-    {
-
-        $query = $request->all();
-        $loader = new ServiceLoader();
-        $data = $loader->loadHook($query);
-
-        if($data["status"] != 200) {
-            return response()->json($data, $data["status"]);
-        }
-        if(!empty($query['json']) && (string)$query['json'] === "true") {
-            return $data;
-        }
-        $layoutManager = app()->HashtagCms->layoutManager();
-        $infoKeeper = app()->HashtagCmsInfoLoader->getInfoKeeper();
-
-        $parsedData = $layoutManager->getParsedViewDataFromMultipleModules($data['hook']['modules'], $infoKeeper);
-        $withJs = $query['withJs'] ?? false;
-        $withCss = $query['withCss'] ?? false;
-        return view($layoutManager->getBaseServiceIndex(), array("data"=>$parsedData, "withCss"=>$withCss, "withJs"=>$withJs));
-
-    }
 
 }

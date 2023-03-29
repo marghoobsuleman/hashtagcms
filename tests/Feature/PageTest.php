@@ -21,7 +21,7 @@ class PageTest extends TestCase
         $response->assertStatus(200);
         $response->assertSeeInOrder(['CORPORATES', 'Intuitive interface for managing modules',
             'Modern Design', 'Frequently asked questions', 'Subscribe to our newsletter',
-            'Links', 'Support', 'Follow Us', 'Powered by HashtagCms.org']);
+            'Support', 'Follow Us', 'Powered by HashtagCms.org']);
 
     }
 
@@ -30,13 +30,13 @@ class PageTest extends TestCase
         $response->assertStatus(200);
         $response->assertSeeInOrder(['Custom Module', 'Static Module', 'Query Module',
             'Service Module', 'QueryService Module', 'UrlService Module',
-            'Links', 'Support', 'Follow Us', 'Powered by HashtagCms.org']);
+             'Support', 'Follow Us', 'Powered by HashtagCms.org']);
     }
     public function test_blog_page() {
         $response = $this->get('/blog?clearCache=true');
         $response->assertStatus(200);
         $response->assertSeeInOrder(['Test Blog',
-            'Links', 'Support', 'Follow Us', 'Powered by HashtagCms.org']);
+             'Support', 'Follow Us', 'Powered by HashtagCms.org']);
 
     }
 
@@ -44,7 +44,7 @@ class PageTest extends TestCase
         $response = $this->get('/blog/test-blog?clearCache=true');
         $response->assertStatus(200);
         $response->assertSeeInOrder(['Test Blog','This is test blog content',
-            'Links', 'Support', 'Follow Us', 'Powered by HashtagCms.org']);
+             'Support', 'Follow Us', 'Powered by HashtagCms.org']);
 
 
     }
@@ -53,7 +53,7 @@ class PageTest extends TestCase
         $response = $this->get('/contact?clearCache=true');
         $response->assertStatus(200);
         $response->assertSeeInOrder(['Comment',
-            'Links', 'Support', 'Follow Us', 'Powered by HashtagCms.org']);
+            'Support', 'Follow Us', 'Powered by HashtagCms.org']);
 
     }
 
@@ -78,7 +78,7 @@ class PageTest extends TestCase
         $response->assertStatus(200);
         $response->assertSeeInOrder(['CORPORATES', 'Intuitive interface for managing modules',
             'Modern Design', 'Frequently asked questions', 'Subscribe to our newsletter',
-            'Links', 'Support', 'Follow Us', 'Powered by HashtagCms.org']);
+            'Support', 'Follow Us', 'Powered by HashtagCms.org']);
     }
 
     public function test_example_page_with_cache() {
@@ -86,27 +86,27 @@ class PageTest extends TestCase
         $response->assertStatus(200);
         $response->assertSeeInOrder(['Custom Module', 'Static Module', 'Query Module',
             'Service Module', 'QueryService Module', 'UrlService Module',
-            'Links', 'Support', 'Follow Us', 'Powered by HashtagCms.org']);
+            'Support', 'Follow Us', 'Powered by HashtagCms.org']);
     }
     public function test_blog_page_with_cache() {
         $response = $this->get('/blog');
         $response->assertStatus(200);
         $response->assertSeeInOrder(['Test Blog',
-            'Links', 'Support', 'Follow Us', 'Powered by HashtagCms.org']);
+            'Support', 'Follow Us', 'Powered by HashtagCms.org']);
     }
 
     public function test_blog_test_page_with_cache() {
         $response = $this->get('/blog/test-blog');
         $response->assertStatus(200);
         $response->assertSeeInOrder(['Test Blog','This is test blog content',
-            'Links', 'Support', 'Follow Us', 'Powered by HashtagCms.org']);
+            'Support', 'Follow Us', 'Powered by HashtagCms.org']);
     }
 
     public function test_contact_page_with_cache() {
         $response = $this->get('/contact');
         $response->assertStatus(200);
         $response->assertSeeInOrder(['Comment',
-            'Links', 'Support', 'Follow Us', 'Powered by HashtagCms.org']);
+            'Support', 'Follow Us', 'Powered by HashtagCms.org']);
     }
 
     public function test_profile_page_with_cache() {

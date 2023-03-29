@@ -361,4 +361,17 @@ class Site extends AdminBaseModel
         $allSites = self::find($supportedSites);
         return $allSites;
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function festival() {
+        return $this->hasMany(Festival::class)
+            ->where(array(
+                array("start_date", "<=", date("Y-m-d")),
+                array("end_date", ">=", date("Y-m-d")),
+                array("publish_status", "=", 1)
+                )
+            );
+    }
 }

@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Arr;
 use JetBrains\PhpStorm\ArrayShape;
 use Illuminate\Support\Facades\DB;
+use MarghoobSuleman\HashtagCms\Http\Resources\FestivalResource;
 use Symfony\Component\HttpFoundation\Response;
 use PHPUnit\Framework\MockObject\Exception;
 use Illuminate\Support\Str;
@@ -142,7 +143,7 @@ class DataLoader
         $countriesInfo = CountryResource::collection($siteData->country)->toArray(request());
         $categoriesInfo = CategoryResource::collection($siteData->categoryLang)->toArray(request());
         $propsInfo = SitePropResource::collection($propsData)->toArray(request());
-
+        $festivalInfo = FestivalResource::collection($siteData->festival)->toArray(request());
 
         $data['site'] = $siteInfo;
         $data['defaultData'] = $defaultData;
@@ -153,6 +154,9 @@ class DataLoader
         $data['countries'] = $countriesInfo;
         $data['categories'] = $categoriesInfo;
         $data['props'] = $propsInfo;
+        if (!empty($festivalInfo)) {
+            $data['festivals'] = $festivalInfo;
+        }
 
         /**
          * reset scopes
