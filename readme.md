@@ -13,7 +13,9 @@ The Most powerful, fast, user-friendly and secured platform. Made with PHP Larav
 Via Composer
 
 ``` bash
-$ composer require marghoobsuleman/hashtagcms
+laravel new mysite
+cd mysite
+composer require marghoobsuleman/hashtagcms
 ```
 
 ## Hashtag CMS installation guidelines
@@ -72,18 +74,19 @@ php artisan test vendor/marghoobsuleman/hashtagcms
 #### Major Update: Please note: This updates needs fresh installation.
 - General: Compatible with laravel/framework": "^10.0"
 - Backend: Moved from Vue 2 to Vue 3
-- Backend: Added gallery module. You can now upload files/images.
+- Backend: Added gallery and festival modules. You can now upload files/images etc.
 - Backend: Added gallery module support with content editor
-- Backend: Moved to bootstrap 5.0
-- Backend: Improved Smart Copy Paste
+- Backend: Moved to bootstrap 5.0 for backend
+- Backend: Improved Smart Copy/Paste
 - Backend: `direction` column in `hooks` table has default Null value now
 - Backend: linked module and live edit bug while adding or editing frontend module
 - Backend: Sitewise permission added
 - Backend: Dashboard sub-modules data fetching issue on sitewise
-- API: Refoctored API. Used Resource to make key camelCase.
-- API: modules props are returns as key/value pair
+- API: Refactored API. Used Resource to make key camelCase.
+- API: modules props are returns as key/value pairs
 - General: Move Passport to Sanctum for authentication
-- Frontend: Frontend can partially work with API. Usefull for microservices architecture.
+- Frontend: Frontend can partially work with API. Useful for microservices architecture.
+- Frontend: Fixed some bugs
 - Frontend: Moved to bootstrap 5.0
 
 ### More logs [changelog](changelog.md) for more information on what has changed recently.
