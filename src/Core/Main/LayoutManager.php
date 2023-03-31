@@ -127,8 +127,8 @@ class LayoutManager extends Results
         $this->setMetaObject($meta);
 
         //Set base index
+        $this->setThemePath($meta['theme']['directory']);
         $this->setBaseIndex($meta['theme']);
-
         $this->parseSkeletonForView($meta['theme']);
 
     }
@@ -567,7 +567,7 @@ class LayoutManager extends Results
             }
         }
         //logger()->info("getParsedViewData done");
-        return $viewData;
+        return $this->parseStringForView($viewData);
     }
 
     /**
