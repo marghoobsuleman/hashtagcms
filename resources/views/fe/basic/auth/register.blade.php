@@ -22,7 +22,7 @@
                             </div>
                         </div>
 
-                        <div class="form-group row">
+                        <div class="form-group row mt-2">
                             <label for="email" class="col-md-4 col-form-label text-md-right">{{ ____('hashtagcms::auth.E-Mail Address') }}</label>
 
                             <div class="col-md-6">
@@ -36,7 +36,7 @@
                             </div>
                         </div>
 
-                        <div class="form-group row">
+                        <div class="form-group row mt-2">
                             <label for="password" class="col-md-4 col-form-label text-md-right">{{ ____('hashtagcms::auth.Password') }}</label>
 
                             <div class="col-md-6">
@@ -50,7 +50,7 @@
                             </div>
                         </div>
 
-                        <div class="form-group row">
+                        <div class="form-group row mt-2">
                             <label for="password-confirm" class="col-md-4 col-form-label text-md-right">{{ ____('hashtagcms::auth.Confirm Password') }}</label>
 
                             <div class="col-md-6">
@@ -58,7 +58,7 @@
                             </div>
                         </div>
 
-                        <div class="form-group row mb-0">
+                        <div class="form-group row mt-2">
                             <div class="col-md-6 offset-md-4">
                                 <button type="submit" class="btn btn-primary">
                                     {{ ____('hashtagcms::auth.Register') }}

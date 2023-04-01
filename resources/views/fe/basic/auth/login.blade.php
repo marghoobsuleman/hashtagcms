@@ -29,7 +29,7 @@
                                 <input id="redirect" type="hidden" name="redirect" value="{{ old('redirect') }}">
                             @endif
 
-                            <div class="form-group row">
+                            <div class="form-group row mt-2">
                                 <label for="email" class="col-sm-4 col-form-label text-md-right">{{ ____('hashtagcms::auth.Email Address') }}</label>
 
                                 <div class="col-md-6">
@@ -43,7 +43,7 @@
                                 </div>
                             </div>
 
-                            <div class="form-group row">
+                            <div class="form-group row mt-2">
                                 <label for="password" class="col-md-4 col-form-label text-md-right">{{ ____('hashtagcms::auth.Password') }}</label>
 
                                 <div class="col-md-6">
@@ -57,7 +57,7 @@
                                 </div>
                             </div>
 
-                            <div class="form-group row">
+                            <div class="form-group row mt-2">
                                 <div class="col-md-6 offset-md-4">
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
