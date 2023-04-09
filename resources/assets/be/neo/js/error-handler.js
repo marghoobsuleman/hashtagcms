@@ -1,2 +1,2 @@
-import {ErrorMessage} from '../../common-old/js/helpers/ErrorMessageHandler.js';
+import {ErrorMessage} from '../../common/js/helpers/error-message-handler.js';
 new ErrorMessage();

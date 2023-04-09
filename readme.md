@@ -41,7 +41,7 @@ php artisan cms:install
 - Open `app/Models/User.php` and remove or comment below lines.
 
 ``` bash
-use Illuminate\Foundation\Auth\User as Authenticatable
+//use Illuminate\Foundation\Auth\User as Authenticatable
 ```
 
 - Add below lines in the same file (`app/Models/User.php`)
@@ -70,6 +70,13 @@ php artisan test vendor/marghoobsuleman/hashtagcms
 ```
 
 ## Change log
+
+#v1.3.9 Changes
+- Backend: assets files are in lowercase
+- Backend: Showing roles in user listing
+- Backend: Fixed some bugs and cleanup 
+
+
 #v1.3.8 Changes
 #### Major Update: Please note: This updates needs fresh installation.
 - General: Compatible with laravel/framework": "^10.0"

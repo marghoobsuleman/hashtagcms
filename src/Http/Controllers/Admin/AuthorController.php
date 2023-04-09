@@ -14,11 +14,13 @@ use MarghoobSuleman\HashtagCms\Core\Helpers\Message;
 
 class AuthorController extends BaseAdminController
 {
-    protected $dataFields = ['id', 'name', 'user_type', 'email', 'updated_at'];
+    protected $dataFields = ['id', 'name', 'user_type',
+        array("label" => "Roles", "key" => "roles.name", "showAllScopes"=>true),
+        'email', 'updated_at'];
 
     protected $dataSource = User::class;
 
-    protected $dataWith = '';
+    protected $dataWith = 'roles';
 
     //protected $dataWhere = array(array("field"=>"user_type", "operator"=>"=", "value"=>"Staff"));
 

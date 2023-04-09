@@ -15,7 +15,7 @@ if (token) {
 window.axios = axios;
 
 
-import AdminConfig from '../../common/js/helpers/adminConfig';
+import AdminConfig from '../../common/js/helpers/admin-config';
 window.AdminConfig = new AdminConfig();
 
 import {Toast} from "../../common/js/helpers/common";
@@ -31,33 +31,33 @@ window.Fetcher = new Fetcher();
 
 
 import { createApp } from 'vue';
-import TopNav from '../../common/js/components/topNav.vue';
-import LeftNav from '../../common/js/components/leftNav.vue';
-import InfoBox from '../../common/js/library/infoBox.vue';
-import InfoBoxes from '../../common/js/components/infoxBoxes.vue';
-import TabularView from '../../common/js/components/tabularView.vue';
-import SearchBar from '../../common/js/components/searchBar.vue';
-import ActionBar from '../../common/js/components/actionBar.vue';
+import TopNav from '../../common/js/components/top-nav.vue';
+import LeftNav from '../../common/js/components/left-nav.vue';
+import InfoBox from '../../common/js/library/info-box.vue';
+import InfoBoxes from '../../common/js/components/Info-boxes.vue';
+import TabularView from '../../common/js/components/tabular-view.vue';
+import SearchBar from '../../common/js/components/search-bar.vue';
+import ActionBar from '../../common/js/components/action-bar.vue';
 import PaginationView from '../../common/js/components/pagination.vue';
-import ToastBox from '../../common/js/library/toastBox.vue';
+import ToastBox from '../../common/js/library/toast-box.vue';
 import Loader from '../../common/js/library/loader.vue';
-import ModalBox from '../../common/js/library/modalBox.vue';
-import ModulePermission from '../../common/js/components/modulePermission.vue';
-import MenuSorter from '../../common/js/components/menuSorter.vue';
-import SiteWiseData from '../../common/js/components/siteWiseData.vue';
-import SiteWiseCopier from '../../common/js/components/siteWiseCopier.vue';
-import TitleBar from "../../common/js/components/titleBar.vue";
-import LanguageCopier from "../../common/js/components/languageCopier.vue";
-import ModuleCreator from '../../common/js/components/moduleCreator.vue'; //will work on it
-import FrontEndModuleCreator from '../../common/js/components/frontEndModuleCreator.vue';
-import CopyPaste from '../../common/js/library/copyPaste.vue';
-import SiteCloner from "../../common/js/components/siteCloner.vue";
-import TimerButton from '../../common/js/library/timerButton.vue';
-import CategoryPlatform from '../../common/js/components/categoryPlatform.vue';
-import CategorySettings from '../../common/js/components/categorySettings.vue';
-import LeftMenuShowHide from '../../common/js/library/leftMenuShowHide.vue';
+import ModalBox from '../../common/js/library/modal-box.vue';
+import ModulePermission from '../../common/js/components/module-permission.vue';
+import MenuSorter from '../../common/js/components/menu-sorter.vue';
+import SiteWiseData from '../../common/js/components/sitewise-data.vue';
+import SiteWiseCopier from '../../common/js/components/sitewise-copier.vue';
+import TitleBar from "../../common/js/components/title-bar.vue";
+import LanguageCopier from "../../common/js/components/language-copier.vue";
+import ModuleCreator from '../../common/js/components/module-creator.vue'; //will work on it
+import FrontEndModuleCreator from '../../common/js/components/frontend-module-creator.vue';
+import CopyPaste from '../../common/js/library/copy-paste.vue';
+import SiteCloner from "../../common/js/components/site-cloner.vue";
+import TimerButton from '../../common/js/library/timer-button.vue';
+import CategoryPlatform from '../../common/js/components/category-platform.vue';
+import CategorySettings from '../../common/js/components/category-settings.vue';
+import LeftMenuShowHide from '../../common/js/library/left-menu-show-hide.vue';
 import Homepage from '../../common/js/components/homepage.vue';
-import ImageGallery from "../../common/js/components/imageGallery.vue";
+import ImageGallery from "../../common/js/components/image-gallery.vue";
 
 const app = createApp({
     components: {

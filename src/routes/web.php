@@ -1,14 +1,10 @@
 <?php
-
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use MarghoobSuleman\HashtagCms\Facades\HashtagCms;
 use App\Http\Controllers\Controller;
-
-
-use MarghoobSuleman\HashtagCms\Core\Main\DataLoader as DataLoader;
 
 if(HashtagCms::isInstallationRoutesEnabled()) {
     Route::get("/install",  config("hashtagcms.namespace")."Http\Controllers\Installer\InstallController@index");

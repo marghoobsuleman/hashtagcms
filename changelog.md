@@ -1,5 +1,10 @@
 # Changelog
 
+#v1.3.9 Changes
+- Backend: assets files are in lowercase
+- Backend: Showing roles in user listing
+- Backend: Fixed some bugs and cleanup
+
 #v1.3.8 Changes
 #### Major Update: Please note: This updates needs fresh installation.
 - General: Compatible with laravel/framework": "^10.0"

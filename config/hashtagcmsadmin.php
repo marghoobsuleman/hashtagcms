@@ -2,7 +2,7 @@
 return [
     'cmsInfo'=> [
         'defaultPage'=>'dashboard',
-        'site_label' => '#CMS - Admin',
+        'site_label' => 'CMS - Admin',
         'base_context' => 'admin',
         'base_path' => '/admin',
         'version' => env('BE_RESOURCE_VERSION', '310120221229'),
