@@ -1,4 +1,7 @@
 # Changelog
+#1.4.0
+- Backend: Added command to export register and login controller
+- General: Fixed autoload provider. 
 
 #v1.3.9 Changes
 - Backend: assets files are in lowercase

@@ -43,9 +43,6 @@
     },
     "extra": {
         "laravel": {
-            "providers": [
-                "MarghoobSuleman\\HashtagCms\\HashtagCmsServiceProvider"
-            ],
             "aliases": {
                 "HashtagCms": "MarghoobSuleman\\HashtagCms\\Facades\\HashtagCms"
             }

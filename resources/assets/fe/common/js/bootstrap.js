@@ -11,8 +11,8 @@ if (token) {
 window.axios = axios;
 
 
-import Analytics from "./utils/Analytics";
-import Subscribe from "./components/Subscribe";
+import Analytics from "./utils/analytics";
+import Subscribe from "./components/subscribe";
 
 window.HashtagCms = {};
 window.HashtagCms.Subscribe = new Subscribe();

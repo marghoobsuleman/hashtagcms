@@ -6,6 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Routing\Router;
 
 
+use MarghoobSuleman\HashtagCms\Console\Commands\CmsFrontendControllerCommand;
 use MarghoobSuleman\HashtagCms\Core\Middleware\Admin\BeMiddleware;
 use MarghoobSuleman\HashtagCms\Core\Middleware\Admin\CmsModuleInfo;
 use MarghoobSuleman\HashtagCms\Core\Middleware\FeMiddleware;
@@ -152,7 +153,8 @@ class HashtagCmsServiceProvider extends ServiceProvider
         // Registering package commands.
         $this->commands([
             CmsModuleModelCommand::class,
-            CmsModuleControllerCommand::class
+            CmsModuleControllerCommand::class,
+            CmsFrontendControllerCommand::class
         ]);
     }
 

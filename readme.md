@@ -71,6 +71,10 @@ php artisan test vendor/marghoobsuleman/hashtagcms
 
 ## Change log
 
+#v1.4.0 Changes
+- Backend: Added command to export register and login controller
+- General: Fixed autoload provider
+
 #v1.3.9 Changes
 - Backend: assets files are in lowercase
 - Backend: Showing roles in user listing

@@ -44,6 +44,19 @@ trait Common {
     }
 
     /**
+     * isControllerExists
+     * @param $name
+     * @return mixed
+     */
+    protected function isControllerExists($name) {
+
+        $path = $this->laravel['path'];
+        $file_name = $path.'/Http/Controllers/'.Str::title($name).'Controller.php';
+
+        return $this->files->exists($file_name);
+    }
+
+    /**
      * Is Model Exists
      * @param $name
      * @return mixed
