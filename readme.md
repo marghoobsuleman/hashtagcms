@@ -13,7 +13,7 @@ The Most powerful, fast, user-friendly and secured platform. Made with PHP Larav
 Via Composer
 
 ``` bash
-laravel new mysite
+composer create-project laravel/laravel mysite
 cd mysite
 composer require marghoobsuleman/hashtagcms
 ```
