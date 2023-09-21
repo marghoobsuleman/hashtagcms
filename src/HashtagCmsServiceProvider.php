@@ -98,29 +98,36 @@ class HashtagCmsServiceProvider extends ServiceProvider
     protected function bootForConsole()
     {
         // Publishing the configuration file.
+        // php artisan vendor:publish --tag=hashtagcms.config
         $this->publishes([
             __DIR__.'/../config/hashtagcms.php' => config_path('hashtagcms.php'),
             __DIR__.'/../config/hashtagcmsadmin.php' => config_path('hashtagcmsadmin.php'),
         ], $this->groupName.'.config');
 
         // Publishing the views.
+        // php artisan vendor:publish --tag=hashtagcms.views.frontend
         $this->publishes([
             __DIR__.'/../resources/views/fe' => resource_path('views/vendor/hashtagcms/fe'),
             __DIR__.'/../resources/lang' => resource_path('lang/vendor/hashtagcms'),
         ], $this->groupName.'.views.frontend');
 
 
+        //Publishing the views for admin
+        // php artisan vendor:publish --tag=hashtagcms.views.admin
         $this->publishes([
             __DIR__.'/../resources/views/be' => resource_path('views/vendor/hashtagcms/be'),
             __DIR__.'/../resources/assets/be' => resource_path('assets/hashtagcms/be')
         ], $this->groupName.'.views.admin');
 
+        //Publishing the views for admin common
+        // hashtagcms.views.admincommon
         $this->publishes([
-            __DIR__.'/../resources/views/be/default/common' => resource_path('views/vendor/hashtagcms/be/default/common'),
-            __DIR__.'/../resources/views/be/default/index.blade.php' => resource_path('views/vendor/hashtagcms/be/default/index.blade.php')
+            __DIR__.'/../resources/views/be/neo/common' => resource_path('views/vendor/hashtagcms/be/neo/common'),
+            __DIR__.'/../resources/views/be/neo/index.blade.php' => resource_path('views/vendor/hashtagcms/be/neo/index.blade.php')
         ], $this->groupName.'.views.admincommon');
 
         //Export view and js for admin and frontend
+        // php artisan vendor:publish --tag=hashtagcms.views.all
         $this->publishes([
             __DIR__.'/../resources/views/be' => resource_path('views/vendor/hashtagcms/be'),
             __DIR__.'/../resources/views/fe' => resource_path('views/vendor/hashtagcms/fe'),
@@ -129,13 +136,14 @@ class HashtagCmsServiceProvider extends ServiceProvider
 
         ], $this->groupName.'.views.all');
 
-
         // Publishing assets.
+        // php artisan vendor:publish --tag=hashtagcms.assets
         $this->publishes([
             __DIR__.'/../public/assets' => public_path('assets/hashtagcms'),
             __DIR__.'/../resources/assets/fe' => resource_path('assets/hashtagcms/fe'),
             __DIR__.'/../resources/assets/be' => resource_path('assets/hashtagcms/be'),
             __DIR__.'/../resources/assets/js' => resource_path('assets/hashtagcms/js'),
+            __DIR__.'/../resources/support' => resource_path('assets/hashtagcms/support')
         ], $this->groupName.'.assets');
 
         // Registering package commands.

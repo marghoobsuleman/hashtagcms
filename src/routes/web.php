@@ -118,5 +118,3 @@ if (HashtagCms::isRoutesEnabled()) {
     //Keep some original routes
     Auth::routes();
 }
-
-

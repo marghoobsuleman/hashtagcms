@@ -34,16 +34,11 @@ DB_DATABASE=
 DB_USERNAME=
 DB_PASSWORD=
 ```
-###Install Command
-``` bash
-php artisan cms:install
-```
 - Open `app/Models/User.php` and remove or comment below lines.
 
 ``` bash
-//use Illuminate\Foundation\Auth\User as Authenticatable
+// use Illuminate\Foundation\Auth\User as Authenticatable
 ```
-
 - Add below lines in the same file (`app/Models/User.php`)
 ``` bash
 use MarghoobSuleman\HashtagCms\User as Authenticatable;
@@ -51,10 +46,16 @@ use MarghoobSuleman\HashtagCms\User as Authenticatable;
 - You might want to comment/remove below route in `routes/web.php`
 
 ```bash 
-Route::get('/', function () {
+/*Route::get('/', function () {
     return view('welcome');
-});
+});*/
 ```
+
+###Install Command
+``` bash
+php artisan cms:install
+```
+
 ### Configure site on browser. Open it with the appUrl prefix
 ```bash 
 http://{APP_URL}/install
@@ -70,6 +71,10 @@ php artisan test vendor/marghoobsuleman/hashtagcms
 ```
 
 ## Change log
+#v1.4.1 Changes
+- Backend: Export the correct folder (neo) while installing the package
+- General: Code cleanup
+- General: Added webpack.mix.js and package.json while exporting assets in resource/support
 
 #v1.4.0 Changes
 - Backend: Added command to export register and login controller
