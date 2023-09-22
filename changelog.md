@@ -1,4 +1,10 @@
 # Changelog
+
+#1.4.1
+- Backend: Export the correct folder (neo) while installing the package
+- General: Code cleanup
+- General: Added webpack.mix.js while exporting assets
+
 #1.4.0
 - Backend: Added command to export register and login controller
 - General: Fixed autoload provider. 
@@ -20,7 +26,7 @@
 - Backend: linked module and live edit bug while adding or editing frontend module
 - Backend: Sitewise permission added
 - Backend: Dashboard sub-modules data fetching issue on sitewise
-- API: Refoctored API. Used Resource to make key camelCase. 
+- API: Refactored API. Used Resource to make key camelCase. 
 - API: modules props are returns as key/value pair
 - General: Move Passport to Sanctum for authentication
 - Frontend: Frontend can partially work with API. Usefull for microservices architecture.

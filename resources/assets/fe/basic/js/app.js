@@ -17,4 +17,3 @@ import Subscribe from "../../common/js/components/subscribe";
 window.HashtagCms = {};
 window.HashtagCms.Subscribe = new Subscribe();
 window.HashtagCms.Analytics = new Analytics();
-
