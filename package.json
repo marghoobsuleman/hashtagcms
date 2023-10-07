@@ -13,7 +13,7 @@
         "@popperjs/core": "^2.11.6",
         "dotenv": "^16.0.3",
         "laravel-mix": "^6.0.49",
-        "postcss": "^8.4.20",
+        "postcss": "^8.4.31",
         "resolve-url-loader": "^5.0.0",
         "sass": "^1.57.1",
         "sass-loader": "^13.2.0",
