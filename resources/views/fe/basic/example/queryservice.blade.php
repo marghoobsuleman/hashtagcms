@@ -23,12 +23,15 @@
                     {{$pic['author']}}
                 </div>
             @endforeach
-        </div>
-        <div class="row">
-            <h3 class="ml-1">Query Data</h3>
-        </div>
-        <div class="row">
-            {{json_encode($queryData)}}
-        </div>
-    </div>
+            @if(sizeof($serviceData) == 0)
+                <div class="alert alert-danger">Please check the logs. There is some error while loading the service.</div>
+            @endif
+</div>
+<div class="row">
+<h3 class="ml-1">Query Data</h3>
+</div>
+<div class="row">
+{{json_encode($queryData)}}
+</div>
+</div>
 </section>

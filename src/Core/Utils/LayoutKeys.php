@@ -46,6 +46,9 @@ class LayoutKeys {
 
     public const MICROSITE = "microsite";
 
+    public const FESTIVAL_OBJ = "festivalObj";
+    public const FESTIVAL_CSS = "festivalCss";
+
 
 
 }

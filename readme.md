@@ -71,39 +71,17 @@ php artisan test vendor/marghoobsuleman/hashtagcms
 ```
 
 ## Change log
+#v1.4.2 Changes
+- Backend/Frontend/API: Added festival support. You can add lottie and schedule it. 
+- Core/Frontend: Added module data modifier
+- How it works: 
+- Create App\Parser\ModuleDataModifier and create moduleAliasNameMethod($data, $moduleInfo) and manipulate your data and return it.
+- Don't forget to run php artisan migrate
+
 #v1.4.1 Changes
 - Backend: Export the correct folder (neo) while installing the package
 - General: Code cleanup
 - General: Added webpack.mix.js and package.json while exporting assets in resource/support
-
-#v1.4.0 Changes
-- Backend: Added command to export register and login controller
-- General: Fixed autoload provider
-
-#v1.3.9 Changes
-- Backend: assets files are in lowercase
-- Backend: Showing roles in user listing
-- Backend: Fixed some bugs and cleanup 
-
-
-#v1.3.8 Changes
-#### Major Update: Please note: This updates needs fresh installation.
-- General: Compatible with laravel/framework": "^10.0"
-- Backend: Moved from Vue 2 to Vue 3
-- Backend: Added gallery and festival modules. You can now upload files/images etc.
-- Backend: Added gallery module support with content editor
-- Backend: Moved to bootstrap 5.0 for backend
-- Backend: Improved Smart Copy/Paste
-- Backend: `direction` column in `hooks` table has default Null value now
-- Backend: linked module and live edit bug while adding or editing frontend module
-- Backend: Sitewise permission added
-- Backend: Dashboard sub-modules data fetching issue on sitewise
-- API: Refactored API. Used Resource to make key camelCase.
-- API: modules props are returns as key/value pairs
-- General: Move Passport to Sanctum for authentication
-- Frontend: Frontend can partially work with API. Useful for microservices architecture.
-- Frontend: Fixed some bugs
-- Frontend: Moved to bootstrap 5.0
 
 ### More logs [changelog](changelog.md) for more information on what has changed recently.
 

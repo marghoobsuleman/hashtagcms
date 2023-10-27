@@ -145,6 +145,11 @@ trait BaseInfo {
             $this->configData = $this->loadConfig($context, null, null, false);
         }
 
+        //set festival info
+        if(isset($this->configData['festivals'])) {
+            $this->layoutManager->setFestivalObject($this->configData['festivals']);
+        }
+
         //check if there is an error
         if (isset($this->configData['status']) && $this->configData['status']!=200) {
             logger()->error($this->configData['message']);

@@ -53,7 +53,7 @@ class UrlServiceModuleLoader extends Results implements ModuleLoaderServiceImp
         if (isset($arguments['resultType'])) {
             $headers['Content-Type'] = $arguments['resultType'];
         }
-
+        //dd("url ".$url, $arguments);
         $ml = new ServiceModuleLoader($url, $method_type, $arguments, $headers);
         $this->setResult($ml->getResult());
 

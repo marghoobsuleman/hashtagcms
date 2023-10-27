@@ -4,6 +4,8 @@ namespace MarghoobSuleman\HashtagCms\Core\Traits\Admin;
 
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\File;
+use Illuminate\Support\Str;
 
 trait UploadManager {
 
@@ -11,9 +13,10 @@ trait UploadManager {
      * @param string $module
      * @param array $files // request()->file("key") or request()->allFiles()
      * @param null $path
+     * @param bool $asJson
      * @return array|mixed|null
      */
-    public function upload(string $module='', $files=array(), $path=NULL) {
+    public function upload(string $module='', $files=array(), $path=NULL, $asJson=false) {
 
         $imageSaved = NULL;
         $allFiles = $files;
@@ -32,19 +35,19 @@ trait UploadManager {
                 if(is_array($images)) {
 
                     foreach ($images as $imgKey=>$imgFile) {
-                        $imageSaved[$key][] = $this->saveNow($module, $imgFile, $path);
+                        $imageSaved[$key][] = $this->saveNow($module, $imgFile, $path, $asJson);
                     }
 
                 } else {
                     //Save single image
-                    $imageSaved[$key] = $this->saveNow($module, request()->file($key), $path);
+                    $imageSaved[$key] = $this->saveNow($module, request()->file($key), $path, $asJson);
                 }
             }
 
         } else if($hasFiles) {
 
             //save one - when pass data as file object request()->file('html_input_name')
-            $imageSaved = $this->saveNow($module, $files, $path);
+            $imageSaved = $this->saveNow($module, $files, $path, $asJson);
         }
 
         return $imageSaved;
@@ -57,14 +60,21 @@ trait UploadManager {
      * @param string $module
      * @param UploadedFile|NULL $file
      * @param null $path
+     * @param bool $asJson
      * @return mixed
      */
-    private function saveNow(string $module='', UploadedFile $file=NULL, $path=NULL) {
+    private function saveNow(string $module='', UploadedFile $file=NULL, $path=NULL, $asJson=false) {
         $storedName = "";
         if($module != '' && $file != NULL && $module != NULL) {
             $upload_path = $this->getFolder($module);
             //dd($upload_path);
-            $storedName =  Storage::putFile($upload_path, $file);
+            if ($asJson) {
+                $storedName = Str::uuid().".json";
+                Storage::putFileAs($upload_path, new File($file), $storedName);
+                $storedName = $upload_path."/".$storedName;
+            } else {
+                $storedName =  Storage::putFile($upload_path, $file);
+            }
 
         } else if($path!=NULL && $file != NULL) {
             $storedName =  Storage::putFile($path, $file);

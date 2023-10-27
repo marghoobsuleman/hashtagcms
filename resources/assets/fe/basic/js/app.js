@@ -13,7 +13,10 @@ window.axios = axios;
 
 import Analytics from "../../common/js/utils/analytics";
 import Subscribe from "../../common/js/components/subscribe";
+import {AppConfig} from "../../common/js/helpers/common";
 
-window.HashtagCms = {};
+
+window.HashtagCms = {configData:{}};
 window.HashtagCms.Subscribe = new Subscribe();
 window.HashtagCms.Analytics = new Analytics();
+window.HashtagCms.AppConfig = new AppConfig();

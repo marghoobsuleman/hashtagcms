@@ -8,6 +8,8 @@ class ServiceModuleLoader extends Results implements ModuleLoaderServiceImp
 {
 
     protected array $result = array();
+    protected bool $foundError = false;
+    protected string $errorMessage = "";
 
     function __construct(string $service_url=null, string $method_type=null, array $withData=array(), array $headers=array())
     {
@@ -27,6 +29,8 @@ class ServiceModuleLoader extends Results implements ModuleLoaderServiceImp
     public function process(string $service_url=null, string $method_type=null, array $withData=array(), array $headers=array()):void
     {
         $data = array();
+        $this->foundError = false;
+        $this->errorMessage = "";
 
         if($service_url == "" || $service_url == null) {
             $this->setResult([]);
@@ -80,10 +84,14 @@ class ServiceModuleLoader extends Results implements ModuleLoaderServiceImp
             }
 
         } catch (\Exception $exception) {
+            $err = "Error: getServiceModule ".$exception->getMessage();
             info("Error: getServiceModule ".$exception->getMessage());
-            $this->setResult([]);
+            $data = [];
+            $this->foundError = true;
+            $this->errorMessage = $exception->getMessage();
+            //$this->setResult([]);
         }
-
+        
         $this->setResult($data);
     }
 
@@ -104,5 +112,24 @@ class ServiceModuleLoader extends Results implements ModuleLoaderServiceImp
     {
         $this->result = collect($data)->all();
     }
+
+
+    /**
+     * Has Error
+     * @return bool
+     */
+    public function hasError():bool {
+        return $this->foundError;
+    }
+
+    /**
+     * Get error message
+     * @return string
+     */
+    public function getErrorMessage():string {
+        return $this->errorMessage;
+    }
+
+
 
 }

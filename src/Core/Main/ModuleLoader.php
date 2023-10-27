@@ -3,9 +3,10 @@
 
 namespace MarghoobSuleman\HashtagCms\Core\Main;
 
+use MarghoobSuleman\HashtagCms\Core\Utils\InfoKeys;
 use MarghoobSuleman\HashtagCms\Models\Module;
 use MarghoobSuleman\HashtagCms\Models\ModuleProp;
-
+use Illuminate\Support\Str;
 /**
  * Class ModuleLoader
  * @package MarghoobSuleman\HashtagCms\Core
@@ -205,12 +206,28 @@ class ModuleLoader
         $is_mandatory = $module_obj->is_mandatory;
         $is_shared = $module_obj->shared;
 
-        $moduleType =  "get{$dataType}Module"; 
+        $moduleType =  "get{$dataType}Module";
         //info("dataHandler: ".$dataHandler);
         $data = match (strtolower($dataType)) {
             "query", "service", "urlservice", "queryservice", "static", "custom" => $this->{$moduleType}($module_obj),
             default => $this->getUnknownModule($module_obj),
         };
+        // has Parser\ModuleDataModifier ?
+        // has Parser\ModuleDataModifier->moduleName();
+            //based on ModuleAlias; MODULE_HEADER will be header() or MODULE_TOP_BANNER will be topBanner()
+        // has Parser\ModuleDataModifier->moduleType();
+        $moduleNameFn = Str::camel(strtolower($module_obj->alias));
+        $moduleTypeFn = Str::camel(strtolower($dataType));
+
+        $appNamespace = app()->getNamespace();
+        $callableModifierApp = $appNamespace."Parser\ModuleDataModifier";
+        if(class_exists($callableModifierApp) && method_exists($callableModifierApp, $moduleNameFn)) {
+            $moduleModifier = new $callableModifierApp;
+            $data = $moduleModifier->{$moduleNameFn}($data, $module_obj);
+        } else if(class_exists($callableModifierApp) && method_exists($callableModifierApp, $moduleTypeFn)) {
+            $moduleModifier = new $callableModifierApp;
+            $data = $moduleModifier->{$moduleTypeFn}($data, $module_obj);
+        }
 
         //Save seo info
         if($is_seo_module == 1 && $this->foundSeoModule == false) {
@@ -282,7 +299,7 @@ class ModuleLoader
      */
     public function setSharedModuleData(string $alias, mixed $data):void {
         $infoLoader = app()->HashtagCms->infoLoader();
-        $alias = $alias."_".$infoLoader->getContextVars("site_id");
+        $alias = $alias."_".$infoLoader->getContextVars(InfoKeys::SITE_ID);
         $this->sharedModuleData[$alias] = $data;
     }
 
@@ -294,7 +311,7 @@ class ModuleLoader
     public function getSharedModuleData(string $alias): mixed
     {
         $infoLoader = app()->HashtagCms->infoLoader();
-        $alias = $alias."_".$infoLoader->getContextVars("site_id");
+        $alias = $alias."_".$infoLoader->getContextVars(InfoKeys::SITE_ID);
         return (isset($this->sharedModuleData[$alias]) && !empty($this->sharedModuleData[$alias])) ? $this->sharedModuleData[$alias] : null;
     }
 

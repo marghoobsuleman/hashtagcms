@@ -23,5 +23,15 @@ class Festival extends AdminBaseModel
     }
 
 
+    /**
+     * Get modules
+     * @param null $user_id
+     * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
+     */
+    public static function getAllFestivals($user_id=NULL) {
+        return static::orderBy("position", "asc")->get();
+    }
+
+
 
 }

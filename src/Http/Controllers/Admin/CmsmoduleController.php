@@ -18,9 +18,9 @@ class CmsmoduleController extends BaseAdminController
 
     protected $actionFields = array("edit", "delete");
 
-    protected $moreActionBarItems = array(array("label"=>"Sort Modules",
-                                            "as"=>"icon", "icon_css"=>"fa fa-sort",
-                                            "action"=> "cmsmodule/sort"));
+    protected $moreActionBarItems = array(array("label" => "Sort Modules",
+        "as" => "icon", "icon_css" => "fa fa-sort",
+        "action" => "cmsmodule/sort"));
 
 
     protected $dataSource = CmsModule::class;
@@ -33,21 +33,21 @@ class CmsmoduleController extends BaseAdminController
      */
     public function store(Request $request)
     {
-        if(!$this->checkPolicy('edit')) {
+        if (!$this->checkPolicy('edit')) {
             return htcms_admin_view("common.error", Message::getWriteError());
         }
 
         $rules = [
-            "name"=>"required|max:255",
-            "controller_name"=>"required|max:255",
-            "sub_title"=>"required|max:100",
-            "icon_css"=>"max:255",
-            "parent_id"=>"nullable|numeric",
-            "position"=>"numeric"
+            "name" => "required|max:255",
+            "controller_name" => "required|max:255",
+            "sub_title" => "required|max:100",
+            "icon_css" => "max:255",
+            "parent_id" => "nullable|numeric",
+            "position" => "numeric"
         ];
 
-        if($request->input("id")==0) {
-            $rules["controller_name"] = $rules["controller_name"]."|unique:cms_modules";
+        if ($request->input("id") == 0) {
+            $rules["controller_name"] = $rules["controller_name"] . "|unique:cms_modules";
         }
 
         $validator = Validator::make($request->all(), $rules);
@@ -74,7 +74,7 @@ class CmsmoduleController extends BaseAdminController
 
         //date
         $saveData["updated_at"] = htcms_get_current_date();
-        if($data["actionPerformed"] !== "edit") {
+        if ($data["actionPerformed"] !== "edit") {
             $saveData["created_at"] = htcms_get_current_date();
         }
 
@@ -107,12 +107,13 @@ class CmsmoduleController extends BaseAdminController
      * @param null $allModules
      * @return mixed
      */
-    public function sort() {
+    public function sort()
+    {
         $allModules = CmsModule::getAdminModules();
 
         $viewData["backURL"] = $this->getBackURL();
         $viewData["data"] = $allModules;
-        $viewData["fields"] = array("id"=>"id", "label"=>"name");
+        $viewData["fields"] = array("id" => "id", "label" => "name");
         return htcms_admin_view("common.sorting", $viewData);
         //return $allModules;
     }
@@ -121,22 +122,23 @@ class CmsmoduleController extends BaseAdminController
     /**
      * @return array
      */
-    public function updateIndex(){
+    public function updateIndex()
+    {
 
-      $a=array();
-      $data = request()->all();
-      foreach ($data as $key=>$posData) {
-                if($posData!=null){
-                  $where = $posData["where"]["id"];
-                  $saveData["position"] = $posData["position"];
-                  $arrSaveData = array("model"=>$this->dataSource,  "data"=>$saveData);
-                  QueryLogger::setLogginStatus(false);
-                  $savedData = $this->saveData($arrSaveData, $where);
-                  array_push($a,$posData);
-                    QueryLogger::setLogginStatus(true);
+        $a = array();
+        $data = request()->all();
+        QueryLogger::setLogginStatus(false);
+        foreach ($data as $key => $posData) {
+            if ($posData != null) {
+                $where = $posData["where"]["id"];
+                $saveData["position"] = $posData["position"];
+                $arrSaveData = array("model" => $this->dataSource, "data" => $saveData);
+                $savedData = $this->saveData($arrSaveData, $where);
+                array_push($a, $posData);
             }
-      }
-      return array("indexUpdated"=>$a);
+        }
+        QueryLogger::setLogginStatus(true);
+        return array("indexUpdated" => $a);
     }
 
     /**
@@ -172,31 +174,32 @@ class CmsmoduleController extends BaseAdminController
      * Desc: Create Module
      * @return array
      */
-    public function createModule(Request $request) {
+    public function createModule(Request $request)
+    {
 
 
-        if(!$this->checkPolicy('edit')) {
+        if (!$this->checkPolicy('edit')) {
             return htcms_admin_view("common.error", Message::getWriteError());
         }
 
         $rules = [
-            "name"=>"required|max:255",
-            "controller_name"=>"required|max:255",
-            "sub_title"=>"required|max:100",
-            "icon_css"=>"max:255",
-            "parent_id"=>"nullable|numeric",
-            "position"=>"numeric"
+            "name" => "required|max:255",
+            "controller_name" => "required|max:255",
+            "sub_title" => "required|max:100",
+            "icon_css" => "max:255",
+            "parent_id" => "nullable|numeric",
+            "position" => "numeric"
         ];
 
-        if($request->input("id")==0) {
-            $rules["controller_name"] = $rules["controller_name"]."|unique:cms_modules";
+        if ($request->input("id") == 0) {
+            $rules["controller_name"] = $rules["controller_name"] . "|unique:cms_modules";
         }
 
         $validator = Validator::make($request->all(), $rules);
 
         if ($validator->fails()) {
 
-            if($request->ajax()) {
+            if ($request->ajax()) {
                 $msg["errors"] = $validator->getMessageBag()->toArray();
                 return response()->json($msg, 400);
             } else {
@@ -217,24 +220,24 @@ class CmsmoduleController extends BaseAdminController
         $dataFields = (!empty($data["selectedFields"])) ? join(",", $data["selectedFields"]) : "*";
         $dataWith = (!empty($data["dataWith"])) ? join(",", $data["dataWith"]) : "null";
 
-        $createFiles =  (isset($data["createFiles"]) && $data["createFiles"]==false) ? false : true;
+        $createFiles = (isset($data["createFiles"]) && $data["createFiles"] == false) ? false : true;
 
 
         try {
 
-            if($createFiles==true) {
+            if ($createFiles == true) {
 
                 Artisan::call("cms:controller", [
-                    "name"=>$controller_name,
-                    "dataSource"=>$dataSource,
-                    "dataWith"=>$dataWith,
-                    "dataFields"=>$dataFields
+                    "name" => $controller_name,
+                    "dataSource" => $dataSource,
+                    "dataWith" => $dataWith,
+                    "dataFields" => $dataFields
                 ]);
 
                 $relationModels = $data["relationModels"]["models"];
                 $methods = "";
 
-                foreach ($relationModels as $key=>$model) {
+                foreach ($relationModels as $key => $model) {
 
                     $current = $model;
                     $model_name = str_replace("::class", "", $current["model"]);
@@ -244,13 +247,13 @@ class CmsmoduleController extends BaseAdminController
                 }
 
                 //remove last tilt
-                if($methods!="") {
-                    $methods = rtrim($methods,'~');
+                if ($methods != "") {
+                    $methods = rtrim($methods, '~');
                 }
 
                 Artisan::call("cms:model", [
-                    "name"=>$dataSource,
-                    "methods"=>$methods
+                    "name" => $dataSource,
+                    "methods" => $methods
                 ]);
 
             }
@@ -272,7 +275,7 @@ class CmsmoduleController extends BaseAdminController
 
             $saveData["parent_id"] = ($data["parent_id"] == "") ? 0 : $data["parent_id"];
 
-            $saveData["position"] = $this->dataSource::count()+1;
+            $saveData["position"] = $this->dataSource::count() + 1;
 
             //info($saveData);
 
@@ -282,10 +285,10 @@ class CmsmoduleController extends BaseAdminController
 
 
         } catch (\Exception $exception) {
-            return array("created"=>0, "message"=>$exception->getMessage());
+            return array("created" => 0, "message" => $exception->getMessage());
         }
 
-        return array("created"=>$created);
+        return array("created" => $created);
     }
 
 
@@ -323,21 +326,20 @@ class CmsmoduleController extends BaseAdminController
 
         //$namespace = app()->getNamespace();
         $namespace = config("hashtagcms.namespace");
-        $namespace = (Str::endsWith($namespace, "\\")) ? substr($namespace, 0, strlen($namespace)-1) : $namespace;
+        $namespace = (Str::endsWith($namespace, "\\")) ? substr($namespace, 0, strlen($namespace) - 1) : $namespace;
 
         if ($isController == TRUE) {
 
-            $file_name = $namespace.'/Http/Controllers/Admin/' . ucfirst($name) . 'Controller.php';
+            $file_name = $namespace . '/Http/Controllers/Admin/' . ucfirst($name) . 'Controller.php';
 
         } else {
 
-            $file_name = $namespace.'/Models/' . ucfirst($name) . '.php';
+            $file_name = $namespace . '/Models/' . ucfirst($name) . '.php';
         }
 
         return file_exists(base_path($file_name));
 
     }
-
 
 
 }

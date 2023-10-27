@@ -883,4 +883,73 @@ class LayoutManager extends Results
         return self::$mandatoryModuleCheck;
     }
 
+
+    /** version 1.4.2 */
+    /**
+     * Set festival object
+     * @param array|null $festival
+     * @return void
+     */
+    public function setFestivalObject(?array $festival):void {
+        $this->setData(LayoutKeys::FESTIVAL_OBJ, $festival);
+        $festival = is_array($festival) ? $festival[0] : $festival;
+        $this->setFestivalCss($festival['bodyCss'] ?? "");
+    }
+
+    /**
+     * Get festival object
+     * @return array|null
+     */
+    public function getFestivalObject():?array {
+        return $this->getData(LayoutKeys::FESTIVAL_OBJ) ?? null;
+    }
+
+    /**
+     * Set CSS for body
+     * @param string $content
+     * @return void
+     */
+    public function setFestivalCss(string $content): void
+    {
+        $this->setData(LayoutKeys::FESTIVAL_CSS, $content);
+    }
+
+    /***
+     * Get festival css for body
+     * @return string
+     */
+    public function getFestivalCss():string {
+        return $this->getData(LayoutKeys::FESTIVAL_CSS) ?? "";
+    }
+
+    /**
+     * Get background image
+     * @return string
+     */
+    public function getBodyBackgroundImage():string {
+        $festival = $this->getFestivalObject();
+        $festival = is_array($festival) ? $festival[0] : $festival;
+        if($festival!=null && isset($festival['image'])) {
+            return "background-image: url('".htcms_get_media($festival['image'])."')";
+        }
+        return "";
+    }
+
+    /**
+     * Get theme folder
+     * @param string|null $name
+     * @return string
+     */
+    public function getThemeFolder(): string
+    {
+        $theme = $this->getThemeObj();
+        return $theme["directory"];
+    }
+
+    public function getViewThemeFolder(): string
+    {
+        $themeFolder = $this->getThemeFolder();
+        return "hashtagcms::fe.".$themeFolder;
+    }
+
 }

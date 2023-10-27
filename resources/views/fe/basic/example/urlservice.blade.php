@@ -19,5 +19,8 @@
                         </div>
                     @endforeach
                 </div>
+        @if(sizeof($data) == 0)
+            <div class="alert alert-danger">Please check the logs. There is some error while loading the service.</div>
+        @endif
     </div>
 </section>

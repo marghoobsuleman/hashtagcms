@@ -372,6 +372,6 @@ class Site extends AdminBaseModel
                 array("end_date", ">=", date("Y-m-d")),
                 array("publish_status", "=", 1)
                 )
-            );
+            )->orderBy("position", "asc");
     }
 }

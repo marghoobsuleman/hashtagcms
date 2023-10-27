@@ -7,6 +7,7 @@
         <p>
             <strong>Service URL:</strong>  https://picsum.photos/v2/list?limit=4
         </p>
+
                 <div class="row">
                     @foreach($data as $pic)
                     <div class="col-lg-5 mb-5">
@@ -15,5 +16,9 @@
                     </div>
                     @endforeach
                 </div>
+        @if(sizeof($data) == 0)
+            <div class="alert alert-danger">Please check the logs. There is some error while loading the service.</div>
+        @endif
+
     </div>
 </section>

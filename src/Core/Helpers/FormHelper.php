@@ -102,7 +102,7 @@ class FormHelper {
 
             $imageSupportedByBrowsers = htcms_admin_config('imageSupportedByBrowsers', true);
             $fileInfo = pathinfo($value);
-            $extension = $fileInfo["extension"];
+            $extension = $fileInfo["extension"] ?? "";
             $isImage = (in_array($extension, $imageSupportedByBrowsers));
 
             $imgWidth = ($maxWidth != NULL) ? " width='$maxWidth' " : '';
