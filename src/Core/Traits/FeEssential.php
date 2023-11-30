@@ -35,7 +35,7 @@ trait FeEssential {
 
 
     /**
-     * @todo: should not work after refoctoring
+     * @todo: should not work after refactoring
      * Set everything to render a page
      * @param array $obj
      *              - site

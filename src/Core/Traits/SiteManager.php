@@ -6,13 +6,6 @@ use Illuminate\Support\Facades\DB;
 
 use MarghoobSuleman\HashtagCms\Models\Site;
 
-/**
- * @todo
- * For future use
- * need to work in upcoming version
- * need to create site_user table
- * Desc: To give permission to user's to manages site wise
- */
 trait SiteManager {
 
 

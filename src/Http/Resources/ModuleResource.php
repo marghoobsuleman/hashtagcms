@@ -15,7 +15,7 @@ class ModuleResource extends JsonResource
     public function toArray($request)
     {
         $isLocal = env('APP_ENV') === 'local';
-
+        $isServerLater = strtolower($this->data_type) === 'servicelater';
         $data = [
             'id'=>$this->id,
             'siteId'=>$this->site_id,
@@ -27,8 +27,6 @@ class ModuleResource extends JsonResource
             'dataType'=>$this->data_type,
             'description'=>$this->description,
             'isMandatory'=>$this->is_mandatory,
-            'methodType'=>$this->method_type,
-            'serviceParams'=>$this->service_params,
             'headers'=>$this->headers,
             'individualCache'=>$this->individual_cache,
             'cacheGroup'=>$this->cache_group,
@@ -40,17 +38,22 @@ class ModuleResource extends JsonResource
         if ($isLocal) {
             $data['queryStatement'] = $this->query_statement;
             $data['queryAs'] = $this->query_as;
+        }
+        if ($isServerLater || $isLocal) {
             $data['dataHandler'] = $this->data_handler;
             $data['dataKeyMap'] = $this->data_key_map;
+            $data['methodType'] = $this->method_type;
+            $data['serviceParams'] = $this->service_params;
         }
 
         if (isset($this->queryData)) {
             $data['queryData'] = $this->queryData;
         }
-
         $data['data'] = $this->data;
         $data['moduleProps'] =  $this->moduleProps;
 
         return $data;
     }
+
+
 }

@@ -72,11 +72,13 @@ php artisan test vendor/marghoobsuleman/hashtagcms
 
 ## Change log
 #v1.4.2 Changes
-- Backend/Frontend/API: Added festival support. You can add lottie and schedule it. 
-- Core/Frontend: Added module data modifier
-- How it works: 
-- Create App\Parser\ModuleDataModifier and create moduleAliasNameMethod($data, $moduleInfo) and manipulate your data and return it.
-- Don't forget to run php artisan migrate
+- Backend/Frontend/API: Added festival support. You can add lottie and schedule it.
+- API: Added ServiceLater Support. Service url will be passed to view too.
+- Core: Added module data modifier
+- See how it works:
+- Create class/method `App\Parser\ModuleDataModifier` -> `moduleAliasNameMethod($data, $moduleInfo)`
+  and manipulate your data and return it. Works for API and views.
+- Do not forget to run `php artisan migrate` if you are upgrading.
 
 #v1.4.1 Changes
 - Backend: Export the correct folder (neo) while installing the package

@@ -29,7 +29,7 @@ class Festival extends AdminBaseModel
      * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
      */
     public static function getAllFestivals($user_id=NULL) {
-        return static::orderBy("position", "asc")->get();
+        return static::where('publish_status', 1)->orderBy("position", "asc")->get();
     }
 
 

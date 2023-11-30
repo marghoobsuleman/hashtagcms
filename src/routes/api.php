@@ -63,7 +63,7 @@ Route::middleware(['api', 'etag'])->prefix("api/hashtagcms/public")->group(funct
      */
     Route::get("service/v1/load-module", function(Request $request) use($callable) {
 
-        return array("result"=>"will be available in next version");
+        return array("result"=>"will be available in later version");
 
     });
 
@@ -72,7 +72,7 @@ Route::middleware(['api', 'etag'])->prefix("api/hashtagcms/public")->group(funct
      */
     Route::get("service/v1/load-hook", function(Request $request) use($callable) {
 
-        return array("result"=>"will be available in next version");
+        return array("result"=>"will be available in later version");
 
     });
 

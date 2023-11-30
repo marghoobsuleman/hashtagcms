@@ -105,7 +105,6 @@ class HomepageController extends BaseAdminController
     }
 
     /**
-     * @todo Handle site copy
      * Show UI for homepage
      * @return mixed
      */

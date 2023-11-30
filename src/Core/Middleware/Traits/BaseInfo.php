@@ -189,8 +189,8 @@ trait BaseInfo {
         if ($path == "/" || $path == "") {
             /**
              * @todo: find default category
-             * Not an optimized solution if site has thousand of categories.
-             * it should come from load config api. Done in interal api. need to work in external one.
+             * Will refactor this: if site has thousands of categories.
+             * it should come from load config api. Done in internal api. need to work for external one.
              */
             $categoryData = isset($defaultData['category']) ? $defaultData['category'] : $this->findData($categoryList, "id", $defaultData['categoryId']);
             $categoryName = $categoryData['linkRewrite'];

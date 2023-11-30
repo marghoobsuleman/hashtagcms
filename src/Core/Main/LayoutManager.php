@@ -739,8 +739,8 @@ class LayoutManager extends Results
 
         $active = htcms_get_category_info('activeKey');
         $active_css = ($data["active_key"] == $active) ? ' ' . $css['active'] : "";
-
-        $title = $data['title'];
+        $otherAttributes = "";
+        //$title = $data['title'];
 
         $link_rewrite = (isset($data["link_navigation"]) && !empty($data["link_navigation"]) && $data["link_navigation"] != null) ? $data["link_navigation"] : $data["link_rewrite"];
         $link_rewrite = htcms_get_path($link_rewrite);
@@ -759,13 +759,19 @@ class LayoutManager extends Results
             $liCss = $css['itemWithChild']['li'];
             $aCss = $css['itemWithChild']['a'];
         }
+        $fewParams = ['target'=>'target', 'link_relation'=>'rel', 'title'=>'title'];
+        foreach ($fewParams as $param=>$paramValue) {
+            if (isset($data[$param]) && !empty($data[$param])) {
+                $otherAttributes .= " $paramValue='$data[$param]' ";
+            }
+        }
 
         $liCss = $liCss . $active_css;
 
         //$liStart = ($isChild == true) ? "" : "<li class='$liCss' $dataCss>";
         $liStart = "<li class='$liCss' $dataCss>";
 
-        return "$liStart<a class='$aCss' title='$title' href='$link_rewrite'>$text</a>$liEnd";
+        return "$liStart<a $otherAttributes class='$aCss' href='$link_rewrite'>$text</a>$liEnd";
     }
 
     /**

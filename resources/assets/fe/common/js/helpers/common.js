@@ -16,3 +16,5 @@ export class AppConfig {
         return media.http_path+"/"+path;
     }
 };
+
+//create a function to call an api using ajax

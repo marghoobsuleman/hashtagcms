@@ -39,9 +39,9 @@ return [
     "more_categories_on_blog_listing"=>array(), //array("support")
 
     /**
-     * This is needed to run same site on multiple domain
-     * and when you want to run via external api you need to have
-     * domain and context key combination here to run the site.
+     * This is necessary to run the same site on multiple domains.
+     * When you want to run it via an external API, you need to have
+     * the domain and context key combination here to operate the site.
      */
     "domains" => array(
         "dev.hashtagcms.com"=>env('CONTEXT', 'htcms'),

@@ -73,18 +73,10 @@ class FestivalController extends BaseAdminController
             "end_date" => "required|date"
         ];
 
-
         $validator = Validator::make($request->all(), $rules);
 
         $data = $request->all();
         $msg = "";
-        if (!isset($data['image']) && !isset($data['body_css']) && !isset($data['lottie'])) {
-            $rules['adminForm'] = "";
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput()->withMessage([]);
-
-        }
 
 
         if ($validator->fails()) {
@@ -103,6 +95,7 @@ class FestivalController extends BaseAdminController
         }
 
         $lottie = $this->upload($module_name, request()->file("lottie"), null, true);
+
         if ($lottie != NULL) {
             $saveData["lottie"] = $lottie;
         }
@@ -182,6 +175,7 @@ class FestivalController extends BaseAdminController
 
 
     /**
+     * Update index
      * @return array
      */
     public function updateIndex()

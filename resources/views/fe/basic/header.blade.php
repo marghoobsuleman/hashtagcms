@@ -30,7 +30,7 @@
                      @auth
                                         @if(strtolower(auth()->user()->user_type) == 'staff')
                                             <li class="nav-item">
-                                                <a href="{{htcms_admin_path('dashboard')}}" class="nav-link" title="Dashboard"><i aria-hidden="true" class="fa fa-dashboard"></i> <span class="text">
+                                                <a href="{{htcms_admin_path('dashboard')}}" class="nav-link" title="Admin"><i aria-hidden="true" class="fa fa-dashboard"></i> <span class="text">
                                                         {{__('hashtagcms::links.dashboard')}}
                                                     </span></a>
                                             @endif

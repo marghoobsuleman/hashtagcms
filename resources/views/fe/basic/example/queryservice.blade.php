@@ -3,7 +3,7 @@
         <h2 class="alert-success alert">{{$moduleInfo['dataType']}} Module</h2>
         <p>
             This is a combination of service and query module. Sometime we need data from service and query both. <br />
-            In this case data has two properties. ie. serviceData, queryData
+            In this case data has two properties. ie. data and queryData
         </p>
         <p>
             <strong>Service URL:</strong>  https://picsum.photos/v2/list?page=2&limit=4

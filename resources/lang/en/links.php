@@ -2,7 +2,7 @@
 
 return [
     'links' =>'Links',
-    'dashboard' => 'Dashboard',
+    'dashboard' => 'Admin',
     'profile' => 'Profile',
     'logout' => 'Logout',
     'login' => 'Login',

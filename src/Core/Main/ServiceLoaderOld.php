@@ -42,7 +42,6 @@ class ServiceLoaderOld extends DataLoader
         }
         $lang_id = null;
         $platform_id = null;
-        //@todo: Default currency id is missing
         $site = Site::where('context', '=', $context)->first();
 
         if (empty($site)) {

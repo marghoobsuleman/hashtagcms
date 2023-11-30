@@ -170,6 +170,11 @@ class ModuleLoader
         return [];
     }
 
+    public function getServiceLaterModule(mixed $module):?array {
+        return [];
+    }
+
+
     /**
      * Handle unknown module
      * Need a class under app\Parser\ModuleParser
@@ -185,9 +190,38 @@ class ModuleLoader
         $callableApp = $appNamespace."Parser\ModuleParser";
         if(class_exists($callableApp) && method_exists($callableApp, $moduleType)) {
             $moduleParser = new $callableApp;
-            return $moduleParser->{$moduleType}($module);
+            $data = $moduleParser->{$moduleType}($module);
+            return $this->manipulateModuleData($data, $module);
         }
         return [];
+    }
+
+    /**
+     * Manipulate module data
+     * added in v1.4.2
+     * @param $data
+     * @param $module_obj
+     * @return mixed
+     */
+    private function manipulateModuleData($data, $module_obj):mixed {
+        $dataType = $module_obj->data_type;
+        // has Parser\ModuleDataModifier ?
+        // has Parser\ModuleDataModifier->moduleName();
+        //based on ModuleAlias; MODULE_HEADER will be header() or MODULE_TOP_BANNER will be topBanner()
+        // has Parser\ModuleDataModifier->moduleType();
+        $moduleNameFn = Str::camel(strtolower($module_obj->alias));
+        $moduleTypeFn = Str::camel(strtolower($dataType));
+
+        $appNamespace = app()->getNamespace();
+        $callableModifierApp = $appNamespace."Parser\ModuleDataModifier";
+        if(class_exists($callableModifierApp) && method_exists($callableModifierApp, $moduleNameFn)) {
+            $moduleModifier = new $callableModifierApp;
+            $data = $moduleModifier->{$moduleNameFn}($data, $module_obj);
+        } else if(class_exists($callableModifierApp) && method_exists($callableModifierApp, $moduleTypeFn)) {
+            $moduleModifier = new $callableModifierApp;
+            $data = $moduleModifier->{$moduleTypeFn}($data, $module_obj);
+        }
+        return $data;
     }
 
 
@@ -209,25 +243,12 @@ class ModuleLoader
         $moduleType =  "get{$dataType}Module";
         //info("dataHandler: ".$dataHandler);
         $data = match (strtolower($dataType)) {
-            "query", "service", "urlservice", "queryservice", "static", "custom" => $this->{$moduleType}($module_obj),
+            "query", "service", "urlservice", "queryservice", "static", "custom", "servicelater" => $this->{$moduleType}($module_obj),
             default => $this->getUnknownModule($module_obj),
         };
-        // has Parser\ModuleDataModifier ?
-        // has Parser\ModuleDataModifier->moduleName();
-            //based on ModuleAlias; MODULE_HEADER will be header() or MODULE_TOP_BANNER will be topBanner()
-        // has Parser\ModuleDataModifier->moduleType();
-        $moduleNameFn = Str::camel(strtolower($module_obj->alias));
-        $moduleTypeFn = Str::camel(strtolower($dataType));
 
-        $appNamespace = app()->getNamespace();
-        $callableModifierApp = $appNamespace."Parser\ModuleDataModifier";
-        if(class_exists($callableModifierApp) && method_exists($callableModifierApp, $moduleNameFn)) {
-            $moduleModifier = new $callableModifierApp;
-            $data = $moduleModifier->{$moduleNameFn}($data, $module_obj);
-        } else if(class_exists($callableModifierApp) && method_exists($callableModifierApp, $moduleTypeFn)) {
-            $moduleModifier = new $callableModifierApp;
-            $data = $moduleModifier->{$moduleTypeFn}($data, $module_obj);
-        }
+        //Added in v1.4.2
+        $data = $this->manipulateModuleData($data, $module_obj);
 
         //Save seo info
         if($is_seo_module == 1 && $this->foundSeoModule == false) {
@@ -274,7 +295,7 @@ class ModuleLoader
         }
 
         // Is there any module is required in a category?
-        // lets check it -- && self::getMandatoryCheck()
+        // let's check it -- && self::getMandatoryCheck()
         if(($is_mandatory == 1 && is_array($data) && sizeof($data)===0)) {
             //dd("Mandatory content is missing");
             $this->contentFound = false;

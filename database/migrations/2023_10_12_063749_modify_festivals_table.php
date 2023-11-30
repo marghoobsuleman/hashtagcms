@@ -28,7 +28,7 @@ return new class extends Migration
                 $table->integer('z_index')->nullable()->default(99999)->after('lottie');
 
                 $table->string('play_mode', 50)->nullable()->default('normal')->after('lottie');
-                $table->string('direction', 50)->nullable()->default('forward')->after('lottie');
+                $table->tinyInteger('direction')->nullable()->default(1)->after('lottie');
 
                 $table->boolean('autoplay')->nullable()->default(1)->after('lottie');
                 $table->boolean('loop')->nullable()->default(1)->after('lottie');
@@ -43,8 +43,6 @@ return new class extends Migration
 
             }
         });
-
-
     }
 
     /**
