@@ -105,7 +105,6 @@ class ModulepropertyController extends BaseAdminController
             $viewData["saveData"] = $data;
             $viewData["backURL"] = $data["backURL"];
             $viewData["isSaved"] = $savedData["isSaved"];
-
             return htcms_admin_view("common.saveinfo", $viewData);
         }
 }
