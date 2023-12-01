@@ -70,4 +70,20 @@ class QueryLogger extends AdminBaseModel
     public static function setLogginStatus($enable) {
         self::$queryLogging = $enable;
     }
+
+    /**
+     * Disable Query Log
+     * @return void
+     */
+    public static function disableLogging():void {
+        self::setLogginStatus(false);
+    }
+
+    /**
+     * Enable Query Log
+     * @return void
+     */
+    public static function enableLogging():void {
+        self::setLogginStatus(true);
+    }
 }

@@ -10,6 +10,7 @@ use MarghoobSuleman\HashtagCms\Core\Helpers\Message;
 use MarghoobSuleman\HashtagCms\Http\Controllers\Admin\BaseAdminController;
 use MarghoobSuleman\HashtagCms\Models\Module;
 use MarghoobSuleman\HashtagCms\Models\Platform;
+use MarghoobSuleman\HashtagCms\Models\QueryLogger;
 
 class ModulepropertyController extends BaseAdminController
 {
@@ -67,7 +68,7 @@ class ModulepropertyController extends BaseAdminController
             $langData['updated_at'] = htcms_get_current_date();
 
             $arrLangData = array("data"=>$langData);
-
+            QueryLogger::disableLogging();
             if ($data["actionPerformed"] === 'edit') {
                 $saveData['platform_id'] = $data['platform_id'];
                 $saveData['module_id'] = $data['module_id'];
@@ -99,7 +100,7 @@ class ModulepropertyController extends BaseAdminController
                     }
                 }
             }
-
+            QueryLogger::enableLogging();
             $viewData["id"] = $savedData["id"];
             $viewData["saveData"] = $data;
             $viewData["backURL"] = $data["backURL"];
