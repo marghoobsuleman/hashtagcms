@@ -76,7 +76,7 @@ php artisan test vendor/marghoobsuleman/hashtagcms
 - API: Added ServiceLater Support. Service url will be passed to view too.
 - Core: Added module data modifier
 - See how it works:
-- Create class/method `App\Parser\ModuleDataModifier` -> `moduleAliasNameMethod($data, $moduleInfo)`
+- Create class/method `App\Parser\ModuleDataModifier` -> `moduleAliasNameMethod(data, moduleInfo)`
   and manipulate your data and return it. Works for API and views.
 - Do not forget to run `php artisan migrate` if you are upgrading.
 
