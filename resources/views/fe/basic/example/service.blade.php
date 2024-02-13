@@ -7,17 +7,17 @@
         <p>
             <strong>Service URL:</strong>  https://picsum.photos/v2/list?limit=4
         </p>
-
-                <div class="row">
-                    @foreach($data as $pic)
+        @if(sizeof($data) == 0)
+            <div class="alert alert-danger">Please check the logs. There is some error while loading the service.</div>
+        @else
+            <div class="row">
+                @foreach($data as $pic)
                     <div class="col-lg-5 mb-5">
                         <img width="300" src="{{$pic['download_url']}}">
                         {{$pic['author']}}
                     </div>
-                    @endforeach
-                </div>
-        @if(sizeof($data) == 0)
-            <div class="alert alert-danger">Please check the logs. There is some error while loading the service.</div>
+                @endforeach
+            </div>
         @endif
 
     </div>

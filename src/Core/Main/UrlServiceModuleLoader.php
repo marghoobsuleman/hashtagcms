@@ -54,8 +54,14 @@ class UrlServiceModuleLoader extends Results implements ModuleLoaderServiceImp
             $headers['Content-Type'] = $arguments['resultType'];
         }
         //dd("url ".$url, $arguments);
-        $ml = new ServiceModuleLoader($url, $method_type, $arguments, $headers);
-        $this->setResult($ml->getResult());
+        try {
+            $ml = new ServiceModuleLoader($url, $method_type, $arguments, $headers);
+
+            $this->setResult($ml->getResult());
+        } catch (\Exception $e) {
+            info("UrlServiceModuleLoader: " .$e->getMessage());
+            $this->setResult([]);
+        }
 
     }
 
@@ -74,7 +80,7 @@ class UrlServiceModuleLoader extends Results implements ModuleLoaderServiceImp
      */
     public function setResult(mixed $data):void
     {
-        $this->result = collect($data)->all();
+        $this->result = !empty($data) ? collect($data)->all() : [];
     }
 
     /**

@@ -17,14 +17,15 @@
                 $serviceData = $data['data'];
                 $queryData = $data['queryData'];
             @endphp
-            @foreach($serviceData as $pic)
-                <div class="col-lg-5 mb-5">
-                    <img height="150" src="{{$pic['download_url']}}">
-                    {{$pic['author']}}
-                </div>
-            @endforeach
             @if(sizeof($serviceData) == 0)
                 <div class="alert alert-danger">Please check the logs. There is some error while loading the service.</div>
+            @else
+                @foreach($serviceData as $pic)
+                    <div class="col-lg-5 mb-5">
+                        <img height="150" src="{{$pic['download_url']}}">
+                        {{$pic['author']}}
+                    </div>
+                @endforeach
             @endif
 </div>
 <div class="row">

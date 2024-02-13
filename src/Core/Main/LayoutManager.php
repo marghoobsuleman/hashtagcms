@@ -535,37 +535,40 @@ class LayoutManager extends Results
     {
 
         $viewData = "";
-        if ($module["dataType"] == "Static") {
-            //View name is not needed for "Static" module
-            $viewData = (isset($module["data"]) && isset($module["data"]["content"])) ? $module["data"]["content"] : "";
-            logger()->info("getParsedViewData view start (static) : $module[alias]");
-        } else {
-
-            $viewName = $this->getViewName($module["viewName"]);
-            $mergeData = $this->getDataForView($module["viewName"]);
-
-            logger()->info("getParsedViewData view start $viewName");
-
-            if (View::exists($viewName)) {
-                try {
-                    $moduleInfo = $module;
-                    unset($moduleInfo['data']);
-                    unset($moduleInfo['placeholder']);
-                    $moduleData = isset($module['data']) ? $module['data'] : array();
-                    //Handle query service
-                    if ($module["dataType"] == "QueryService") {
-                        $moduleData['data'] = $moduleData;
-                        $moduleData['queryData'] = isset($module['queryData']) ? $module['queryData'] : array();
-                    }
-                    $viewData = $this->viewMake($viewName, array("data" => $moduleData, "infoKeeper" => $infoKeeper, "moduleInfo" => $moduleInfo), $mergeData);
-
-                } catch (Exception $error) {
-                    logger()->error("View Loading error: " . $error->getMessage());
-                }
+        $viewName = $this->getViewName($module["viewName"]);
+        $mergeData = $this->getDataForView($module["viewName"]);
+        try {
+            if ($module["dataType"] == "Static") {
+                //View name is not needed for "Static" module
+                $viewData = (isset($module["data"]) && isset($module["data"]["content"])) ? $module["data"]["content"] : "";
+                logger()->info("getParsedViewData: view start (static) : $module[alias]");
             } else {
-                logger()->error("Unable to find view: $viewName");
+
+                logger()->info("getParsedViewData: view start $viewName");
+                if (View::exists($viewName)) {
+                    try {
+                        $moduleInfo = $module;
+                        unset($moduleInfo['data']);
+                        unset($moduleInfo['placeholder']);
+                        $moduleData = isset($module['data']) ? $module['data'] : array();
+                        //Handle query service
+                        if ($module["dataType"] == "QueryService") {
+                            $moduleData['data'] = $moduleData;
+                            $moduleData['queryData'] = isset($module['queryData']) ? $module['queryData'] : array();
+                        }
+                        $viewData = $this->viewMake($viewName, array("data" => $moduleData, "infoKeeper" => $infoKeeper, "moduleInfo" => $moduleInfo), $mergeData);
+
+                    } catch (Exception $error) {
+                        logger()->error("View Loading error: " . $error->getMessage());
+                    }
+                } else {
+                    logger()->error("Unable to find view: $viewName");
+                }
             }
+        } catch (Exception $error) {
+            logger()->error("getParsedViewData: Some parsing error: $viewName");
         }
+
         //logger()->info("getParsedViewData done");
         return $this->parseStringForView($viewData);
     }

@@ -32,19 +32,6 @@ class ModuleLoader
     }
 
     /**
-     * Get query module
-     * @param Module $module
-     * @return array
-     */
-    public function getQueryModule(mixed $module): array
-    {
-        $query = $module->data_handler;
-        $database = $module->description;
-        $ml = new QueryModuleLoader($query, $database);
-        return $ml->getResult();
-    }
-
-    /**
      * Get header json
      * @param mixed $module
      * @return array|mixed
@@ -69,6 +56,19 @@ class ModuleLoader
             }
         }
         return $headerJson;
+    }
+
+    /**
+     * Get query module
+     * @param Module $module
+     * @return array
+     */
+    public function getQueryModule(mixed $module): array
+    {
+        $query = $module->data_handler;
+        $database = $module->description;
+        $ml = new QueryModuleLoader($query, $database);
+        return $ml->getResult();
     }
 
     /**
@@ -241,6 +241,7 @@ class ModuleLoader
         $is_shared = $module_obj->shared;
 
         $moduleType =  "get{$dataType}Module";
+
         //info("dataHandler: ".$dataHandler);
         $data = match (strtolower($dataType)) {
             "query", "service", "urlservice", "queryservice", "static", "custom", "servicelater" => $this->{$moduleType}($module_obj),
@@ -249,6 +250,8 @@ class ModuleLoader
 
         //Added in v1.4.2
         $data = $this->manipulateModuleData($data, $module_obj);
+
+
 
         //Save seo info
         if($is_seo_module == 1 && $this->foundSeoModule == false) {
