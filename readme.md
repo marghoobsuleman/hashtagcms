@@ -70,7 +70,7 @@ http://www.hashtagcms.org/install
 php artisan test vendor/marghoobsuleman/hashtagcms
 ```
 
-## Change log
+## Change log [more...](changelog.md)
 #v1.4.2 Changes
 - Backend/Frontend/API: Added festival support. You can add lottie and schedule it.
 - API: Added ServiceLater Support. Service url will be passed to view too.
