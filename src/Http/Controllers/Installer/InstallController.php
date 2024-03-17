@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use MarghoobSuleman\HashtagCms\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class InstallController extends Controller
 {
@@ -27,6 +28,7 @@ class InstallController extends Controller
             return redirect("/")->with('__hashtagcms_message__', 'Site is already configured');
             exit;
         }
+        $data['siteInfo']->context = Str::uuid();
         return  view("hashtagcms::installer/index", $data);
 
     }

@@ -20,19 +20,19 @@ composer require marghoobsuleman/hashtagcms
 
 ## Hashtag CMS installation guidelines
 
-- Open `config/app.php` and add below line in `providers` array.
+- Open `bootstrap/providers.php` and add below line in the array.
 ``` bash
 MarghoobSuleman\HashtagCms\HashtagCmsServiceProvider::class
 ```
 - Open `.env` file and update `APP_URL`, and make sure database information is correct.
-
+- Change DB_CONNECTION to `mysql` and update database information. 
 ``` bash 
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
-DB_DATABASE=
-DB_USERNAME=
-DB_PASSWORD=
+DB_DATABASE=your_db_name
+DB_USERNAME=your_db_username
+DB_PASSWORD=your_db_password (leave it blank if no password)
 ```
 - Open `app/Models/User.php` and remove or comment below lines.
 
