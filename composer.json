@@ -16,7 +16,7 @@
         "laravel/framework": "^11.0",
         "laravel/tinker": "^2.9",
         "guzzlehttp/guzzle": "^7.2",
-        "laravel/sanctum": "^3.2",
+        "laravel/sanctum": "^4.0",
         "laravel/ui": "^4.2",
         "usmanhalalit/laracsv": "^2.1"
     },
