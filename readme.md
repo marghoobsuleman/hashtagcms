@@ -71,6 +71,9 @@ php artisan test vendor/marghoobsuleman/hashtagcms
 ```
 
 ## Change log [more...](changelog.md)
+#v1.4.3 Changes
+- Laravel 11 support
+
 #v1.4.2 Changes
 - Backend/Frontend/API: Added festival support. You can add lottie and schedule it.
 - API: Added ServiceLater Support. Service url will be passed to view too.

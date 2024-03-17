@@ -11,7 +11,7 @@ use MarghoobSuleman\HashtagCms\Models\AdminBaseModel;
 class {{model}} extends AdminBaseModel
 {
     use SoftDeletes;
-
+x
     protected $guarded = array();
     {{relationMethods}}
 
