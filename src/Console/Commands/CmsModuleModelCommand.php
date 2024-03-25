@@ -8,31 +8,33 @@ use Illuminate\Support\Str;
 
 class CmsModuleModelCommand extends Command
 {
-
     use Common;
 
     protected $name;
-    protected $methods = array();
+
+    protected $methods = [];
 
     protected $files;
 
     protected $currentSourceFile;
 
     private $sourceDir = 'hashtagcms/cmsmodule/model';
+
     private $sourceFile = 'index.ms';
+
     private $targetTempDir = 'storage/temp';
+
     private $targetDir = 'app/Models';
 
-    private $paths = array(
-        "sourceDir"=>"hashtagcms/cmsmodule",
-        "sourceFile"=>"index.ms",
-        "tempDir"=>"storage/temp",
-        "targetDir"=>"Models",
-        "vendor"=>"vendor/hashtagcms"
-    );
+    private $paths = [
+        'sourceDir' => 'hashtagcms/cmsmodule',
+        'sourceFile' => 'index.ms',
+        'tempDir' => 'storage/temp',
+        'targetDir' => 'Models',
+        'vendor' => 'vendor/hashtagcms',
+    ];
 
-    private $hasLangScope = array();
-
+    private $hasLangScope = [];
 
     /**
      * The name and signature of the console command.
@@ -70,8 +72,8 @@ class CmsModuleModelCommand extends Command
      */
     public function handle()
     {
-        $this->name = $this->argument("name");
-        $methods = $this->argument("methods");
+        $this->name = $this->argument('name');
+        $methods = $this->argument('methods');
 
         $this->name = Str::title($this->name);
 
@@ -80,27 +82,27 @@ class CmsModuleModelCommand extends Command
     }
 
     /**
-     * @param $name
-     * @param string $methods
+     * @param  string  $methods
      */
-    private function createModel($name, $methods="", $fixModelName=true) {
+    private function createModel($name, $methods = '', $fixModelName = true)
+    {
 
         $name = ($fixModelName) ? Str::title($name) : $name;
 
         $isExists = $this->isModelExists($name);
 
-        if(!$isExists) {
+        if (! $isExists) {
 
             $this->alert("Creating Model $name");
 
             //Let's check if there is any relation/method - separated with ~
-            if(empty($methods)) {
-                $this->methods[$name] = NULL;
+            if (empty($methods)) {
+                $this->methods[$name] = null;
             } else {
-                $this->methods[$name] = ($methods=="") ? "" : explode("~", $methods);
+                $this->methods[$name] = ($methods == '') ? '' : explode('~', $methods);
             }
 
-            $fileName = $this->init("model");
+            $fileName = $this->init('model');
 
             $this->replaceModelContext($name, $fileName, $fixModelName);
 
@@ -108,10 +110,9 @@ class CmsModuleModelCommand extends Command
 
             $this->info("'$name' created successfully.");
 
-            $this->line("--------------------------------");
+            $this->line('--------------------------------');
 
             $this->createExtraModels($name);
-
 
         } else {
 
@@ -119,48 +120,39 @@ class CmsModuleModelCommand extends Command
 
         }
 
-
     }
 
-    /**
-     * @param $name
-     * @param $currentFileName
-     */
-
-    private function replaceModelContext($name, $currentFileName, $fixModelName=true) {
+    private function replaceModelContext($name, $currentFileName, $fixModelName = true)
+    {
         $model_name = $name;
 
         $filename = $currentFileName;
 
-        $patterns = array();
-        $patterns["namespace"] = '/{{namespace}}/';
-        $patterns["model"] = '/{{model}}/';
-        $patterns["relationMethods"] = '/{{relationMethods}}/';
-        $patterns["useModels"] = '/{{useModels}}/';
-        $patterns["useLangScope"] = '/{{useLangScope}}/';
-        $patterns["langScopeBoot"] = '/{{langScopeBoot}}/';
+        $patterns = [];
+        $patterns['namespace'] = '/{{namespace}}/';
+        $patterns['model'] = '/{{model}}/';
+        $patterns['relationMethods'] = '/{{relationMethods}}/';
+        $patterns['useModels'] = '/{{useModels}}/';
+        $patterns['useLangScope'] = '/{{useLangScope}}/';
+        $patterns['langScopeBoot'] = '/{{langScopeBoot}}/';
 
+        $replacements = [];
 
-        $replacements = array();
-
-        $replacements["namespace"] = $this->laravel->getNamespace();
-        $replacements["model"] = $model_name;
+        $replacements['namespace'] = $this->laravel->getNamespace();
+        $replacements['model'] = $model_name;
 
         $relationData = $this->getRelationData($model_name, $fixModelName);
 
-        $replacements["relationMethods"] = $relationData["useMethods"];
-        $replacements["useModels"] = $relationData["useModels"];
+        $replacements['relationMethods'] = $relationData['useMethods'];
+        $replacements['useModels'] = $relationData['useModels'];
 
-        $replacements["useLangScope"] = '';
-        $replacements["langScopeBoot"] = '';
+        $replacements['useLangScope'] = '';
+        $replacements['langScopeBoot'] = '';
 
         $landData = $this->getLangScope($model_name);
 
-        $replacements["useLangScope"] = $landData["useScope"];
-        $replacements["langScopeBoot"] = $landData["useMethod"];
-
-
-
+        $replacements['useLangScope'] = $landData['useScope'];
+        $replacements['langScopeBoot'] = $landData['useMethod'];
 
         $replaced = preg_replace(
             $patterns,
@@ -168,41 +160,38 @@ class CmsModuleModelCommand extends Command
             file_get_contents($filename)
         );
 
-
         file_put_contents(
             $filename,
             $replaced,
             FILE_BINARY
         );
 
-
-        $targetFileName = $this->getValidTarget($this->paths['targetDir'].'/'.$model_name.".php", 'app');
+        $targetFileName = $this->getValidTarget($this->paths['targetDir'].'/'.$model_name.'.php', 'app');
         $this->files->copy($filename, $targetFileName);
 
     }
 
-
     /**
-     * @param $name
      * @return mixed
      */
-    private function getRelationData($name, $fixModelName=true) {
-        $methods = $this->methods[$name] ?? NULL;
+    private function getRelationData($name, $fixModelName = true)
+    {
+        $methods = $this->methods[$name] ?? null;
 
         $namespace = $this->laravel->getNamespace();
 
-        $useModels = "";
-        $useMethods = "";
+        $useModels = '';
+        $useMethods = '';
 
         $extraModels = [];
 
-        if($methods!=NULL) {
-            foreach ($methods as $key=>$val) {
-                $current = explode(",", $val);
+        if ($methods != null) {
+            foreach ($methods as $key => $val) {
+                $current = explode(',', $val);
                 $method = $current[0];
                 $relation = $current[1];
                 $source = $current[2];
-                $hasLangScope = $current[3] ?? FALSE;
+                $hasLangScope = $current[3] ?? false;
 
                 $dataSource = $source;
 
@@ -217,73 +206,66 @@ class CmsModuleModelCommand extends Command
                 $extraModels[] = $source;
 
                 //Add for relation model
-                if($hasLangScope!=FALSE){
+                if ($hasLangScope != false) {
                     $this->setLangScope($source);
                 }
 
             }
         }
 
-        $data["useModels"] = $useModels;
-        $data["useMethods"] = $useMethods;
-        $data["extraModels"] = $extraModels;
+        $data['useModels'] = $useModels;
+        $data['useMethods'] = $useMethods;
+        $data['extraModels'] = $extraModels;
 
         return $data;
     }
 
-    /**
-     * @param $name
-     */
-    private function createExtraModels($name) {
+    private function createExtraModels($name)
+    {
 
         $relationData = $this->getRelationData($name);
-        $models = $relationData["extraModels"];
-        if(sizeof($models)>0) {
-            foreach ($models as $key=>$val) {
+        $models = $relationData['extraModels'];
+        if (count($models) > 0) {
+            foreach ($models as $key => $val) {
                 $modelName = $val;
-                if(!$this->isModelExists($modelName)) {
-                    $this->createModel($modelName, "", false);
+                if (! $this->isModelExists($modelName)) {
+                    $this->createModel($modelName, '', false);
                 }
 
             }
         }
     }
 
-
     /**
      * Set Lang Scope
-     * @param $model
      */
-    private function setLangScope($model) {
+    private function setLangScope($model)
+    {
         $model = strtolower($model);
         $this->hasLangScope[$model] = $model;
     }
 
     /**
      * Get Lang Scope
-     * @param $model
+     *
      * @return mixed
      */
-    private function getLangScope($model) {
+    private function getLangScope($model)
+    {
         $model = strtolower($model);
-        $data["useScope"] = "";
-        $data["useMethod"] = "";
+        $data['useScope'] = '';
+        $data['useMethod'] = '';
 
-        if(isset($this->hasLangScope[$model])) {
-            $data["useScope"] = "use MarghoobSuleman\HashtagCms\Core\Scopes\LangScope;";
-            $data["useMethod"] = "protected static function boot() {
+        if (isset($this->hasLangScope[$model])) {
+            $data['useScope'] = "use MarghoobSuleman\HashtagCms\Core\Scopes\LangScope;";
+            $data['useMethod'] = 'protected static function boot() {
 
         parent::boot();
         static::addGlobalScope(new LangScope);
 
-    }";
+    }';
         }
 
         return $data;
     }
-
-
-
 }
-
-

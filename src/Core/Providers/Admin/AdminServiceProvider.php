@@ -2,17 +2,13 @@
 
 namespace MarghoobSuleman\HashtagCms\Core\Providers\Admin;
 
-use MarghoobSuleman\HashtagCms\Models\CmsPermission;
-use MarghoobSuleman\HashtagCms\Models\Permission;
+use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\View;
-
 use MarghoobSuleman\HashtagCms\Core\Policies\CmsPolicy;
 use MarghoobSuleman\HashtagCms\Core\ViewComposers\Admin\CmsModuleComposer;
-
-
-use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
-
+use MarghoobSuleman\HashtagCms\Models\CmsPermission;
+use MarghoobSuleman\HashtagCms\Models\Permission;
 
 class AdminServiceProvider extends ServiceProvider
 {
@@ -32,12 +28,12 @@ class AdminServiceProvider extends ServiceProvider
 
         $allPermission = $this->getPermission();
 
-        if($allPermission!=NULL) {
+        if ($allPermission != null) {
 
-            foreach($allPermission as $permission) {
+            foreach ($allPermission as $permission) {
 
                 Gate::define($permission->name, function ($user) use ($permission) {
-                    return ((($user->hasRole($permission->roles)) || $user->isSuperAdmin()) && $user->user_type == "Staff");
+                    return (($user->hasRole($permission->roles)) || $user->isSuperAdmin()) && $user->user_type == 'Staff';
                 });
 
             }
@@ -61,14 +57,17 @@ class AdminServiceProvider extends ServiceProvider
 
     /**
      * Get permission
+     *
      * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|null
      */
-    protected function getPermission() {
+    protected function getPermission()
+    {
         try {
             return Permission::with('roles')->get();
         } catch (\Exception $e) {
             logger($e->getMessage());
-            return NULL;
+
+            return null;
         }
 
     }

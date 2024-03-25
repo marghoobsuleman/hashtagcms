@@ -3,35 +3,37 @@
 namespace MarghoobSuleman\HashtagCms\Core\Traits;
 
 use Illuminate\Support\Facades\DB;
-
 use MarghoobSuleman\HashtagCms\Models\Site;
 
-trait SiteManager {
-
-
-    public function sites() {
+trait SiteManager
+{
+    public function sites()
+    {
 
         return $this->belongsToMany(Site::class);
 
     }
 
-    public function hasSite($site) {
+    public function hasSite($site)
+    {
 
-        if(is_string($site)) {
+        if (is_string($site)) {
 
             return $this->sites->contains('context', $site);
 
         }
 
-        return !! $site->intersect($this->sites)->count();
+        return (bool) $site->intersect($this->sites)->count();
 
     }
 
     /**
      * Save Role
-     * @param $role
+     *
+     * @param  $role
      */
-    public function assignSite($site) {
+    public function assignSite($site)
+    {
 
         $this->sites()->save($site);
 
@@ -39,10 +41,11 @@ trait SiteManager {
 
     /**
      * Save multiple roles
-     * @param $roles
      *
+     * @param  $roles
      */
-    public function assignMultipleSite($sites) {
+    public function assignMultipleSite($sites)
+    {
 
         foreach ($sites as $site) {
             $this->sites()->save($site);
@@ -52,17 +55,16 @@ trait SiteManager {
 
     /**
      * Delete all roles
+     *
      * @return mixed
      */
-
-    public function detachAllSites() {
+    public function detachAllSites()
+    {
         return DB::table('site_user')->where('user_id', $this->id)->delete();
     }
 
-
-    public function supportedSites() {
+    public function supportedSites()
+    {
         return DB::table('site_user')->where('user_id', $this->id)->get();
     }
-
-
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace MarghoobSuleman\HashtagCms\Database\Seeds;
 
 use Illuminate\Database\Seeder;
@@ -14,7 +15,7 @@ class MicrositesTableSeeder extends Seeder
     public function run()
     {
         $table_name = 'microsites';
-        if(DB::table($table_name)->get()->count() == 0) {
+        if (DB::table($table_name)->get()->count() == 0) {
             DB::table($table_name)->insert(
                 [
 

@@ -15,9 +15,9 @@ class SitePropResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'name'=>$this->name,
-            'value'=>$this->value,
-            'groupName'=>$this->group_name
+            'name' => $this->name,
+            'value' => $this->value,
+            'groupName' => $this->group_name,
         ];
     }
 }

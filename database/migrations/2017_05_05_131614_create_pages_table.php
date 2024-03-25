@@ -1,14 +1,13 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
      */
     public function up()
     {
@@ -31,8 +30,7 @@ return new class extends Migration
 
             $table->string('link_rewrite', 255);
             $table->string('link_navigation', 255)->nullable()->comment('If you want to display on href. you must have apache rule for this if this is different from link_rewrite');
-            $table->string('menu_placement', 100)->nullable()->default("bottom");
-
+            $table->string('menu_placement', 100)->nullable()->default('bottom');
 
             $table->text('header_content')->nullable();
             $table->text('footer_content')->nullable();
@@ -67,8 +65,8 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->longText('page_content');
 
-            $table->enum('link_relation', ['alternate','author','bookmark','help','license','next','nofollow','noreferrer','prefetch','prev','search','tag'])->nullable();
-            $table->enum('target', ['_blank','_parent','_self','_top'])->nullable();
+            $table->enum('link_relation', ['alternate', 'author', 'bookmark', 'help', 'license', 'next', 'nofollow', 'noreferrer', 'prefetch', 'prev', 'search', 'tag'])->nullable();
+            $table->enum('target', ['_blank', '_parent', '_self', '_top'])->nullable();
 
             $table->string('active_key', 128)->nullable();
 
@@ -83,14 +81,14 @@ return new class extends Migration
         });
 
         //Relation
-        Schema::table("page_langs", function(Blueprint $table) {
+        Schema::table('page_langs', function (Blueprint $table) {
 
             $table->foreign('page_id')
                 ->references('id')
                 ->on('pages')
                 ->onDelete('cascade');
 
-            $table->primary(["page_id", "lang_id"]);
+            $table->primary(['page_id', 'lang_id']);
 
         });
 

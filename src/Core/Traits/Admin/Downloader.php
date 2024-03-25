@@ -1,54 +1,49 @@
 <?php
+
 namespace MarghoobSuleman\HashtagCms\Core\Traits\Admin;
 
 use Illuminate\Support\Facades\Auth;
-
 use MarghoobSuleman\HashtagCms\Models\CmsModule;
 use MarghoobSuleman\HashtagCms\Models\User;
 
-
-trait Downloader {
-
-
-    public function download($checkPolicy=TRUE) {
+trait Downloader
+{
+    public function download($checkPolicy = true)
+    {
 
         $user = User::find(Auth::user()->id);
         $isAdmin = $user->isSuperAdmin();
         $allowed = true;
 
-        if(!$isAdmin) {
+        if (! $isAdmin) {
 
             $allowed = false;
 
             //get module info by controller
-            $cmsModule = CmsModule::where("controller_name", "=", request()->module_info->controller_name)->first("id");
-
-
+            $cmsModule = CmsModule::where('controller_name', '=', request()->module_info->controller_name)->first('id');
 
             //if found
-            if($cmsModule != null){
+            if ($cmsModule != null) {
 
-                $allowed = $user->cmsmodules()->where("module_id", "=", $cmsModule->id)->count();
-
+                $allowed = $user->cmsmodules()->where('module_id', '=', $cmsModule->id)->count();
 
             } else {
 
-                return array("message"=>"Unknown module.");
+                return ['message' => 'Unknown module.'];
             }
         }
 
+        if ($checkPolicy == true || $checkPolicy == '') {
 
-        if($checkPolicy==TRUE || $checkPolicy=="") {
+            if (! $this->checkPolicy('read') || ! $allowed) {
 
-            if(!$this->checkPolicy('read') || !$allowed) {
-
-                return response(array("error"=>true, "message"=>"Sorry! You don't have permission"));
+                return response(['error' => true, 'message' => "Sorry! You don't have permission"]);
 
             }
         }
 
-        if(!isset($this->dataSource)) {
-            return response(array("error"=>true, "message"=>"I don't know. What to download."));
+        if (! isset($this->dataSource)) {
+            return response(['error' => true, 'message' => "I don't know. What to download."]);
         }
 
         //if everything is okay
@@ -59,27 +54,26 @@ trait Downloader {
 
         $source = $this->dataSource;
 
-
-        $obj = ($dataWith!='') ? $source::with($dataWith) : new $source;
+        $obj = ($dataWith != '') ? $source::with($dataWith) : new $source;
         $data = $obj->get();
 
         //dd($data->toArray());
-        if($data->count() > 0) {
+        if ($data->count() > 0) {
 
-            if(is_string($dataWith) && $dataWith!=="")  {
-                $dataWith = array($dataWith); //convert it to array
+            if (is_string($dataWith) && $dataWith !== '') {
+                $dataWith = [$dataWith]; //convert it to array
             }
 
             //Make fields
             $firstRec = $data->first()->toArray();
 
-            $fields = array();
+            $fields = [];
 
-            foreach ($firstRec as $key=>$val) {
-                if($key != "deleted_at" && $key != "created_at" && $key != "updated_at") {
-                    if($dataWith=="") {
+            foreach ($firstRec as $key => $val) {
+                if ($key != 'deleted_at' && $key != 'created_at' && $key != 'updated_at') {
+                    if ($dataWith == '') {
                         array_push($fields, $key);
-                    } else if(is_array($dataWith) && !in_array($key, $dataWith)) {
+                    } elseif (is_array($dataWith) && ! in_array($key, $dataWith)) {
                         array_push($fields, $key);
                     }
 
@@ -87,24 +81,24 @@ trait Downloader {
             }
 
             //if with
-            if($dataWith!='') {
+            if ($dataWith != '') {
                 //Children keys
-                foreach ($dataWith as $dKey=>$dVal) {
+                foreach ($dataWith as $dKey => $dVal) {
                     $childKey = $dVal;
                     $currentRec = $firstRec[$dVal];
-                    foreach ($currentRec as $key=>$val) {
-                        if($key != "deleted_at" && $key != "created_at" && $key != "updated_at" && $key != "id") {
-                            array_push($fields, $childKey.".".$key);
+                    foreach ($currentRec as $key => $val) {
+                        if ($key != 'deleted_at' && $key != 'created_at' && $key != 'updated_at' && $key != 'id') {
+                            array_push($fields, $childKey.'.'.$key);
                         }
                     }
                 }
             }
 
-            if(isset($firstRec["created_at"])) {
-                array_push($fields, "created_at");
+            if (isset($firstRec['created_at'])) {
+                array_push($fields, 'created_at');
             }
-            if(isset($firstRec["updated_at"])) {
-                array_push($fields, "updated_at");
+            if (isset($firstRec['updated_at'])) {
+                array_push($fields, 'updated_at');
             }
 
         }

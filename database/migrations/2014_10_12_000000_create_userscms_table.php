@@ -1,12 +1,11 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-
     /**
      * Run the migrations.
      *
@@ -16,11 +15,11 @@ return new class extends Migration
     {
 
         //if use table exist change some fields
-        if(Schema::hasTable('users')) {
+        if (Schema::hasTable('users')) {
             Schema::table('users', function (Blueprint $table) {
                 $table->string('facebook_user_id')->nullable();
                 $table->string('google_user_id')->nullable();
-                $table->enum('user_type', ['Visitor','Staff'])->default('Visitor');
+                $table->enum('user_type', ['Visitor', 'Staff'])->default('Visitor');
                 $table->softDeletes();
             });
         } else {
@@ -36,11 +35,10 @@ return new class extends Migration
 
                 $table->string('facebook_user_id')->nullable();
                 $table->string('google_user_id')->nullable();
-                $table->enum('user_type', ['Visitor','Staff'])->default('Visitor');
+                $table->enum('user_type', ['Visitor', 'Staff'])->default('Visitor');
                 $table->softDeletes();
             });
         }
-
 
     }
 

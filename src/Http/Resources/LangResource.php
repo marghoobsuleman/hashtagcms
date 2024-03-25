@@ -16,13 +16,13 @@ class LangResource extends JsonResource
     {
 
         return [
-            'id'=>$this->id,
-            'name'=>$this->name,
-            'isoCode'=>$this->iso_code,
-            'languageCode'=>$this->language_code,
-            'dateFormatLite'=>$this->date_format_lite,
-            'dateFormatFull'=>$this->date_format_full,
-            'isRtl'=>$this->is_rtl
+            'id' => $this->id,
+            'name' => $this->name,
+            'isoCode' => $this->iso_code,
+            'languageCode' => $this->language_code,
+            'dateFormatLite' => $this->date_format_lite,
+            'dateFormatFull' => $this->date_format_full,
+            'isRtl' => $this->is_rtl,
         ];
     }
 }

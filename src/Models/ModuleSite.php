@@ -4,7 +4,5 @@ namespace MarghoobSuleman\HashtagCms\Models;
 
 class ModuleSite extends AdminBaseModel
 {
-
-    protected $table = "module_site";
-
+    protected $table = 'module_site';
 }

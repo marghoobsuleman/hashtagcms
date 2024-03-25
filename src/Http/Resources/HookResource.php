@@ -15,13 +15,13 @@ class HookResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'id'=>$this->id,
-            'name'=>$this->name,
-            'alias'=>$this->alias,
-            'placeholder'=>"%{cms.hook.{$this->alias}}%",
-            'direction'=>$this->direction,
-            'description'=>$this->description,
-            'modules'=>isset($this->modules) ? $this->modules : []
+            'id' => $this->id,
+            'name' => $this->name,
+            'alias' => $this->alias,
+            'placeholder' => "%{cms.hook.{$this->alias}}%",
+            'direction' => $this->direction,
+            'description' => $this->description,
+            'modules' => isset($this->modules) ? $this->modules : [],
         ];
     }
 }

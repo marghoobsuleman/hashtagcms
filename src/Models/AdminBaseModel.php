@@ -1,4 +1,5 @@
 <?php
+
 namespace MarghoobSuleman\HashtagCms\Models;
 
 /***
@@ -11,13 +12,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
-
-
 abstract class AdminBaseModel extends Model
 {
-
-
-    function __construct(array $attributes = [])
+    public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);
         $this->perPage = config('hashtagcmsadmin.cmsInfo.records_per_page');
@@ -26,22 +23,23 @@ abstract class AdminBaseModel extends Model
     /**
      * Get Data from current model
      *
-     * @param string $with
-     * @param array $searchParams
+     * @param  string  $with
+     * @param  array  $searchParams
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
-    public static function getData($with='', $searchParams=array(), $where=array()) {
+    public static function getData($with = '', $searchParams = [], $where = [])
+    {
 
         //DB::enableQueryLog();
-        $obj = ($with!='') ? static::with($with) : new static;
+        $obj = ($with != '') ? static::with($with) : new static;
 
         //add where condition
-        if(sizeof($searchParams)>0) {
+        if (count($searchParams) > 0) {
 
-            foreach ($searchParams as $key=>$searchParam) {
+            foreach ($searchParams as $key => $searchParam) {
 
                 switch ($key) {
-                    case "where":
+                    case 'where':
                         $obj = $obj->where($searchParam[0], $searchParam[1], $searchParam[2]);
                         break;
                 }
@@ -49,17 +47,16 @@ abstract class AdminBaseModel extends Model
             }
         }
 
-        if(sizeof($where) > 0) {
+        if (count($where) > 0) {
 
             //array("field"=>"", "operator"=>"", "value"=>"")
-            foreach ($where as $index=>$item) {
-                $obj = $obj->where($item["field"], $item["operator"], $item["value"]);
+            foreach ($where as $index => $item) {
+                $obj = $obj->where($item['field'], $item['operator'], $item['value']);
             }
         }
 
-
         //Order by id desc
-        $obj = $obj->orderBy($obj->getModel()->getKeyName(), "DESC");
+        $obj = $obj->orderBy($obj->getModel()->getKeyName(), 'DESC');
 
         $res = $obj->paginate(htcms_admin_config('records_per_page'));
 
@@ -67,42 +64,42 @@ abstract class AdminBaseModel extends Model
         return $res;
     }
 
-
     /**
-     * @param string $with
-     * @param null $field
-     * @param null $opr
-     * @param null $val
+     * @param  string  $with
+     * @param  null  $field
+     * @param  null  $opr
+     * @param  null  $val
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
-    public static function searchData($with='', $field=NULL, $opr=NULL, $val=NULL, $where=array()) {
+    public static function searchData($with = '', $field = null, $opr = null, $val = null, $where = [])
+    {
 
-        $arr = NULL;
+        $arr = null;
         //echo "$field, $opr, $val";
 
-        if($field!==NULL && $opr!=NULL && $val!=NULL) {
+        if ($field !== null && $opr != null && $val != null) {
 
             switch ($opr) {
-                case "like%":
-                    $val = $val."%";
+                case 'like%':
+                    $val = $val.'%';
                     break;
-                case "%like%":
-                    $val = "%".$val."%";
+                case '%like%':
+                    $val = '%'.$val.'%';
                     break;
             }
 
-            $opr = (Str::contains($opr, "like")==1) ? "like" : $opr;
+            $opr = (Str::contains($opr, 'like') == 1) ? 'like' : $opr;
 
         }
 
-        if(Str::contains($field, ".")==1) {
+        if (Str::contains($field, '.') == 1) {
 
-            $field = explode(".", $field);
+            $field = explode('.', $field);
             $relationWhere = $field[0];
             $field = $field[1];
 
             //in case $source with (relation) is not defined but you have this in relationship
-            if(empty($relationWhere)) {
+            if (empty($relationWhere)) {
                 $with = $relationWhere;
             }
 
@@ -112,13 +109,11 @@ abstract class AdminBaseModel extends Model
 
             })->paginate(htcms_admin_config('records_per_page'));
 
-
             return $data;
-
 
         } else {
 
-                $arr = array("where"=>array($field, $opr, $val));
+            $arr = ['where' => [$field, $opr, $val]];
         }
 
         return self::getData($with, $arr);
@@ -127,25 +122,26 @@ abstract class AdminBaseModel extends Model
     /**
      * Find By Id
      *
-     * @param int $id
-     * @param string $with
+     * @param  int  $id
+     * @param  string  $with
      * @return array
      */
-    public static function getById($id=0, $with='') {
+    public static function getById($id = 0, $with = '')
+    {
 
         QueryLogger::enableQueryLog();
 
-        if($with != '') {
-            $with = (is_array($with)) ? $with : array($with);
+        if ($with != '') {
+            $with = (is_array($with)) ? $with : [$with];
         }
 
-        $obj = ($with!='') ? static::withoutGlobalScopes()->with($with) : new static;
+        $obj = ($with != '') ? static::withoutGlobalScopes()->with($with) : new static;
 
         $data = $obj->findOrFail($id)->toArray();
 
         $queryLog = QueryLogger::getQueryLog();
 
-        try{
+        try {
 
             QueryLogger::log('editStart', $queryLog, $data, $id);
 
@@ -155,28 +151,28 @@ abstract class AdminBaseModel extends Model
 
         }
 
-
         return $data;
 
     }
 
-
     /**
      * Get data as compatible to render combobox
-     * @param array $fileds
-     * @param string $loadWith
+     *
+     * @param  array  $fileds
+     * @param  string  $loadWith
      * @return AdminBaseModel[]|\Illuminate\Database\Eloquent\Collection
      */
-    public function combo($fileds=array(), $loadWith='lang') {
+    public function combo($fileds = [], $loadWith = 'lang')
+    {
 
-        if(method_exists ( $this, 'lang' )) {
-            if(sizeof($fileds)>0) {
+        if (method_exists($this, 'lang')) {
+            if (count($fileds) > 0) {
                 return self::all($fileds)->load($loadWith);
             } else {
                 return self::all()->load($loadWith);
             }
         } else {
-            if(sizeof($fileds)>0) {
+            if (count($fileds) > 0) {
                 return self::all($fileds);
             } else {
                 return self::all();
@@ -185,24 +181,22 @@ abstract class AdminBaseModel extends Model
 
     }
 
-
     /**
      * Get Enum Values from any table
-     * @param string|null $table
-     * @param string|null $field
-     * @return array
      */
-    public static function getEnumValues(string $table=null, string $field=null):array {
+    public static function getEnumValues(?string $table = null, ?string $field = null): array
+    {
 
-        $enum = array();
-        if($table != '' && $field != '') {
+        $enum = [];
+        if ($table != '' && $field != '') {
             $type = DB::select("SHOW COLUMNS FROM {$table} WHERE Field = '{$field}'");
-            if(sizeof($type) > 0){
+            if (count($type) > 0) {
                 $type = $type[0]->Type;
                 preg_match('/^enum\((.*)\)$/', $type, $matches);
-                foreach( explode(',', $matches[1]) as $value ) {
-                    $enum[] = trim( $value, "'" );
+                foreach (explode(',', $matches[1]) as $value) {
+                    $enum[] = trim($value, "'");
                 }
+
                 return $enum;
             }
         }
@@ -210,7 +204,4 @@ abstract class AdminBaseModel extends Model
         return $enum;
 
     }
-
-
-
 }

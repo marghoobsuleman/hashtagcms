@@ -1,6 +1,7 @@
 <?php
 
 namespace MarghoobSuleman\HashtagCms\Http\Controllers;
+
 use Illuminate\Foundation\Auth\RedirectsUsers;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Http\Request;
@@ -8,7 +9,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
-
 //use Laravel\Socialite;
 use Laravel\Socialite\Facades\Socialite;
 
@@ -24,10 +24,10 @@ class LoginController extends FrontendBaseController
     | to conveniently provide its functionality to your applications.
     |
     */
-    private $route = "/login";
+    private $route = '/login';
 
-    use ThrottlesLogins;
     use RedirectsUsers;
+    use ThrottlesLogins;
 
     /**
      * Where to redirect users after login.
@@ -46,24 +46,23 @@ class LoginController extends FrontendBaseController
         //$this->redirectTo = (URL::previous() != URL::current()) ? URL::previous() : $this->redirectTo;
         //info("URL::previous() ======  ".URL::previous());
 
-            $this->middleware('guest')->except('logout', 'socialcallback');
+        $this->middleware('guest')->except('logout', 'socialcallback');
 
     }
 
     /**
-     * @param Request $request
-     * @param array $infoKeeper
      * @return array|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function index(Request $request, array $infoKeeper=array(), array $mergeData=[]) {
+    public function index(Request $request, array $infoKeeper = [], array $mergeData = [])
+    {
 
-        if(Auth::id() > 0) {
+        if (Auth::id() > 0) {
             return redirect()->intended(URL::previous());
         } else {
 
-            if($request->method() == "POST") {
+            if ($request->method() == 'POST') {
 
-                $this->redirectPath = ($request->input("redirect") == null || $request->input("redirect") == "") ?  "/" : $request->input("redirect");
+                $this->redirectPath = ($request->input('redirect') == null || $request->input('redirect') == '') ? '/' : $request->input('redirect');
 
                 $validator = Validator::make($request->all(), [
                     $this->username() => 'required|string',
@@ -87,8 +86,8 @@ class LoginController extends FrontendBaseController
             }
 
             //bind data for view
-            if($request->input("redirect")) {
-                $this->bindDataForView("auth/login", array("redirect"=>$request->input("redirect")));
+            if ($request->input('redirect')) {
+                $this->bindDataForView('auth/login', ['redirect' => $request->input('redirect')]);
             }
 
             return parent::index($request);
@@ -98,23 +97,21 @@ class LoginController extends FrontendBaseController
 
     /**
      * @override
+     *
      * @return string
      */
     protected function redirectTo()
     {
 
-            return $this->redirectPath;
+        return $this->redirectPath;
     }
-
 
     /*** From AuthencatesUsers Trait **/
 
     /**
      * Handle a login request to the application.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\Response|\Illuminate\Http\JsonResponse
-     *
      */
     public function login(Request $request)
     {
@@ -134,9 +131,10 @@ class LoginController extends FrontendBaseController
                 $seconds = $this->limiter()->availableIn(
                     $this->throttleKey($request)
                 );
+
                 return redirect($this->route)
                     ->withErrors([
-                        $this->username() => [Lang::get('auth.throttle', ['seconds' => $seconds])]
+                        $this->username() => [Lang::get('auth.throttle', ['seconds' => $seconds])],
                     ])
                     ->status(429);
 
@@ -157,11 +155,9 @@ class LoginController extends FrontendBaseController
         return $this->sendFailedLoginResponse($request);
     }
 
-
     /**
      * Attempt to log the user into the application.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return bool
      */
     protected function attemptLogin(Request $request)
@@ -174,7 +170,6 @@ class LoginController extends FrontendBaseController
     /**
      * Get the needed authorization credentials from the request.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return array
      */
     protected function credentials(Request $request)
@@ -185,7 +180,6 @@ class LoginController extends FrontendBaseController
     /**
      * Send the response after the user was authenticated.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     protected function sendLoginResponse(Request $request)
@@ -195,19 +189,18 @@ class LoginController extends FrontendBaseController
         $this->clearLoginAttempts($request);
 
         return $this->authenticated($request, $this->guard()->user())
-            ? : redirect()->intended($this->redirectPath()); //URL::previous()
+            ?: redirect()->intended($this->redirectPath()); //URL::previous()
     }
 
     /**
      * The user has been authenticated.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  mixed  $user
      * @return mixed
      */
     protected function authenticated(Request $request, $user)
     {
-        info("We can use some of hacks here");
+        info('We can use some of hacks here');
 
         /*if ($user->user_type == "Visitor") {
             return redirect("/");
@@ -217,7 +210,6 @@ class LoginController extends FrontendBaseController
     /**
      * Get the failed login response instance.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Symfony\Component\HttpFoundation\Response
      *
      * @throws \Illuminate\Validation\ValidationException
@@ -227,7 +219,7 @@ class LoginController extends FrontendBaseController
 
         return redirect($this->route)
             ->withErrors([
-                $this->username() => [trans('auth.failed')]
+                $this->username() => [trans('auth.failed')],
             ])
             ->withInput();
     }
@@ -242,7 +234,6 @@ class LoginController extends FrontendBaseController
         return 'email';
     }
 
-
     /**
      * Get the guard to be used during authentication.
      *
@@ -253,10 +244,9 @@ class LoginController extends FrontendBaseController
         return Auth::guard();
     }
 
-
-
     //Social handling
-    public function social($provider='facebook') {
+    public function social($provider = 'facebook')
+    {
         return Socialite::driver($provider)->redirect();
     }
 
@@ -265,11 +255,11 @@ class LoginController extends FrontendBaseController
      *
      * @return \Illuminate\Http\Response
      */
-    public function socialcallback(Request $request, $provider='facebook')
+    public function socialcallback(Request $request, $provider = 'facebook')
     {
-        $error_code = $request->get("error_code");
+        $error_code = $request->get('error_code');
 
-        if((int) $error_code > 0) {
+        if ((int) $error_code > 0) {
             return parent::index($request);
             //return $this->viewMaster($theme, "index", $data);
         }
@@ -281,6 +271,4 @@ class LoginController extends FrontendBaseController
 
         // $user->token;
     }
-
 }
-

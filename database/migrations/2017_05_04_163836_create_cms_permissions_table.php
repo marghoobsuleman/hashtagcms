@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
@@ -11,16 +11,14 @@ return new class extends Migration
      *
      * @return void
      */
-
-
     public function up()
     {
 
-        Schema::create('cms_permissions', function(Blueprint $table) {
+        Schema::create('cms_permissions', function (Blueprint $table) {
 
-            $table->bigInteger("module_id", false, true);
-            $table->bigInteger("user_id", false, true);
-            $table->tinyInteger("readonly")->nullable()->default(0);
+            $table->bigInteger('module_id', false, true);
+            $table->bigInteger('user_id', false, true);
+            $table->tinyInteger('readonly')->nullable()->default(0);
 
         });
 
@@ -39,7 +37,6 @@ return new class extends Migration
 
             $table->primary(['user_id', 'module_id']);
         });
-
 
     }
 

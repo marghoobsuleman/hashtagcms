@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        $tableName = "festivals";
-        Schema::table($tableName, function (Blueprint $table) use($tableName) {
-            if(!Schema::hasColumn($tableName, 'name')) {
+        $tableName = 'festivals';
+        Schema::table($tableName, function (Blueprint $table) use ($tableName) {
+            if (! Schema::hasColumn($tableName, 'name')) {
 
                 $table->string('name', 255)->after('site_id');
 
@@ -38,7 +38,7 @@ return new class extends Migration
                 //styles
                 $table->boolean('hide_on_complete')->nullable()->default(1)->after('lottie');
 
-                $table->text('extra')->nullable()->after('lottie');;
+                $table->text('extra')->nullable()->after('lottie');
                 $table->integer('position')->nullable()->after('publish_status');
 
             }

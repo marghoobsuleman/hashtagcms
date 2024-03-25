@@ -2,35 +2,32 @@
 
 namespace MarghoobSuleman\HashtagCms\Core\Traits\Admin;
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Gate as GateFacade;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate as GateFacade;
 use Illuminate\Support\Str;
-
+use MarghoobSuleman\HashtagCms\Core\Helpers\Message;
 use MarghoobSuleman\HashtagCms\Models\Permission;
 use MarghoobSuleman\HashtagCms\Models\QueryLogger;
 use MarghoobSuleman\HashtagCms\Models\Site;
-
-use MarghoobSuleman\HashtagCms\Core\Helpers\Message;
 use Mockery\Exception;
 
-trait AdminCrud {
-
+trait AdminCrud
+{
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($more=null)
+    public function index($more = null)
     {
-        if(!$this->checkPolicy('read')) {
-            return htcms_admin_view("common.error", Message::getReadError());
+        if (! $this->checkPolicy('read')) {
+            return htcms_admin_view('common.error', Message::getReadError());
         }
 
         $data = $this->getSegregatedData();
 
-        if($more!=null) {
+        if ($more != null) {
             $data = array_merge($data, $more);
         }
 
@@ -76,31 +73,31 @@ trait AdminCrud {
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id=0, $param1=0)
+    public function edit($id = 0, $param1 = 0)
     {
 
-        if(!$this->checkPolicy('edit')) {
-            return htcms_admin_view("common.error", Message::getWriteError());
+        if (! $this->checkPolicy('edit')) {
+            return htcms_admin_view('common.error', Message::getWriteError());
         }
 
         //Check if has pre edit
-        if(method_exists($this, 'preEdit')) {
+        if (method_exists($this, 'preEdit')) {
             $this->preEdit();
         }
 
         $dataSource = $this->getDataSource();
         $dataWith = $this->getDataWith();
 
-        $data['results'] =  array();
+        $data['results'] = [];
 
-        $data["actionPerformed"] = ($id>0) ? "edit" : "add";
+        $data['actionPerformed'] = ($id > 0) ? 'edit' : 'add';
 
-        $data["backURL"] = $this->getBackURL(FALSE, $id);
+        $data['backURL'] = $this->getBackURL(false, $id);
 
-        if($id>0) {
+        if ($id > 0) {
 
-            $data['results'] =  $dataSource::getById($id, $dataWith, $param1);
-            $data["backURL"] = $this->getBackURL(TRUE, $id);
+            $data['results'] = $dataSource::getById($id, $dataWith, $param1);
+            $data['backURL'] = $this->getBackURL(true, $id);
         }
 
         $data['user_rights'] = $this->getUserRights();
@@ -108,10 +105,9 @@ trait AdminCrud {
         //In case if you want any extra;
         $extraData = $this->getExtraDataForEdit();
 
-        if($extraData != NULL) {
+        if ($extraData != null) {
             $data = array_merge($data, $extraData);
         }
-
 
         /*echo "<pre>";
          print_r($data);
@@ -119,9 +115,9 @@ trait AdminCrud {
         $controller_name = request()->module_info->controller_name;
 
         $controller_view = request()->module_info->edit_view_name;
-        $editView = ($controller_view == null || empty($controller_view)) ? $controller_name.'.addedit'  : '.'.$controller_view;
+        $editView = ($controller_view == null || empty($controller_view)) ? $controller_name.'.addedit' : '.'.$controller_view;
 
-        $editView = str_replace("/", ".", $editView);
+        $editView = str_replace('/', '.', $editView);
 
         //return $data;
         return htcms_admin_view($editView, $data);
@@ -136,8 +132,8 @@ trait AdminCrud {
     public function destroy($id)
     {
 
-        if(!$this->checkPolicy('delete')) {
-            return json_encode(array("id"=>$id, "success"=>0, "message"=>Message::getDeleteError()));
+        if (! $this->checkPolicy('delete')) {
+            return json_encode(['id' => $id, 'success' => 0, 'message' => Message::getDeleteError()]);
         }
 
         QueryLogger::enableQueryLog();
@@ -145,13 +141,11 @@ trait AdminCrud {
         $dataSource = $this->getDataSource();
         $source = new $dataSource();
 
-
-
         $isDeleted = $source->destroy($id);
-        $array = array("id"=>$id, "success"=>$isDeleted, "source"=>$source);
+        $array = ['id' => $id, 'success' => $isDeleted, 'source' => $source];
 
         //Logging
-        try{
+        try {
             $queryLog = QueryLogger::getQueryLog();
             QueryLogger::log('delete', $queryLog, $source, $id ?? 0);
 
@@ -161,69 +155,71 @@ trait AdminCrud {
 
         }
 
-
         return json_encode($array);
     }
-
-
 
     /*** HELPER METHODS **/
 
     /**
      * Save Data with Lang
      *
-     * @param array $saveData
-     * @param array $langData
-     * @param null $where
+     * @param  array  $saveData
+     * @param  array  $langData
+     * @param  null  $where
      * @return mixed
      */
+    protected function saveDataWithLang($saveData = [], $langData = [], $where = null, $updateInAllLangs = false)
+    {
 
-    protected function saveDataWithLang($saveData=array(), $langData=array(), $where=NULL, $updateInAllLangs=false) {
-
-        $data["saveData"] = $saveData;
-        $data["langData"] = $langData;
+        $data['saveData'] = $saveData;
+        $data['langData'] = $langData;
 
         return $this->saveAllData($data, $where, $updateInAllLangs);
     }
 
     /**
      * Save Data with Lang and Site
-     * @param array $saveData
-     * @param array $langData
-     * @param array $siteData
-     * @param null $where
+     *
+     * @param  array  $saveData
+     * @param  array  $langData
+     * @param  array  $siteData
+     * @param  null  $where
      * @return mixed
      */
     //working
-    protected function saveDataWithLangAndSite($saveData=array(), $langData=array(), $siteData=array(), $where=NULL, $updateInAllLangs=false) {
+    protected function saveDataWithLangAndSite($saveData = [], $langData = [], $siteData = [], $where = null, $updateInAllLangs = false)
+    {
 
-        $data["saveData"] = $saveData;
-        $data["langData"] = $langData;
+        $data['saveData'] = $saveData;
+        $data['langData'] = $langData;
 
-        $data["siteData"] = $siteData;
+        $data['siteData'] = $siteData;
 
         return $this->saveAllData($data, $where, $updateInAllLangs);
     }
 
-    protected function saveDataWithLangAndPlatform($saveData=array(), $langData=array(), $platformData=array(), $where=NULL, $updateInAllLangs=false) {
+    protected function saveDataWithLangAndPlatform($saveData = [], $langData = [], $platformData = [], $where = null, $updateInAllLangs = false)
+    {
 
-        $data["saveData"] = $saveData;
-        $data["langData"] = $langData;
+        $data['saveData'] = $saveData;
+        $data['langData'] = $langData;
 
-        $data["platformData"] = $platformData;
+        $data['platformData'] = $platformData;
 
         return $this->saveAllData($data, $where, $updateInAllLangs);
     }
 
     /**
      * Save Data
-     * @param array $saveData
-     * @param null $where
+     *
+     * @param  array  $saveData
+     * @param  null  $where
      * @return mixed
      */
-    protected function saveData($saveData=array(), $where=NULL, $updateInAllLangs=false) {
+    protected function saveData($saveData = [], $where = null, $updateInAllLangs = false)
+    {
 
-        $data["saveData"] = $saveData;
+        $data['saveData'] = $saveData;
 
         return $this->saveAllData($data, $where, $updateInAllLangs);
 
@@ -231,14 +227,16 @@ trait AdminCrud {
 
     /**
      * Save All Data
-     * @param $data - saveData, langData, siteData, platformData
-     * @param null $where
+     *
+     * @param  $data  - saveData, langData, siteData, platformData
+     * @param  null  $where
      * @return mixed
      */
-    private function saveAllData($data, $where=NULL, $updateInAllLangs=false) {
+    private function saveAllData($data, $where = null, $updateInAllLangs = false)
+    {
 
         //Better to be safe
-        if(!$this->checkPolicy('edit')) {
+        if (! $this->checkPolicy('edit')) {
             return Message::getWriteError();
         }
         //Start db transaction
@@ -246,124 +244,122 @@ trait AdminCrud {
         //need to log query
         QueryLogger::enableQueryLog();
 
-        $savedDataModel =  $data["saveData"]["model"];
-        $savedData =  $data["saveData"]["data"];
+        $savedDataModel = $data['saveData']['model'];
+        $savedData = $data['saveData']['data'];
 
+        $langData = null;
+        $siteData = null;
 
-        $langData = NULL;
-        $siteData = NULL;
-
-        $supportedSiteLangs = array();
+        $supportedSiteLangs = [];
         //Lang Data
-        if(isset($data["langData"])) {
-            $langData = $data["langData"]["data"];
+        if (isset($data['langData'])) {
+            $langData = $data['langData']['data'];
             $site_id = htcms_get_siteId_for_admin();
-            if(isset($data["siteData"])) {
-                $site_id = $data["siteData"]["site_id"] ??  htcms_get_siteId_for_admin();
+            if (isset($data['siteData'])) {
+                $site_id = $data['siteData']['site_id'] ?? htcms_get_siteId_for_admin();
             }
-            if(isset($data["platformData"])) {
-                $site_id = $data["platformData"]["site_id"] ??  htcms_get_siteId_for_admin();
+            if (isset($data['platformData'])) {
+                $site_id = $data['platformData']['site_id'] ?? htcms_get_siteId_for_admin();
             }
             $supportedSiteLangs = $this->getSupportedSiteLang($site_id); //This is in Common Trait
 
         }
 
-        $rData = array();
+        $rData = [];
 
         /**************************** Insert ********************************/
         //Save | Insert
-        if($where==NULL || $where<=0) {
+        if ($where == null || $where <= 0) {
 
             //Save Main Model
             $mainModel = new $savedDataModel();
 
             //make key val;
-            $fieldKeyVal = array();
-            foreach ($savedData as $key=>$val) {
+            $fieldKeyVal = [];
+            foreach ($savedData as $key => $val) {
                 //$mainModel->{$key} = $val;
                 $fieldKeyVal[$key] = $val;
             }
 
             //Save main model
-            $rData["isSaved"] = $mainModel->insert($fieldKeyVal);
+            $rData['isSaved'] = $mainModel->insert($fieldKeyVal);
             //$rData["isSaved"] = $mainModel->save();
 
             try {
                 //Sometimes there is no id field
-                $rData["id"] = DB::getPdo()->lastInsertId();
+                $rData['id'] = DB::getPdo()->lastInsertId();
 
             } catch (Exception $e) {
-                $rData["id"] = NULL;
+                $rData['id'] = null;
             }
 
-            $rData["source"] = $mainModel;
+            $rData['source'] = $mainModel;
 
-            if(isset($data["langData"]) || isset($data["siteData"]) || isset($data["platformData"])) {
-                $mainModel = $mainModel->find($rData["id"]); //could have withoutGlobalScopes(). but it will work on current site
+            if (isset($data['langData']) || isset($data['siteData']) || isset($data['platformData'])) {
+                $mainModel = $mainModel->find($rData['id']); //could have withoutGlobalScopes(). but it will work on current site
             }
 
             //Save Language Model
-            if($langData!=NULL) {
+            if ($langData != null) {
 
-                if(!method_exists($mainModel, 'lang')) {
+                if (! method_exists($mainModel, 'lang')) {
                     DB::rollBack();
                     throw new \Exception("'lang' relation method is needed in source class.");
                 }
 
-               // dd($supportedSiteLangs);
-                $langDatas = array();
-                foreach ($supportedSiteLangs as $key=>$siteLang) {
+                // dd($supportedSiteLangs);
+                $langDatas = [];
+                foreach ($supportedSiteLangs as $key => $siteLang) {
 
-                    $langData["lang_id"] = $siteLang["id"];
+                    $langData['lang_id'] = $siteLang['id'];
                     //info(json_encode($siteLang));
                     //Prepair for buld insert
                     $langDatas[] = $langData;
                 }
                 //info(json_encode($langDatas));
-                $rData["isSavedLang"] = $mainModel->lang()->createMany($langDatas);
+                $rData['isSavedLang'] = $mainModel->lang()->createMany($langDatas);
             }
 
             //Site Data
             try {
-                if(isset($data["siteData"])) {
+                if (isset($data['siteData'])) {
 
-                    if(!method_exists($mainModel, 'site')) {
+                    if (! method_exists($mainModel, 'site')) {
                         DB::rollBack();
                         throw new \Exception("'site' relation method is needed in source class.");
                     }
 
                     //Model must have belongsToMany relation with 'site'
-                    $siteData = $data["siteData"]["data"];
-                    $siteInfo = Site::find($siteData["site_id"]);
-                    unset($siteData["site_id"]);
+                    $siteData = $data['siteData']['data'];
+                    $siteInfo = Site::find($siteData['site_id']);
+                    unset($siteData['site_id']);
                     $mainModel->site()->attach($siteInfo, $siteData);
                 }
             } catch (\Exception $e) {
                 DB::rollBack();
-                throw new \Exception("rollback: ". $e->getMessage());
-                info($e->getMessage(), "Error: ");
+                throw new \Exception('rollback: '.$e->getMessage());
+                info($e->getMessage(), 'Error: ');
             }
 
-
             //Platform Data
-            if(isset($data["platformData"])) {
-                if(!method_exists($mainModel, 'platform')) {
+            if (isset($data['platformData'])) {
+                if (! method_exists($mainModel, 'platform')) {
                     DB::rollBack();
                     throw new \Exception("'platform' relation method is needed in source class.");
                 }
                 //Model must have belongsToMany relation with 'platform'
-                $platformData = $data["platformData"]["data"];
-                $supportedSitePlatform = $this->getSupportedSitePlatform($platformData['site_id']);//platform data must have a site_id
+                $platformData = $data['platformData']['data'];
+                $supportedSitePlatform = $this->getSupportedSitePlatform($platformData['site_id']); //platform data must have a site_id
 
                 //add in supported platform
-                foreach ($supportedSitePlatform as $key=>$platform) {
-                    $platformData["platform_id"] = $platform["id"];
+                foreach ($supportedSitePlatform as $key => $platform) {
+                    $platformData['platform_id'] = $platform['id'];
                     $mainModel->platform()->attach($platform, $platformData);
                 }
 
             }
             $queryLog = QueryLogger::getQueryLog();
-            $actionLog = "insert";
+            $actionLog = 'insert';
 
         } else {
             /**************************** Update ********************************/
@@ -371,23 +367,22 @@ trait AdminCrud {
             $mainModel = new $savedDataModel();
 
             //lang data
-            if($langData!=NULL) {
+            if ($langData != null) {
                 $langMethod = 'lang';
                 $foundLangMethod = true;
-                if($updateInAllLangs === true) {
+                if ($updateInAllLangs === true) {
                     $langMethod = 'langs';
                 }
 
-                if(!method_exists($mainModel, $langMethod)) {
+                if (! method_exists($mainModel, $langMethod)) {
                     $foundLangMethod = false;
                 }
 
                 //if saving lang and don't have 'lang' relation in model. ignore everything.
-                if(!$foundLangMethod) {
+                if (! $foundLangMethod) {
                     DB::rollBack();
                     throw new \Exception("Update Error: '$langMethod' relation method is needed in source class. ");
                 }
-
 
                 $mainModel = $mainModel->with($langMethod)->find($where);
 
@@ -396,65 +391,64 @@ trait AdminCrud {
                 $mainModel = $mainModel->find($where);
             }
 
-            $rData["isSaved"] = $mainModel->update($savedData);
+            $rData['isSaved'] = $mainModel->update($savedData);
 
-            $rData["id"] = $where;
+            $rData['id'] = $where;
 
-            $rData["source"] = $mainModel;
+            $rData['source'] = $mainModel;
 
-            if($langData != NULL) {
+            if ($langData != null) {
                 //info("lang_id: ".$langData["lang_id"]);
-                $langData["lang_id"] = (isset($langData["lang_id"])) ? $langData["lang_id"] : htcms_get_language_id_for_admin();
+                $langData['lang_id'] = (isset($langData['lang_id'])) ? $langData['lang_id'] : htcms_get_language_id_for_admin();
                 //
                 //dd($mainModel, $langData);
-                if ($updateInAllLangs===true) {
+                if ($updateInAllLangs === true) {
                     // in all langs
-                    $mainTable =  Str::singular($mainModel->getTable());
-                    $primaryKey = $mainTable."_".$mainModel->getKeyName();
-                    $langTable = $mainTable."_langs";
+                    $mainTable = Str::singular($mainModel->getTable());
+                    $primaryKey = $mainTable.'_'.$mainModel->getKeyName();
+                    $langTable = $mainTable.'_langs';
                     foreach ($supportedSiteLangs as $supportedLang) {
                         $newLangData = $langData;
                         $newLangData['lang_id'] = $supportedLang->id;
-                        $arrWhere = array(array($primaryKey, "=", $where), array("lang_id", "=", $supportedLang->id));
-                        $rData["isSavedLang"] = $this->rawUpdate($langTable, $newLangData, $arrWhere, false);
+                        $arrWhere = [[$primaryKey, '=', $where], ['lang_id', '=', $supportedLang->id]];
+                        $rData['isSavedLang'] = $this->rawUpdate($langTable, $newLangData, $arrWhere, false);
                     }
 
                 } else {
                     //in one lang
-                    $rData["isSavedLang"] = $mainModel->lang()->update($langData);
+                    $rData['isSavedLang'] = $mainModel->lang()->update($langData);
                 }
             }
 
-            if(isset($data["siteData"])) {
+            if (isset($data['siteData'])) {
 
-                if(!method_exists($mainModel, 'site')) {
+                if (! method_exists($mainModel, 'site')) {
                     DB::rollBack();
                     throw new \Exception("Update Error:  'site' relation method is needed in source class.");
                 }
 
                 //Model must have belongsToMany relation with 'site'
-                $siteData = $data["siteData"]["data"];
-                $mainModel->site()->updateExistingPivot($siteData["site_id"], $siteData);
+                $siteData = $data['siteData']['data'];
+                $mainModel->site()->updateExistingPivot($siteData['site_id'], $siteData);
             }
 
-            if(isset($data["platformData"])) {
-                if(!method_exists($mainModel, 'platform')) {
+            if (isset($data['platformData'])) {
+                if (! method_exists($mainModel, 'platform')) {
                     DB::rollBack();
                     throw new \Exception("Update Error: 'platform' relation method is needed in source class.");
                 }
                 //Model must have belongsToMany relation with 'platform'
-                $platformData = $data["platformData"]["data"];
+                $platformData = $data['platformData']['data'];
                 //info(json_encode($platformData));
-                $mainModel->platform()->updateExistingPivot($platformData["platform_id"], $platformData);
+                $mainModel->platform()->updateExistingPivot($platformData['platform_id'], $platformData);
             }
 
             $queryLog = QueryLogger::getQueryLog();
-            $actionLog = "update";
+            $actionLog = 'update';
         }
 
-
         //Logging
-        try{
+        try {
 
             QueryLogger::log($actionLog, $queryLog, $data, $rData['id'] ?? 0);
 
@@ -469,7 +463,6 @@ trait AdminCrud {
         return $rData;
     }
 
-
     /********* EXTRA ******************/
     /**
      * Search the specified resource.
@@ -477,11 +470,11 @@ trait AdminCrud {
      * @param  \MarghoobSuleman\HashtagCms\Models\SourceModel
      * @return \Illuminate\Http\Response
      */
+    public function search()
+    {
 
-    public function search() {
-
-        if(!$this->checkPolicy('read')) {
-            return htcms_admin_view("common.error", Message::getReadError());
+        if (! $this->checkPolicy('read')) {
+            return htcms_admin_view('common.error', Message::getReadError());
         }
 
         $data = $this->getSegregatedData();
@@ -490,45 +483,43 @@ trait AdminCrud {
 
         $filtered = $collection->except(['page']);
 
-        $data["searchId"] = $filtered->all();
-
+        $data['searchId'] = $filtered->all();
 
         //This is in Trait
         return $this->searchData($data);
 
     }
 
-
     /**
-     * @param int $id
-     * @param int $status
+     * @param  int  $id
+     * @param  int  $status
      * @return \Illuminate\Http\JsonResponse
      */
-    public function publish($id=0, $status=0) {
+    public function publish($id = 0, $status = 0)
+    {
 
-        if(!$this->checkPolicy('publish')) {
+        if (! $this->checkPolicy('publish')) {
             return response()->json(Message::getWriteError(), 400);
         }
 
         QueryLogger::enableQueryLog();
 
-        $status = ($status==0) ? 1 : 0;
+        $status = ($status == 0) ? 1 : 0;
         $where = $id;
-        $saveData["publish_status"] =  $status;
+        $saveData['publish_status'] = $status;
 
-        $arrSaveData = array("model"=>$this->dataSource,  "data"=>$saveData);
+        $arrSaveData = ['model' => $this->dataSource,  'data' => $saveData];
 
         $savedData = $this->saveData($arrSaveData, $where);
-
 
         $rData = [
             'id' => $id,
             'status' => $status,
-            'meta' => $savedData
+            'meta' => $savedData,
         ];
 
         //Logging
-        try{
+        try {
             $queryLog = QueryLogger::getQueryLog();
             QueryLogger::log('publish', $queryLog, $rData, $where);
 
@@ -542,13 +533,13 @@ trait AdminCrud {
 
     }
 
-
     /**
-     * @param string $table
-     * @param array $data
+     * @param  string  $table
+     * @param  array  $data
      * @return bool
      */
-    public function rawInsert($table="", $data=array()) {
+    public function rawInsert($table = '', $data = [])
+    {
 
         QueryLogger::enableQueryLog();
 
@@ -563,7 +554,7 @@ trait AdminCrud {
         } catch (\Exception $exception) {
 
             DB::rollBack();
-            QueryLogger::log('rawInsert', "raw insert failed");
+            QueryLogger::log('rawInsert', 'raw insert failed');
 
             return $status;
         }
@@ -571,7 +562,7 @@ trait AdminCrud {
         DB::commit();
 
         //Logging
-        try{
+        try {
 
             $queryLog = QueryLogger::getQueryLog();
             QueryLogger::log('rawInsert', $queryLog, $data, $status);
@@ -586,11 +577,12 @@ trait AdminCrud {
     }
 
     /**
-     * @param string $table
-     * @param array $where
+     * @param  string  $table
+     * @param  array  $where
      * @return int
      */
-    public function rawDelete($table="", $where=array()) {
+    public function rawDelete($table = '', $where = [])
+    {
 
         QueryLogger::enableQueryLog();
 
@@ -605,7 +597,7 @@ trait AdminCrud {
         } catch (\Exception $exception) {
 
             DB::rollBack();
-            QueryLogger::log('rawDelete', "raw delete failed");
+            QueryLogger::log('rawDelete', 'raw delete failed');
 
             return $status;
         }
@@ -613,7 +605,7 @@ trait AdminCrud {
         DB::commit();
 
         //Logging
-        try{
+        try {
 
             $queryLog = QueryLogger::getQueryLog();
             QueryLogger::log('rawDelete', $queryLog, $table, $where);
@@ -628,14 +620,15 @@ trait AdminCrud {
     }
 
     /**
-     * @param string $table
-     * @param array $data
-     * @param array $where
-     * @param bool $enableLog
+     * @param  string  $table
+     * @param  array  $data
+     * @param  array  $where
+     * @param  bool  $enableLog
      * @return int
      */
-    public function rawUpdate($table="", $data=array(), $where=array(), $enableLog=true) {
-        if($enableLog) {
+    public function rawUpdate($table = '', $data = [], $where = [], $enableLog = true)
+    {
+        if ($enableLog) {
             QueryLogger::enableQueryLog();
         }
 
@@ -644,7 +637,7 @@ trait AdminCrud {
             ->update($data);
 
         //Logging
-        if($enableLog) {
+        if ($enableLog) {
             try {
 
                 $queryLog = QueryLogger::getQueryLog();
@@ -660,25 +653,24 @@ trait AdminCrud {
         return $update;
     }
 
-
-
     /******** PRIVATE METHODS ***************/
 
     /**
      * Get All vars for listing etc
+     *
      * @return mixed
      */
+    private function getSegregatedData()
+    {
 
-    private function getSegregatedData() {
-
-        $data["actionFields"] = $this->getFilteredActions();
-        $data["moreActionFields"] = $this->getMoreActionFields();
-        $data["dataSource"] = $this->getDataSource();
-        $data["dataWith"] = $this->getDataWith();
-        $data["dataFields"] = $this->getDataFields();
-        $data["dataWhere"] = $this->getDataWhere();
-        $data["supportedLangs"] = $this->getSupportedSiteLang(htcms_get_siteId_for_admin());
-        $data["hasLangMethod"] = (method_exists($data["dataSource"], 'lang')) ? "true" : "false";
+        $data['actionFields'] = $this->getFilteredActions();
+        $data['moreActionFields'] = $this->getMoreActionFields();
+        $data['dataSource'] = $this->getDataSource();
+        $data['dataWith'] = $this->getDataWith();
+        $data['dataFields'] = $this->getDataFields();
+        $data['dataWhere'] = $this->getDataWhere();
+        $data['supportedLangs'] = $this->getSupportedSiteLang(htcms_get_siteId_for_admin());
+        $data['hasLangMethod'] = (method_exists($data['dataSource'], 'lang')) ? 'true' : 'false';
         $data['user_rights'] = $this->getUserRights();
         $data['extraData'] = $this->getExtraDataForListing();
         $data['moreActionBarItems'] = $this->getMoreActionBarItems();
@@ -692,16 +684,15 @@ trait AdminCrud {
      *
      * @return array
      */
+    private function getFilteredActions()
+    {
 
-    private function getFilteredActions() {
+        $action = [];
 
-
-        $action = array();
-
-        if(isset($this->actionFields)) {
+        if (isset($this->actionFields)) {
             //Check in gate
-            foreach($this->actionFields as $field) {
-                if(GateFacade::allows($field)) {
+            foreach ($this->actionFields as $field) {
+                if (GateFacade::allows($field)) {
                     $action[] = $field;
                 }
             }
@@ -710,29 +701,28 @@ trait AdminCrud {
         return $action;
     }
 
-
     /**
      * Get Data Fields
      *
      * @return array
-     *
      */
-    private function getDataFields() {
+    private function getDataFields()
+    {
 
         $arr = isset($this->dataFields) ? $this->dataFields : [];
 
-        if(isset($this->dataFields)) {
+        if (isset($this->dataFields)) {
 
-            if(is_array($this->dataFields) && Str::contains(join("", Arr::flatten($this->dataFields)), " as ")==1) {
+            if (is_array($this->dataFields) && Str::contains(implode('', Arr::flatten($this->dataFields)), ' as ') == 1) {
 
-                $arr = array();
+                $arr = [];
 
-                foreach($this->dataFields as $field) {
+                foreach ($this->dataFields as $field) {
 
-                    if(is_string($field) && Str::contains($field, " as ")) {
+                    if (is_string($field) && Str::contains($field, ' as ')) {
 
-                        $c = explode(" as ", $field);
-                        $arr[] = array("key"=>$c[0], "label"=>$c[1]);
+                        $c = explode(' as ', $field);
+                        $arr[] = ['key' => $c[0], 'label' => $c[1]];
 
                     } else {
 
@@ -740,10 +730,10 @@ trait AdminCrud {
 
                     }
                 }
-            } else if($this->dataFields==trim("*")) {
+            } elseif ($this->dataFields == trim('*')) {
                 $dataSource = $this->getDataSource();
 
-                if($dataSource!=NULL) {
+                if ($dataSource != null) {
                     $model = new $dataSource;
                     $this->dataFields = $model->getConnection()->getSchemaBuilder()->getColumnListing($model->getTable());
                     $arr = $this->dataFields;
@@ -751,87 +741,96 @@ trait AdminCrud {
             }
 
         }
+
         //return default
         return $arr;
 
     }
 
-
-    private function getMoreActionFields() {
-        return $this->moreActionFields ?? array();
+    private function getMoreActionFields()
+    {
+        return $this->moreActionFields ?? [];
     }
-
 
     /**
      * Get Data "with"
+     *
      * @return string
      */
-    private function getDataWith() {
+    private function getDataWith()
+    {
         return (isset($this->dataWith)) ? $this->dataWith : '';
     }
 
     /**
      * Get Data "with"
+     *
      * @return string
      */
-    private function getDataWhere() {
-        return (isset($this->dataWhere)) ? $this->dataWhere : array();
+    private function getDataWhere()
+    {
+        return (isset($this->dataWhere)) ? $this->dataWhere : [];
     }
-
 
     /**
      * Get extra data for listing
+     *
      * @return null
      */
-    private function getExtraDataForListing() {
-        return (isset($this->bindDataWithListing)) ? $this->bindDataWithListing : NULL;
+    private function getExtraDataForListing()
+    {
+        return (isset($this->bindDataWithListing)) ? $this->bindDataWithListing : null;
     }
 
     /**
      * Action bar items
+     *
      * @return array
      */
-    private function getMoreActionBarItems() {
-        return (isset($this->moreActionBarItems)) ? $this->moreActionBarItems : array();
+    private function getMoreActionBarItems()
+    {
+        return (isset($this->moreActionBarItems)) ? $this->moreActionBarItems : [];
     }
 
     /**
-     *
      * Get Data Source
-     * @return array
      *
+     * @return array
      */
-    private function getDataSource() {
-        return (isset($this->dataSource)) ? $this->dataSource : NULL;
+    private function getDataSource()
+    {
+        return (isset($this->dataSource)) ? $this->dataSource : null;
     }
-
 
     /**
      * Get Extra Data - if you needed at the time of add/edit
+     *
      * @return array|null
+     *
      * @throws \ReflectionException
      */
-    protected function getExtraDataForEdit($bindData=NULl, $useBoth=FALSE) {
+    protected function getExtraDataForEdit($bindData = null, $useBoth = false)
+    {
 
-        if(isset($this->bindDataWithAddEdit) || $bindData!=NULL) {
-            $extras = array();
-            $useData = ($bindData==NULL) ? $this->bindDataWithAddEdit : $bindData;
+        if (isset($this->bindDataWithAddEdit) || $bindData != null) {
+            $extras = [];
+            $useData = ($bindData == null) ? $this->bindDataWithAddEdit : $bindData;
 
-            if($useBoth==TRUE && isset($this->bindDataWithAddEdit)) {
+            if ($useBoth == true && isset($this->bindDataWithAddEdit)) {
                 $useData = array_merge($this->bindDataWithAddEdit, $bindData);
             }
 
-            foreach ($useData as $key=>$extraData) {
-                if(isset($extraData["dataSource"])) {
-                    $source = $extraData["dataSource"];
-                    $method = $extraData["method"];
-                    $params = isset($extraData["params"]) ?
-                        ((is_string($extraData["params"]) ? array($extraData["params"]) : $extraData["params"]))
-                        : array();
+            foreach ($useData as $key => $extraData) {
+                if (isset($extraData['dataSource'])) {
+                    $source = $extraData['dataSource'];
+                    $method = $extraData['method'];
+                    $params = isset($extraData['params']) ?
+                        ((is_string($extraData['params']) ? [$extraData['params']] : $extraData['params']))
+                        : [];
 
-                    $checker = new \ReflectionMethod($source,$method);
-                    if($checker->isStatic()) {
-                        $extras[$key] = call_user_func_array(array($source, $method), $params);
+                    $checker = new \ReflectionMethod($source, $method);
+                    if ($checker->isStatic()) {
+                        $extras[$key] = call_user_func_array([$source, $method], $params);
                     } else {
                         $source_obj = new $source;
                         $extras[$key] = $source_obj->{$method}($params);
@@ -840,25 +839,24 @@ trait AdminCrud {
                     $extras[$key] = $extraData;
                 }
 
-
-
-
             }
+
             return $extras;
         }
 
-        return NULL;
+        return null;
     }
 
     /**
      * GetBackURL
-     * @param $isEdit
-     * @param int $id
+     *
+     * @param  int  $id
      * @return array|mixed|string
      */
-    protected function getBackURL($isEdit=FALSE, $id=0):string {
+    protected function getBackURL($isEdit = false, $id = 0): string
+    {
 
-        if($id==0) {
+        if ($id == 0) {
 
             $backURL = htcms_admin_path(request()->module_info->controller_name);
 
@@ -866,38 +864,37 @@ trait AdminCrud {
 
             $backURL = url()->previous();
 
-            $backURL_arr = explode("?",$backURL);
+            $backURL_arr = explode('?', $backURL);
 
             $backURL_Base = $backURL_arr[0];
 
-            parse_str( parse_url( html_entity_decode($backURL), PHP_URL_QUERY), $queryParams_arr);
+            parse_str(parse_url(html_entity_decode($backURL), PHP_URL_QUERY), $queryParams_arr);
 
-            $queryParams_arr["id"] = $id;
+            $queryParams_arr['id'] = $id;
 
             $params = http_build_query($queryParams_arr);
 
-            $separator = "?";
+            $separator = '?';
             $backURL = $backURL_Base.$separator.$params;
 
         }
 
         //if editing directory
-        if(url()->current() == url()->previous()) {
+        if (url()->current() == url()->previous()) {
             $backURL = htcms_admin_path(request()->module_info->controller_name);
         }
-
 
         return $backURL;
     }
 
     /**
      * Get User Rights
+     *
      * @return array
      */
-    protected function getUserRights() {
+    protected function getUserRights()
+    {
 
-        return (request()->user()->isSuperAdmin()==1) ? Arr::flatten(Permission::all("name")->toArray()) : request()->user()->rights();
+        return (request()->user()->isSuperAdmin() == 1) ? Arr::flatten(Permission::all('name')->toArray()) : request()->user()->rights();
     }
-
-
 }

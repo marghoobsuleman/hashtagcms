@@ -1,19 +1,12 @@
 <?php
-namespace MarghoobSuleman\HashtagCms\Core\Main;
 
-use Illuminate\Support\Facades\Http;
+namespace MarghoobSuleman\HashtagCms\Core\Main;
 
 class UrlServiceModuleLoader extends Results implements ModuleLoaderServiceImp
 {
-
     protected array $result;
 
-    /**
-     * @param string|null $service_url
-     * @param string|null $method_type
-     * @param string|null $data_key_map
-     */
-    function __construct(string $service_url=null, string $method_type=null, array $withData=array(), string $data_key_map=null, array $headers=array())
+    public function __construct(?string $service_url = null, ?string $method_type = null, array $withData = [], ?string $data_key_map = null, array $headers = [])
     {
         parent::__construct();
         if ($service_url != null) {
@@ -21,25 +14,19 @@ class UrlServiceModuleLoader extends Results implements ModuleLoaderServiceImp
         }
     }
 
-    /**
-     * @param string|null $service_url
-     * @param string|null $method_type
-     * @param string|null $data_key_map
-     * @return void
-     */
-    public function process(string $service_url=null, string $method_type=null, array $withData=array(), string $data_key_map=null,  array $headers=array()):void
+    public function process(?string $service_url = null, ?string $method_type = null, array $withData = [], ?string $data_key_map = null, array $headers = []): void
     {
 
-        if($service_url == "" || $service_url == null) {
-            info("Service url is missing");
+        if ($service_url == '' || $service_url == null) {
+            info('Service url is missing');
             $this->setResult([]);
         }
-        $urls = explode("?", $service_url);
+        $urls = explode('?', $service_url);
 
-        $arguments = array();
+        $arguments = [];
 
         //make sure if we are not passing data
-        if(sizeof($urls)>1) {
+        if (count($urls) > 1) {
             //we have arguments too
             parse_str($urls[1], $arguments);
         }
@@ -59,7 +46,7 @@ class UrlServiceModuleLoader extends Results implements ModuleLoaderServiceImp
 
             $this->setResult($ml->getResult());
         } catch (\Exception $e) {
-            info("UrlServiceModuleLoader: " .$e->getMessage());
+            info('UrlServiceModuleLoader: '.$e->getMessage());
             $this->setResult([]);
         }
 
@@ -68,34 +55,31 @@ class UrlServiceModuleLoader extends Results implements ModuleLoaderServiceImp
     /**
      * @return array
      */
-    public function getResult():mixed
+    public function getResult(): mixed
     {
         return $this->result;
     }
 
-
     /**
-     * @param array $data
-     * @return void
+     * @param  array  $data
      */
-    public function setResult(mixed $data):void
+    public function setResult(mixed $data): void
     {
-        $this->result = !empty($data) ? collect($data)->all() : [];
+        $this->result = ! empty($data) ? collect($data)->all() : [];
     }
 
     /**
-     * @param string $url
-     * @param string $data_key_map
-     * @return array
+     * @param  string  $url
      */
-    private function makeQueryParams(string $data_key_map):array {
-        $dataKeyMap = explode(",", $data_key_map);
-        $arr = array();
-        foreach ($dataKeyMap as $key=>$val) {
+    private function makeQueryParams(string $data_key_map): array
+    {
+        $dataKeyMap = explode(',', $data_key_map);
+        $arr = [];
+        foreach ($dataKeyMap as $key => $val) {
             $arr[$val] = request()->input($val);
         }
+
         return $arr;
 
     }
-
 }

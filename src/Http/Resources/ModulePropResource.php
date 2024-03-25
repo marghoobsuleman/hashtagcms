@@ -15,8 +15,8 @@ class ModulePropResource extends JsonResource
     public function toArray($request)
     {
         return [
-            $this->name=>$this->lang->value,
-            'group'=>$this->group
+            $this->name => $this->lang->value,
+            'group' => $this->group,
         ];
     }
 }

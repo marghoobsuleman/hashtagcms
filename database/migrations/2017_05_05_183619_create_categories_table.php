@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
@@ -10,8 +10,6 @@ return new class extends Migration
      * Run the migrations.
      *
      * @return void
-     *
-     *
      */
     public function up()
     {
@@ -56,7 +54,6 @@ return new class extends Migration
             $table->bigInteger('category_id', false, true);
             $table->bigInteger('lang_id', false, true);
 
-
             $table->string('name', 128);
             $table->string('title', 128);
             $table->text('excerpt')->nullable();
@@ -69,8 +66,8 @@ return new class extends Migration
 
             $table->tinyInteger('is_external')->nullable()->default(0);
 
-            $table->enum('link_relation', ['alternate','author','bookmark','help','license','next','nofollow','noreferrer','prefetch','prev','search','tag'])->nullable();
-            $table->enum('target', ['_blank','_parent','_self','_top'])->nullable();
+            $table->enum('link_relation', ['alternate', 'author', 'bookmark', 'help', 'license', 'next', 'nofollow', 'noreferrer', 'prefetch', 'prev', 'search', 'tag'])->nullable();
+            $table->enum('target', ['_blank', '_parent', '_self', '_top'])->nullable();
 
             $table->string('meta_title', 160)->nullable();
             $table->string('meta_keywords', 255)->nullable();
@@ -84,7 +81,7 @@ return new class extends Migration
         });
 
         //Relation
-        Schema::table("category_langs", function(Blueprint $table) {
+        Schema::table('category_langs', function (Blueprint $table) {
 
             $table->foreign('category_id')
                 ->references('id')
@@ -95,7 +92,6 @@ return new class extends Migration
 
         });
 
-
         //Relation on site
         Schema::table('categories', function (Blueprint $table) {
 
@@ -105,7 +101,6 @@ return new class extends Migration
                 ->onDelete('cascade');
 
         });
-
 
     }
 

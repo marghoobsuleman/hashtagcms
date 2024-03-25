@@ -16,23 +16,22 @@ class SiteResource extends JsonResource
      */
     public function toArray($request)
     {
-       
+
         return [
-            'id'=>$this->id,
-            'name'=>$this->name,
-            'title'=>$this->title ?? $this->lang->title ?? null,
-            'categoryId'=>$this->category_id,
-            'themeId'=>$this->theme_id,
-            'platformId'=>$this->platform_id,
-            'langId'=>$this->lang_id,
-            'countryId'=>$this->country_id,
-            'currencyId'=>$this->currency_id,
-            'underMaintenance'=>$this->under_maintenance,
-            'domain'=>$this->domain,
-            'context'=>$this->context,
-            'favicon'=>$this->favicon,
-            'langCount'=>$this->lang_count
+            'id' => $this->id,
+            'name' => $this->name,
+            'title' => $this->title ?? $this->lang->title ?? null,
+            'categoryId' => $this->category_id,
+            'themeId' => $this->theme_id,
+            'platformId' => $this->platform_id,
+            'langId' => $this->lang_id,
+            'countryId' => $this->country_id,
+            'currencyId' => $this->currency_id,
+            'underMaintenance' => $this->under_maintenance,
+            'domain' => $this->domain,
+            'context' => $this->context,
+            'favicon' => $this->favicon,
+            'langCount' => $this->lang_count,
         ];
     }
-
 }

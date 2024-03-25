@@ -4,9 +4,8 @@ namespace MarghoobSuleman\HashtagCms;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-
-use MarghoobSuleman\HashtagCms\Core\Traits\RoleManager;
 use Laravel\Sanctum\HasApiTokens;
+use MarghoobSuleman\HashtagCms\Core\Traits\RoleManager;
 use MarghoobSuleman\HashtagCms\Models\UserProfile;
 
 class User extends Authenticatable
@@ -18,7 +17,7 @@ class User extends Authenticatable
      *
      * @var array
      */
-    protected $guarded = array();
+    protected $guarded = [];
 
     /**
      * The attributes that should be hidden for arrays.
@@ -40,10 +39,11 @@ class User extends Authenticatable
 
     /**
      * with profile
+     *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function profile() {
+    public function profile()
+    {
         return $this->hasOne(UserProfile::class);
     }
-
 }

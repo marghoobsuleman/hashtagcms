@@ -15,11 +15,11 @@ return new class extends Migration
     {
         Schema::create('module_props', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger("module_id", false, true);
-            $table->bigInteger("site_id", false, true);
-            $table->bigInteger("platform_id", false, true);
-            $table->string("name", 100);
-            $table->string("group", 100)->nullable();
+            $table->bigInteger('module_id', false, true);
+            $table->bigInteger('site_id', false, true);
+            $table->bigInteger('platform_id', false, true);
+            $table->string('name', 100);
+            $table->string('group', 100)->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
@@ -44,12 +44,11 @@ return new class extends Migration
                     ->on('platforms')
                     ->onDelete('cascade');
 
-                $table->index(['module_id', 'site_id', 'platform_id'], "module_platform_site_idx");
+                $table->index(['module_id', 'site_id', 'platform_id'], 'module_platform_site_idx');
 
             } catch (Exception $exception) {
                 info($exception->getMessage());
             }
-
 
         });
 

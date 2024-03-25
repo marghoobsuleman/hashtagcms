@@ -1,24 +1,22 @@
 <?php
+
 namespace MarghoobSuleman\HashtagCms\Core\Traits;
 
 use MarghoobSuleman\HashtagCms\Models\Theme;
-use Illuminate\Support\Facades\View;
 
-trait LayoutHandler {
-    
+trait LayoutHandler
+{
     private array $themeCache;
-    private array $backupAssetFolder = array('base_url' => '', 'base_path' => '/assets/hashtagcms/fe', 'js' => 'js', 'css' => 'css', 'image' => 'img');
-    /**
-     * @param string|null $str
-     * @param string|int $theme_dir
-     * @return string|null
-     */
-    public function parseStringForPath(?string $str=null, string|int $theme_dir=null):?string {
+
+    private array $backupAssetFolder = ['base_url' => '', 'base_path' => '/assets/hashtagcms/fe', 'js' => 'js', 'css' => 'css', 'image' => 'img'];
+
+    public function parseStringForPath(?string $str = null, string|int|null $theme_dir = null): ?string
+    {
         if (empty($str)) {
             return $str;
         }
         //if theme dir is an id; fetch it from Theme
-        if (gettype($theme_dir) == "integer") {
+        if (gettype($theme_dir) == 'integer') {
             if (isset($this->themeCache[$theme_dir])) {
                 $theme = $this->themeCache[$theme_dir];
             } else {
@@ -28,49 +26,48 @@ trait LayoutHandler {
         }
         $host = request()->getHost(); //env('APP_URL');
 
-        $assetPath = config("hashtagcms.info.assets_path");
+        $assetPath = config('hashtagcms.info.assets_path');
 
         //Get it by domain or by config
         $assetSource = (isset($assetPath[$host])) ? $assetPath[$host] : $assetPath;
 
         //External url (CDN) is not setup.
-        if (!isset($assetSource['base_url'])) {
+        if (! isset($assetSource['base_url'])) {
             $assetSource = $this->backupAssetFolder;
         }
 
-        $resourceUrl = $assetSource['base_url'] ?? "";
-        $resourceDir = $assetSource['base_path'] ?? "";
-        $jsFolder = $assetSource['js'] ?? "";
-        $cssFolder = $assetSource['css'] ?? "";
-        $imageFolder =  $assetSource['image'] ?? "";
+        $resourceUrl = $assetSource['base_url'] ?? '';
+        $resourceDir = $assetSource['base_path'] ?? '';
+        $jsFolder = $assetSource['js'] ?? '';
+        $cssFolder = $assetSource['css'] ?? '';
+        $imageFolder = $assetSource['image'] ?? '';
 
-
-        $resourcePath = $resourceUrl.$resourceDir."/".$theme_dir;
+        $resourcePath = $resourceUrl.$resourceDir.'/'.$theme_dir;
 
         //css/js media path
-        $cssPath = $resourcePath."/".$cssFolder;
-        $jsPath = $resourcePath."/".$jsFolder;
-        $imgPath = $resourcePath."/".$imageFolder;
+        $cssPath = $resourcePath.'/'.$cssFolder;
+        $jsPath = $resourcePath.'/'.$jsFolder;
+        $imgPath = $resourcePath.'/'.$imageFolder;
 
-
-        if($str != "" && $str!=null) {
-            $patterns = array();
+        if ($str != '' && $str != null) {
+            $patterns = [];
             $patterns[0] = '/%{resource_path}%/';
             $patterns[1] = '/%{css_path}%/';
             $patterns[2] = '/%{js_path}%/';
             $patterns[3] = '/%{image_path}%/';
 
-            $replacements = array();
-            $replacements[0] = "/".$resourcePath;
+            $replacements = [];
+            $replacements[0] = '/'.$resourcePath;
             $replacements[1] = $cssPath;
             $replacements[2] = $jsPath;
             $replacements[3] = $imgPath;
             //info("asset: this->getJsPath() ".asset($this->getJsPath()) ." === ". $str);
 
             $str = preg_replace($patterns, $replacements, $str);
+
             return $str;
         }
-        return "";
-    }
 
+        return '';
+    }
 }

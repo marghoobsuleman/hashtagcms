@@ -2,30 +2,23 @@
 
 namespace MarghoobSuleman\HashtagCms;
 
-use Illuminate\Support\ServiceProvider;
 use Illuminate\Routing\Router;
-
-
+use Illuminate\Support\ServiceProvider;
 use MarghoobSuleman\HashtagCms\Console\Commands\CmsFrontendControllerCommand;
+use MarghoobSuleman\HashtagCms\Console\Commands\CmsInstall;
+use MarghoobSuleman\HashtagCms\Console\Commands\CmsModuleControllerCommand;
+use MarghoobSuleman\HashtagCms\Console\Commands\CmsModuleModelCommand;
+use MarghoobSuleman\HashtagCms\Console\Commands\CmsValidatorCommand;
 use MarghoobSuleman\HashtagCms\Core\Middleware\Admin\BeMiddleware;
 use MarghoobSuleman\HashtagCms\Core\Middleware\Admin\CmsModuleInfo;
-use MarghoobSuleman\HashtagCms\Core\Middleware\FeMiddleware;
-
 use MarghoobSuleman\HashtagCms\Core\Middleware\API\ETag;
-
-use MarghoobSuleman\HashtagCms\Console\Commands\CmsModuleModelCommand;
-use MarghoobSuleman\HashtagCms\Console\Commands\CmsModuleControllerCommand;
-use MarghoobSuleman\HashtagCms\Console\Commands\CmsValidatorCommand;
-use MarghoobSuleman\HashtagCms\Console\Commands\CmsInstall;
-
+use MarghoobSuleman\HashtagCms\Core\Middleware\FeMiddleware;
 use MarghoobSuleman\HashtagCms\Core\Providers\Admin\AdminServiceProvider;
 use MarghoobSuleman\HashtagCms\Core\Providers\FeServiceProvider;
-
 
 class HashtagCmsServiceProvider extends ServiceProvider
 {
     protected $groupName = 'hashtagcms';
-
 
     /**
      * Perform post-registration booting of services.
@@ -60,6 +53,8 @@ class HashtagCmsServiceProvider extends ServiceProvider
             $this->bootForConsole();
         }
         $this->bootForControllerToo();
+
+        $this->addProviderToBootstrapFile();
 
     }
 
@@ -111,19 +106,18 @@ class HashtagCmsServiceProvider extends ServiceProvider
             __DIR__.'/../resources/lang' => resource_path('lang/vendor/hashtagcms'),
         ], $this->groupName.'.views.frontend');
 
-
         //Publishing the views for admin
         // php artisan vendor:publish --tag=hashtagcms.views.admin
         $this->publishes([
             __DIR__.'/../resources/views/be' => resource_path('views/vendor/hashtagcms/be'),
-            __DIR__.'/../resources/assets/be' => resource_path('assets/hashtagcms/be')
+            __DIR__.'/../resources/assets/be' => resource_path('assets/hashtagcms/be'),
         ], $this->groupName.'.views.admin');
 
         //Publishing the views for admin common
         // hashtagcms.views.admincommon
         $this->publishes([
             __DIR__.'/../resources/views/be/neo/common' => resource_path('views/vendor/hashtagcms/be/neo/common'),
-            __DIR__.'/../resources/views/be/neo/index.blade.php' => resource_path('views/vendor/hashtagcms/be/neo/index.blade.php')
+            __DIR__.'/../resources/views/be/neo/index.blade.php' => resource_path('views/vendor/hashtagcms/be/neo/index.blade.php'),
         ], $this->groupName.'.views.admincommon');
 
         //Export view and js for admin and frontend
@@ -132,7 +126,7 @@ class HashtagCmsServiceProvider extends ServiceProvider
             __DIR__.'/../resources/views/be' => resource_path('views/vendor/hashtagcms/be'),
             __DIR__.'/../resources/views/fe' => resource_path('views/vendor/hashtagcms/fe'),
             __DIR__.'/../resources/lang' => resource_path('lang/vendor/hashtagcms'),
-            __DIR__.'/../resources/assets' => resource_path('assets/hashtagcms')
+            __DIR__.'/../resources/assets' => resource_path('assets/hashtagcms'),
 
         ], $this->groupName.'.views.all');
 
@@ -143,13 +137,13 @@ class HashtagCmsServiceProvider extends ServiceProvider
             __DIR__.'/../resources/assets/fe' => resource_path('assets/hashtagcms/fe'),
             __DIR__.'/../resources/assets/be' => resource_path('assets/hashtagcms/be'),
             __DIR__.'/../resources/assets/js' => resource_path('assets/hashtagcms/js'),
-            __DIR__.'/../resources/support' => resource_path('assets/hashtagcms/support')
+            __DIR__.'/../resources/support' => resource_path('assets/hashtagcms/support'),
         ], $this->groupName.'.assets');
 
         // Registering package commands.
         $this->commands([
             CmsInstall::class,
-            CmsValidatorCommand::class
+            CmsValidatorCommand::class,
         ]);
 
     }
@@ -157,14 +151,13 @@ class HashtagCmsServiceProvider extends ServiceProvider
     /**
      * Add some commands
      */
-    protected function bootForControllerToo() {
+    protected function bootForControllerToo()
+    {
         // Registering package commands.
         $this->commands([
             CmsModuleModelCommand::class,
             CmsModuleControllerCommand::class,
-            CmsFrontendControllerCommand::class
+            CmsFrontendControllerCommand::class,
         ]);
     }
-
 }
-

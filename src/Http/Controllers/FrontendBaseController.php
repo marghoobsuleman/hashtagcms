@@ -3,10 +3,9 @@
 namespace MarghoobSuleman\HashtagCms\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
-
-use MarghoobSuleman\HashtagCms\Core\Traits\FeEssential;
 use MarghoobSuleman\HashtagCms\Core\Main\LayoutManager;
+use MarghoobSuleman\HashtagCms\Core\Traits\FeEssential;
+use Symfony\Component\HttpFoundation\Response;
 
 /****
  * Class FrontendBaseController
@@ -16,9 +15,7 @@ use MarghoobSuleman\HashtagCms\Core\Main\LayoutManager;
 
 class FrontendBaseController extends Controller
 {
-
     use FeEssential;
-
 
     public function __construct(Request $request)
     {
@@ -28,49 +25,49 @@ class FrontendBaseController extends Controller
     /**
      * Load data
      * InfoKeeper already has site, category, platform, and category info (Interceptor Middleware)
-     * @param Request $request
      */
-    public function index(Request $request) {
+    public function index(Request $request)
+    {
         $infoLoader = app()->HashtagCms->infoLoader();
-        $layoutManager =  app()->HashtagCms->layoutManager();
+        $layoutManager = app()->HashtagCms->layoutManager();
         try {
             $data = $layoutManager->init();
             //dd($data);
             $isContentRequired = LayoutManager::getMandatoryCheck();
 
-            info("============ Start loading data from request ============= ");
-            if(isset($data['status']) && $data['status']!=200) {
+            info('============ Start loading data from request ============= ');
+            if (isset($data['status']) && $data['status'] != 200) {
                 abort($data['status'], $data['message']);
             }
 
             //check mandatory module
-            if (isset($data['isContentFound']) && $data['isContentFound'] == false  && $isContentRequired == true) {
-                logger()->error("Content not found!");
-                abort(Response::HTTP_NOT_FOUND, "Content not found!");
+            if (isset($data['isContentFound']) && $data['isContentFound'] == false && $isContentRequired == true) {
+                logger()->error('Content not found!');
+                abort(Response::HTTP_NOT_FOUND, 'Content not found!');
             }
 
-            if(isset($data['isLoginRequired']) && $data["isLoginRequired"] && auth()->user()->id == null) {
+            if (isset($data['isLoginRequired']) && $data['isLoginRequired'] && auth()->user()->id == null) {
                 $category = $infoLoader->getCategoryData();
                 $category = $category['linkRewrite'];
                 $reqParams = request()->all();
-                return Redirect::to("/login?redirect=/$category?".http_build_query($reqParams,'', '&'));
+
+                return Redirect::to("/login?redirect=/$category?".http_build_query($reqParams, '', '&'));
             }
 
         } catch (NotFoundExceptionInterface|ContainerExceptionInterface $e) {
-            info("Error Loading in page.");
+            info('Error Loading in page.');
             info($e->getMessage());
             exit($e->getMessage());
         }
-        info("============ End loading data from request ============= ");
-        return $layoutManager->viewMaster($layoutManager->getBaseIndex(), array(), array());
+        info('============ End loading data from request ============= ');
+
+        return $layoutManager->viewMaster($layoutManager->getBaseIndex(), [], []);
     }
 
     /**
      * Set module mandatory check
-     * @param bool $value
-     * @return void
      */
-    public function setModuleMandatoryCheck(bool $value):void
+    public function setModuleMandatoryCheck(bool $value): void
     {
         LayoutManager::setMandatoryCheck($value); // this will check module mandatory false
     }

@@ -8,10 +8,11 @@ use MarghoobSuleman\HashtagCms\Core\Traits\LayoutHandler;
 class CategorySiteResource extends JsonResource
 {
     use LayoutHandler;
+
     /**
      * Transform the resource into an array.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
      */
     public function toArray($request)
@@ -28,7 +29,7 @@ class CategorySiteResource extends JsonResource
             'footerContent' => $this->parseStringForPath($this->footer_content, $this->theme_id),
             'excludeInListing' => $this->exclude_in_listing,
             'position' => $this->position,
-            'cacheCategory' => $this->cache_category
+            'cacheCategory' => $this->cache_category,
         ];
     }
 }

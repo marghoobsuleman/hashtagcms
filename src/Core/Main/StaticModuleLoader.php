@@ -1,12 +1,12 @@
 <?php
+
 namespace MarghoobSuleman\HashtagCms\Core\Main;
 
 class StaticModuleLoader extends Results implements ModuleLoaderImp
 {
-
     protected array $result;
 
-    function __construct(string $alias=null)
+    public function __construct(?string $alias = null)
     {
         parent::__construct();
         if ($alias != null) {
@@ -14,11 +14,7 @@ class StaticModuleLoader extends Results implements ModuleLoaderImp
         }
     }
 
-    /**
-     * @param string $alias
-     * @return void
-     */
-    public function process(string $alias):void
+    public function process(string $alias): void
     {
         $query = "select smcl.title, smcl.content from static_module_contents smc  
                   left join static_module_content_langs smcl on (smc.id = smcl.static_module_content_id)
@@ -29,22 +25,13 @@ class StaticModuleLoader extends Results implements ModuleLoaderImp
         $this->setResult($data);
     }
 
-    /**
-     * @return array
-     */
-    public function getResult():array
+    public function getResult(): array
     {
         return $this->result;
     }
 
-
-    /**
-     * @param array $data
-     * @return void
-     */
-    public function setResult(array $data):void
+    public function setResult(array $data): void
     {
         $this->result = collect($data)->all();
     }
-
 }

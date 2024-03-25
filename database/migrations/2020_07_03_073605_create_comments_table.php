@@ -15,14 +15,14 @@ return new class extends Migration
     {
         Schema::create('comments', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger("parent_id")->nullable();
-            $table->bigInteger("site_id", false, true);
-            $table->string("name", 255);
-            $table->string("email", 255);
-            $table->bigInteger("category_id");
-            $table->bigInteger("page_id")->nullable();
-            $table->bigInteger("user_id")->nullable();
-            $table->text("comment");
+            $table->bigInteger('parent_id')->nullable();
+            $table->bigInteger('site_id', false, true);
+            $table->string('name', 255);
+            $table->string('email', 255);
+            $table->bigInteger('category_id');
+            $table->bigInteger('page_id')->nullable();
+            $table->bigInteger('user_id')->nullable();
+            $table->text('comment');
             $table->timestamps();
             $table->softDeletes();
         });

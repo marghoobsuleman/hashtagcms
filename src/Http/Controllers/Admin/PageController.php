@@ -2,53 +2,49 @@
 
 namespace MarghoobSuleman\HashtagCms\Http\Controllers\Admin;
 
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-
+use MarghoobSuleman\HashtagCms\Core\Helpers\Message;
 use MarghoobSuleman\HashtagCms\Core\Traits\Admin\BlogPageCommon;
-use MarghoobSuleman\HashtagCms\Models\Platform;
 use MarghoobSuleman\HashtagCms\Models\Category;
 use MarghoobSuleman\HashtagCms\Models\Page;
+use MarghoobSuleman\HashtagCms\Models\Platform;
 use MarghoobSuleman\HashtagCms\Models\User as UserData;
-use MarghoobSuleman\HashtagCms\Core\Helpers\Message;
-
-
 
 class PageController extends BaseAdminController
 {
     use BlogPageCommon;
 
-    protected $dataFields = ['id','lang.title as title','lang.name as name', 'category.link_rewrite as category', 'link_rewrite', 'read_count', 'publish_status', 'updated_at'];
+    protected $dataFields = ['id', 'lang.title as title', 'lang.name as name', 'category.link_rewrite as category', 'link_rewrite', 'read_count', 'publish_status', 'updated_at'];
 
     protected $dataSource = Page::class;
 
     protected $dataWith = ['lang', 'category'];
 
-    protected $actionFields = array("edit", "delete"); //This is last column of the row
+    protected $actionFields = ['edit', 'delete']; //This is last column of the row
 
-    protected $dataWhere = array(array('field'=>'content_type', 'operator'=>'=', 'value'=>'page'));
+    protected $dataWhere = [['field' => 'content_type', 'operator' => '=', 'value' => 'page']];
 
     protected $users;
 
-    protected $bindDataWithAddEdit = array("platforms" => array("dataSource" => Platform::class, "method" => "all"),
-                                        "targetTypes" => array("dataSource" => Category::class, "method" => "getTargetType"),
-                                        "relationTypes" => array("dataSource" => Category::class, "method" => "getLinkRelationType"),
-                                        "contentCategories" => array("dataSource" => Category::class, "method" => "parentOnlyDynamic"),
-                                        "contentTypes" => array("dataSource" => Page::class, "method" => "getContentTypes"),
-                                        "menuPlacements" => array("dataSource" => Page::class, "method" => "getMenuPlacements"),
-                                        "authors" => array("dataSource" => UserData::class, "method" => "all"),
-                                        "defaultContentType" => "page",
-                                        );
+    protected $bindDataWithAddEdit = ['platforms' => ['dataSource' => Platform::class, 'method' => 'all'],
+        'targetTypes' => ['dataSource' => Category::class, 'method' => 'getTargetType'],
+        'relationTypes' => ['dataSource' => Category::class, 'method' => 'getLinkRelationType'],
+        'contentCategories' => ['dataSource' => Category::class, 'method' => 'parentOnlyDynamic'],
+        'contentTypes' => ['dataSource' => Page::class, 'method' => 'getContentTypes'],
+        'menuPlacements' => ['dataSource' => Page::class, 'method' => 'getMenuPlacements'],
+        'authors' => ['dataSource' => UserData::class, 'method' => 'all'],
+        'defaultContentType' => 'page',
+    ];
 
     /**
-     * @param Request $request
      * @return \Illuminate\Http\RedirectResponse|mixed
      */
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
 
-        if(!$this->checkPolicy('edit')) {
-            return htcms_admin_view("common.error", Message::getWriteError());
+        if (! $this->checkPolicy('edit')) {
+            return htcms_admin_view('common.error', Message::getWriteError());
         }
 
         $rules = $this->getRulesArray($request);
@@ -68,23 +64,24 @@ class PageController extends BaseAdminController
 
         $viewData = $this->saveBlogPageData($data, $module_name);
 
-        return htcms_admin_view("common.saveinfo", $viewData);
+        return htcms_admin_view('common.saveinfo', $viewData);
     }
 
     /**
-     * @param Request $request
      * @return mixed
      */
-    public function getParentCategory(Request $request) {
+    public function getParentCategory(Request $request)
+    {
 
         $data = $request->all();
         $content_type = $data['content_type'];
         $category_id = $data['category_id'];
 
-        $where = array(array("content_type", "=", $content_type),
-            array("category_id", "=", $category_id),
-            array("site_id", "=", htcms_get_siteId_for_admin())
-        );
+        $where = [['content_type', '=', $content_type],
+            ['category_id', '=', $category_id],
+            ['site_id', '=', htcms_get_siteId_for_admin()],
+        ];
+
         return Page::where($where)->with('lang')->get();
 
     }

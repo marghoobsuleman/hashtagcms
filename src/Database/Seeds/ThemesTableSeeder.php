@@ -1,4 +1,5 @@
 <?php
+
 namespace MarghoobSuleman\HashtagCms\Database\Seeds;
 
 use Illuminate\Database\Seeder;
@@ -16,8 +17,8 @@ class ThemesTableSeeder extends Seeder
         $table_name = 'themes';
         $date = date('Y-m-d H:i:s');
 
-        $themes = array(
-            array('id' => '1','site_id' => '1','name' => 'Basic','alias' => 'BASIC','directory' => 'basic','body_class' => 'app-default','img_preview' => NULL,'skeleton' => '<div id="app" >
+        $themes = [
+            ['id' => '1', 'site_id' => '1', 'name' => 'Basic', 'alias' => 'BASIC', 'directory' => 'basic', 'body_class' => 'app-default', 'img_preview' => null, 'skeleton' => '<div id="app" >
 <div>
         %{cms.hook.HOOK_HEADER}%
 </div>
@@ -31,15 +32,14 @@ class ThemesTableSeeder extends Seeder
         %{cms.hook.HOOK_FOOTER}%
 </div>
 
-</div>','header_content' => '<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+</div>', 'header_content' => '<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE; chrome=1"/>
 
-<link rel="stylesheet" href="%{css_path}%/app.css" />','footer_content' => '<script src="%{js_path}%/app.js"></script>','created_at' => $date,'updated_at' => $date,'deleted_at' => NULL)
-        );
+<link rel="stylesheet" href="%{css_path}%/app.css" />', 'footer_content' => '<script src="%{js_path}%/app.js"></script>', 'created_at' => $date, 'updated_at' => $date, 'deleted_at' => null],
+        ];
 
-
-        if(DB::table($table_name)->get()->count() == 0) {
+        if (DB::table($table_name)->get()->count() == 0) {
             DB::table($table_name)->insert($themes);
         } else {
             echo "SeedingError: `$table_name` table is not empty\n";

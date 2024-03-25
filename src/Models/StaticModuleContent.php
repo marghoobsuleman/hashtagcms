@@ -2,19 +2,18 @@
 
 namespace MarghoobSuleman\HashtagCms\Models;
 
-
 use MarghoobSuleman\HashtagCms\Core\Scopes\SiteScope;
 
 class StaticModuleContent extends AdminBaseModel
 {
-
-    protected $guarded = array();
+    protected $guarded = [];
 
     /**
      * @override
      * boot
      */
-    protected static function boot() {
+    protected static function boot()
+    {
 
         parent::boot();
         static::addGlobalScope(new SiteScope);
@@ -22,18 +21,21 @@ class StaticModuleContent extends AdminBaseModel
 
     /**
      * with lang
+     *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function lang() {
+    public function lang()
+    {
         return $this->hasOne(StaticModuleContentLang::class);
     }
 
     /**
      * With Langs
+     *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function langs() {
+    public function langs()
+    {
         return $this->hasMany(StaticModuleContentLang::class)->withoutGlobalScopes();
     }
-
 }

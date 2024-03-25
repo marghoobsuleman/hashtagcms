@@ -15,13 +15,13 @@ return new class extends Migration
     {
         Schema::create('tags', function (Blueprint $table) {
             $table->id();
-            $table->string("name", 100)->unique();
+            $table->string('name', 100)->unique();
             $table->timestamps();
             $table->softDeletes();
         });
 
         //index
-        Schema::table("tags", function (Blueprint $table) {
+        Schema::table('tags', function (Blueprint $table) {
             $table->index(['name']);
         });
 

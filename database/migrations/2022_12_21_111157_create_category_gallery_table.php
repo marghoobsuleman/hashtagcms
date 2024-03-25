@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('category_gallery', function (Blueprint $table) {
             $table->unsignedBigInteger('gallery_id');
             $table->unsignedBigInteger('category_id');
-            $table->integer("position")->nullable();
+            $table->integer('position')->nullable();
         });
 
         //Relation

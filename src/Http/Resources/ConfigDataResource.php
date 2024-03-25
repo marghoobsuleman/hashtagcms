@@ -15,15 +15,15 @@ class ConfigDataResource extends JsonResource
     public function toArray($request)
     {
         return [
-            "site"=>$this->site,
-            'defaultData'=>$this->defaultData,
-            'platforms'=>$this->platforms,
-            'langs'=>$this->langs,
-            'currencies'=>$this->currencies,
-            'zones'=>$this->zones,
-            'countries'=>$this->countries,
-            'categories'=>$this->categories,
-            'props'=>$this->props
+            'site' => $this->site,
+            'defaultData' => $this->defaultData,
+            'platforms' => $this->platforms,
+            'langs' => $this->langs,
+            'currencies' => $this->currencies,
+            'zones' => $this->zones,
+            'countries' => $this->countries,
+            'categories' => $this->categories,
+            'props' => $this->props,
         ];
     }
 }

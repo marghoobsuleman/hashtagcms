@@ -2,56 +2,44 @@
 
 namespace MarghoobSuleman\HashtagCms\Core\Traits;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Redirect;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Http;
-
-trait FeEssential {
-
+trait FeEssential
+{
     /**
      * Bind Data for a view
-     * @param string $viewName
-     * @param array $data
-     * @return void
      */
-    protected function bindDataForView(string $viewName, array $data=array()):void
+    protected function bindDataForView(string $viewName, array $data = []): void
     {
         app()->HashtagCms->layoutManager()->bindDataForView($viewName, $data);
     }
 
     /**
      * Bind Data for a view
-     * @param string|null $sourceViewName
-     * @param string|null $targetViewName
-     * @param array|null $data
      */
-    protected function replaceViewWith(string $sourceViewName=null, string $targetViewName=null, array $data=null):void
+    protected function replaceViewWith(?string $sourceViewName = null, ?string $targetViewName = null, ?array $data = null): void
     {
         app()->HashtagCms->layoutManager()->replaceViewWith($sourceViewName, $targetViewName, $data);
     }
 
-
     /**
      * @todo: should not work after refactoring
      * Set everything to render a page
-     * @param array $obj
-     *              - site
-     *              - language
-     *              - platform
-     *              - theme
-     *              - category
+     *
+     * @param  array  $obj
+     *                      - site
+     *                      - language
+     *                      - platform
+     *                      - theme
+     *                      - category
      */
-    protected function setEverything(array $obj) {
+    protected function setEverything(array $obj)
+    {
 
-        $info = array('site'=>$obj['site'],
-            'language'=>$obj['language'],
-            'platform'=>$obj['platform'],
-            'theme'=>$obj['theme'],
-            'category'=>$obj['category'],
-        );
+        $info = ['site' => $obj['site'],
+            'language' => $obj['language'],
+            'platform' => $obj['platform'],
+            'theme' => $obj['theme'],
+            'category' => $obj['category'],
+        ];
 
         $infoLoader = app()->HashtagCmsInfoLoader;
         //set info
@@ -65,4 +53,3 @@ trait FeEssential {
 
     }
 }
-

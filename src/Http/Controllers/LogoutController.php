@@ -1,10 +1,9 @@
 <?php
 
 namespace MarghoobSuleman\HashtagCms\Http\Controllers;
+
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-
 
 class LogoutController extends FrontendBaseController
 {
@@ -41,12 +40,10 @@ class LogoutController extends FrontendBaseController
     }
 
     /**
-     * @param Request $request
      * @return array|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function index(Request $request) {
+    public function index(Request $request)
+    {
         return $this->logout($request);
     }
-
-
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace MarghoobSuleman\HashtagCms\Database\Seeds;
 
 use Illuminate\Database\Seeder;
@@ -17,32 +18,28 @@ class StaticModuleContentsTableSeeder extends Seeder
         $table_name_langs = 'static_module_content_langs';
         $date = date('Y-m-d H:i:s');
 
-        $static_module_contents = array(
-            array('id' => '3','site_id' => '1','alias' => 'CONTENT_TEST','update_by' => '1','insert_by' => '1','created_at' => NULL,'updated_at' => $date,'deleted_at' => NULL)
-        );
+        $static_module_contents = [
+            ['id' => '3', 'site_id' => '1', 'alias' => 'CONTENT_TEST', 'update_by' => '1', 'insert_by' => '1', 'created_at' => null, 'updated_at' => $date, 'deleted_at' => null],
+        ];
 
-        $static_module_content_langs = array(
-            array('static_module_content_id' => '3','lang_id' => '1','title' => 'test','content' =>
-                '<section class="sample-module">
+        $static_module_content_langs = [
+            ['static_module_content_id' => '3', 'lang_id' => '1', 'title' => 'test', 'content' => '<section class="sample-module">
                     <div class="container">
                             <div><h2 class="alert-success alert">Static Module</h2> 
                             <p>This is static module</p>
                             </div>
                     </div>
-                 </section>'
-                ,'created_at' => $date,'updated_at' => $date,'deleted_at' => NULL),
-            array('static_module_content_id' => '3','lang_id' => '2','title' => 'परीक्षण','content' =>
-                '<section class="sample-module">
+                 </section>', 'created_at' => $date, 'updated_at' => $date, 'deleted_at' => null],
+            ['static_module_content_id' => '3', 'lang_id' => '2', 'title' => 'परीक्षण', 'content' => '<section class="sample-module">
                     <div class="container">
                             <div><h2 class="alert-success alert">स्टेटिक मॉड्यूल</h2> 
                             <p>यह एक static module है</p>
                             </div>
                     </div>
-                 </section>'
-            ,'created_at' => $date,'updated_at' => $date,'deleted_at' => NULL)
-        );
+                 </section>', 'created_at' => $date, 'updated_at' => $date, 'deleted_at' => null],
+        ];
 
-        if(DB::table($table_name)->get()->count() == 0) {
+        if (DB::table($table_name)->get()->count() == 0) {
 
             DB::table($table_name)->insert($static_module_contents);
 

@@ -2,22 +2,22 @@
 
 namespace MarghoobSuleman\HashtagCms\Models;
 
-
 class Hook extends AdminBaseModel
 {
+    protected $guarded = [];
 
-    protected $guarded = array();
-
-
-    public function site() {
+    public function site()
+    {
         return $this->belongsToMany(Site::class);
     }
 
     /**
      * Get content type
+     *
      * @return array
      */
-    public static function getDirections() {
+    public static function getDirections()
+    {
         return static::getEnumValues('hooks', 'direction');
     }
 }

@@ -6,22 +6,19 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Sanctum\HasApiTokens;
-
 use MarghoobSuleman\HashtagCms\Core\Traits\RoleManager;
-use MarghoobSuleman\HashtagCms\User;
-
 use MarghoobSuleman\HashtagCms\Http\Resources\UserResource;
+use MarghoobSuleman\HashtagCms\User;
 
 class AuthController extends ApiBaseController
 {
-
     use HasApiTokens, RoleManager;
 
     /**
-     * @param Request $request
      * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response|object
      */
-    public function register(Request $request) {
+    public function register(Request $request)
+    {
         $rules = [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
@@ -38,27 +35,27 @@ class AuthController extends ApiBaseController
                 ->setStatusCode(422);
 
         }
-        $data["user_type"] = "Visitor";
+        $data['user_type'] = 'Visitor';
 
         $user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
-            'user_type'=>$data["user_type"]
+            'user_type' => $data['user_type'],
         ]);
 
         $token = $this->createAccessToken($user);
 
-        return response(["user"=>$user, "token"=>$token])
+        return response(['user' => $user, 'token' => $token])
             ->setStatusCode(200);
 
     }
 
     /**
-     * @param Request $request
      * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response|object
      */
-    public function login(Request $request) {
+    public function login(Request $request)
+    {
 
         $rules = [
             'email' => 'required|string|email|max:255',
@@ -75,55 +72,58 @@ class AuthController extends ApiBaseController
                 ->setStatusCode(422);
 
         }
-        $loginData["email"] = $data["email"];
-        $loginData["password"] = $data["password"];
+        $loginData['email'] = $data['email'];
+        $loginData['password'] = $data['password'];
 
-        if(!auth()->attempt($loginData)) {
-            return response(["message"=>"Email or password is incorrect."])
+        if (! auth()->attempt($loginData)) {
+            return response(['message' => 'Email or password is incorrect.'])
                 ->setStatusCode(422);
         }
 
         $user = auth()->user();
         $token = $this->createAccessToken($user);
 
-        return response(["user"=>new UserResource($user), "token"=>$token])
+        return response(['user' => new UserResource($user), 'token' => $token])
             ->setStatusCode(200);
     }
 
     /**
      * Get current access token
+     *
      * @return mixed
      */
-    private function createAccessToken($user) {
+    private function createAccessToken($user)
+    {
 
         $tokenName = $this->getTokenName($user);
 
         $tokens = $user->createToken($tokenName);
 
-        return array("access_token"=>$tokens->plainTextToken,
-            "scope"=>$tokens->accessToken->abilities,
-            "expires_at"=>$tokens->accessToken->expires_at);
+        return ['access_token' => $tokens->plainTextToken,
+            'scope' => $tokens->accessToken->abilities,
+            'expires_at' => $tokens->accessToken->expires_at];
     }
 
     /**
      * Get token name
-     * @param $user
+     *
      * @return string
      */
-    private function getTokenName($user) {
-        return date("Y-m-d H:i:s")."_login_".$user->name."_". $user->id;
+    private function getTokenName($user)
+    {
+        return date('Y-m-d H:i:s').'_login_'.$user->name.'_'.$user->id;
     }
 
     /**
      * Get user info
-     * @param Request $request
+     *
      * @return mixed
      */
-    public function me(Request $request) {
+    public function me(Request $request)
+    {
 
         $user = $request->user();
+
         return new UserResource($user);
     }
-
-
 }

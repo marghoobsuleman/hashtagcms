@@ -9,13 +9,15 @@ use MarghoobSuleman\HashtagCms\Core\Scopes\SiteScope;
 class Subscriber extends AdminBaseModel
 {
     use SoftDeletes;
-    protected $guarded = array();
+
+    protected $guarded = [];
 
     /**
      * @override
      * boot
      */
-    protected static function boot() {
+    protected static function boot()
+    {
 
         parent::boot();
         static::addGlobalScope(new SiteScope);
@@ -23,10 +25,11 @@ class Subscriber extends AdminBaseModel
 
     /**
      * Get today's contacts
+     *
      * @return mixed
      */
-    public static function today() {
+    public static function today()
+    {
         return self::whereDate('created_at', Carbon::today())->get();
     }
-
 }

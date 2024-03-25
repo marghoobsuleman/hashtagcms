@@ -4,7 +4,5 @@ namespace MarghoobSuleman\HashtagCms\Models;
 
 class Currency extends AdminBaseModel
 {
-
-    protected $guarded = array();
-
+    protected $guarded = [];
 }

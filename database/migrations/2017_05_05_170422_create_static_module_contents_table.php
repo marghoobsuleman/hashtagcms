@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
@@ -12,7 +12,6 @@ return new class extends Migration
      *
      * @return void
      */
-
     public function up()
     {
         Schema::create('static_module_contents', function (Blueprint $table) {
@@ -40,14 +39,14 @@ return new class extends Migration
         });
 
         //Relation
-        Schema::table("static_module_content_langs", function (Blueprint $table) {
+        Schema::table('static_module_content_langs', function (Blueprint $table) {
 
-            $table->foreign("static_module_content_id")
-                ->references("id")
-                ->on("static_module_contents")
+            $table->foreign('static_module_content_id')
+                ->references('id')
+                ->on('static_module_contents')
                 ->onDelete('cascade');
 
-            $table->primary(["static_module_content_id", "lang_id"], "static_content_id_lang_id");
+            $table->primary(['static_module_content_id', 'lang_id'], 'static_content_id_lang_id');
         });
 
         //Relation on site

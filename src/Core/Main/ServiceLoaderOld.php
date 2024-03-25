@@ -1,19 +1,22 @@
 <?php
+
 namespace MarghoobSuleman\HashtagCms\Core\Main;
 
-use MarghoobSuleman\HashtagCms\Models\Category;
 use MarghoobSuleman\HashtagCms\Models\Lang;
-use MarghoobSuleman\HashtagCms\Models\Site;
 use MarghoobSuleman\HashtagCms\Models\Platform;
+use MarghoobSuleman\HashtagCms\Models\Site;
 
 class ServiceLoaderOld extends DataLoader
 {
     protected InfoLoader $infoLoader;
+
     protected SessionManager $sessionManager;
+
     protected LayoutManager $layoutManager;
+
     protected ModuleLoader $moduleLoader;
 
-    function __construct()
+    public function __construct()
     {
         parent::__construct();
         $this->moduleLoader = app()->HashtagCms->moduleLoader();
@@ -23,12 +26,8 @@ class ServiceLoaderOld extends DataLoader
 
     /**
      * Get site config
-     * @param string $context
-     * @param string|null $lang
-     * @param string|null $platform
-     * @return array
      */
-    public function allConfigs(string $context, string $lang=null, string $platform=null): array
+    public function allConfigs(string $context, ?string $lang = null, ?string $platform = null): array
     {
         // fetch site info from request -> context
         // fetch lang info from request -> lang
@@ -38,25 +37,25 @@ class ServiceLoaderOld extends DataLoader
         // after that fetch all the info.
 
         if (empty($context)) {
-            return $this->getErrorMessage("Site context is missing", 400);
+            return $this->getErrorMessage('Site context is missing', 400);
         }
         $lang_id = null;
         $platform_id = null;
         $site = Site::where('context', '=', $context)->first();
 
         if (empty($site)) {
-            return $this->getErrorMessage("Site not found", 404);
+            return $this->getErrorMessage('Site not found', 404);
         }
 
-        if(!empty($lang)) {
+        if (! empty($lang)) {
             $langInfo = Lang::where('iso_code', '=', $lang)->first();
-            if(!empty($langInfo)) {
+            if (! empty($langInfo)) {
                 $lang_id = $langInfo->id;
             }
         }
-        if(!empty($platform)) {
+        if (! empty($platform)) {
             $platformInfo = Platform::where('link_rewrite', '=', $platform)->first();
-            if(!empty($platformInfo)) {
+            if (! empty($platformInfo)) {
                 $platform_id = $platformInfo->id;
             }
         }
@@ -75,11 +74,11 @@ class ServiceLoaderOld extends DataLoader
         $props = $this->infoLoader->getSitePropsInfo($site_id, $platform_id);
 
         $data['site'] = $siteInfo;
-        $data["defaults"] = array("category_id"=>$site->category_id,
-            "lang_id"=>$site->lang_id,
-            "country_id"=>$site->country_id,
-            "platform_id"=>$site->platform_id,
-            "currency_id"=>$site->currency_id ?? 1);
+        $data['defaults'] = ['category_id' => $site->category_id,
+            'lang_id' => $site->lang_id,
+            'country_id' => $site->country_id,
+            'platform_id' => $site->platform_id,
+            'currency_id' => $site->currency_id ?? 1];
         $data['platforms'] = $platforms;
         $data['langs'] = $langs;
         $data['categories'] = $categories;
@@ -88,31 +87,28 @@ class ServiceLoaderOld extends DataLoader
         $data['counties'] = $countries;
         $data['props'] = $props;
 
-        return array("data"=>$data, "status"=>200);;
+        return ['data' => $data, 'status' => 200];
     }
 
     /**
      * Load data
-     * @param array|null $params
-     * @return mixed
      */
-    public function loadData(array $params=null): mixed
+    public function loadData(?array $params = null): mixed
     {
 
         $this->moduleLoader::setMandatoryCheck(false);
+
         return parent::loadData($params);
 
     }
 
     /**
      * Load data
-     * @param array|null $params
-     * @return mixed
      */
-    public function loadModule(array $params=null): mixed
+    public function loadModule(?array $params = null): mixed
     {
-        if (empty($params["name"])) {
-            return $this->getErrorMessage("Module alias is missing", 400);
+        if (empty($params['name'])) {
+            return $this->getErrorMessage('Module alias is missing', 400);
         }
 
         $this->moduleLoader::setMandatoryCheck(false);
@@ -120,14 +116,14 @@ class ServiceLoaderOld extends DataLoader
         if ($data['status'] != 200) {
             return $data;
         }
-        $alias = $params["name"];
+        $alias = $params['name'];
         $hooks = $data['meta']['theme']['hooks'];
         $moduleData = null;
-        $moduleInfo = array();
+        $moduleInfo = [];
         foreach ($hooks as $hook) {
             foreach ($hook['modules'] as $module) {
-                if($module->alias === $alias) {
-                    $moduleInfo = (array)$module;
+                if ($module->alias === $alias) {
+                    $moduleInfo = (array) $module;
                     $moduleData = $module->data;
                     break;
                 }
@@ -135,28 +131,25 @@ class ServiceLoaderOld extends DataLoader
         }
 
         $this->layoutManager->setFinalObject($data);
-        $this->layoutManager->setThemePath($data['meta']['theme']["directory"]);
+        $this->layoutManager->setThemePath($data['meta']['theme']['directory']);
 
         $moduleInfo['data'] = $moduleData;
 
         if ($moduleData === null) {
-            return $this->getErrorMessage("Could not find the module alias", 400);
+            return $this->getErrorMessage('Could not find the module alias', 400);
         }
 
-        return array("meta"=>$data['meta'], "module"=>$moduleInfo, "status"=>200);
+        return ['meta' => $data['meta'], 'module' => $moduleInfo, 'status' => 200];
 
     }
 
-
     /**
      * Load data by hook alias
-     * @param array|null $params
-     * @return mixed
      */
-    public function loadHook(array $params=null): mixed
+    public function loadHook(?array $params = null): mixed
     {
-        if (empty($params["name"])) {
-            return $this->getErrorMessage("Hook alias is missing", 400);
+        if (empty($params['name'])) {
+            return $this->getErrorMessage('Hook alias is missing', 400);
         }
 
         $this->moduleLoader::setMandatoryCheck(false);
@@ -164,22 +157,20 @@ class ServiceLoaderOld extends DataLoader
         if ($data['status'] != 200) {
             return $data;
         }
-        $alias = $params["name"];
+        $alias = $params['name'];
         $hooks = $data['meta']['theme']['hooks'];
-        $hookInfo = array();
+        $hookInfo = [];
         $hookData = null;
         foreach ($hooks as $hook) {
-            if($hook['alias'] === $alias) {
+            if ($hook['alias'] === $alias) {
                 $hookData = $hook;
                 break;
             }
         }
         $this->layoutManager->setFinalObject($data);
-        $this->layoutManager->setThemePath($data['meta']['theme']["directory"]);
+        $this->layoutManager->setThemePath($data['meta']['theme']['directory']);
 
-        return ($hookData===null) ? null : array("meta"=>$data['meta'], "hook"=>$hookData, "status"=>200);
+        return ($hookData === null) ? null : ['meta' => $data['meta'], 'hook' => $hookData, 'status' => 200];
 
     }
-
-
 }

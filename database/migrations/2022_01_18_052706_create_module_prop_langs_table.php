@@ -16,13 +16,13 @@ return new class extends Migration
         Schema::create('module_prop_langs', function (Blueprint $table) {
             $table->bigInteger('module_prop_id', false, true);
             $table->bigInteger('lang_id', false, true);
-            $table->string("value", 500);
+            $table->string('value', 500);
             $table->timestamps();
             $table->softDeletes();
         });
 
         //Relation
-        Schema::table("module_prop_langs", function(Blueprint $table) {
+        Schema::table('module_prop_langs', function (Blueprint $table) {
 
             $table->foreign('module_prop_id')
                 ->references('id')

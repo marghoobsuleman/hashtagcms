@@ -2,12 +2,12 @@
 
 namespace MarghoobSuleman\HashtagCms\Models;
 
-
 class Permission extends AdminBaseModel
 {
-    protected $guarded = array();
+    protected $guarded = [];
 
-    public function roles() {
-       return $this->belongsToMany(Role::class);
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class);
     }
 }

@@ -6,24 +6,26 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
-trait Common {
-
+trait Common
+{
     /**
      * Get source file name
-     * @param $name
+     *
      * @return string
      */
-    protected function getValidSourceFileName($name) {
-        return __DIR__."/../../../".$name;
+    protected function getValidSourceFileName($name)
+    {
+        return __DIR__.'/../../../'.$name;
     }
 
     /**
-     * @param string $path
-     * @param string $type
+     * @param  string  $path
+     * @param  string  $type
      * @return string
      */
-    protected function getValidTarget($path='', $type='app') {
-        if($type == 'app') {
+    protected function getValidTarget($path = '', $type = 'app')
+    {
+        if ($type == 'app') {
             return $this->laravel['path'].'/'.$path;
         } else {
             return base_path($path);
@@ -32,10 +34,11 @@ trait Common {
 
     /**
      * Is Admin Controller Exists
-     * @param $name
+     *
      * @return mixed
      */
-    protected function isAdminControllerExists($name) {
+    protected function isAdminControllerExists($name)
+    {
 
         $path = $this->laravel['path'];
         $file_name = $path.'/Http/Controllers/Admin/'.Str::title($name).'Controller.php';
@@ -45,10 +48,11 @@ trait Common {
 
     /**
      * isControllerExists
-     * @param $name
+     *
      * @return mixed
      */
-    protected function isControllerExists($name) {
+    protected function isControllerExists($name)
+    {
 
         $path = $this->laravel['path'];
         $file_name = $path.'/Http/Controllers/'.Str::title($name).'Controller.php';
@@ -58,42 +62,48 @@ trait Common {
 
     /**
      * Is Model Exists
-     * @param $name
+     *
      * @return mixed
      */
-    protected function isModelExists($name) {
+    protected function isModelExists($name)
+    {
         $path = $this->laravel['path'];
-        $file_name = $path.'/Models/' . Str::title($name) . '.php';
+        $file_name = $path.'/Models/'.Str::title($name).'.php';
+
         return $this->files->exists($file_name);
     }
 
     /**
      * Confirm Message
-     * @param $question
+     *
      * @return string
      */
-    protected function confirmMessage($question) {
+    protected function confirmMessage($question)
+    {
         $answer = $this->confirm($question);
-        $answer = ($answer == 1) ? "Yes" : "No";
+        $answer = ($answer == 1) ? 'Yes' : 'No';
         $this->warn("You said $answer");
+
         return $answer;
     }
 
     /**
      * Delete temp file
-     * @param $fileName
      */
-    protected function clean($fileName) {
+    protected function clean($fileName)
+    {
         //delete old files
         unlink($fileName);
     }
 
     /**
      * Create folder etc
-     * @param string $what
+     *
+     * @param  string  $what
      * @return string
      */
-    protected function init($what="model") {
+    protected function init($what = 'model')
+    {
 
         $targetTemp = $this->getValidTarget($this->paths['tempDir'], 'base');
         $targetDir = $this->getValidTarget($this->paths['targetDir'], 'app');
@@ -109,7 +119,7 @@ trait Common {
         }
 
         $sourceFile = $this->getValidSourceFileName($this->paths['sourceDir']."/$what/".$this->paths['sourceFile']);
-        $this->currentSourceFile = $tagetTempFile = $targetTemp.'/'.md5($sourceFile."".date("YY-DD-M H:i:s")).".ms";
+        $this->currentSourceFile = $tagetTempFile = $targetTemp.'/'.md5($sourceFile.''.date('YY-DD-M H:i:s')).'.ms';
         $this->files->copy($sourceFile, $tagetTempFile);
 
         return $tagetTempFile;
@@ -118,77 +128,83 @@ trait Common {
     /******* Validator Fields ***********/
     /**
      * Get Max Length of a field
-     * @param $field
+     *
      * @return string
      */
-    protected function getMax($field) {
-        preg_match ( '/\d{1,}/' , $field, $found, PREG_OFFSET_CAPTURE);
+    protected function getMax($field)
+    {
+        preg_match('/\d{1,}/', $field, $found, PREG_OFFSET_CAPTURE);
 
-        if(sizeof($found) > 0) {
-            return "max:".$found[0][0];
+        if (count($found) > 0) {
+            return 'max:'.$found[0][0];
         }
-        return "";
+
+        return '';
     }
 
     /**
      * Get data type of a field
-     * @param $field
+     *
      * @return mixed|string
      */
-    protected function getDataType($field) {
+    protected function getDataType($field)
+    {
 
-        preg_match ( '/[a-z].+\(/' , $field, $found, PREG_OFFSET_CAPTURE);
+        preg_match('/[a-z].+\(/', $field, $found, PREG_OFFSET_CAPTURE);
 
-        $typeArray = array("varchar"=>"string",
-            "int"=>"numeric",
-            "decimal"=>"numeric",
-            "bigint"=>"numeric",
-            "float"=>"numeric",
-            "double"=>"numeric",
-            "tinyint"=>"integer",
-            "timestamp"=>"date");
+        $typeArray = ['varchar' => 'string',
+            'int' => 'numeric',
+            'decimal' => 'numeric',
+            'bigint' => 'numeric',
+            'float' => 'numeric',
+            'double' => 'numeric',
+            'tinyint' => 'integer',
+            'timestamp' => 'date'];
 
-        if(sizeof($found) > 0) {
-            $key = Str::replaceLast("(", "", $found[0][0]);
-            return $typeArray[$key] ?? "";
+        if (count($found) > 0) {
+            $key = Str::replaceLast('(', '', $found[0][0]);
+
+            return $typeArray[$key] ?? '';
         }
 
-        return "";
-
+        return '';
 
     }
 
     /**
      * Check if field is required
-     * @param $field
+     *
      * @return string
      */
-    protected function getRequired($field) {
+    protected function getRequired($field)
+    {
 
-        if($field == "NO") {
-            return "required";
+        if ($field == 'NO') {
+            return 'required';
         }
-        return "";
+
+        return '';
     }
 
     /**
      * Get Formatted Fields Value
-     * @param $table_name
+     *
      * @return array
      */
-    protected function getFormattedFieldsValue($table_name) {
+    protected function getFormattedFieldsValue($table_name)
+    {
 
         $table_name = strtolower($table_name);
 
-        if(!Schema::hasTable(Str::plural($table_name))) {
+        if (! Schema::hasTable(Str::plural($table_name))) {
             return [];
         }
 
-        $lang = Str::endsWith($table_name, "_langs") ? "lang_" : "";
+        $lang = Str::endsWith($table_name, '_langs') ? 'lang_' : '';
 
-        $isLang = ($lang == "") ? FALSE : TRUE;
+        $isLang = ($lang == '') ? false : true;
 
-        $data = DB::select("SHOW COLUMNS FROM ".Str::plural($table_name));
+        $data = DB::select('SHOW COLUMNS FROM '.Str::plural($table_name));
 
         $allFields = [];
 
@@ -197,10 +213,10 @@ trait Common {
 
         //dd($data);
 
-        foreach ($data as $key=>$fields)   {
+        foreach ($data as $key => $fields) {
 
             $values = [];
-            if($fields->Field != "id") {
+            if ($fields->Field != 'id') {
 
                 $max = $this->getMax($fields->Type);
 
@@ -208,51 +224,54 @@ trait Common {
 
                 $required = $this->getRequired($fields->Null);
 
-                if($required != "") {
+                if ($required != '') {
                     $values[] = $required;
                 }
 
-                if($max != "" && $dataType != "numeric" && $dataType != "integer") {
+                if ($max != '' && $dataType != 'numeric' && $dataType != 'integer') {
                     $values[] = $max;
                 }
 
-                if($dataType != "") {
+                if ($dataType != '') {
                     $values[] = $dataType;
                 }
 
-                $fields_value = join("|", $values);
+                $fields_value = implode('|', $values);
 
-                if($fields_value != "") {
-                    $nullable = (sizeof($values)>=1 && $required=="") ? "nullable|" : "";
+                if ($fields_value != '') {
+                    $nullable = (count($values) >= 1 && $required == '') ? 'nullable|' : '';
                     $allFields[$lang.$fields->Field] = "$nullable".$fields_value;
                 }
 
-                if($isLang) {
+                if ($isLang) {
                     //Dont need parent table id: ie. country_id if table is coutry_langs
-                    $table_name_main = Str::singular(str_replace("_langs", "", $table_name));
-                    unset($allFields[$lang.$table_name_main."_id"]);
-                    unset($allFields["lang_lang_id"]);
+                    $table_name_main = Str::singular(str_replace('_langs', '', $table_name));
+                    unset($allFields[$lang.$table_name_main.'_id']);
+                    unset($allFields['lang_lang_id']);
                 }
 
             }
         }
+
         //var_dump($allFields);
         return $allFields;
     }
 
     /**
      * Get Validation Fields
-     * @param string $table_name
-     * @param int $withLang
+     *
+     * @param  string  $table_name
+     * @param  int  $withLang
      * @return string
      */
-    protected function getValidationFields($table_name='', $withLang=1) {
+    protected function getValidationFields($table_name = '', $withLang = 1)
+    {
 
         $data = $this->getFormattedFieldsValue($table_name);
 
-        $lang_table = Str::singular($table_name)."_langs";
+        $lang_table = Str::singular($table_name).'_langs';
 
-        if($withLang != 0 && Schema::hasTable(Str::plural($lang_table))) {
+        if ($withLang != 0 && Schema::hasTable(Str::plural($lang_table))) {
 
             $lang_data = $this->getFormattedFieldsValue($lang_table);
             $data = array_merge($data, $lang_data);
@@ -260,16 +279,15 @@ trait Common {
 
         $field_json_str = [];
 
-        if(sizeof($data) > 0 ) {
-            foreach ($data as $key=>$val) {
+        if (count($data) > 0) {
+            foreach ($data as $key => $val) {
                 $field_json_str[] = '"'.$key.'"'.' => "'.$val.'"';
             }
 
         }
-        return join(",
-                    ", $field_json_str);
+
+        return implode(',
+                    ', $field_json_str);
 
     }
-
 }
-

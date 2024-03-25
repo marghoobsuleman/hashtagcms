@@ -5,27 +5,27 @@ namespace MarghoobSuleman\HashtagCms\Models;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
 
-
 class QueryLogger extends AdminBaseModel
 {
     protected $table = 'logs';
 
     use SoftDeletes;
 
-    protected $guarded = array();
+    protected $guarded = [];
 
     protected static $queryLogging = true;
 
-
     /**
      * Log query and action
-     * @param string $action
-     * @param string $query
-     * @param string $exequted_query
-     * @param int $record_id
-     * @param null $author
+     *
+     * @param  string  $action
+     * @param  string  $query
+     * @param  string  $exequted_query
+     * @param  int  $record_id
+     * @param  null  $author
      */
-    protected static function log($action='', $query='', $exequted_query='', $record_id=0, $author=null) {
+    protected static function log($action = '', $query = '', $exequted_query = '', $record_id = 0, $author = null)
+    {
 
         $request = \request();
         $module_name = $request->module_info->controller_name;
@@ -33,23 +33,23 @@ class QueryLogger extends AdminBaseModel
         $site_id = htcms_get_siteId_for_admin();
         $author = ($author == null) ? $request->user()->id : $author;
 
-        $record_id = (!is_int($record_id)) ? (int)$record_id : $record_id;
+        $record_id = (! is_int($record_id)) ? (int) $record_id : $record_id;
 
         $query = is_string($query) ? $query : json_encode($query);
         $exequted_query = is_string($exequted_query) ? $exequted_query : json_encode($exequted_query);
 
-        $data = array('site_id'=>$site_id, 'module_id'=>$module_id,
-            'user_id'=>$author, 'action_performed'=>$action,
-            'query'=>$query, 'executed_query'=>$exequted_query, 'record_id'=>$record_id);
+        $data = ['site_id' => $site_id, 'module_id' => $module_id,
+            'user_id' => $author, 'action_performed' => $action,
+            'query' => $query, 'executed_query' => $exequted_query, 'record_id' => $record_id];
 
         QueryLogger::create($data);
     }
 
-
     /**
      * Enable Query Log
      */
-    protected static function enableQueryLog() {
+    protected static function enableQueryLog()
+    {
         if (self::$queryLogging == true) {
             DB::enableQueryLog();
         }
@@ -57,33 +57,35 @@ class QueryLogger extends AdminBaseModel
 
     /**
      * Get query log
+     *
      * @return mixed
      */
-    protected static function getQueryLog() {
+    protected static function getQueryLog()
+    {
         return DB::getQueryLog();
     }
 
     /**
-     * @param $enable
      * @return void
      */
-    public static function setLogginStatus($enable) {
+    public static function setLogginStatus($enable)
+    {
         self::$queryLogging = $enable;
     }
 
     /**
      * Disable Query Log
-     * @return void
      */
-    public static function disableLogging():void {
+    public static function disableLogging(): void
+    {
         self::setLogginStatus(false);
     }
 
     /**
      * Enable Query Log
-     * @return void
      */
-    public static function enableLogging():void {
+    public static function enableLogging(): void
+    {
         self::setLogginStatus(true);
     }
 }

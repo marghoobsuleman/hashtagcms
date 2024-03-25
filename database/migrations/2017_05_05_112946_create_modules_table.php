@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('modules', function(Blueprint $table) {
+        Schema::create('modules', function (Blueprint $table) {
 
             $table->id();
             $table->bigInteger('site_id', false, true);
@@ -25,7 +25,7 @@ return new class extends Migration
             $table->string('view_name', 200);
 
             //$table->enum('data_type', ['Static','Query','Service','Custom','QueryService','UrlService']);
-            $table->string("data_type", 100);
+            $table->string('data_type', 100);
 
             $table->text('query_statement')->nullable();
             $table->enum('query_as', ['', 'param', 'data'])->nullable();
@@ -39,12 +39,12 @@ return new class extends Migration
 
             $table->enum('method_type', ['GET', 'POST', 'PUT', 'DELETE'])->nullable();
             $table->string('service_params', 255)->nullable();
-            $table->text("headers")->nullable();
+            $table->text('headers')->nullable();
 
-            $table->tinyInteger('individual_cache')->nullable()->default(0)->comment("If you want to cache this module on each users");
+            $table->tinyInteger('individual_cache')->nullable()->default(0)->comment('If you want to cache this module on each users');
 
             $table->string('cache_group', 100)->nullable();
-            $table->tinyInteger('is_seo_module')->nullable()->default(0)->comment("Use this module for SEO. Needs to have meta fields");
+            $table->tinyInteger('is_seo_module')->nullable()->default(0)->comment('Use this module for SEO. Needs to have meta fields');
 
             $table->tinyInteger('live_edit')->nullable()->default(0);
             $table->tinyInteger('shared')->nullable()->default(0);

@@ -15,10 +15,10 @@ return new class extends Migration
     {
         Schema::create('subscribers', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger("site_id", false, true);
-            $table->string("email", 255);
-            $table->string("name", 255)->nullable();
-            $table->string("subscribed_for", 255)->nullable();
+            $table->bigInteger('site_id', false, true);
+            $table->string('email', 255);
+            $table->string('name', 255)->nullable();
+            $table->string('subscribed_for', 255)->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

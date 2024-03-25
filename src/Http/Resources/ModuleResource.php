@@ -17,22 +17,22 @@ class ModuleResource extends JsonResource
         $isLocal = env('APP_ENV') === 'local';
         $isServerLater = strtolower($this->data_type) === 'servicelater';
         $data = [
-            'id'=>$this->id,
-            'siteId'=>$this->site_id,
-            'name'=>$this->name,
-            'alias'=>$this->alias,
-            'placeholder'=>"%{cms.module.{$this->alias}}%",
-            'linkedModule'=>$this->linked_module,
-            'viewName'=>$this->view_name,
-            'dataType'=>$this->data_type,
-            'description'=>$this->description,
-            'isMandatory'=>$this->is_mandatory,
-            'headers'=>$this->headers,
-            'individualCache'=>$this->individual_cache,
-            'cacheGroup'=>$this->cache_group,
-            'isSeoModule'=>$this->is_seo_module,
-            'liveEdit'=>$this->live_edit,
-            'shared'=>$this->shared
+            'id' => $this->id,
+            'siteId' => $this->site_id,
+            'name' => $this->name,
+            'alias' => $this->alias,
+            'placeholder' => "%{cms.module.{$this->alias}}%",
+            'linkedModule' => $this->linked_module,
+            'viewName' => $this->view_name,
+            'dataType' => $this->data_type,
+            'description' => $this->description,
+            'isMandatory' => $this->is_mandatory,
+            'headers' => $this->headers,
+            'individualCache' => $this->individual_cache,
+            'cacheGroup' => $this->cache_group,
+            'isSeoModule' => $this->is_seo_module,
+            'liveEdit' => $this->live_edit,
+            'shared' => $this->shared,
         ];
 
         if ($isLocal) {
@@ -50,10 +50,8 @@ class ModuleResource extends JsonResource
             $data['queryData'] = $this->queryData;
         }
         $data['data'] = $this->data;
-        $data['moduleProps'] =  $this->moduleProps;
+        $data['moduleProps'] = $this->moduleProps;
 
         return $data;
     }
-
-
 }

@@ -2,8 +2,6 @@
 
 namespace MarghoobSuleman\HashtagCms\Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class PageWithLangTenantTest extends TestCase
@@ -24,14 +22,17 @@ class PageWithLangTenantTest extends TestCase
 
     }
 
-    public function test_example_page() {
+    public function test_example_page()
+    {
         $response = $this->get('/en/web/example?clearCache=true');
         $response->assertStatus(200);
         $response->assertSeeInOrder(['Custom Module', 'Static Module', 'Query Module',
             'Service Module', 'QueryService Module', 'UrlService Module',
             'Support', 'Follow Us', 'Powered by HashtagCms.org']);
     }
-    public function test_blog_page() {
+
+    public function test_blog_page()
+    {
         $response = $this->get('/en/web/blog?clearCache=true');
         $response->assertStatus(200);
         $response->assertSeeInOrder(['Test Blog',
@@ -39,28 +40,31 @@ class PageWithLangTenantTest extends TestCase
 
     }
 
-    public function test_blog_test_page() {
+    public function test_blog_test_page()
+    {
         $response = $this->get('/en/web/blog/test-blog?clearCache=true');
         $response->assertStatus(200);
-        $response->assertSeeInOrder(['Test Blog','This is test blog content',
+        $response->assertSeeInOrder(['Test Blog', 'This is test blog content',
             'Support', 'Follow Us', 'Powered by HashtagCms.org']);
-
 
     }
 
-    public function test_contact_page() {
+    public function test_contact_page()
+    {
         $response = $this->get('/en/web/contact?clearCache=true');
         $response->assertStatus(200);
         $response->assertSeeInOrder(['Comment',
             'Support', 'Follow Us', 'Powered by HashtagCms.org']);
     }
 
-    public function test_profile_page() {
+    public function test_profile_page()
+    {
         $response = $this->get('/en/web/profile?clearCache=true');
         $response->assertStatus(302);
     }
 
-    public function test_support_tnc_page() {
+    public function test_support_tnc_page()
+    {
         $response = $this->get('/en/web/support/tnc?clearCache=true');
         $response->assertStatus(200);
     }
@@ -77,43 +81,48 @@ class PageWithLangTenantTest extends TestCase
             'Support', 'Follow Us', 'Powered by HashtagCms.org']);
     }
 
-    public function test_example_page_with_cache() {
+    public function test_example_page_with_cache()
+    {
         $response = $this->get('/en/web/example');
         $response->assertStatus(200);
         $response->assertSeeInOrder(['Custom Module', 'Static Module', 'Query Module',
             'Service Module', 'QueryService Module', 'UrlService Module',
             'Support', 'Follow Us', 'Powered by HashtagCms.org']);
     }
-    public function test_blog_page_with_cache() {
+
+    public function test_blog_page_with_cache()
+    {
         $response = $this->get('/en/web/blog');
         $response->assertStatus(200);
         $response->assertSeeInOrder(['Test Blog',
             'Support', 'Follow Us', 'Powered by HashtagCms.org']);
     }
 
-    public function test_blog_test_page_with_cache() {
+    public function test_blog_test_page_with_cache()
+    {
         $response = $this->get('/en/web/blog/test-blog');
         $response->assertStatus(200);
-        $response->assertSeeInOrder(['Test Blog','This is test blog content',
+        $response->assertSeeInOrder(['Test Blog', 'This is test blog content',
             'Support', 'Follow Us', 'Powered by HashtagCms.org']);
     }
 
-    public function test_contact_page_with_cache() {
+    public function test_contact_page_with_cache()
+    {
         $response = $this->get('/en/web/contact');
         $response->assertStatus(200);
         $response->assertSeeInOrder(['Comment',
             'Support', 'Follow Us', 'Powered by HashtagCms.org']);
     }
 
-    public function test_profile_page_with_cache() {
+    public function test_profile_page_with_cache()
+    {
         $response = $this->get('/en/web/profile');
         $response->assertStatus(302);
     }
 
-    public function test_support_tnc_page_with_cache() {
+    public function test_support_tnc_page_with_cache()
+    {
         $response = $this->get('/en/web/support/tnc');
         $response->assertStatus(200);
     }
-
-
 }

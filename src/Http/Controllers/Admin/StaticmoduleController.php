@@ -4,33 +4,31 @@ namespace MarghoobSuleman\HashtagCms\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-
 use Illuminate\Validation\Rule;
-use MarghoobSuleman\HashtagCms\Models\StaticModuleContent;
-use MarghoobSuleman\HashtagCms\Models\Site;
 use MarghoobSuleman\HashtagCms\Core\Helpers\Message;
+use MarghoobSuleman\HashtagCms\Models\Site;
+use MarghoobSuleman\HashtagCms\Models\StaticModuleContent;
 
 class StaticmoduleController extends BaseAdminController
 {
-    protected $dataFields = ['id','lang.title as title','alias','updated_at'];
+    protected $dataFields = ['id', 'lang.title as title', 'alias', 'updated_at'];
 
     protected $dataSource = StaticModuleContent::class;
 
     protected $dataWith = ['lang'];
 
-    protected $actionFields = array("edit", "delete"); //This is last column of the row
+    protected $actionFields = ['edit', 'delete']; //This is last column of the row
 
-    protected $bindDataWithAddEdit = array("sites"=>array("dataSource"=>Site::class, "method"=>"all"));
-
+    protected $bindDataWithAddEdit = ['sites' => ['dataSource' => Site::class, 'method' => 'all']];
 
     /**
-     * @param Request $request
      * @return \Illuminate\Http\RedirectResponse|mixed
      */
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
 
-        if(!$this->checkPolicy('edit')) {
-            return htcms_admin_view("common.error", Message::getWriteError());
+        if (! $this->checkPolicy('edit')) {
+            return htcms_admin_view('common.error', Message::getWriteError());
         }
         /*
          *  "alias" => [
@@ -45,36 +43,34 @@ class StaticmoduleController extends BaseAdminController
          */
 
         $rules = [
-            "site_id" => "required|numeric",
-            "alias"=> ["required",
-                "max:60",
-                "string",
+            'site_id' => 'required|numeric',
+            'alias' => ['required',
+                'max:60',
+                'string',
                 Rule::unique('static_module_contents')->where(function ($query) use ($request) {
-                $query->where('site_id', $request->input("site_id"))
-                    ->where('alias', $request->input("alias"));
-            })],
+                    $query->where('site_id', $request->input('site_id'))
+                        ->where('alias', $request->input('alias'));
+                })],
             /*"alias" => "required|max:60|string",*/
-            "update_by" => "required|numeric",
-            "lang_title" => "required|max:255|string",
-            "lang_content" => "required"
+            'update_by' => 'required|numeric',
+            'lang_title' => 'required|max:255|string',
+            'lang_content' => 'required',
         ];
 
-        if ($request->input("id") > 0) {
-            $rules["alias"] = ["required",
-                "max:60",
-                "string",
+        if ($request->input('id') > 0) {
+            $rules['alias'] = ['required',
+                'max:60',
+                'string',
                 Rule::unique('static_module_contents')->where(function ($query) use ($request) {
-                    $query->where('site_id', $request->input("site_id"))
-                        ->where('alias', $request->input("alias"))
-                        ->where('id', '<>', $request->input("id"));
+                    $query->where('site_id', $request->input('site_id'))
+                        ->where('alias', $request->input('alias'))
+                        ->where('id', '<>', $request->input('id'));
                 })];
         }
 
+        if ($request->input('id') == 0) {
 
-
-        if($request->input("id")==0) {
-
-            $rules["insert_by"] = "required|numeric";
+            $rules['insert_by'] = 'required|numeric';
 
         }
 
@@ -89,29 +85,28 @@ class StaticmoduleController extends BaseAdminController
 
         $data = $request->all();
 
+        $saveData['alias'] = strtoupper($data['alias']);
+        $saveData['site_id'] = $data['site_id'];
 
-        $saveData["alias"] = strtoupper($data["alias"]);
-        $saveData["site_id"] = $data["site_id"];
+        $saveData['update_by'] = $data['update_by'];
+        $saveData['updated_at'] = htcms_get_current_date();
 
-        $saveData["update_by"] = $data["update_by"];
-        $saveData["updated_at"] = htcms_get_current_date();
-
-        if(!isset($data["id"]) || $data["id"] == 0) {
-            $saveData["insert_by"] = $data["insert_by"];
+        if (! isset($data['id']) || $data['id'] == 0) {
+            $saveData['insert_by'] = $data['insert_by'];
         }
 
-        $langData["lang_id"] = $data["lang_id"] ?? 1;
+        $langData['lang_id'] = $data['lang_id'] ?? 1;
 
-        $langData["title"] = $data["lang_title"];
-        $langData["content"] = $data["lang_content"];
+        $langData['title'] = $data['lang_title'];
+        $langData['content'] = $data['lang_content'];
 
-        $arrSaveData = array("model"=>$this->dataSource,  "data"=>$saveData);
+        $arrSaveData = ['model' => $this->dataSource,  'data' => $saveData];
 
-        $arrLangData = array("data"=>$langData);
+        $arrLangData = ['data' => $langData];
 
-        if($data["actionPerformed"]=="edit") {
+        if ($data['actionPerformed'] == 'edit') {
 
-            $where = $data["id"];
+            $where = $data['id'];
             $savedData = $this->saveDataWithLang($arrSaveData, $arrLangData, $where);
 
         } else {
@@ -119,11 +114,11 @@ class StaticmoduleController extends BaseAdminController
             $savedData = $this->saveDataWithLang($arrSaveData, $arrLangData);
         }
 
-        $viewData["id"] = $savedData["id"];;
-        $viewData["saveData"] = $data;
-        $viewData["backURL"] = $data["backURL"];
-        $viewData["isSaved"] = $savedData["isSaved"];
+        $viewData['id'] = $savedData['id'];
+        $viewData['saveData'] = $data;
+        $viewData['backURL'] = $data['backURL'];
+        $viewData['isSaved'] = $savedData['isSaved'];
 
-        return htcms_admin_view("common.saveinfo", $viewData);
+        return htcms_admin_view('common.saveinfo', $viewData);
     }
 }

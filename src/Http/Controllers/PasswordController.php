@@ -1,9 +1,9 @@
 <?php
 
 namespace MarghoobSuleman\HashtagCms\Http\Controllers;
+
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Foundation\Auth\RedirectsUsers;
-use Illuminate\Foundation\Auth\ResetsPasswords;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -11,7 +11,6 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
-
 
 class PasswordController extends FrontendBaseController
 {
@@ -49,23 +48,24 @@ class PasswordController extends FrontendBaseController
      * Hint: password.request | MarghoobSuleman\HashtagCms\Http\Controllers\Auth\ForgotPasswordController@showLinkRequestForm
      *
      * Render page (@override)
-     * @param Request $request
+     *
      * @return array|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index(Request $request) {
+    public function index(Request $request)
+    {
 
         return parent::index($request);
 
     }
 
     /**
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
      */
 
     //Hint: password.email   | MarghoobSuleman\HashtagCms\Http\Controllers\Auth\ForgotPasswordController@sendResetLinkEmail
-    public function email(Request $request) {
-        if($request->method() == "GET") {
+    public function email(Request $request)
+    {
+        if ($request->method() == 'GET') {
             return $this->reset($request);
         }
         try {
@@ -73,25 +73,25 @@ class PasswordController extends FrontendBaseController
             return $this->sendResetLinkEmail($request);
 
         } catch (\Exception $exception) {
-            return redirect("/password/reset")
+            return redirect('/password/reset')
                 ->with('errorMessage', trans($exception->getMessage()));
         }
 
     }
 
     /**
-     * @param Request $request
-     * @param null $token
+     * @param  null  $token
      * @return array
      *
      * * If no token is present, display the link request form.
      */
 
     //Hint: password.reset   | MarghoobSuleman\HashtagCms\Http\Controllers\Auth\ResetPasswordController@showResetForm
-    public function reset(Request $request, $token=null) {
+    public function reset(Request $request, $token = null)
+    {
 
-        if($token != null) {
-            $this->bindDataForView("auth/passwords/email", array("token"=>$token, "email"=>$request->email));
+        if ($token != null) {
+            $this->bindDataForView('auth/passwords/email', ['token' => $token, 'email' => $request->email]);
         }
 
         return parent::index($request);
@@ -99,12 +99,12 @@ class PasswordController extends FrontendBaseController
     }
 
     /**
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
      */
 
     //Hint: password.update  | MarghoobSuleman\HashtagCms\Http\Controllers\Auth\ResetPasswordController@reset
-    public function update(Request $request) {
+    public function update(Request $request)
+    {
 
         $validator = Validator::make($request->all(), $this->rules());
 
@@ -120,10 +120,9 @@ class PasswordController extends FrontendBaseController
         // database. Otherwise we will parse the error and return the response.
         $response = $this->broker()->reset(
             $this->credentials($request), function ($user, $password) {
-            $this->resetPassword($user, $password);
-        }
+                $this->resetPassword($user, $password);
+            }
         );
-
 
         // If the password was successfully reset, we will redirect the user back to
         // the application's home authenticated view. If there is an error we can
@@ -164,7 +163,6 @@ class PasswordController extends FrontendBaseController
     /**
      * Get the password reset credentials from the request.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return array
      */
     protected function credentials(Request $request)
@@ -197,7 +195,6 @@ class PasswordController extends FrontendBaseController
     /**
      * Get the response for a successful password reset.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  string  $response
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
      */
@@ -210,7 +207,6 @@ class PasswordController extends FrontendBaseController
     /**
      * Get the response for a failed password reset.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  string  $response
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
      */
@@ -240,5 +236,4 @@ class PasswordController extends FrontendBaseController
     {
         return Auth::guard();
     }
-
 }

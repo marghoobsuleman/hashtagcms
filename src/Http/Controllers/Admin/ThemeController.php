@@ -2,66 +2,62 @@
 
 namespace MarghoobSuleman\HashtagCms\Http\Controllers\Admin;
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
-use Illuminate\Http\Request;
-
 use Illuminate\Validation\Rule;
-use MarghoobSuleman\HashtagCms\Models\Theme;
-use MarghoobSuleman\HashtagCms\Models\Site;
 use MarghoobSuleman\HashtagCms\Core\Helpers\Message;
+use MarghoobSuleman\HashtagCms\Models\Site;
+use MarghoobSuleman\HashtagCms\Models\Theme;
 
 class ThemeController extends BaseAdminController
 {
+    protected $dataFields = [
+        ['label' => 'ID', 'key' => 'id'],
+        ['label' => 'Name', 'key' => 'name'],
+        ['label' => 'Alias', 'key' => 'alias'],
+        ['label' => 'Directory', 'key' => 'directory'],
+    ];
 
-    protected $dataFields = array(
-        array("label" => "ID", "key" => "id"),
-        array("label" => "Name", "key" => "name"),
-        array("label" => "Alias", "key" => "alias"),
-        array("label" => "Directory", "key" => "directory")
-    );
-
-
-    protected $actionFields = array("edit", "delete");
+    protected $actionFields = ['edit', 'delete'];
 
     protected $dataSource = Theme::class;
 
     protected $minResults = 1;
 
-    protected $bindDataWithAddEdit = array("sites"=>array("dataSource"=>Site::class, "method"=>"all"));
+    protected $bindDataWithAddEdit = ['sites' => ['dataSource' => Site::class, 'method' => 'all']];
 
     //private $request;
 
     /**
-     * @param Request $request
      * @return \Illuminate\Http\RedirectResponse|mixed
      */
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
 
-        if(!$this->checkPolicy('edit')) {
-            return htcms_admin_view("common.error", Message::getWriteError());
+        if (! $this->checkPolicy('edit')) {
+            return htcms_admin_view('common.error', Message::getWriteError());
         }
 
         $rules = [
-            "site_id" => "required|numeric",
-            "name" => "required|max:60|string",
-            "alias"=> ["required", "max:60", "string",
+            'site_id' => 'required|numeric',
+            'name' => 'required|max:60|string',
+            'alias' => ['required', 'max:60', 'string',
                 Rule::unique('themes')->where(function ($query) use ($request) {
-                    $query->where('site_id', $request->input("site_id"))
-                        ->where('alias', $request->input("alias"));
+                    $query->where('site_id', $request->input('site_id'))
+                        ->where('alias', $request->input('alias'));
                 })],
-            "directory" => "required|max:60|string",
-            "body_class" => "nullable|max:255|string",
-            "img_preview" => "nullable|file",
-            "skeleton" => "required"
+            'directory' => 'required|max:60|string',
+            'body_class' => 'nullable|max:255|string',
+            'img_preview' => 'nullable|file',
+            'skeleton' => 'required',
         ];
 
-
-        if ($request->input("id") > 0) {
-            $rules["alias"] = Rule::unique('themes')->where(function ($query) use ($request) {
-                $query->where('site_id', $request->input("site_id"))
-                    ->where('alias', $request->input("alias"))
-                    ->where('id', '<>', $request->input("id"));
+        if ($request->input('id') > 0) {
+            $rules['alias'] = Rule::unique('themes')->where(function ($query) use ($request) {
+                $query->where('site_id', $request->input('site_id'))
+                    ->where('alias', $request->input('alias'))
+                    ->where('id', '<>', $request->input('id'));
             });
         }
 
@@ -78,44 +74,43 @@ class ThemeController extends BaseAdminController
 
         $module_name = request()->module_info->controller_name;
 
-        $saveData["name"] = $data["name"];
-        $saveData["alias"] = strtoupper($data["alias"]);
-        $saveData["site_id"] = $data["site_id"];
-        $saveData["skeleton"] = $data["skeleton"];
-        $saveData["directory"] = Str::kebab(strtolower($data["directory"]));
-        $saveData["body_class"] = $data["body_class"];
+        $saveData['name'] = $data['name'];
+        $saveData['alias'] = strtoupper($data['alias']);
+        $saveData['site_id'] = $data['site_id'];
+        $saveData['skeleton'] = $data['skeleton'];
+        $saveData['directory'] = Str::kebab(strtolower($data['directory']));
+        $saveData['body_class'] = $data['body_class'];
 
-        $saveData["header_content"] = $data["header_content"];
-        $saveData["footer_content"] = $data["footer_content"];
-
+        $saveData['header_content'] = $data['header_content'];
+        $saveData['footer_content'] = $data['footer_content'];
 
         //update Image
-        $img_preview = $this->upload($module_name, request()->file("img_preview"));
+        $img_preview = $this->upload($module_name, request()->file('img_preview'));
 
-        if($img_preview!=NULL) {
-            $saveData["img_preview"] = $img_preview;
+        if ($img_preview != null) {
+            $saveData['img_preview'] = $img_preview;
         }
 
-        if($data["img_preview_deleted"] != "0") {
-            $saveData["img_preview"] = "";
+        if ($data['img_preview_deleted'] != '0') {
+            $saveData['img_preview'] = '';
         }
 
-        $arrSaveData = array("model"=>$this->dataSource,  "data"=>$saveData);
+        $arrSaveData = ['model' => $this->dataSource,  'data' => $saveData];
 
-        if($data["actionPerformed"]=="edit") {
-            $where = $data["id"];
+        if ($data['actionPerformed'] == 'edit') {
+            $where = $data['id'];
             //This is in base controller
-            $savedData = $this->saveData($arrSaveData,$where);
+            $savedData = $this->saveData($arrSaveData, $where);
         } else {
             //This is in base controller
             $savedData = $this->saveData($arrSaveData);
         }
 
-        $viewData["id"] = $savedData["id"];;
-        $viewData["saveData"] = $data;
-        $viewData["backURL"] = $data["backURL"];
-        $viewData["isSaved"] = $savedData["isSaved"];
+        $viewData['id'] = $savedData['id'];
+        $viewData['saveData'] = $data;
+        $viewData['backURL'] = $data['backURL'];
+        $viewData['isSaved'] = $savedData['isSaved'];
 
-        return htcms_admin_view("common.saveinfo", $viewData);
+        return htcms_admin_view('common.saveinfo', $viewData);
     }
 }

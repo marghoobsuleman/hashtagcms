@@ -4,20 +4,19 @@ namespace MarghoobSuleman\HashtagCms\Models;
 
 use MarghoobSuleman\HashtagCms\Core\Scopes\LangScope;
 
-
 class CountryLang extends AdminBaseModel
 {
+    protected $guarded = [];
 
-    protected $guarded = array();
+    protected static function boot()
+    {
 
-    protected static function boot() {
-
-      parent::boot();
-      static::addGlobalScope(new LangScope);
+        parent::boot();
+        static::addGlobalScope(new LangScope);
     }
 
-
-    public function country() {
+    public function country()
+    {
         return $this->belongsTo(Country::class);
     }
 }

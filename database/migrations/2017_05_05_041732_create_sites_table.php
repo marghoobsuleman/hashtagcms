@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
@@ -11,18 +11,16 @@ return new class extends Migration
      *
      * @return void
      */
-
-
     public function up()
     {
 
-        Schema::create('sites', function(Blueprint $table) {
+        Schema::create('sites', function (Blueprint $table) {
             $table->id();
             $table->string('name', 100);
-            $table->bigInteger('category_id',false, true)->nullable()->comment('This is default category');
-            $table->bigInteger('theme_id',false, true)->nullable()->comment('This is default theme');
-            $table->bigInteger('platform_id',false, true)->nullable()->comment('This is default platform');
-            $table->bigInteger('lang_id',false, true)->nullable()->default(1)->comment('This is default language');
+            $table->bigInteger('category_id', false, true)->nullable()->comment('This is default category');
+            $table->bigInteger('theme_id', false, true)->nullable()->comment('This is default theme');
+            $table->bigInteger('platform_id', false, true)->nullable()->comment('This is default platform');
+            $table->bigInteger('lang_id', false, true)->nullable()->default(1)->comment('This is default language');
             $table->bigInteger('country_id', false, true)->nullable()->default(1)->comment('This is default country');
             $table->bigInteger('currency_id', false, true)->nullable()->default(1)->comment('This is default currency');
             $table->tinyInteger('under_maintenance')->nullable()->default(0);
@@ -72,7 +70,6 @@ return new class extends Migration
         Schema::dropIfExists('site_langs');
 
         Schema::enableForeignKeyConstraints();
-
 
     }
 };

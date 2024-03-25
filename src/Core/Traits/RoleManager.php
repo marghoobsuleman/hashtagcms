@@ -2,41 +2,43 @@
 
 namespace MarghoobSuleman\HashtagCms\Core\Traits;
 
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Arr;
-
+use Illuminate\Support\Facades\DB;
 use MarghoobSuleman\HashtagCms\Models\Role;
 
-trait RoleManager {
-
-    public function isSuperAdmin() {
+trait RoleManager
+{
+    public function isSuperAdmin()
+    {
 
         return $this->hasRole('super-admin') || $this->hasRole('super-duper-admin');
     }
 
-    public function roles() {
+    public function roles()
+    {
 
         return $this->belongsToMany(Role::class);
 
     }
 
-    public function hasRole($role) {
+    public function hasRole($role)
+    {
 
-        if(is_string($role)) {
+        if (is_string($role)) {
 
             return $this->roles->contains('name', $role);
 
         }
 
-        return !! $role->intersect($this->roles)->count();
+        return (bool) $role->intersect($this->roles)->count();
 
     }
 
     /**
      * Save Role
-     * @param $role
      */
-    public function assignRole($role) {
+    public function assignRole($role)
+    {
 
         $this->roles()->save($role);
 
@@ -44,10 +46,9 @@ trait RoleManager {
 
     /**
      * Save multiple roles
-     * @param $roles
-     *
      */
-    public function assignMultipleRole($roles) {
+    public function assignMultipleRole($roles)
+    {
 
         foreach ($roles as $role) {
             $this->roles()->save($role);
@@ -57,34 +58,34 @@ trait RoleManager {
 
     /**
      * Delete all roles
+     *
      * @return mixed
      */
-
-    public function detachAllRoles() {
+    public function detachAllRoles()
+    {
         return DB::table('role_user')->where('user_id', $this->id)->delete();
     }
 
-
     /**
      * Sicne this is not eager fetch. let's create a new one
+     *
      * @return array|\Illuminate\Database\Eloquent\Collection|static[]
      */
-    public function rights() {
+    public function rights()
+    {
 
-        $permission = array();
+        $permission = [];
         $user = self::find($this->id);
         //echo "id: ".$this->id;
-        if($user->hasRole('super-admin') || $this->hasRole('super-duper-admin')) {
+        if ($user->hasRole('super-admin') || $this->hasRole('super-duper-admin')) {
         } else {
             //can have multiple roles
             $roles = self::with('roles')->find($user->id)->roles->toArray();
             foreach ($roles as $role) {
-                $permission[] = Role::with('permissions')->find($role["id"])->permissions->pluck('name');
+                $permission[] = Role::with('permissions')->find($role['id'])->permissions->pluck('name');
             }
         }
+
         return array_unique(Arr::flatten($permission));
     }
-
-
-
 }

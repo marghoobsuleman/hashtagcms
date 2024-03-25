@@ -15,17 +15,17 @@ class ModuleSiteResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'siteId'=>$this->site_id,
-            'micrositeId'=>$this->microsite_id,
-            'platformId'=>$this->platform_id,
-            'categoryId'=>$this->category_id,
-            'hookId'=>$this->hook_id,
-            'moduleId'=>$this->module_id,
-            'position'=>$this->position,
-            'publishStatus'=>$this->publish_status,
-            'insertBy'=>$this->insert_by,
-            'updateBy'=>$this->update_by,
-            'approvedBy'=>$this->approved_by
+            'siteId' => $this->site_id,
+            'micrositeId' => $this->microsite_id,
+            'platformId' => $this->platform_id,
+            'categoryId' => $this->category_id,
+            'hookId' => $this->hook_id,
+            'moduleId' => $this->module_id,
+            'position' => $this->position,
+            'publishStatus' => $this->publish_status,
+            'insertBy' => $this->insert_by,
+            'updateBy' => $this->update_by,
+            'approvedBy' => $this->approved_by,
         ];
     }
 }

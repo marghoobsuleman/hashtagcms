@@ -3,17 +3,12 @@
 namespace MarghoobSuleman\HashtagCms\Console\Commands;
 
 use Illuminate\Console\Command;
-
 use Illuminate\Filesystem\Filesystem;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
-
-use Illuminate\Support\Str;
-
 
 class CmsFrontendControllerCommand extends Command
 {
     use Common;
+
     /**
      * The name and signature of the console command.
      *
@@ -30,13 +25,13 @@ class CmsFrontendControllerCommand extends Command
 
     protected $files;
 
-    private $paths = array(
-        "sourceDir"=>"hashtagcms/cmsmodule",
-        "sourceFile"=>"login.ms",
-        "tempDir"=>"storage/temp",
-        "targetDir"=>"Http/Controllers",
-        "vendor"=>"vendor/hashtagcms"
-    );
+    private $paths = [
+        'sourceDir' => 'hashtagcms/cmsmodule',
+        'sourceFile' => 'login.ms',
+        'tempDir' => 'storage/temp',
+        'targetDir' => 'Http/Controllers',
+        'vendor' => 'vendor/hashtagcms',
+    ];
 
     private $currentSourceFile;
 
@@ -61,49 +56,48 @@ class CmsFrontendControllerCommand extends Command
     public function handle()
     {
 
-        $this->init("fe");
-        $this->createController("Login");
+        $this->init('fe');
+        $this->createController('Login');
         $this->clean($this->currentSourceFile);
 
         //Change for other controller
-        $this->paths["sourceFile"] = "register.ms";
-        $this->init("fe");
-        $this->createController("Register");
+        $this->paths['sourceFile'] = 'register.ms';
+        $this->init('fe');
+        $this->createController('Register');
         $this->clean($this->currentSourceFile);
+
         return 1;
 
     }
 
-
     /**
      * Create controller
-     * @param $controller_name
      */
-    public function createController($controller_name) {
+    public function createController($controller_name)
+    {
 
-        if(!$this->isControllerExists($controller_name)) {
+        if (! $this->isControllerExists($controller_name)) {
             //Ask more question
             $this->replaceControllerContext($controller_name);
         }
 
     }
 
+    protected function replaceControllerContext($name)
+    {
 
-    protected function replaceControllerContext($name) {
-
-
-        $controller_name = $name."Controller";
+        $controller_name = $name.'Controller';
 
         $filename = $this->currentSourceFile;
 
         //Search pattern
-        $patterns = array();
-        $patterns["namespace"] = '/{{namespace}}/';
+        $patterns = [];
+        $patterns['namespace'] = '/{{namespace}}/';
 
         //replacement pattern
-        $replacements = array();
+        $replacements = [];
 
-        $replacements["namespace"] = $this->laravel->getNamespace();
+        $replacements['namespace'] = $this->laravel->getNamespace();
 
         $replaced = preg_replace(
             $patterns,
@@ -117,13 +111,11 @@ class CmsFrontendControllerCommand extends Command
             FILE_BINARY
         );
 
-        $targetFileName = $this->getValidTarget($this->paths['targetDir'].'/'.$controller_name.".php", 'app');
+        $targetFileName = $this->getValidTarget($this->paths['targetDir'].'/'.$controller_name.'.php', 'app');
         $this->files->copy($filename, $targetFileName);
 
         info('Controller created  '.$controller_name);
-        $this->alert($controller_name. " created successfully");
+        $this->alert($controller_name.' created successfully');
 
     }
-
-
 }

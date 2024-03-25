@@ -15,8 +15,8 @@ class LoadDataResource extends JsonResource
     public function toArray($request)
     {
         return [
-            "html"=>$this->html,
-            'meta'=>$this->meta
+            'html' => $this->html,
+            'meta' => $this->meta,
         ];
     }
 }

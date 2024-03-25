@@ -7,6 +7,7 @@ use Illuminate\Console\Command;
 class CmsValidatorCommand extends Command
 {
     use Common;
+
     /**
      * The name and signature of the console command.
      *
@@ -23,9 +24,7 @@ class CmsValidatorCommand extends Command
      */
     protected $description = '[#CMS]: Output validations fields from a table';
 
-
     protected $name;
-
 
     /**
      * Create a new command instance.
@@ -51,23 +50,21 @@ class CmsValidatorCommand extends Command
         return $data;
     }
 
-    public function createInit($name) {
+    public function createInit($name)
+    {
 
         //#1. Name?
-        if(empty($name)) {
+        if (empty($name)) {
             $name = $this->ask('Please enter table name...');
         }
 
         $validation_fields = $this->getValidationFields($name);
 
-        $this->info("");
-        $this->info("");
-        $this->info("[".$validation_fields."]");
-        $this->info("");
-        $this->info("");
-
+        $this->info('');
+        $this->info('');
+        $this->info('['.$validation_fields.']');
+        $this->info('');
+        $this->info('');
 
     }
-
-
 }

@@ -3,20 +3,20 @@
 namespace MarghoobSuleman\HashtagCms\Models;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
-use MarghoobSuleman\HashtagCms\Models\AdminBaseModel;
 use MarghoobSuleman\HashtagCms\Core\Scopes\SiteScope;
 
 class ModuleProp extends AdminBaseModel
 {
     use SoftDeletes;
 
-    protected $guarded = array();
+    protected $guarded = [];
 
     /**
      * @override
      * boot
      */
-    protected static function boot() {
+    protected static function boot()
+    {
 
         parent::boot();
         static::addGlobalScope(new SiteScope);
@@ -24,7 +24,6 @@ class ModuleProp extends AdminBaseModel
 
     /**
      * Get with lang
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function lang(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
@@ -33,7 +32,6 @@ class ModuleProp extends AdminBaseModel
 
     /**
      * Get with lang
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function langs(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
@@ -42,15 +40,16 @@ class ModuleProp extends AdminBaseModel
 
     /**
      * with module
+     *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function module() {
+    public function module()
+    {
         return $this->belongsTo(Module::class);
     }
 
-    public function platform() {
+    public function platform()
+    {
         return $this->belongsTo(Platform::class);
     }
-
-
 }

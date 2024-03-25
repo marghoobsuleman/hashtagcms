@@ -4,19 +4,15 @@ namespace MarghoobSuleman\HashtagCms\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
-
-use MarghoobSuleman\HashtagCms\Models\Country;
-use MarghoobSuleman\HashtagCms\Models\Site;
-use MarghoobSuleman\HashtagCms\Models\Lang;
 use MarghoobSuleman\HashtagCms\Core\Helpers\Message;
+use MarghoobSuleman\HashtagCms\Models\Lang;
+use MarghoobSuleman\HashtagCms\Models\Site;
 use PHPUnit\Exception;
 
 class LanguageController extends BaseAdminController
 {
-    protected $dataFields = ['id','name','iso_code','language_code','created_at','updated_at'];
+    protected $dataFields = ['id', 'name', 'iso_code', 'language_code', 'created_at', 'updated_at'];
 
     protected $dataSource = Lang::class;
 
@@ -24,36 +20,31 @@ class LanguageController extends BaseAdminController
 
     protected $minResults = 1;
 
-    protected $actionFields = array("edit", "delete"); //This is last column of the row
+    protected $actionFields = ['edit', 'delete']; //This is last column of the row
 
-    protected $moreActionBarItems = array(array("label"=>"Translator",
-        "as"=>"icon", "icon_css"=>"fa fa-language",
-        "action"=> "language/translator"));
-
+    protected $moreActionBarItems = [['label' => 'Translator',
+        'as' => 'icon', 'icon_css' => 'fa fa-language',
+        'action' => 'language/translator']];
 
     /*protected $bindDataWithAddEdit = array("zones"=>array("dataSource"=>Zone::class, "method"=>"all"),
                                         "currencies"=>array("dataSource"=>Currency::class, "method"=>"all"));*/
 
     /**
-     * @param Request $request
      * @return \Illuminate\Http\RedirectResponse|mixed
      */
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
 
-        if(!$this->checkPolicy('edit')) {
-            return htcms_admin_view("common.error", Message::getWriteError());
+        if (! $this->checkPolicy('edit')) {
+            return htcms_admin_view('common.error', Message::getWriteError());
         }
 
-        $rules = ["name" => "required|max:40|string",
-            "iso_code" => "required|max:2",
-            "language_code" => "required|max:5|string",
-            "date_format_lite" => "nullable|max:32|string",
-            "date_format_full" => "nullable|max:32|string",
-            "is_rtl" => "nullable|integer"];
-
-
-
-
+        $rules = ['name' => 'required|max:40|string',
+            'iso_code' => 'required|max:2',
+            'language_code' => 'required|max:5|string',
+            'date_format_lite' => 'nullable|max:32|string',
+            'date_format_full' => 'nullable|max:32|string',
+            'is_rtl' => 'nullable|integer'];
 
         $validator = Validator::make($request->all(), $rules);
 
@@ -66,24 +57,24 @@ class LanguageController extends BaseAdminController
 
         $data = $request->all();
 
-        $saveData["name"] = $data["name"];
-        $saveData["iso_code"] = $data["iso_code"];
-        $saveData["language_code"] = $data["language_code"];
-        $saveData["date_format_lite"] = $data["date_format_lite"];
-        $saveData["date_format_full"] = $data["date_format_full"];
-        $saveData["is_rtl"] = $data["is_rtl"] ?? 0;
+        $saveData['name'] = $data['name'];
+        $saveData['iso_code'] = $data['iso_code'];
+        $saveData['language_code'] = $data['language_code'];
+        $saveData['date_format_lite'] = $data['date_format_lite'];
+        $saveData['date_format_full'] = $data['date_format_full'];
+        $saveData['is_rtl'] = $data['is_rtl'] ?? 0;
 
         //date
-        $saveData["updated_at"] = htcms_get_current_date();
-        if($data["actionPerformed"] !== "edit") {
-            $saveData["created_at"] = htcms_get_current_date();
+        $saveData['updated_at'] = htcms_get_current_date();
+        if ($data['actionPerformed'] !== 'edit') {
+            $saveData['created_at'] = htcms_get_current_date();
         }
 
-        $arrSaveData = array("model"=>$this->dataSource,  "data"=>$saveData);
+        $arrSaveData = ['model' => $this->dataSource,  'data' => $saveData];
 
-        if($data["actionPerformed"]=="edit") {
+        if ($data['actionPerformed'] == 'edit') {
 
-            $where = $data["id"];
+            $where = $data['id'];
             //This is in base controller
             $savedData = $this->saveData($arrSaveData, $where);
             //$savedData = $this->saveDataWithLang($arrSaveData, $arrLangData, $where);
@@ -93,8 +84,8 @@ class LanguageController extends BaseAdminController
             $savedData = $this->saveData($arrSaveData);
 
             //Add default language in all tables based on new id
-            if($savedData["id"]) {
-                Lang::insertLangInAllTables($savedData["id"]);
+            if ($savedData['id']) {
+                Lang::insertLangInAllTables($savedData['id']);
             }
             //$savedData = $this->saveDataWithLang($arrSaveData, $arrLangData);
 
@@ -107,55 +98,58 @@ class LanguageController extends BaseAdminController
 
         }
 
-        $viewData["id"] = $savedData["id"];;
-        $viewData["saveData"] = $data;
-        $viewData["backURL"] = $data["backURL"];
-        $viewData["isSaved"] = $savedData["isSaved"];
+        $viewData['id'] = $savedData['id'];
+        $viewData['saveData'] = $data;
+        $viewData['backURL'] = $data['backURL'];
+        $viewData['isSaved'] = $savedData['isSaved'];
 
-        return htcms_admin_view("common.saveinfo", $viewData);
+        return htcms_admin_view('common.saveinfo', $viewData);
     }
 
     /**
      * Translate UI
-     * @param int $id
+     *
+     * @param  int  $id
      * @return mixed
      */
-    public function translator($id=0) {
-        $viewDatap["sites"] = Site::all();
-        $viewData["languages"] = Lang::all();
-        $viewData["backURL"] = $this->getBackURL();
-        $viewData["langTables"] = Lang::getAllLangTables();
-        $viewData["actionPerformed"] = "translation";
-        $viewData["id"] = $id;
-        return $this->viewNow( 'language.translator', $viewData);
-    }
+    public function translator($id = 0)
+    {
+        $viewDatap['sites'] = Site::all();
+        $viewData['languages'] = Lang::all();
+        $viewData['backURL'] = $this->getBackURL();
+        $viewData['langTables'] = Lang::getAllLangTables();
+        $viewData['actionPerformed'] = 'translation';
+        $viewData['id'] = $id;
 
+        return $this->viewNow('language.translator', $viewData);
+    }
 
     /**
      * Translate now
-     * @param int|NULL $fromLang
-     * @param int|NULL $fromSite
-     * @param int|NULL $toLang
-     * @param int|NULL $toSite
-     * @param array $tables
+     *
+     * @param  int|null  $fromLang
+     * @param  int|null  $fromSite
+     * @param  int|null  $toLang
+     * @param  int|null  $toSite
+     * @param  array  $tables
      * @return array
      */
-
-    public function translateNow(Request $request) {
-
+    public function translateNow(Request $request)
+    {
 
         $rules = [
-            "sourceLang" => "required|numeric",
-            "targetLang" => "required|numeric",
-            "tables" => "required"
+            'sourceLang' => 'required|numeric',
+            'targetLang' => 'required|numeric',
+            'tables' => 'required',
         ];
 
         $validator = Validator::make($request->all(), $rules);
 
         if ($validator->fails()) {
 
-            if($request->ajax()) {
-                $msg["errors"] = $validator->getMessageBag()->toArray();
+            if ($request->ajax()) {
+                $msg['errors'] = $validator->getMessageBag()->toArray();
+
                 return response()->json($msg, 400);
             } else {
                 return redirect()->back()
@@ -175,22 +169,21 @@ class LanguageController extends BaseAdminController
 
         $fromLang = $data['sourceLang'];
         $toLang = $data['targetLang'];
-        $tables = $data["tables"];
+        $tables = $data['tables'];
 
-        if(is_string($tables)) {
-            $tables = explode(",", $tables);
+        if (is_string($tables)) {
+            $tables = explode(',', $tables);
         }
 
-      /*  if($fromLang == NULL || $fromSite==NULL || $toLang==NULL || $toSite == NULL || sizeof($tables) == 0) {
-            return array("error"=>true, "message"=>"Parameter is missing or mismatch");
-        }*/
-
+        /*  if($fromLang == NULL || $fromSite==NULL || $toLang==NULL || $toSite == NULL || sizeof($tables) == 0) {
+              return array("error"=>true, "message"=>"Parameter is missing or mismatch");
+          }*/
 
         $mgsArr = [];
         foreach ($tables as $table) {
-            $rows = DB::select("select * from $table where lang_id=:lang_id", array("lang_id"=>$fromLang));
-            $targetRows = DB::select("select * from $table where lang_id=:lang_id", array("lang_id"=>$toLang));
-            if(count($targetRows) == 0) {
+            $rows = DB::select("select * from $table where lang_id=:lang_id", ['lang_id' => $fromLang]);
+            $targetRows = DB::select("select * from $table where lang_id=:lang_id", ['lang_id' => $toLang]);
+            if (count($targetRows) == 0) {
                 //manipulate data
                 foreach ($rows as $row) {
                     $row->lang_id = $toLang;
@@ -199,19 +192,17 @@ class LanguageController extends BaseAdminController
                 }
 
                 $status = $this->rawInsert($table, $rows);
-                $msg = ($status == 0) ? "There is some error while copying content." : "$table has been copied.";
+                $msg = ($status == 0) ? 'There is some error while copying content.' : "$table has been copied.";
             } else {
                 $status = 0;
                 $msg = "Language Id $toLang is already there in $table. Unable to copy";
             }
-            $mgsArr[] = array("status"=>$status, "table"=>$table, "message"=>$msg);
+            $mgsArr[] = ['status' => $status, 'table' => $table, 'message' => $msg];
         }
 
-        $data = array("isSaved"=>1, "message"=>$mgsArr);
+        $data = ['isSaved' => 1, 'message' => $mgsArr];
 
         return $data;
 
     }
-
-
 }

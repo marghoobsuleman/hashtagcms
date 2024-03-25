@@ -1,18 +1,17 @@
 <?php
 
 namespace MarghoobSuleman\HashtagCms\Http\Controllers;
-use MarghoobSuleman\HashtagCms\User;
+
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Auth\RedirectsUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-
+use MarghoobSuleman\HashtagCms\User;
 
 class RegisterController extends FrontendBaseController
 {
-
     /*
    |--------------------------------------------------------------------------
    | Register Controller
@@ -43,13 +42,13 @@ class RegisterController extends FrontendBaseController
     }
 
     /**
-     * @param Request $request     
      * @return array
      */
-    public function index(Request $request) {
+    public function index(Request $request)
+    {
 
         //Register
-        if($request->method() == "POST") {
+        if ($request->method() == 'POST') {
 
             $rules = [
                 'name' => 'required|string|max:255',
@@ -70,7 +69,7 @@ class RegisterController extends FrontendBaseController
         }
 
         //Login if already registered
-        if(Auth::id() > 0 ) {
+        if (Auth::id() > 0) {
             return redirect($this->redirectTo);
         }
 
@@ -81,7 +80,6 @@ class RegisterController extends FrontendBaseController
     /**
      * Create a new user instance after a valid registration.
      *
-     * @param  array  $data
      * @return \MarghoobSuleman\HashtagCms\User
      */
     protected function create(array $data)
@@ -90,15 +88,13 @@ class RegisterController extends FrontendBaseController
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
-            'user_type'=>'Visitor'
+            'user_type' => 'Visitor',
         ]);
     }
-
 
     /**
      * Handle a registration request for the application.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     private function register(Request $request)
@@ -125,7 +121,6 @@ class RegisterController extends FrontendBaseController
     /**
      * The user has been registered.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  mixed  $user
      * @return mixed
      */
@@ -133,5 +128,4 @@ class RegisterController extends FrontendBaseController
     {
         //
     }
-
 }

@@ -2,32 +2,33 @@
 
 namespace MarghoobSuleman\HashtagCms\Models;
 
-use MarghoobSuleman\HashtagCms\Core\Traits\Admin\Common;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use MarghoobSuleman\HashtagCms\Core\Traits\Admin\Common;
 
 class Role extends AdminBaseModel
 {
     use Common;
 
-    protected $guarded = array();
-
+    protected $guarded = [];
 
     /**
      * Get Permission
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function permissions() {
+    public function permissions()
+    {
         return $this->belongsToMany(Permission::class);
     }
 
     /**
      * Give Permission
-     * @param Permission $permission
+     *
      * @return Model
      */
-    public function givePermissionTo(Permission $permission) {
+    public function givePermissionTo(Permission $permission)
+    {
 
         return $this->permissions()->save($permission);
 
@@ -36,44 +37,44 @@ class Role extends AdminBaseModel
     /**
      * Assign All permissions
      *
-     * @param array $allPermissions
+     * @param  array  $allPermissions
      * @return array
      */
-
-    public function giveAllPermissionTo($allPermissions = array()) {
-        $saved = array();
+    public function giveAllPermissionTo($allPermissions = [])
+    {
+        $saved = [];
         foreach ($allPermissions as $permission) {
             $saved[] = $this->givePermissionTo($permission);
         }
+
         return $saved;
     }
 
     /**
      * Delete old permission
-     * @param $permission
+     *
+     * @param  $permission
      * @return mixed
      */
-    public function detachAllPermissions() {
+    public function detachAllPermissions()
+    {
         return DB::table('permission_role')->where('role_id', $this->id)->delete();
     }
-
 
     /**
      * @override
      * Find By Id
      *
-     * @param int $id
-     * @param string $with
+     * @param  int  $id
+     * @param  string  $with
      * @return array
      */
-    public static function getById($id=0, $with='') {
+    public static function getById($id = 0, $with = '')
+    {
 
         $data = parent::getById($id, 'permissions');
-        $data["permissions"] = self::pivotToArray($data["permissions"], "permission_id");;
+        $data['permissions'] = self::pivotToArray($data['permissions'], 'permission_id');
 
         return $data;
     }
-
-
-
 }

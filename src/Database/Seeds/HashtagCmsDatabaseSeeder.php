@@ -1,4 +1,5 @@
 <?php
+
 namespace MarghoobSuleman\HashtagCms\Database\Seeds;
 
 use Illuminate\Database\Seeder;
@@ -34,7 +35,6 @@ class HashtagCmsDatabaseSeeder extends Seeder
         //Cms Modules
         $this->call(CmsModulesTableSeeder::class);
 
-
         //User and Rights
         $this->call(UsersTableSeeder::class);
         //roles
@@ -43,7 +43,6 @@ class HashtagCmsDatabaseSeeder extends Seeder
         $this->call(PermissionsTableSeeder::class);
         //permission role
         $this->call(PermissionRoleTableSeeder::class);
-
 
         //Platforms
         $this->call(PlatformsTableSeeder::class);
@@ -54,13 +53,11 @@ class HashtagCmsDatabaseSeeder extends Seeder
         //Theme
         $this->call(ThemesTableSeeder::class);
 
-
         //category
         $this->call(CategoriesTableSeeder::class);
 
         //Modules
         $this->call(ModulesTableSeeder::class);
-
 
         //Site wise
         //country
@@ -89,7 +86,6 @@ class HashtagCmsDatabaseSeeder extends Seeder
 
         //Logs
         //$this->call(LogsTableSeeder::class);
-
 
         //Microsites
         $this->call(MicrositesTableSeeder::class);

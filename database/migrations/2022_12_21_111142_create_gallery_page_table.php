@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('gallery_page', function (Blueprint $table) {
             $table->unsignedBigInteger('gallery_id');
             $table->unsignedBigInteger('page_id');
-            $table->integer("position")->nullable();
+            $table->integer('position')->nullable();
         });
 
         //Relation
@@ -34,7 +34,6 @@ return new class extends Migration
 
         });
     }
-
 
     /**
      * Reverse the migrations.

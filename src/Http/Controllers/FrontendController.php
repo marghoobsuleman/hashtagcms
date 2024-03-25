@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 
 class FrontendController extends FrontendBaseController
 {
-
     public function __construct(Request $request)
     {
 
@@ -15,12 +14,12 @@ class FrontendController extends FrontendBaseController
     }
 
     /**
-     *
      * Render page (@override)
-     * @param Request $request
+     *
      * @return array|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index(Request $request) {
+    public function index(Request $request)
+    {
         return parent::index($request);
 
     }

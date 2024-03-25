@@ -3,17 +3,13 @@
 namespace MarghoobSuleman\HashtagCms\Console\Commands;
 
 use Illuminate\Console\Command;
-
 use Illuminate\Filesystem\Filesystem;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
-
 use Illuminate\Support\Str;
-
 
 class CmsModuleControllerCommand extends Command
 {
     use Common;
+
     /**
      * The name and signature of the console command.
      *
@@ -47,15 +43,15 @@ class CmsModuleControllerCommand extends Command
 
     protected $bindDataWithAddEdit;
 
-    private $paths = array(
-        "sourceDir"=>"hashtagcms/cmsmodule",
-        "sourceFile"=>"index.ms",
-        "tempDir"=>"storage/temp",
-        "targetDir"=>"Http/Controllers/Admin",
-        "vendor"=>"vendor/hashtagcms"
-    );
+    private $paths = [
+        'sourceDir' => 'hashtagcms/cmsmodule',
+        'sourceFile' => 'index.ms',
+        'tempDir' => 'storage/temp',
+        'targetDir' => 'Http/Controllers/Admin',
+        'vendor' => 'vendor/hashtagcms',
+    ];
 
-    private $views = array("addedit.ms"=>"addedit.blade.php");
+    private $views = ['addedit.ms' => 'addedit.blade.php'];
 
     private $currentSourceFile;
 
@@ -91,7 +87,7 @@ class CmsModuleControllerCommand extends Command
 
         $this->bindDataWithAddEdit = $this->argument('bindDataWithAddEdit');
 
-        $this->init("controller");
+        $this->init('controller');
 
         $data = $this->createController($this->name);
 
@@ -101,15 +97,14 @@ class CmsModuleControllerCommand extends Command
 
     }
 
-
     /**
      * Create controller
-     * @param $controller_name
      */
-    public function createController($controller_name) {
+    public function createController($controller_name)
+    {
 
         //#1. Name?
-        if(empty($controller_name)) {
+        if (empty($controller_name)) {
             $controller_name = $this->ask('Please enter controller name...');
         }
 
@@ -117,17 +112,17 @@ class CmsModuleControllerCommand extends Command
 
         $this->alert("Creating {$controller_name}Controller");
 
-        if(!$this->isAdminControllerExists($controller_name)) {
+        if (! $this->isAdminControllerExists($controller_name)) {
             //Ask more question
             $this->askQuestionAndCreateController($controller_name);
 
         } else {
 
-            $this->error("Controller already exist...");
+            $this->error('Controller already exist...');
 
-            $answer = $this->confirmMessage("Do you want to overwrite it?");
+            $answer = $this->confirmMessage('Do you want to overwrite it?');
 
-            if($answer=="Yes") {
+            if ($answer == 'Yes') {
                 //Ask more question
                 $this->askQuestionAndCreateController($controller_name);
             }
@@ -138,35 +133,34 @@ class CmsModuleControllerCommand extends Command
 
     }
 
-    protected function askQuestionAndCreateController($controller_name, $isExist=FALSE) {
+    protected function askQuestionAndCreateController($controller_name, $isExist = false)
+    {
 
         //#2: Question
-        if(empty($this->dataFields)) {
-            $this->dataFields = $this->ask("Please enter fields name (dataFields): You can write like: id, name, etc", "*");
+        if (empty($this->dataFields)) {
+            $this->dataFields = $this->ask('Please enter fields name (dataFields): You can write like: id, name, etc', '*');
         }
-
 
         //$this->dataFields = explode(",", $this->dataFields);
         //$this->dataFields = explode(",", $this->dataFields);
 
         //#3: Question
-        if(empty($this->dataSource)) {
-            $this->dataSource = $this->ask("Please enter model name: (dataSource): ", Str::title($this->name));
+        if (empty($this->dataSource)) {
+            $this->dataSource = $this->ask('Please enter model name: (dataSource): ', Str::title($this->name));
         }
 
         $this->dataSource = Str::title($this->dataSource);
 
-
         $dataWith = $this->getDataWith($this->dataSource);
 
-        if($dataWith == NULL || $dataWith == "null") {
-            $dataWith = NULL;
+        if ($dataWith == null || $dataWith == 'null') {
+            $dataWith = null;
             $this->setDataWith($this->dataSource, $dataWith);
         }
 
-        if(empty($dataWith) && $dataWith!=NULL) {
-            $data = $this->ask("Any relation with another model? (dataWith) type 'null' if no relation with other model. ie. ", "lang");
-            $data = (strtolower($data) == "null" || empty(trim($data))) ? NULL : $data;
+        if (empty($dataWith) && $dataWith != null) {
+            $data = $this->ask("Any relation with another model? (dataWith) type 'null' if no relation with other model. ie. ", 'lang');
+            $data = (strtolower($data) == 'null' || empty(trim($data))) ? null : $data;
             $this->setDataWith($this->dataSource, $data);
 
         }
@@ -175,67 +169,65 @@ class CmsModuleControllerCommand extends Command
 
         $this->replaceControllerContext($controller_name);
 
-        $this->info("Controller created successfully.");
+        $this->info('Controller created successfully.');
 
     }
 
-    protected function replaceControllerContext($name) {
+    protected function replaceControllerContext($name)
+    {
 
-
-        $controller_name = Str::title($name)."Controller";
+        $controller_name = Str::title($name).'Controller';
 
         $filename = $this->currentSourceFile;
 
         //Search pattern
-        $patterns = array();
-        $patterns["namespace"] = '/{{namespace}}/';
-        $patterns["controller_name"] = '/{{controller_name}}/';
-        $patterns["dataFields"] = '/{{dataFields}}/';
-        $patterns["dataSource"] = '/{{dataSource}}/';
-        $patterns["dataWith"] = '/{{dataWith}}/';
-        $patterns["actionFields"] = '/{{actionFields}}/';
-        $patterns["bindDataWithAddEdit"] = '/{{bindDataWithAddEdit}}/';
+        $patterns = [];
+        $patterns['namespace'] = '/{{namespace}}/';
+        $patterns['controller_name'] = '/{{controller_name}}/';
+        $patterns['dataFields'] = '/{{dataFields}}/';
+        $patterns['dataSource'] = '/{{dataSource}}/';
+        $patterns['dataWith'] = '/{{dataWith}}/';
+        $patterns['actionFields'] = '/{{actionFields}}/';
+        $patterns['bindDataWithAddEdit'] = '/{{bindDataWithAddEdit}}/';
 
-        $patterns["validationFields"] = '/{{validationFields}}/';
-
+        $patterns['validationFields'] = '/{{validationFields}}/';
 
         //replacement pattern
-        $replacements = array();
+        $replacements = [];
 
-        $replacements["namespace"] = $this->laravel->getNamespace();
-        $replacements["controller_name"] = $controller_name;
+        $replacements['namespace'] = $this->laravel->getNamespace();
+        $replacements['controller_name'] = $controller_name;
 
-        $this->dataFields = str_replace(" ", "", $this->dataFields);
+        $this->dataFields = str_replace(' ', '', $this->dataFields);
 
         $dataFields = $this->dataFields;
 
-        if($dataFields!="*") {
-            $dataFields = explode(",", $this->dataFields);
-            $dataFields = "['".join("','", $dataFields)."']";
+        if ($dataFields != '*') {
+            $dataFields = explode(',', $this->dataFields);
+            $dataFields = "['".implode("','", $dataFields)."']";
         } else {
             $dataFields = "'*'";
         }
 
-
-        $replacements["dataFields"] = $dataFields;
-        $replacements["dataSource"] = Str::title($this->dataSource);
+        $replacements['dataFields'] = $dataFields;
+        $replacements['dataSource'] = Str::title($this->dataSource);
 
         $dataWith = $this->getDataWith($this->dataSource);
 
-        if(!empty($dataWith)) {
-            $dataWith = explode(",", $dataWith);
-            $dataWith = "['".join("','", $dataWith)."']";
+        if (! empty($dataWith)) {
+            $dataWith = explode(',', $dataWith);
+            $dataWith = "['".implode("','", $dataWith)."']";
         } else {
             $dataWith = "''";
         }
 
-        $replacements["dataWith"] = $dataWith;
+        $replacements['dataWith'] = $dataWith;
 
-        $replacements["actionFields"] = 'array("edit", "delete")';
-        $replacements["bindDataWithAddEdit"] = 'array("zones"=>array("dataSource"=>Zone::class, "method"=>"all"),
+        $replacements['actionFields'] = 'array("edit", "delete")';
+        $replacements['bindDataWithAddEdit'] = 'array("zones"=>array("dataSource"=>Zone::class, "method"=>"all"),
                                             "currencies"=>array("dataSource"=>Currency::class, "method"=>"all"))';
 
-        $replacements["validationFields"] = $this->getValidationFields($name);
+        $replacements['validationFields'] = $this->getValidationFields($name);
 
         $replaced = preg_replace(
             $patterns,
@@ -249,39 +241,37 @@ class CmsModuleControllerCommand extends Command
             FILE_BINARY
         );
 
-        $targetFileName = $this->getValidTarget($this->paths['targetDir'].'/'.$controller_name.".php", 'app');
+        $targetFileName = $this->getValidTarget($this->paths['targetDir'].'/'.$controller_name.'.php', 'app');
         $this->files->copy($filename, $targetFileName);
 
         info('Controller created  '.$controller_name);
 
     }
 
-
     /**
      * Copy views
-     * @param $name
      */
-    private function copyViews($name) {
+    private function copyViews($name)
+    {
         $name = strtolower($name); //Controller name
 
         $adminBaseResourceFolder = htcms_admin_base_resource();
         $vendor = $this->paths['vendor'];
 
-        $viewDir = $vendor.'/'.$adminBaseResourceFolder."/".strtolower($name);
+        $viewDir = $vendor.'/'.$adminBaseResourceFolder.'/'.strtolower($name);
         $viewFolder = resource_path('views/'.$viewDir);
-
 
         if (! $this->files->isDirectory($viewFolder)) {
             $this->files->makeDirectory($viewFolder, 0755, true, true);
         }
 
-        $this->alert("creating views...");
-        foreach ($this->views as $s=>$t) {
+        $this->alert('creating views...');
+        foreach ($this->views as $s => $t) {
             $source = $this->getValidSourceFileName($this->paths['sourceDir'].'/views/'.$s);
-            $target = resource_path("views/".$vendor.'/'.$adminBaseResourceFolder."/$name/".$t);
-            if(!$this->files->exists($target)) {
+            $target = resource_path('views/'.$vendor.'/'.$adminBaseResourceFolder."/$name/".$t);
+            if (! $this->files->exists($target)) {
                 $this->files->copy($source, $target);
-                $this->info("Copied: ".$target);
+                $this->info('Copied: '.$target);
             }
         }
 
@@ -289,13 +279,13 @@ class CmsModuleControllerCommand extends Command
 
     /********* common ***************/
 
-    protected function setDataWith($model_name, $value) {
+    protected function setDataWith($model_name, $value)
+    {
         $this->dataWith[strtolower($model_name)] = $value;
     }
 
-    protected function getDataWith($model_name) {
-        return $this->dataWith[strtolower($model_name)] ?? NULL;
+    protected function getDataWith($model_name)
+    {
+        return $this->dataWith[strtolower($model_name)] ?? null;
     }
-
-
 }

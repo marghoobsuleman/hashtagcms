@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
@@ -43,11 +43,10 @@ return new class extends Migration
 
             $table->bigInteger('currency_id', false, true);
             $table->bigInteger('site_id', false, true);
-            $table->decimal('conversion_rate', 13,6)->nullable()->default(1.000000);
+            $table->decimal('conversion_rate', 13, 6)->nullable()->default(1.000000);
             $table->integer('markup')->nullable()->default(0);
             $table->enum('markup_type', ['Percent', 'Fixed'])->nullable()->default('Fixed');
         });
-
 
         Schema::table('currency_site', function (Blueprint $table) {
 
@@ -63,7 +62,6 @@ return new class extends Migration
 
             $table->primary(['currency_id', 'site_id']);
         });
-
 
         //Site Zone
         Schema::create('site_zone', function (Blueprint $table) {
@@ -123,7 +121,7 @@ return new class extends Migration
             $table->softDeletes();
         });
 
-        Schema::table("lang_site", function (Blueprint $table) {
+        Schema::table('lang_site', function (Blueprint $table) {
 
             $table->foreign('lang_id')
                 ->references('id')
@@ -187,7 +185,7 @@ return new class extends Migration
         });
 
         //Relation
-        Schema::table("module_site", function (Blueprint $table) {
+        Schema::table('module_site', function (Blueprint $table) {
 
             //on site
             $table->foreign('site_id')
@@ -219,7 +217,7 @@ return new class extends Migration
                 ->on('modules')
                 ->onDelete('cascade');
 
-           $table->primary(['site_id', 'platform_id', 'category_id', 'hook_id', 'module_id'], 'platform_site_category_hook_module');
+            $table->primary(['site_id', 'platform_id', 'category_id', 'hook_id', 'module_id'], 'platform_site_category_hook_module');
 
         });
 

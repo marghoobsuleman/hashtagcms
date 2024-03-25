@@ -8,14 +8,15 @@ class Tag extends AdminBaseModel
 {
     use SoftDeletes;
 
-    protected $guarded = array();
+    protected $guarded = [];
 
     /**
-     * Get all images with the tag 
+     * Get all images with the tag
+     *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function gallery() {
+    public function gallery()
+    {
         return $this->belongsToMany(Gallery::class);
     }
-
 }

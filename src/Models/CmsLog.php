@@ -1,18 +1,19 @@
 <?php
 
 namespace MarghoobSuleman\HashtagCms\Models;
+
 use MarghoobSuleman\HashtagCms\Core\Scopes\SiteScope;
 
 class CmsLog extends AdminBaseModel
 {
-
-    protected $table = "logs";
+    protected $table = 'logs';
 
     /**
      * @override
      * boot
      */
-    protected static function boot() {
+    protected static function boot()
+    {
 
         parent::boot();
         static::addGlobalScope(new SiteScope);
@@ -21,14 +22,16 @@ class CmsLog extends AdminBaseModel
     /**
      * @return void
      */
-    public function user() {
+    public function user()
+    {
         return $this->belongsTo(User::class);
     }
 
     /**
      * @return void
      */
-    public function module() {
+    public function module()
+    {
         return $this->belongsTo(CmsModule::class);
     }
 }

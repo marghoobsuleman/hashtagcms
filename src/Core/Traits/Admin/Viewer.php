@@ -1,46 +1,43 @@
 <?php
+
 namespace MarghoobSuleman\HashtagCms\Core\Traits\Admin;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
-
 use MarghoobSuleman\HashtagCms\Models\CmsModule;
 use MarghoobSuleman\HashtagCms\Models\CmsPermission;
 
-
-trait Viewer {
-
+trait Viewer
+{
     /**
-     * @param $data
-     * @param $viewName
-     * @param bool $checkPolicy
+     * @param  bool  $checkPolicy
      * @return mixed
      */
-    public function viewNow($viewName, $data, $checkPolicy=TRUE) {
+    public function viewNow($viewName, $data, $checkPolicy = true)
+    {
 
-        if($checkPolicy==TRUE) {
+        if ($checkPolicy == true) {
 
-            if(!$this->checkPolicy('read')) {
+            if (! $this->checkPolicy('read')) {
 
-                return htcms_admin_view("common.error");
+                return htcms_admin_view('common.error');
 
             }
         }
 
         return htcms_admin_view($viewName, $data);
 
-
     }
 
-
     /**
-     * @param null $module_name
+     * @param  null  $module_name
      * @return array
      */
-    public function getModuleInfo($module_name=NULL) {
+    public function getModuleInfo($module_name = null)
+    {
 
         //info("module_name: ".$module_name. " request module id ".request()->module_info->id);
-        $id = ($module_name==NULL) ? request()->module_info->id : CmsModule::getInfoByName($module_name)->id;
+        $id = ($module_name == null) ? request()->module_info->id : CmsModule::getInfoByName($module_name)->id;
 
         $isSuperAdmin = Auth::user()->isSuperAdmin();
 
@@ -52,25 +49,26 @@ trait Viewer {
     }
 
     /**
-     * @param $rights - 'read'|'write' etc
+     * @param  $rights  - 'read'|'write' etc
      * @return bool
      */
-    protected function checkPolicy($rights='', $module=NULL) {
+    protected function checkPolicy($rights = '', $module = null)
+    {
 
         //return false;
 
         $moduleInfo = $this->getModuleInfo($module);
 
-       // info("moduleInfo: ". json_encode($moduleInfo));
+        // info("moduleInfo: ". json_encode($moduleInfo));
 
-        if(!$moduleInfo['isSuperAdmin']) {
+        if (! $moduleInfo['isSuperAdmin']) {
 
             //handle special case. User has rights but readonly for a module
-            switch($rights) {
-                case "edit":
+            switch ($rights) {
+                case 'edit':
                     //User can edit but we want to give readonly on a module.
-                    if($this->isReadOnly($moduleInfo['permission'])==TRUE) {
-                        return FALSE;
+                    if ($this->isReadOnly($moduleInfo['permission']) == true) {
+                        return false;
                     }
                     break;
 
@@ -78,25 +76,24 @@ trait Viewer {
 
             //info("rights: $rights ".$moduleInfo['permission']." id: ".Auth::user()->id);
             //$this->authorize($rights);
-            if(Gate::denies($rights, $moduleInfo['permission']) || $moduleInfo['permission'] == FALSE) {
-                return FALSE;
+            if (Gate::denies($rights, $moduleInfo['permission']) || $moduleInfo['permission'] == false) {
+                return false;
 
             }
 
         }
 
-        return TRUE;
+        return true;
 
     }
 
     /**
      * check if it has readonly access for a module
-     * @param $moduleInfo
+     *
      * @return bool
      */
-    private function isReadOnly($moduleInfo) {
-        return ($moduleInfo == FALSE) ? TRUE : (($moduleInfo->readonly==1) ? TRUE : FALSE);
+    private function isReadOnly($moduleInfo)
+    {
+        return ($moduleInfo == false) ? true : (($moduleInfo->readonly == 1) ? true : false);
     }
-
-
 }

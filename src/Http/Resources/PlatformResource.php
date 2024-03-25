@@ -15,9 +15,9 @@ class PlatformResource extends JsonResource
     public function toArray($request)
     {
         return [
-            "id"=>$this->id,
-            "name"=>$this->name,
-            "linkRewrite"=>$this->link_rewrite
+            'id' => $this->id,
+            'name' => $this->name,
+            'linkRewrite' => $this->link_rewrite,
         ];
     }
 }

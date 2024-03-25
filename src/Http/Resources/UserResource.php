@@ -15,25 +15,26 @@ class UserResource extends JsonResource
     public function toArray($request)
     {
         $data = [
-            "id"=>$this->id,
-            "name"=>$this->name,
-            "email"=>$this->email,
-            "emailVerifiedAt"=>$this->email_verified_at,
-            "facebookUserId"=>$this->facebook_user_id,
-            "googleUserId"=>$this->google_user_id,
-            "userType"=>$this->user_type
+            'id' => $this->id,
+            'name' => $this->name,
+            'email' => $this->email,
+            'emailVerifiedAt' => $this->email_verified_at,
+            'facebookUserId' => $this->facebook_user_id,
+            'googleUserId' => $this->google_user_id,
+            'userType' => $this->user_type,
         ];
         if (isset($this->profile)) {
-            $data["profile"] = [
-                "fatherName"=>$this->profile->father_name,
-                "motherName"=>$this->profile->mother_name,
-                "idCardType"=>$this->profile->id_card_type,
-                "idCardNumber"=>$this->profile->id_card_number,
-                "mobile"=>$this->profile->mobile,
-                "dateOfBirth"=>$this->profile->date_of_birth,
-                "gender"=>$this->profile->gender
+            $data['profile'] = [
+                'fatherName' => $this->profile->father_name,
+                'motherName' => $this->profile->mother_name,
+                'idCardType' => $this->profile->id_card_type,
+                'idCardNumber' => $this->profile->id_card_number,
+                'mobile' => $this->profile->mobile,
+                'dateOfBirth' => $this->profile->date_of_birth,
+                'gender' => $this->profile->gender,
             ];
         }
+
         return $data;
     }
 }

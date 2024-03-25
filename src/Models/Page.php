@@ -2,19 +2,19 @@
 
 namespace MarghoobSuleman\HashtagCms\Models;
 
-use MarghoobSuleman\HashtagCms\Core\Scopes\SiteScope;
 use Illuminate\Support\Facades\DB;
-
+use MarghoobSuleman\HashtagCms\Core\Scopes\SiteScope;
 
 class Page extends AdminBaseModel
 {
-    protected $guarded = array();
+    protected $guarded = [];
 
     /**
      * @override
      * boot
      */
-    protected static function boot() {
+    protected static function boot()
+    {
 
         parent::boot();
         static::addGlobalScope(new SiteScope);
@@ -22,59 +22,65 @@ class Page extends AdminBaseModel
 
     /**
      * Get with lang
+     *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function lang() {
-        return $this->hasOne(PageLang::class,"page_id");
+    public function lang()
+    {
+        return $this->hasOne(PageLang::class, 'page_id');
     }
 
     /**
      * With Langs
+     *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function langs() {
+    public function langs()
+    {
         return $this->hasMany(PageLang::class)->withoutGlobalScopes();
     }
 
     /**
      * Get content type
+     *
      * @return array
      */
-    public static function getContentTypes() {
+    public static function getContentTypes()
+    {
         return static::getEnumValues('pages', 'content_type');
     }
 
     /**
      * Get menu placement
+     *
      * @return array
      */
-    public static function getMenuPlacements() {
-        return array("top", "top-right", "left", "right", "bottom", "bottom-right", "other");
+    public static function getMenuPlacements()
+    {
+        return ['top', 'top-right', 'left', 'right', 'bottom', 'bottom-right', 'other'];
     }
-
 
     /**
      * Get latest blog
-     * @param $siteId
-     * @param $langId
-     * @param null $link_rewrite
-     * @param int $limit
+     *
+     * @param  null  $link_rewrite
      * @return mixed
      */
-    public static function getLatestBlog($siteId, $langId, $link_rewrite=null, int $limit=10) {
+    public static function getLatestBlog($siteId, $langId, $link_rewrite = null, int $limit = 10)
+    {
 
-        $where = array(
-            array("pages.site_id", "=", $siteId),
-            array("page_langs.lang_id", "=", $langId),
-            array("pages.publish_status", "=", 1),
-            array("pages.deleted_at", "=", null)
-        );
+        $where = [
+            ['pages.site_id', '=', $siteId],
+            ['page_langs.lang_id', '=', $langId],
+            ['pages.publish_status', '=', 1],
+            ['pages.deleted_at', '=', null],
+        ];
 
-        if($link_rewrite!=null) {
-            if(is_array($link_rewrite)) {
+        if ($link_rewrite != null) {
+            if (is_array($link_rewrite)) {
 
             } else {
-                $where[] = array("categories.link_rewrite", "=", "$link_rewrite");
+                $where[] = ['categories.link_rewrite', '=', "$link_rewrite"];
             }
         }
 
@@ -89,20 +95,20 @@ class Page extends AdminBaseModel
                 'page_langs.name', 'page_langs.title', 'page_langs.description', 'page_langs.page_content',
                 'page_langs.link_relation', 'page_langs.target', 'page_langs.active_key');
 
-        if(is_array($link_rewrite)) {
-            $query = $query->whereIn("categories.link_rewrite", $link_rewrite);
+        if (is_array($link_rewrite)) {
+            $query = $query->whereIn('categories.link_rewrite', $link_rewrite);
         }
 
-        $results = $query->where($where)->orderBy("pages.created_at", "DESC")->paginate($limit);
+        $results = $query->where($where)->orderBy('pages.created_at', 'DESC')->paginate($limit);
 
-        if(count($results) > 0) {
+        if (count($results) > 0) {
             foreach ($results as $result) {
                 //dd($result);
-                $whereComment = array(
-                    array("category_id", "=", $result->category_id),
-                    array("page_id", "=", $result->id)
-                );
-                $result->comments_count  = Comment::where($whereComment)->count();
+                $whereComment = [
+                    ['category_id', '=', $result->category_id],
+                    ['page_id', '=', $result->id],
+                ];
+                $result->comments_count = Comment::where($whereComment)->count();
             }
         }
 
@@ -111,18 +117,21 @@ class Page extends AdminBaseModel
 
     /**
      * Get with category
+     *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function category() {
+    public function category()
+    {
         return $this->belongsTo(Category::class);
     }
 
     /**
      * with gallery
+     *
      * @return void
      */
-    public function gallery() {
-        return $this->belongsToMany(Gallery::class)->withPivot("position");
+    public function gallery()
+    {
+        return $this->belongsToMany(Gallery::class)->withPivot('position');
     }
-
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace MarghoobSuleman\HashtagCms\Database\Seeds;
 
 use Illuminate\Database\Seeder;
@@ -15,11 +16,11 @@ class CurrencySiteTableSeeder extends Seeder
     {
         $table_name = 'currency_site';
 
-        $currency_site = array(
-            array('currency_id' => '4','site_id' => '1','conversion_rate' => '0.021730','markup' => '0','markup_type' => 'Fixed')
-        );
+        $currency_site = [
+            ['currency_id' => '4', 'site_id' => '1', 'conversion_rate' => '0.021730', 'markup' => '0', 'markup_type' => 'Fixed'],
+        ];
 
-        if(DB::table($table_name)->get()->count() == 0) {
+        if (DB::table($table_name)->get()->count() == 0) {
             DB::table($table_name)->insert($currency_site);
 
         } else {

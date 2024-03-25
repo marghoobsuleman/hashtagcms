@@ -2,10 +2,7 @@
 
 namespace MarghoobSuleman\HashtagCms\Models;
 
-
 class Microsite extends AdminBaseModel
 {
-
-    protected $guarded = array();
-
+    protected $guarded = [];
 }

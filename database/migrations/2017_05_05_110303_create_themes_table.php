@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('themes', function(Blueprint $table){
+        Schema::create('themes', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('site_id', false, true);
             $table->string('name', 60);
@@ -27,7 +27,6 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
         });
-
 
         //Relation on site
         Schema::table('themes', function (Blueprint $table) {

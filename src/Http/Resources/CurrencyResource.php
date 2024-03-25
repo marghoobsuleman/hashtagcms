@@ -9,7 +9,7 @@ class CurrencyResource extends JsonResource
     /**
      * Transform the resource into an array.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
      */
     public function toArray($request)
@@ -26,7 +26,7 @@ class CurrencyResource extends JsonResource
             'conversionRate' => $this->conversion_rate,
             'conversionRateForSite' => $this->pivot->conversion_rate,
             'markup' => $this->pivot->markup,
-            'markupType' => $this->pivot->markup_type
+            'markupType' => $this->pivot->markup_type,
         ];
     }
 }

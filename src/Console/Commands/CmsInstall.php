@@ -2,18 +2,16 @@
 
 namespace MarghoobSuleman\HashtagCms\Console\Commands;
 
-use MarghoobSuleman\HashtagCms\Models\SiteProp;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
-use Symfony\Component\Console\Output\StreamOutput;
 use Illuminate\Support\Facades\DB;
-
 use Illuminate\Support\Facades\Schema;
+use MarghoobSuleman\HashtagCms\Models\SiteProp;
 
 class CmsInstall extends Command
 {
-
     protected $composer;
+
     /**
      * The name and signature of the console command.
      *
@@ -46,47 +44,47 @@ class CmsInstall extends Command
     public function handle()
     {
         try {
-            if(DB::connection()->getDatabaseName()) {
+            if (DB::connection()->getDatabaseName()) {
                 $hasTable = Schema::hasTable('migrations');
                 $hasPropsTable = Schema::hasTable('site_props');
 
-                if(!$hasTable || !$hasPropsTable) {
+                if (! $hasTable || ! $hasPropsTable) {
 
-                    $this->installNow("migrate");
+                    $this->installNow('migrate');
 
                     //export some js too
-                    Artisan::call("vendor:publish", [
-                        '--tag'=>'hashtagcms.assets'
+                    Artisan::call('vendor:publish', [
+                        '--tag' => 'hashtagcms.assets',
                     ]);
 
-                    Artisan::call("vendor:publish", [
-                        '--tag'=>'hashtagcms.views.frontend'
+                    Artisan::call('vendor:publish', [
+                        '--tag' => 'hashtagcms.views.frontend',
                     ]);
-                    Artisan::call("vendor:publish", [
-                        '--tag'=>'hashtagcms.views.admincommon'
+                    Artisan::call('vendor:publish', [
+                        '--tag' => 'hashtagcms.views.admincommon',
                     ]);
 
                     $this->showInstallationInfo();
 
-                } else if($hasPropsTable) {
+                } elseif ($hasPropsTable) {
 
-                    $installInfo = SiteProp::where("name", "site_installed")->first();
-                    if($installInfo == null) {
-                        $this->info("Tables are empty!");
-                        $this->askQuestionAndInstall("Would you like to to try again? [Y/N]");
-                    } else if($installInfo && $installInfo->value == 1) {
+                    $installInfo = SiteProp::where('name', 'site_installed')->first();
+                    if ($installInfo == null) {
+                        $this->info('Tables are empty!');
+                        $this->askQuestionAndInstall('Would you like to to try again? [Y/N]');
+                    } elseif ($installInfo && $installInfo->value == 1) {
 
-                        $this->askQuestionAndInstall("Looks like site is already configured. Would you like to fresh install? [Y/N]");
+                        $this->askQuestionAndInstall('Looks like site is already configured. Would you like to fresh install? [Y/N]');
 
                     } else {
                         //If it's been in database
-                        $this->info("");
+                        $this->info('');
                         $this->error("It's already installed.");
                         $this->showInstallationInfo();
                     }
                 }
             } else {
-                $this->error("Got some error.");
+                $this->error('Got some error.');
             }
         } catch (\Exception $exception) {
             $this->error("\nUnable to connect database. Did you change the .env file?\n");
@@ -95,39 +93,39 @@ class CmsInstall extends Command
         }
     }
 
-    private function askQuestionAndInstall($question) {
+    private function askQuestionAndInstall($question)
+    {
         $fresh = $this->ask($question);
-        $fresh = (strtolower($fresh) == "y" || strtolower($fresh) == "yes") ? "yes" : "no";
+        $fresh = (strtolower($fresh) == 'y' || strtolower($fresh) == 'yes') ? 'yes' : 'no';
 
-        if($fresh=="yes") {
-            $this->installNow("migrate:fresh");
+        if ($fresh == 'yes') {
+            $this->installNow('migrate:fresh');
             $this->showInstallationInfo();
         } else {
-            $this->error("Installation cancelled.");
+            $this->error('Installation cancelled.');
         }
     }
 
-    private function installNow($installation) {
-        $this->alert("Installing HashtagCMS. Please wait...");
+    private function installNow($installation)
+    {
+        $this->alert('Installing HashtagCMS. Please wait...');
 
-        $this->info("> Creating Tables...");
+        $this->info('> Creating Tables...');
 
         Artisan::call($installation);
 
-        $this->info("> Seeding Tables...");
+        $this->info('> Seeding Tables...');
 
-        Artisan::call("db:seed", [
-            '--class'=>'MarghoobSuleman\\HashtagCms\\Database\\Seeds\\HashtagCmsDatabaseSeeder'
+        Artisan::call('db:seed', [
+            '--class' => 'MarghoobSuleman\\HashtagCms\\Database\\Seeds\\HashtagCmsDatabaseSeeder',
         ]);
 
     }
 
+    private function showInstallationInfo()
+    {
 
-
-
-    private function showInstallationInfo() {
-
-        $siteInstall = env("APP_URL")."/install";
+        $siteInstall = env('APP_URL').'/install';
         $this->alert("Please visit $siteInstall to configure your site.");
     }
 }

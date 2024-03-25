@@ -4,18 +4,14 @@ namespace MarghoobSuleman\HashtagCms\Core\ViewComposers\Admin;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
-
 use MarghoobSuleman\HashtagCms\Models\CmsModule;
 use MarghoobSuleman\HashtagCms\Models\User;
 
-
 class CmsModuleComposer
 {
-
     /**
      * Bind data to the view.
      *
-     * @param  View  $view
      * @return void
      */
     public function compose(View $view)
