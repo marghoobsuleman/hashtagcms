@@ -42,10 +42,7 @@
         "laravel": {
             "aliases": {
                 "HashtagCms": "MarghoobSuleman\\HashtagCms\\Facades\\HashtagCms"
-            },
-            "providers": [
-                "MarghoobSuleman\\HashtagCms\\HashtagCmsServiceProvider"
-            ]
+            }
         }
     }
 }

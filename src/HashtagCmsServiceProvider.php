@@ -54,8 +54,6 @@ class HashtagCmsServiceProvider extends ServiceProvider
         }
         $this->bootForControllerToo();
 
-        //$this->addProviderToBootstrapFile();
-
     }
 
     /**
