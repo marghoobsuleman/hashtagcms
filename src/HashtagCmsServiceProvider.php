@@ -3,6 +3,7 @@
 namespace MarghoobSuleman\HashtagCms;
 
 use Illuminate\Routing\Router;
+use Illuminate\Routing\RouteRegistrar;
 use Illuminate\Support\ServiceProvider;
 use MarghoobSuleman\HashtagCms\Console\Commands\CmsFrontendControllerCommand;
 use MarghoobSuleman\HashtagCms\Console\Commands\CmsInstall;
@@ -26,7 +27,7 @@ class HashtagCmsServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(RouteRegistrar $router)
     {
 
         //More providers for admin and frontend
@@ -47,7 +48,10 @@ class HashtagCmsServiceProvider extends ServiceProvider
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
 
         $this->loadRoutesFrom(__DIR__.'/routes/api.php');
-        $this->loadRoutesFrom(__DIR__.'/routes/web.php');
+        //$this->loadRoutesFrom(__DIR__.'/routes/web.php');
+        $router->group([], function () use ($router) {
+            require __DIR__.'/routes/web.php'; // Path to your package's routes file
+        });
 
         // Publishing is only necessary when using the CLI.
         if ($this->app->runningInConsole()) {
