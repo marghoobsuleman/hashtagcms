@@ -9,6 +9,7 @@ use MarghoobSuleman\HashtagCms\Console\Commands\CmsInstall;
 use MarghoobSuleman\HashtagCms\Console\Commands\CmsModuleControllerCommand;
 use MarghoobSuleman\HashtagCms\Console\Commands\CmsModuleModelCommand;
 use MarghoobSuleman\HashtagCms\Console\Commands\CmsValidatorCommand;
+use MarghoobSuleman\HashtagCms\Console\Commands\Cmsversion;
 use MarghoobSuleman\HashtagCms\Core\Middleware\Admin\BeMiddleware;
 use MarghoobSuleman\HashtagCms\Core\Middleware\Admin\CmsModuleInfo;
 use MarghoobSuleman\HashtagCms\Core\Middleware\API\ETag;
@@ -156,6 +157,7 @@ class HashtagCmsServiceProvider extends ServiceProvider
             CmsModuleModelCommand::class,
             CmsModuleControllerCommand::class,
             CmsFrontendControllerCommand::class,
+            Cmsversion::class
         ]);
     }
 }
