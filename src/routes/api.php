@@ -11,8 +11,8 @@ $callable = config('hashtagcms.namespace')."Http\Controllers\Api\\";
 Route::get('api/hashtagcms/health-check', function (Request $request) {
     return ['result' => 'okay'];
 });
-
-Route::middleware(['api', 'etag'])->prefix('api/hashtagcms/public')->group(function () use ($callable) {
+//'api', 'etag' - will add etag later
+Route::middleware(['api'])->prefix('api/hashtagcms/public')->group(function () use ($callable) {
 
     /**
      * Registration: V1
