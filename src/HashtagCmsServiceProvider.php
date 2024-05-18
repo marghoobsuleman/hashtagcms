@@ -13,7 +13,7 @@ use MarghoobSuleman\HashtagCms\Console\Commands\CmsValidatorCommand;
 use MarghoobSuleman\HashtagCms\Console\Commands\Cmsversion;
 use MarghoobSuleman\HashtagCms\Core\Middleware\Admin\BeMiddleware;
 use MarghoobSuleman\HashtagCms\Core\Middleware\Admin\CmsModuleInfo;
-use MarghoobSuleman\HashtagCms\Core\Middleware\API\ETag;
+use MarghoobSuleman\HashtagCms\Core\Middleware\API\Etag;
 use MarghoobSuleman\HashtagCms\Core\Middleware\FeMiddleware;
 use MarghoobSuleman\HashtagCms\Core\Providers\Admin\AdminServiceProvider;
 use MarghoobSuleman\HashtagCms\Core\Providers\FeServiceProvider;
@@ -41,17 +41,26 @@ class HashtagCmsServiceProvider extends ServiceProvider
 
         //Middleware for Frontend
         $router->aliasMiddleware('interceptor', FeMiddleware::class);
-        $router->aliasMiddleware('etag', ETag::class);
+        $router->aliasMiddleware('etag', Etag::class);
 
         $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'hashtagcms');
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'hashtagcms');
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
 
+        // Laravel 11 should not remove the route provider from the app config.
+        // This is a workaround to define the priority of routes.
+        // It is necessary for this package.
+        // Why?
+        // If your routes exist in the main route file, they are given priority over the package's routes.
+
+        if(is_file(resource_path('../routes/web.php'))) {
+            $this->loadRoutesFrom(resource_path('../routes/web.php'), function ($router) {
+                // silence is the bliss
+            });
+        }
+        //packages routes
         $this->loadRoutesFrom(__DIR__.'/routes/api.php');
-        //$this->loadRoutesFrom(__DIR__.'/routes/web.php');
-        $router->group([], function () use ($router) {
-            require __DIR__.'/routes/web.php'; // Path to your package's routes file
-        });
+        $this->loadRoutesFrom(__DIR__.'/routes/web.php');
 
         // Publishing is only necessary when using the CLI.
         if ($this->app->runningInConsole()) {

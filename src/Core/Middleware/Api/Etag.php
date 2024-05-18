@@ -5,7 +5,7 @@ namespace MarghoobSuleman\HashtagCms\Core\Middleware\Api;
 use Closure;
 use Illuminate\Http\Request;
 
-class ETag
+class Etag
 {
     /**
      * Handle an incoming request.
