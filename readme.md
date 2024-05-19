@@ -19,8 +19,7 @@ composer require marghoobsuleman/hashtagcms
 ```
 
 ## Hashtag CMS installation guidelines
-
-- Open `bootstrap/providers.php` and add below line in the array.
+- Open `config/app.php` and add below line in the array. (only needed less than v1.4.3 version)  
 ``` bash
 MarghoobSuleman\HashtagCms\HashtagCmsServiceProvider::class
 ```
