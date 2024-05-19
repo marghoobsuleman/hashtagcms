@@ -1,6 +1,6 @@
 # Changelog
 #v1.4.3 Changes
-- Laravel 11 support
+- Laravel 11 support and cleanup
 
 #v1.4.2 Changes
 - Backend/Frontend/API: Added festival support. You can add lottie and schedule it.
