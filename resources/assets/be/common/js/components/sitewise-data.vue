@@ -69,7 +69,8 @@ import {Loader, Toast} from '../helpers/common';
             'dataCurrentKey',
             'dataSiteId',
             'dataDefaultActionForSave',
-            'dataAlertCss'
+            'dataAlertCss',
+            'dataControllerName'
         ],
         data() {
             return {
@@ -81,6 +82,7 @@ import {Loader, Toast} from '../helpers/common';
                 message:(typeof this.dataMessage == "undefined") ? '' : this.dataMessage,
                 defaultActionForSave:(typeof this.dataDefaultActionForSave === "undefined") ? "saveSettings" : this.dataDefaultActionForSave,
                 alertCss:(typeof this.dataAlertCss == "undefined" || this.dataAlertCss === "") ? 'alert alert-info' : this.dataAlertCss,
+                controllerName:(typeof this.dataControllerName === "undefined") ? "site" : this.dataControllerName
             }
         },
         computed: {
@@ -140,7 +142,7 @@ import {Loader, Toast} from '../helpers/common';
                         postParams.ids = ids;
                         postParams.site_id = this.siteId;
                         postParams.action = action;
-                        this.saveNow(AdminConfig.admin_path("site/"+this.defaultActionForSave), postParams).then(function (res) {
+                        this.saveNow(AdminConfig.admin_path(this.controllerName+"/"+this.defaultActionForSave), postParams).then(function (res) {
 
                             feedback(res);
 

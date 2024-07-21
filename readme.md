@@ -70,6 +70,12 @@ php artisan test vendor/marghoobsuleman/hashtagcms
 ```
 
 ## Change log [more...](changelog.md)
+
+#v1.4.4 Changes
+- Backend: Module creator has a typo bug. x was added mistakenly. Fixed.
+- Backend: Site-wise component has been updated. 
+- General: API bug fixes.
+
 #v1.4.3 Changes
 - Laravel 11 support and cleanup
 
@@ -82,10 +88,6 @@ php artisan test vendor/marghoobsuleman/hashtagcms
   and manipulate your data and return it. Works for API and views.
 - Do not forget to run php artisan migrate if you are upgrading.
 
-#v1.4.1 Changes
-- Backend: Export the correct folder (neo) while installing the package
-- General: Code cleanup
-- General: Added webpack.mix.js and package.json while exporting assets in resource/support
 
 ### More logs [changelog](changelog.md) for more information on what has changed recently.
 

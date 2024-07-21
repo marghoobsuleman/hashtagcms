@@ -11,7 +11,7 @@
 
         //print_r($results);
 
-        if(isset($results)) {
+        if(!empty($results)) {
             extract($results);
         }
 

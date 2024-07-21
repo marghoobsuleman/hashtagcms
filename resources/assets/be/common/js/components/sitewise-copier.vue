@@ -50,7 +50,8 @@
             'dataSiteData',
             'dataCurrentKey',
             'dataSiteId',
-            'dataAlertCss'
+            'dataAlertCss',
+            'dataControllerName'
         ],
         data() {
             return {
@@ -60,7 +61,8 @@
                 currentKey:this.dataCurrentKey,
                 searchKey:'',
                 siteId:parseInt(this.dataSiteId),
-                currentSite:''
+                currentSite:'',
+                controllerName:(typeof this.dataControllerName === "undefined") ? "site" : this.dataControllerName
             }
         },
         methods: {
@@ -100,7 +102,7 @@
             getBySite() {
                 if(this.currentSite !== "") {
                     let what = this.currentKey;
-                    let url = AdminConfig.admin_path("site/getBySite/"+this.currentSite+"/"+what);
+                    let url = AdminConfig.admin_path(this.controllerName+"/getBySite/"+this.currentSite+"/"+what);
                     this.showHdeLoader(true);
                     axios.get(url).then(response=> {
                         this.populateData(response.data);
@@ -128,7 +130,7 @@
                                 type:this.currentKey
                 };
                 this.showHdeLoader(true);
-                let url = AdminConfig.admin_path("site/copySettings");
+                let url = AdminConfig.admin_path(this.controllerName+"/copySettings");
                 axios.post(url, postData).then(response=> {
                     console.log(response);
                     feedback(response);
@@ -175,7 +177,7 @@
                         type:this.currentKey
                     };
 
-                let url = AdminConfig.admin_path("site/removeSettings");
+                let url = AdminConfig.admin_path(this.controllerName+"/removeSettings");
                 this.showHdeLoader(true);
                 axios.post(url, postData).then(response=> {
                     feedback(response);

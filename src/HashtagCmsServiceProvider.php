@@ -47,15 +47,21 @@ class HashtagCmsServiceProvider extends ServiceProvider
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'hashtagcms');
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
 
-        // Laravel 11 should not remove the route provider from the app config.
+        // Laravel 11 should not remove the route provider from the app config. (not happy)
         // This is a workaround to define the priority of routes.
         // It is necessary for this package.
         // Why?
         // If your routes exist in the main route file, they are given priority over the package's routes.
+        // If you are reading this and have better solution. please connect me at marghoobsuleman@gmail.com
 
         if(is_file(resource_path('../routes/web.php'))) {
             $this->loadRoutesFrom(resource_path('../routes/web.php'), function ($router) {
-                // silence is the bliss
+                // don't do anything
+            });
+        }
+        if(is_file(resource_path('../routes/api.php'))) {
+            $this->loadRoutesFrom(resource_path('../routes/api.php'), function ($router) {
+                // don't do anything
             });
         }
         //packages routes
