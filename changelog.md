@@ -1,9 +1,8 @@
 # Changelog
 #v1.4.4 Changes
 - Backend: Module creator has a typo bug. x was added mistakenly. Fixed.
-- Backend: Site-wise component has been updated
-- General: API bug fixes
-
+- Backend: Js module -> Site-wise component has been updated. It is now generic for similar purpose task. 
+- General: API bug fixes.
 
 #v1.4.3 Changes
 - Laravel 11 support and cleanup
