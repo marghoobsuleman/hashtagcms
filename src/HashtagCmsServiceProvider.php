@@ -86,6 +86,7 @@ class HashtagCmsServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__.'/../config/hashtagcms.php', $this->groupName);
         $this->mergeConfigFrom(__DIR__.'/../config/hashtagcmsadmin.php', $this->groupName.'admin');
         $this->mergeConfigFrom(__DIR__.'/../config/hashtagcmscommon.php', $this->groupName.'common');
+        $this->mergeConfigFrom(__DIR__.'/../config/hashtagcmsapi.php', $this->groupName.'api');
 
         // Register the service the package provides.
         $this->app->singleton('hashtagcms', function ($app) {

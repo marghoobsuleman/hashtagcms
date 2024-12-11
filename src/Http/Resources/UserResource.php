@@ -21,8 +21,15 @@ class UserResource extends JsonResource
             'emailVerifiedAt' => $this->email_verified_at,
             'facebookUserId' => $this->facebook_user_id,
             'googleUserId' => $this->google_user_id,
-            'userType' => $this->user_type,
+            'userType' => $this->user_type
         ];
+        if (isset($this->roles)) {
+            $data['roles'] = $this->roles->pluck("name");
+        }
+        //site_user
+        if (isset($this->sites)) {
+            $data['sites'] = $this->sites->pluck(["context"]);
+        }
         if (isset($this->profile)) {
             $data['profile'] = [
                 'fatherName' => $this->profile->father_name,

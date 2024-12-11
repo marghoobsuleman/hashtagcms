@@ -69,7 +69,9 @@ http://www.hashtagcms.org/install
 php artisan test vendor/marghoobsuleman/hashtagcms
 ```
 
-## Change log [more...](changelog.md)
+## Recent change logs [more...](changelog.md)
+#v1.4.5 Changes
+- API: Return expiry and roles, sites in user info
 
 #v1.4.4 Changes
 - Backend: Module creator has a typo bug. x was added mistakenly. Fixed.

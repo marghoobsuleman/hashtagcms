@@ -101,7 +101,7 @@ class AuthController extends ApiBaseController
 
         return ['access_token' => $tokens->plainTextToken,
             'scope' => $tokens->accessToken->abilities,
-            'expires_at' => $tokens->accessToken->expires_at];
+            'expires_at' => date("Y-m-d H:i:s", strtotime($tokens->accessToken->created_at.' '.config('hashtagcmsapi.login_session')))];
     }
 
     /**

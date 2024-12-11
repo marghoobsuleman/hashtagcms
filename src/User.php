@@ -6,7 +6,10 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use MarghoobSuleman\HashtagCms\Core\Traits\RoleManager;
+use MarghoobSuleman\HashtagCms\Models\Site;
 use MarghoobSuleman\HashtagCms\Models\UserProfile;
+use MarghoobSuleman\HashtagCms\Models\Role;
+use MarghoobSuleman\HashtagCms\Models\UserSite;
 
 class User extends Authenticatable
 {
@@ -45,5 +48,14 @@ class User extends Authenticatable
     public function profile()
     {
         return $this->hasOne(UserProfile::class);
+    }
+
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class, 'role_user');
+    }
+    public function sites()
+    {
+        return $this->belongsToMany(Site::class, 'site_user');
     }
 }
