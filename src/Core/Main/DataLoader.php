@@ -688,7 +688,6 @@ class DataLoader
     private function parseCategoryUrl(string $path): array
     {
         // if path is "/" -> search for / category or get the default site category link_rewrite
-
         $pathArr = explode('/', $path);
         $linkRewrite = $pathArr[0];
         $param = '';
@@ -697,9 +696,12 @@ class DataLoader
             array_shift($pathArr); //remove first one
             $param = implode('/', $pathArr);
         }
-
-        $categoryData = Category::with(['lang'])->where([['link_rewrite', '=', $linkRewrite], ['publish_status', '=', 1]])
-            ->orWhere([['link_rewrite', '=', $path], ['publish_status', '=', 1]])->get();
+        //dd("linkRewrite ".$linkRewrite);
+        //get the priority for the full path first
+        $categoryData = Category::with(['lang'])->where([['link_rewrite', '=', $path], ['publish_status', '=', 1]])->get();
+        if ($categoryData->count() == 0) {
+            $categoryData = Category::with(['lang'])->where([['link_rewrite', '=', $linkRewrite], ['publish_status', '=', 1]])->get();
+        }
         if ($categoryData->count() > 0) {
             foreach ($categoryData as $category) {
                 if ($category->link_rewrite === $path) {
@@ -710,7 +712,7 @@ class DataLoader
             $selectedCategory = ($selectedCategory !== null) ? $selectedCategory : $categoryData[0];
         }
         $isParamRequired = Str::contains($selectedCategory->link_rewrite_pattern ?? '', '?') ? false : true;
-
+        //dd("selectedCategory ".$selectedCategory);
         return ['linkRewrite' => $linkRewrite, 'param' => $param, 'fullPath' => $path, 'categoryData' => $selectedCategory, 'paramRequired' => $isParamRequired];
     }
 
