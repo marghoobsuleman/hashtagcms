@@ -4,7 +4,7 @@
 [![Total Downloads][ico-downloads]][link-downloads]
 
 
-Headless CMS, Use it as Headless CMS or Bundled, API enabled, 
+Hashtag CMS, Use it as Headless CMS or Bundled, API enabled, 
 Admin Panel, multisite/multi-tenant, multiplatform, multilingual with endless possibilities.
 The Most powerful, fast, user-friendly and secured platform. Made with PHP Laravel Framework.
 
