@@ -1,4 +1,7 @@
 # Changelog
+#v1.4.6 Changes
+- General: Laravel v12 support
+
 #v1.4.5 Changes
 - API: Return expiry and roles, sites in user info
 
