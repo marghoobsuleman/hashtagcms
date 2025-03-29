@@ -9,11 +9,7 @@ export default class Analytics {
     }
     readCounter(data) {
 
-        this.submit("post", "/analytics/publish", data).then(function (data) {
-
-        }).catch(function (data) {
-            console.error(data);
-        })
+        this.submit("post", "/analytics/publish", data);
     }
 
     /**
@@ -21,8 +17,13 @@ export default class Analytics {
      *
      * @param {string} requestType
      * @param {string} url
+     * @param data
      */
     submit(requestType, url, data) {
+        /*data = new Blob([JSON.stringify(data)], {type : 'application/json'});
+        data.csrfToken = window.Laravel.csrfToken;
+        console.log("data",data);
+        navigator.sendBeacon(url, data);*/
         return new Promise((resolve, reject) => {
             axios[requestType](url, data)
                 .then(response => {

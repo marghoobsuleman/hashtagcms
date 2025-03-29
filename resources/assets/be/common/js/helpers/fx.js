@@ -1,4 +1,4 @@
-import { animate,glide } from "motion";
+import { animate,easeIn } from "motion";
 export class Fx {
 
     static come(div, cb) {
@@ -61,7 +61,7 @@ export class Fx {
         animate(
             div,
             { x: 0 },
-            { easing: glide({ velocity: - (window.outerWidth + div.getBoundingClientRect().width) }) }
+            { easing: easeIn({ velocity: - (window.outerWidth + div.getBoundingClientRect().width) }) }
         ).finished.then(() => {
             if(cb) {
                 cb.apply(this, arguments);
@@ -74,7 +74,7 @@ export class Fx {
         animate(
             div,
             { x: 0 },
-            { easing: glide({ velocity: (window.outerWidth + div.getBoundingClientRect().width) }) }
+            { easing: easeIn({ velocity: (window.outerWidth + div.getBoundingClientRect().width) }) }
         ).finished.then(() => {
             if(cb) {
                 cb.apply(this, arguments);

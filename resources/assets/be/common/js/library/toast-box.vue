@@ -5,10 +5,7 @@
         </div>
     </div>
 </template>
-<style>
-    .toasterHolder{width:auto;min-width:200px;background:#333333; padding:10px; text-align:center; float:left;color:#fff; font-size:11px; letter-spacing:1px; -moz-border-radius:5px; border-radius:5px; z-index: 9999; position: absolute;}
-    .toasterHolder .toasterContent{text-align:center; color:#fff;}
-</style>
+
 <script>
     export default {
         mounted() {

@@ -70,6 +70,9 @@ php artisan test vendor/marghoobsuleman/hashtagcms
 ```
 
 ## Recent change logs [more...](changelog.md)
+#v1.4.7 Changes
+- General: Moved to webpack from laravelmix
+
 #v1.4.6 Changes
 - General: Laravel v12 support
 
