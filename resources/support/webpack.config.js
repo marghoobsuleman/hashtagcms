@@ -67,11 +67,28 @@ let themesForBackend = [
 
 let toBeBuildF = makeArrays(themesForFrontend, `resources/assets${package_dir}/fe`, `public/assets${package_dir}/fe`);
 let toBeBuildB =  makeArrays(themesForBackend, `resources/assets${package_dir}/be`, `public/assets${package_dir}/be`);
+//add installer
+toBeBuildB.entries[`public/assets/installer/js/installer`] = `./resources/assets${package_dir}/js/installer.js`;
 
-console.log({...toBeBuildB.entries, ...toBeBuildF.entries});
+let buildEntries = {};
+let buildCopies = [];
+let mode = process.env.MODE;
 
+if (mode === 'fe') {
+    console.log("Building Frontend...");
+    buildEntries = toBeBuildF.entries;
+    buildCopies = toBeBuildF.copies;
+} else if(mode === 'be') {
+    console.log("Building Backend...");
+    buildEntries = toBeBuildB.entries;
+    buildCopies = toBeBuildB.copies;
+} else {
+    console.log("Building Everything...");
+    buildEntries = {...toBeBuildB.entries, ...toBeBuildF.entries};
+    buildCopies = [...toBeBuildB.copies, ...toBeBuildF.copies];
+}
+console.log(buildEntries);
 console.log("Please wait. Building...");
-
 module.exports = {
     stats: {
         all: false,
@@ -79,7 +96,7 @@ module.exports = {
         errorDetails: true
     },
     mode: 'development',
-    entry: {...toBeBuildB.entries, ...toBeBuildF.entries},
+    entry: buildEntries,
     output: {
         filename: '[name].js',
         path: path.resolve(__dirname),
@@ -117,7 +134,7 @@ module.exports = {
             filename: '[name].css',
         }),
         new CopyWebpackPlugin({
-            patterns: [...toBeBuildB.copies, ...toBeBuildF.copies]
+            patterns: buildCopies
         }),
         {
             apply: (compiler) => {

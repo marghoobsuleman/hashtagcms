@@ -24,7 +24,11 @@
   "homepage": "https://github.com/marghoobsuleman/hashtagcms#readme",
   "scripts": {
     "dev": "webpack --mode development --watch",
-    "build": "webpack --mode production"
+    "build": "webpack --mode production",
+    "devFe": "cross-env MODE=fe webpack --mode development --watch",
+    "devBe": "cross-env MODE=be webpack --mode development --watch",
+    "buildFe": "cross-env MODE=fe webpack --mode production",
+    "buildBe": "cross-env MODE=be webpack --mode production"
   },
   "dependencies": {
     "axios": "^1.8.4",
@@ -48,6 +52,7 @@
     "babel-loader": "^10.0.0",
     "clean-webpack-plugin": "^4.0.0",
     "copy-webpack-plugin": "^13.0.0",
+    "cross-env": "^7.0.3",
     "css-loader": "^7.1.2",
     "cssnano": "^7.0.6",
     "mini-css-extract-plugin": "^2.9.2",
