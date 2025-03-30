@@ -28,8 +28,12 @@ export class Fx {
     static highlight(div, cb) {
         div = (typeof div === "string") ? document.getElementById(div) : div;
         let backgroundColor = div.style.backgroundColor === "" ? "#fff" : div.style.backgroundColor;
-        animate(div, { backgroundColor:"#fff3cd" },{ duration: 0.5 }).finished.then(() => {
-            animate(div, { backgroundColor:backgroundColor },{ duration: 1 }).finished.then(() => {
+        if (div.nodeName === "TR") {
+            div = div.querySelectorAll("td");
+        }
+        animate(div, { "background-color":"#fff3cd" },{ duration: 0.5 }
+        ).finished.then(() => {
+            animate(div, { "background-color":backgroundColor },{ duration: 1 }).finished.then(() => {
                 if(cb) {
                     cb.apply(this, arguments);
                 }
@@ -80,5 +84,11 @@ export class Fx {
                 cb.apply(this, arguments);
             }
         });
+    }
+
+    static cssAnimate(ele, css) {
+        ele = (typeof ele === "string") ? document.querySelector(ele) : ele;
+        ele.classList.remove( "animated", css);
+        ele.classList.add( "animated", css);
     }
 }
