@@ -40,6 +40,8 @@
 
 {!! app()->HashtagCms->layoutManager()->getFooterContent(); !!}
 
+{!! app()->HashtagCms->layoutManager()->renderStack('scripts') !!}
+
 @if(env('GOOGLE_TAG_MANAGER_KEY') != '')
     <script async
             src="https://www.googletagmanager.com/gtag/js?id=<?php echo env('GOOGLE_TAG_MANAGER_KEY'); ?>"></script>

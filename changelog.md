@@ -1,4 +1,7 @@
 # Changelog
+#v1.4.9 Changes
+- Frontend: Added directive support: app()->HashtagCms->layoutManager()->renderStack('scripts')
+
 #v1.4.8 Changes
 - General: Fixed route issue
 

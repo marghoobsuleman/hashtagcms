@@ -70,9 +70,12 @@ php artisan test vendor/marghoobsuleman/hashtagcms
 ```
 
 ## Recent change logs [more...](changelog.md)
+#v1.4.9 Changes
+- Frontend: Added directive support: app()->HashtagCms->layoutManager()->renderStack('scripts')
+
 #v1.4.8 Changes
 - General: Fixed route issue
-- 
+
 #v1.4.7 Changes
 - General: Moved to webpack from laravelmix
 

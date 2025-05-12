@@ -41,6 +41,8 @@ class LayoutManager extends Results
 
     private static bool $mandatoryModuleCheck = true;
 
+    private array $directives = [];
+
     public function __construct()
     {
         parent::__construct();
@@ -536,14 +538,71 @@ class LayoutManager extends Results
      */
     public function viewMake(string $name, array $data = [], array $mergeData = []): mixed
     {
-
         $newData = array_merge($data['data'], $mergeData);
         $data['data'] = $newData;
 
-        $viewData = view()->make($name, $data, $mergeData)->render();
+        // Create a view instance without rendering it
+        $view = view()->make($name, $data, $mergeData);
+
+        // Get the view path to access the raw content before rendering
+        try {
+            $viewPath = $view->getPath();
+
+            if (file_exists($viewPath)) {
+                // Process the view content before rendering
+                $rawContent = file_get_contents($viewPath);
+
+                // Process @push directives if needed
+                $pushPattern = "/@push\s*\(\s*['\"]([^'\"]+)['\"]\s*\)([\s\S]*?)@endpush/";
+                preg_match_all($pushPattern, $rawContent, $pushMatches, PREG_SET_ORDER);
+
+                if (!empty($pushMatches)) {
+                    foreach ($pushMatches as $match) {
+                        $stackName = $match[1];
+                        $stackContent = trim($match[2]);
+
+                        // Store the directive content for later use
+                        $this->pushToDirectives([
+                            'type' => 'push',
+                            'name' => $stackName,
+                            'content' => $stackContent
+                        ]);
+                    }
+                }
+
+                // Process @stack directives
+                $stackPattern = "/@stack\s*\(\s*['\"]([^'\"]+)['\"]\s*\)/";
+                preg_match_all($stackPattern, $rawContent, $stackMatches, PREG_SET_ORDER);
+
+                if (!empty($stackMatches)) {
+                    foreach ($stackMatches as $match) {
+                        $stackName = $match[1];
+
+                        // Store the stack directive for later use
+                        $this->pushToDirectives([
+                            'type' => 'stack',
+                            'name' => $stackName,
+                            'content' => ''
+                        ]);
+                    }
+                }
+            }
+        } catch (\Exception $e) {
+            logger()->error('Error processing view directives: ' . $e->getMessage());
+        }
+
+        // Extract the view content as a string
+        $viewData = $view->render();
+
+        // Remove @push directives from the rendered content
+        $pushPattern = "/@push\s*\(\s*['\"]([^'\"]+)['\"]\s*\)([\s\S]*?)@endpush/";
+        $viewData = preg_replace($pushPattern, '', $viewData);
+
+        // Remove @stack directives from the rendered content
+        $stackPattern = "/@stack\s*\(\s*['\"]([^'\"]+)['\"]\s*\)/";
+        $viewData = preg_replace($stackPattern, '', $viewData);
 
         //check if it has another module
-
         //@todo: We need another api here if it's external - make it data loader
         $pattern = "/\%{cms.module.+}\%/";
         preg_match_all($pattern, $viewData, $matches); //PREG_OFFSET_CAPTURE
@@ -557,7 +616,6 @@ class LayoutManager extends Results
                 $vData = view()->make($this->getViewName($moduleInfo->view_name), ['data' => $mData])->render();
 
                 $viewData = str_replace("%{cms.module.$val}%", $vData, $viewData);
-
             }
         }
 
@@ -886,5 +944,54 @@ class LayoutManager extends Results
         $themeFolder = $this->getThemeFolder();
 
         return 'hashtagcms::fe.'.$themeFolder;
+    }
+
+
+    /** stacks */
+    //@push, @stack, @section, @yield
+    public function pushToDirectives($content) {
+        array_push($this->directives, $content);
+    }
+
+    /**
+     * Get all directives
+     *
+     * @return array
+     */
+    public function getDirectives() {
+        return $this->directives;
+    }
+
+    /**
+     * Get all directives of a specific type
+     *
+     * @param string $type The directive type (push, stack, etc.)
+     * @return array
+     */
+    public function getDirectivesByType(string $type) {
+        return array_filter($this->directives, function($directive) use ($type) {
+            return isset($directive['type']) && $directive['type'] === $type;
+        });
+    }
+
+    /**
+     * Render stack content for a specific stack name
+     *
+     * @param string $name The stack name
+     * @return string The combined content of all pushes to this stack
+     */
+    public function renderStack(string $name) {
+        $pushes = array_filter($this->directives, function($directive) use ($name) {
+            return isset($directive['type']) && $directive['type'] === 'push' &&
+                isset($directive['name']) && $directive['name'] === $name;
+        });
+
+        $content = '';
+        foreach ($pushes as $push) {
+            $content .= $push['content'] . "\n";
+        }
+        $content = $this->parseStringForPath($content);
+
+        return $content;
     }
 }
