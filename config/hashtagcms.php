@@ -57,4 +57,11 @@ return [
          */
         'htcms' => env('API_SECRET', '61c58507bbac1'),
     ],
+    
+    /**
+     * Additional middleware to be applied to all HashtagCMS routes
+     * Add middleware names that you want to apply to all HashtagCMS routes
+     * Example: ['auth', 'invite']
+     */
+    'additional_middleware' => [],
 ];

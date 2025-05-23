@@ -17,6 +17,7 @@ use MarghoobSuleman\HashtagCms\Core\Middleware\API\Etag;
 use MarghoobSuleman\HashtagCms\Core\Middleware\FeMiddleware;
 use MarghoobSuleman\HashtagCms\Core\Providers\Admin\AdminServiceProvider;
 use MarghoobSuleman\HashtagCms\Core\Providers\FeServiceProvider;
+use Illuminate\Routing\Events\RouteMatched;
 
 class HashtagCmsServiceProvider extends ServiceProvider
 {
@@ -170,7 +171,35 @@ class HashtagCmsServiceProvider extends ServiceProvider
      * @return void
      */
     protected function loadHashtagRoutes() {
+        // Load API routes
         $this->loadRoutesFrom(__DIR__.'/routes/api.php');
+        
+        // Create a route filter to add additional middleware from config
+        app('router')->matched(function (RouteMatched $event) {
+            $route = $event->route;
+            $middleware = $route->middleware();
+            
+            // If this route uses the 'interceptor' middleware (HashtagCMS frontend routes)
+            if (in_array('interceptor', $middleware)) {
+                // Get additional middleware from config
+                $additionalMiddleware = config('hashtagcms.additional_middleware', []);
+                
+                // If there are additional middleware defined, add them to the route
+                if (!empty($additionalMiddleware) && is_array($additionalMiddleware)) {
+                    foreach ($additionalMiddleware as $middleware) {
+                        // Check if this middleware is already applied to avoid duplicates
+                        if (!in_array($middleware, $route->middleware())) {
+                            $route->middleware($middleware);
+                        }
+                    }
+                }
+                
+                // Log the final middleware stack for debugging
+                //info('HashtagCMS route middleware: ' . implode(', ', $route->middleware()));
+            }
+        });
+        
+        // Load web routes
         $this->loadRoutesFrom(__DIR__.'/routes/web.php');
     }
 }

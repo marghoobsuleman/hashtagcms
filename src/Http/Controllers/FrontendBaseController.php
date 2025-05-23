@@ -16,10 +16,21 @@ use Symfony\Component\HttpFoundation\Response;
 class FrontendBaseController extends Controller
 {
     use FeEssential;
+    
+    /**
+     * The request instance.
+     *
+     * @var \Illuminate\Http\Request
+     */
+    protected $request;
 
     public function __construct(Request $request)
     {
-        //Init theme folder
+        // Store the request for potential use in child classes
+        $this->request = $request;
+        
+        // Note: Child controllers should call parent::__construct($request) AFTER registering their middleware
+        // This ensures that middleware registered in child controllers is properly applied
     }
 
     /**

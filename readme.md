@@ -70,6 +70,9 @@ php artisan test vendor/marghoobsuleman/hashtagcms
 ```
 
 ## Recent change logs [more...](changelog.md)
+#v1.5.0 Changes
+- Frontend: Added additional middleware support for frontend. You can add your own middleware in config/hashtagcms.php
+
 #v1.4.9 Changes
 - Frontend: Added directive support: app()->HashtagCms->layoutManager()->renderStack('scripts')
 
@@ -79,28 +82,7 @@ php artisan test vendor/marghoobsuleman/hashtagcms
 #v1.4.7 Changes
 - General: Moved to webpack from laravelmix
 
-#v1.4.6 Changes
-- General: Laravel v12 support
-
-#v1.4.5 Changes
-- API: Return expiry and roles, sites in user info
-
-#v1.4.4 Changes
-- Backend: Module creator has a typo bug. x was added mistakenly. Fixed.
-- Backend: Js module -> Site-wise component has been updated. 
-- General: API bug fixes.
-
-#v1.4.3 Changes
-- Laravel 11 support and cleanup
-
-#v1.4.2 Changes
-- Backend/Frontend/API: Added festival support. You can add lottie and schedule it.
-- API: Added ServiceLater Support. Service url will be passed to view too.
-- Core: Added module data modifier
-- See how it works:
-- Create class/method App\Parser\ModuleDataModifier->moduleAliasNameMethod(data, moduleInfo)
-  and manipulate your data and return it. Works for API and views.
-- Do not forget to run php artisan migrate if you are upgrading.
+#See all change logs [more...](changelog.md)
 
 
 ### More logs [changelog](changelog.md) for more information on what has changed recently.

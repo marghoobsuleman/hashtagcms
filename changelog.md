@@ -1,4 +1,7 @@
 # Changelog
+#v1.5.0 Changes
+- Frontend: Added additional middleware support for frontend. You can add your own middleware in config/hashtagcms.php
+
 #v1.4.9 Changes
 - Frontend: Added directive support: app()->HashtagCms->layoutManager()->renderStack('scripts')
 
