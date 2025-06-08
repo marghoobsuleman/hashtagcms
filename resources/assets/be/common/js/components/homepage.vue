@@ -206,7 +206,7 @@
 
 import {Toast, Modal, Loader} from '../helpers/common';
 import Sortable from 'sortablejs';
-import InfoPopup from './Info-popup.vue';
+import InfoPopup from './info-popup.vue';
 import ModalBox from "../library/modal-box.vue";
 
 

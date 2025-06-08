@@ -34,7 +34,7 @@ import { createApp } from 'vue';
 import TopNav from '../../common/js/components/top-nav.vue';
 import LeftNav from '../../common/js/components/left-nav.vue';
 import InfoBox from '../../common/js/library/info-box.vue';
-import InfoBoxes from '../../common/js/components/Info-boxes.vue';
+import InfoBoxes from '../../common/js/components/info-boxes.vue';
 import TabularView from '../../common/js/components/tabular-view.vue';
 import SearchBar from '../../common/js/components/search-bar.vue';
 import ActionBar from '../../common/js/components/action-bar.vue';

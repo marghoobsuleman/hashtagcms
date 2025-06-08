@@ -83,7 +83,7 @@ import {Toast, queryBuilder} from '../helpers/common';
 import {Fx} from '../helpers/fx';
 import {EventBus} from "../helpers/event-bus";
 import ModalBox from "../library/modal-box.vue";
-import InfoPopup from './Info-popup.vue';
+import InfoPopup from './info-popup.vue';
 
 export default {
     components: {
