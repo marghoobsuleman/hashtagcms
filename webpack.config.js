@@ -7,6 +7,9 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const autoprefixer = require('autoprefixer');
 const cssnano = require('cssnano');
 
+const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
+
+
 const fs = require('fs');
 
 let package_dir = "";
@@ -129,6 +132,7 @@ module.exports = {
     },
     plugins: [
         //new CleanWebpackPlugin(),
+        new CaseSensitivePathsPlugin(),
         new VueLoaderPlugin(),
         new MiniCssExtractPlugin({
             filename: '[name].css',
