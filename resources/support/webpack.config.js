@@ -7,6 +7,8 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const autoprefixer = require('autoprefixer');
 const cssnano = require('cssnano');
 
+const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
+
 const fs = require('fs');
 
 let package_dir = "/hashtagcms";
@@ -88,7 +90,7 @@ if (mode === 'fe') {
     buildCopies = [...toBeBuildB.copies, ...toBeBuildF.copies];
 }
 console.log(buildEntries);
-console.log("Please wait. Building...");
+console.log("Please wait. Building assets...");
 module.exports = {
     stats: {
         all: false,
@@ -129,6 +131,7 @@ module.exports = {
     },
     plugins: [
         //new CleanWebpackPlugin(),
+        new CaseSensitivePathsPlugin(),
         new VueLoaderPlugin(),
         new MiniCssExtractPlugin({
             filename: '[name].css',

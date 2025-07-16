@@ -24,7 +24,7 @@ class Cmsversion extends Command
      *
      * @var string
      */
-    protected $description = 'Display the version of Hashtag CMS';
+    protected $description = '[#CMS]: Display the version of Hashtag CMS';
 
     /**
      * Create a new command instance.

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
@@ -11,22 +12,19 @@ if (HashtagCms::isInstallationRoutesEnabled()) {
     Route::get('/install', config('hashtagcms.namespace')."Http\Controllers\Installer\InstallController@index");
     Route::post('/install/save', config('hashtagcms.namespace')."Http\Controllers\Installer\InstallController@save");
 }
-
+// Get configuration values once outside the route to avoid calling on each request
+$namespace = config('hashtagcms.namespace');
+$appNamespace = app()->getNamespace();
+$defaultPage = config('admin.cmsInfo.defaultPage', 'dashboard');
 //Register Admin
-Route::prefix('admin')->group(function () {
+Route::prefix('admin')->group(function () use ($namespace, $appNamespace, $defaultPage) {
 
-    Route::match(['get', 'post', 'delete'], '{controller?}/{method?}/{params?}', function (Request $request, $controller = '', $method = '', $params = null) {
+    Route::match(['get', 'post', 'delete'], '{controller?}/{method?}/{params?}', function (Request $request, $controller = '', $method = '', $params = null) use ($namespace, $appNamespace, $defaultPage) {
 
-        $controller = ($controller === '') ? 'dashboard' : $controller; //default page of admin
+        // Set controller only once
+        $controller = ($controller === '') ? $defaultPage : $controller;
 
         $methodType = $request->method();
-
-        $namespace = config('hashtagcms.namespace');
-
-        $controller = ($controller == '') ? config('admin.cmsInfo.defaultPage') : $controller;
-
-        $namespace = config('hashtagcms.namespace');
-        $appNamespace = app()->getNamespace();
         //Hashtag Controller
         $callable = $namespace."Http\Controllers\\Admin\\".str_replace('-', '', Str::title($controller)).'Controller';
         //App Controller
@@ -56,15 +54,35 @@ Route::prefix('admin')->group(function () {
             $values = array_merge($args, $values);
 
             try {
-                info('method: '.$methodType.' ::: '.$callable.' ::: '.json_encode($values));
+                // Only log in non-production environments
+                if (app()->environment(['local', 'development', 'testing'])) {
+                    Log::info('Admin route call', [
+                        'method' => $methodType,
+                        'controller' => $callable,
+                        'parameters' => $values
+                    ]);
+                }
 
                 return app()->call($callable, $values);
 
             } catch (Exception $e) {
-                info('There is an error '.$e->getMessage());
+                Log::error('Admin route error', [
+                    'controller' => $controllerName,
+                    'method' => $method,
+                    'message' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString()
+                ]);
 
-                return $e->getMessage();
-                //abort(404);
+                // Don't expose error details in production
+                if (app()->environment('production')) {
+                    abort(500, 'Server Error');
+                } else {
+                    return [
+                        'error' => $e->getMessage(),
+                        'controller' => $controllerName,
+                        'method' => $method
+                    ];
+                }
             }
 
         } else {
@@ -89,21 +107,34 @@ if (HashtagCms::isRoutesEnabled()) {
             if ($callable != '') {
                 return app()->call($callable, $values); //FrontendController@index, []
             } else {
-                info("I don't know what to process...");
+                // Log with proper context
+                Log::warning("No callable found for route", [
+                    'path' => $request->path(),
+                    'method' => $request->method()
+                ]);
+
                 try {
                     DB::connection()->getPdo();
                 } catch (\Exception $e) {
-                    info('Could not connect to the database.  Please check your configuration. Error: '.$e->getMessage());
-                    exit('Could not connect to the database.  Please check your configuration. Error: '.$e->getMessage());
+                    Log::error('Database connection error', [
+                        'message' => $e->getMessage()
+                    ]);
+
+                    // Don't expose error details in production
+                    if (app()->environment(['production'])) {
+                        abort(500, 'Server Error');
+                    } else {
+                        return "RouteError: I don't know what to process...";
+                    }
                 }
 
                 return "RouteError: I don't know what to process...";
             }
 
         } catch (Exception $exception) {
-            //show everything in local env
-            if (env('APP_ENV') !== 'local') {
-                abort($exception->getStatusCode(), $exception->getMessage());
+            // Don't expose error details in production
+            if (app()->environment(['production'])) {
+                abort(500, $exception->getMessage());
             } else {
                 return [
                     'code' => $exception->getStatusCode() ?? ' unknown',

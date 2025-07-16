@@ -1,4 +1,55 @@
 # Changelog
+
+# Version 1.5.1
+- Backend: Sort module issue. Id can be string too.
+- General: Improved routing and logging
+- General: Added import export data command. Example added below.
+
+### Exporting Data help
+```bash
+# Export all tables
+php artisan cms:exportdata
+
+# Export specific tables
+php artisan cms:exportdata --tables=users,roles,permissions
+
+# Exclude certain tables
+php artisan cms:exportdata --exclude=logs,cache
+
+# Limit records per table
+php artisan cms:exportdata --limit=500
+
+# Specify output directory
+php artisan cms:exportdata --output=database/custom-seeders
+```
+
+### Features
+
+- **Memory-Efficient Processing**: Handles large tables in batches
+- **Smart Table Organization**: Respects foreign key dependencies
+- **Error Handling**: Gracefully skips empty tables and provides detailed error messages
+- **Flexible Options**: Selective table export, exclusion, and record limiting
+
+### Importing Data
+After exporting, you can import the data using the standard Laravel seeder command:
+```bash
+php artisan db:seed
+```
+Or use our enhanced import command that automatically updates site domains to match your environment:
+
+```bash
+# Import with domain updating
+php artisan cms:importdata --update-domain
+
+# Import a specific seeder class
+php artisan cms:importdata --class=CustomSeeder --update-domain
+
+# Force import in production
+php artisan cms:importdata --force --update-domain
+```
+
+The `--update-domain` flag ensures that the domain field in the sites table is updated to match your APP_URL environment variable, which is essential when moving between environments.
+
 #v1.5.0 Changes
 - Frontend: Added additional middleware support for frontend. You can add your own middleware in config/hashtagcms.php
 

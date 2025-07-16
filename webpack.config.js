@@ -91,7 +91,7 @@ if (mode === 'fe') {
     buildCopies = [...toBeBuildB.copies, ...toBeBuildF.copies];
 }
 console.log(buildEntries);
-console.log("Please wait. Building...");
+console.log("Please wait. Building assets...");
 module.exports = {
     stats: {
         all: false,

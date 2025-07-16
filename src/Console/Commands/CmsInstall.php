@@ -24,7 +24,7 @@ class CmsInstall extends Command
      *
      * @var string
      */
-    protected $description = 'Install Hashtag CMS';
+    protected $description = '[#CMS]: Install Hashtag CMS';
 
     /**
      * Create a new command instance.

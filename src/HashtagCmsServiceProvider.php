@@ -11,6 +11,8 @@ use MarghoobSuleman\HashtagCms\Console\Commands\CmsModuleControllerCommand;
 use MarghoobSuleman\HashtagCms\Console\Commands\CmsModuleModelCommand;
 use MarghoobSuleman\HashtagCms\Console\Commands\CmsValidatorCommand;
 use MarghoobSuleman\HashtagCms\Console\Commands\Cmsversion;
+use MarghoobSuleman\HashtagCms\Console\Commands\ImportDatabaseData;
+use MarghoobSuleman\HashtagCms\Console\Commands\ExportDatabaseData;
 use MarghoobSuleman\HashtagCms\Core\Middleware\Admin\BeMiddleware;
 use MarghoobSuleman\HashtagCms\Core\Middleware\Admin\CmsModuleInfo;
 use MarghoobSuleman\HashtagCms\Core\Middleware\API\Etag;
@@ -144,26 +146,44 @@ class HashtagCmsServiceProvider extends ServiceProvider
             __DIR__.'/../resources/support' => resource_path('assets/hashtagcms/support'),
         ], $this->groupName.'.assets');
 
-        // Registering package commands.
-        $this->commands([
-            CmsInstall::class,
-            CmsValidatorCommand::class,
-        ]);
+        // Register all package commands in one place
+        $this->registerPackageCommands();
 
     }
 
     /**
-     * Add some commands
+     * Register all package commands
+     *
+     * @return void
      */
-    protected function bootForControllerToo()
+    protected function registerPackageCommands()
     {
-        // Registering package commands.
         $this->commands([
+            // Core installation commands
+            CmsInstall::class,
+            CmsValidatorCommand::class,
+
+            // Code generation commands
             CmsModuleModelCommand::class,
             CmsModuleControllerCommand::class,
             CmsFrontendControllerCommand::class,
-            Cmsversion::class
+
+            // Utility commands
+            Cmsversion::class,
+
+            // Data management commands
+            ImportDatabaseData::class,
+            ExportDatabaseData::class
         ]);
+    }
+
+    /**
+     * @deprecated This method is kept for backward compatibility
+     */
+    protected function bootForControllerToo()
+    {
+        // This method is now empty as all commands are registered in registerPackageCommands()
+        // It's kept for backward compatibility
     }
 
     /**
@@ -173,17 +193,17 @@ class HashtagCmsServiceProvider extends ServiceProvider
     protected function loadHashtagRoutes() {
         // Load API routes
         $this->loadRoutesFrom(__DIR__.'/routes/api.php');
-        
+
         // Create a route filter to add additional middleware from config
         app('router')->matched(function (RouteMatched $event) {
             $route = $event->route;
             $middleware = $route->middleware();
-            
+
             // If this route uses the 'interceptor' middleware (HashtagCMS frontend routes)
             if (in_array('interceptor', $middleware)) {
                 // Get additional middleware from config
                 $additionalMiddleware = config('hashtagcms.additional_middleware', []);
-                
+
                 // If there are additional middleware defined, add them to the route
                 if (!empty($additionalMiddleware) && is_array($additionalMiddleware)) {
                     foreach ($additionalMiddleware as $middleware) {
@@ -193,12 +213,12 @@ class HashtagCmsServiceProvider extends ServiceProvider
                         }
                     }
                 }
-                
+
                 // Log the final middleware stack for debugging
                 //info('HashtagCMS route middleware: ' . implode(', ', $route->middleware()));
             }
         });
-        
+
         // Load web routes
         $this->loadRoutesFrom(__DIR__.'/routes/web.php');
     }
