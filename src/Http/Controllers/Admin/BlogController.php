@@ -15,11 +15,11 @@ class BlogController extends BaseAdminController
 {
     use BlogPageCommon;
 
-    protected $dataFields = ['id', 'lang.title as title', 'lang.name as name', 'category.link_rewrite as category', 'link_rewrite', 'read_count', 'publish_status', 'updated_at'];
+    protected $dataFields = ['id', 'lang.title as title', 'lang.name as name', 'platform.name as platform', 'category.link_rewrite as category', 'link_rewrite', 'read_count', 'publish_status', 'updated_at'];
 
     protected $dataSource = Page::class;
 
-    protected $dataWith = ['lang'];
+    protected $dataWith = ['lang', 'category', 'platform'];
 
     protected $actionFields = ['edit', 'delete']; //This is last column of the row
 

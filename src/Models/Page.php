@@ -125,6 +125,11 @@ class Page extends AdminBaseModel
         return $this->belongsTo(Category::class);
     }
 
+    public function platform()
+    {
+        return $this->belongsTo(Platform::class);
+    }
+
     /**
      * with gallery
      *
