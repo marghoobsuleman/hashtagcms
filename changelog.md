@@ -50,6 +50,18 @@ php artisan cms:importdata --force --update-domain
 
 The `--update-domain` flag ensures that the domain field in the sites table is updated to match your APP_URL environment variable, which is essential when moving between environments.
 
+#v1.5.1 Changes 
+- Sort module parse id to int. We don’t need to do that. Fixed.
+- Improved routing and logging
+- Added import export  data command
+  - php atrisan cms:exportdata
+  - php atrisan cms:importdata
+- Unique link_rewrite update issue while updating the blog/content when you have multiple platforms enabled; is fixed now.
+
+
+#v1.5.0 Changes
+- Frontend: Added additional middleware support for frontend. You can add your own middleware in config/hashtagcms.php
+
 #v1.5.0 Changes
 - Frontend: Added additional middleware support for frontend. You can add your own middleware in config/hashtagcms.php
 

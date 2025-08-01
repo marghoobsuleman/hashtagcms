@@ -70,6 +70,15 @@ php artisan test vendor/marghoobsuleman/hashtagcms
 ```
 
 ## Recent change logs [more...](changelog.md)
+
+#v1.5.1 Changes
+- Sort module parse id to int. We don’t need to do that. Fixed.
+- Improved routing and logging
+- Added import export  data command
+    - php atrisan cms:exportdata
+    - php atrisan cms:importdata
+- Unique link_rewrite update issue while updating the blog/content when you have multiple platforms enabled; is fixed now.
+
 #v1.5.0 Changes
 - Frontend: Added additional middleware support for frontend. You can add your own middleware in config/hashtagcms.php
 
