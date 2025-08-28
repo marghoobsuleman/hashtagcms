@@ -124,8 +124,7 @@ class DataLoader
         $defaultData['langId'] = $siteData->lang_id;
         $defaultData['countryId'] = $siteData->country_id;
         $defaultData['currencyId'] = $siteData->currency_id;
-        $defaultData['category'] = (new CategoryResource(Category::find($siteData->category_id)))->toArray(request());
-
+        $defaultData['category'] = (new CategoryResource(Category::withoutGlobalScopes()->find($siteData->category_id)))->toArray(request());
         //convert to resource
         $siteInfo = (new SiteResource($siteData))->toArray(request());
         $platformsInfo = PlatformResource::collection($siteData->platform)->toArray(request());

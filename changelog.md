@@ -1,5 +1,8 @@
 # Changelog
 
+#v1.5.2 Changes
+- General: When you edit a new site in the backend, the frontend breaks in the same browser due to a global scope issue. Fixed.
+
 # Version 1.5.1
 - Backend: Sort module issue. Id can be string too.
 - General: Improved routing and logging
@@ -50,7 +53,6 @@ php artisan cms:importdata --force --update-domain
 
 The `--update-domain` flag ensures that the domain field in the sites table is updated to match your APP_URL environment variable, which is essential when moving between environments.
 
-#v1.5.1 Changes 
 - Sort module parse id to int. We don’t need to do that. Fixed.
 - Improved routing and logging
 - Added import export  data command

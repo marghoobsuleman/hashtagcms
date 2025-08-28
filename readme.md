@@ -71,6 +71,9 @@ php artisan test vendor/marghoobsuleman/hashtagcms
 
 ## Recent change logs [more...](changelog.md)
 
+#v1.5.2 Changes
+- General: When you edit a new site in the backend, the frontend breaks in the same browser due to a global scope issue. Fixed. 
+
 #v1.5.1 Changes
 - Sort module parse id to int. We don’t need to do that. Fixed.
 - Improved routing and logging
